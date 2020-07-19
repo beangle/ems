@@ -234,4 +234,47 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>skinny-war</id>
+      <activation>
+        <property>
+          <name>!skinny</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.beangle.maven</groupId>
+            <artifactId>beangle-maven-plugin</artifactId>
+            <version>${beangle.maven.version}</version>
+            <configuration>
+              <dependencyIncludes>*:*</dependencyIncludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>generate</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>webxml</goal>
+                  <goal>sas</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.2.2</version>
+            <configuration>
+              <packagingExcludes>
+                %regex[WEB-INF/lib/.*[^T].jar]
+              </packagingExcludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
