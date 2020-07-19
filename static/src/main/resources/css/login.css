@@ -1,0 +1,123 @@
+html, body {
+  width : 100%;height : 98%
+}
+body {
+  background-color :  #0A96E1;
+  background-image :  -moz-radial-gradient(center, ellipse closest-corner, #29C4FD 20%, #0F6CB1 100%);
+  background-image :  -webkit-radial-gradient(center, ellipse closest-side, #29C4FD 30%, #0F6CB1 100%);
+  background-image :  -ms-radial-gradient(center, ellipse closest-side, #29C4FD 20%, #0F6CB1 100%);
+  background-image :  -o-radial-gradient(center, ellipse closest-side, #29C4FD 20%, #0F6CB1 100%);
+}
+.logindiv {
+  z-index : 1;
+  height : 360px;
+  display : block;
+  margin:auto;
+  border : 1px #106EB6 solid;
+  text-align : center;
+  background-color : #FFFFFF;
+    background-image: -webkit-gradient(linear, top, bottom, from(#D1E3ED), to(#FFFFFF));
+    background-image: -webkit-linear-gradient(top, #D1E3ED 0%, #FFFFFF 20%);
+    background-image:    -moz-linear-gradient(top, #D1E3ED 0%, #FFFFFF 20%);
+    background-image:     -ms-linear-gradient(top, #D1E3ED 0%, #FFFFFF 20%);
+    background-image:      -o-linear-gradient(top, #D1E3ED 0%, #FFFFFF 20%);
+    background-image:         linear-gradient(to bottom, #D1E3ED 0%, #FFFFFF 20%);
+}
+.blue-button {
+  background: url("../images/login/button.jpg") no-repeat scroll 0 0 transparent;
+    border: medium none;
+    cursor: pointer;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 70px;
+    margin-left : 7px;
+    margin-right : 7px;
+}
+.logindiv h1 {
+  color : #074B7C;
+  font-weight : bold;
+  font-size : 20pt;
+  margin-top : 5%;
+}
+
+.logindiv .logintable {
+  width : 220px;
+  height : 145px;
+
+  border : 1px #7DC4DB solid;
+  -webkit-border-radius : 5px;
+     -moz-border-radius : 5px;
+      -ms-border-radius : 5px;
+       -o-border-radius : 5px;
+          border-radius : 5px;
+  background : url("../images/login/dotdotdot.png") repeat-x scroll 0 0 transparent;
+}
+.logintable input[type=text],input[type=password] {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+}
+.logintable tr td:nth-child(1) {
+  width : 70px;
+  text-align: right;
+}
+.logintable tr td:nth-child(2) {
+  text-align : left;
+}
+.logintable tr td:nth-child(3) {
+  width : 60px;
+  text-align: center;
+  vertical-align: middle;
+}
+.logintable tr:nth-last-child(1) td {
+  text-align: center;
+}
+
+.logindiv .bulletin {
+    width : 525px;
+    margin-top: 20px;
+    margin-left: 20px;
+    border : 1px #7DC4DB solid;
+    -webkit-border-radius : 5px;
+       -moz-border-radius : 5px;
+        -ms-border-radius : 5px;
+         -o-border-radius : 5px;
+            border-radius : 5px;
+      background : url("../images/login/dotdotdot.png") repeat-x scroll 0 0 transparent;
+  }
+@media screen and (min-width:500px) {
+  .logindiv .bulletin {
+    display: inline-block;
+  }
+  .logindiv{
+      width : 800px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -400px;
+    margin-top: -180px;
+  }
+  .login{
+      float:right;
+      margin-top: 20px;
+    margin-right: 20px;
+   }
+}
+@media screen and (max-width: 500px) {
+    .logindiv .bulletin {
+    display: none;
+  }
+  .logindiv{
+      width : 90%;
+    margin-top: 20px;
+  }
+  .login{
+      margin: auto;
+    }
+    .logintable{
+      margin: auto;
+    }
+    .foottable{
+      margin: auto;
+    }
+}

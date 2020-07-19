@@ -1,0 +1,5 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="data-permission"]数据授权[/@]
+    [@b.navitem href="data-resource"]数据对象[/@]
+  [/@]

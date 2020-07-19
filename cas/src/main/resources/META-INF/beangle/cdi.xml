@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<cdi>
+  <container name="web">
+    <module class="org.beangle.ems.cas.web.WebModule"/>
+  </container>
+
+  <container>
+    <module class="org.beangle.ems.core.cas.DefaultModule"/>
+    <module class="org.beangle.ems.core.cas.TicketModule"/>
+    <module class="org.beangle.ems.core.cas.SessionModule"/>
+    <module class="org.beangle.ems.core.cas.DaoRealmModule"/>
+    <module class="org.beangle.ems.core.cas.DaoModule"/>
+    <module class="org.beangle.ems.core.cas.CredentialModule"/>
+
+    <module class="org.beangle.ems.core.user.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.config.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.security.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.session.service.DefaultModule"/>
+  </container>
+</cdi>

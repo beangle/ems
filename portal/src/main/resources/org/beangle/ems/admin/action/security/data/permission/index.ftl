@@ -1,0 +1,8 @@
+[#ftl]
+[@b.head/]
+[#include "../../nav.ftl"/]
+[@b.tabs]
+  [@b.tab label="entity.dataResource" href="resource!search"/]
+  [@b.tab label="entity.dataPermission" href="permission!search"/]
+[/@]
+[@b.foot/]

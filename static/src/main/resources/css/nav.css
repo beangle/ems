@@ -1,0 +1,31 @@
+#top_nav_bar {
+  display: none;
+}
+
+.app-toggle {
+  display:block;
+}
+
+.dropdown-menu.columns-3 {
+  min-width: 130px;
+}
+
+@media (min-width: 576px) {
+  .dropdown-menu.columns-2 {
+    min-width: 260px;
+  }
+  .dropdown-menu.columns-3 {
+    min-width: 390px;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-toggle {
+    display:none;
+  }
+
+  #top_nav_bar {
+    display: flex;
+  }
+
+}

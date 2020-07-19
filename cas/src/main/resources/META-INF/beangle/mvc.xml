@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<mvc>
+  <static>
+    <bundle name="cryptojs" version="3.1.2"/>
+    <bundle version="1.26.5" name="virtual-keyboard"/>
+  </static>
+  <profile name="cas.cas" package="org.beangle.ems.cas.web">
+    <url path="/" suffix=""  style="seo" />
+    <interceptors>
+      <interceptor name="web.Interceptor.security"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </interceptors>
+  </profile>
+  <profile name="beangle.cas" package="org.beangle.ids.cas.web.action">
+    <url path="/" suffix="" style="seo" />
+    <interceptors>
+      <interceptor name="web.Interceptor.security" />
+    </interceptors>
+  </profile>
+</mvc>

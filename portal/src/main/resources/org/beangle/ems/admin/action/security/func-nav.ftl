@@ -1,0 +1,5 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="menu"]菜单导航[/@]
+    [@b.navitem href="func-resource"]功能资源[/@]
+  [/@]

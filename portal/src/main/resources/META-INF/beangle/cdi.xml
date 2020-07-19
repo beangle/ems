@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<cdi>
+  <container name="web">
+    <module class="org.beangle.ems.admin.ConfigModule"/>
+    <module class="org.beangle.ems.admin.SecurityModule"/>
+    <module class="org.beangle.ems.admin.BlobModule"/>
+    <module class="org.beangle.ems.admin.BulletinModule"/>
+    <module class="org.beangle.ems.user.DefaultModule"/>
+    <module class="org.beangle.ems.portal.DefaultModule"/>
+    <module class="org.beangle.ems.index.action.DefaultModule"/>
+  </container>
+
+  <container>
+    <module class="org.beangle.ems.app.cas.DefaultModule"/>
+    <module class="org.beangle.ems.portal.DaoModule"/>
+    <module class="org.beangle.ems.core.user.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.config.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.security.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.bulletin.service.DefaultModule"/>
+  </container>
+</cdi>

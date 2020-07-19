@@ -1,0 +1,8 @@
+alert.authoritySave={0}的模块级权限将按照选择的条目设置，确认设置吗?
+alert.manageRemove=删除用户与其管理的用户和角色之间的关系，但不会删除用户信息。确认删除？
+alert.userRemove=删除与用户的管理关系。若用户为你所创建，用户信息将被删除且不可恢复，确认删除吗？
+error.captcha=验证码不对
+error.emptyAuthenticationCode=<li>验证码不能为空</li>
+error.notEnoughAuthority=权限不足
+error.notUnique=名称已存在
+

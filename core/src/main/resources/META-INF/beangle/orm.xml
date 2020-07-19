@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+  <mapping class="org.beangle.ems.core.bulletin.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.config.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.security.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.user.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.session.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.blob.model.DefaultMapping"/>
+  <naming>
+    <profile package = "org.beangle.ems.core.bulletin" pluralize="true" schema="bulletin"/>
+    <profile package = "org.beangle.ems.core.config" pluralize="true" schema="cfg"/>
+    <profile package = "org.beangle.ems.core.security" pluralize="true" schema="se"/>
+    <profile package = "org.beangle.ems.core.user" pluralize="true" schema="usr"/>
+    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="session"/>
+    <profile package = "org.beangle.ems.core.blob" pluralize="true" schema="blob"/>
+  </naming>
+</orm>
