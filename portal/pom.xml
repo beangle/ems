@@ -6,11 +6,16 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.1.0</version>
   </parent>
   <artifactId>beangle-ems-portal_2.13</artifactId>
   <packaging>war</packaging>
   <name>Beangle Ems Portal</name>
+
+  <properties>
+    <bundle.symbolicName>org.beangle.ems.portal</bundle.symbolicName>
+    <bundle.namespace>org.beangle</bundle.namespace>
+  </properties>
 
   <dependencies>
     <dependency>
