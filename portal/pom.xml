@@ -12,6 +12,11 @@
   <packaging>war</packaging>
   <name>Beangle Ems Portal</name>
 
+  <properties>
+    <bundle.symbolicName>org.beangle.ems.portal</bundle.symbolicName>
+    <bundle.namespace>org.beangle</bundle.namespace>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
