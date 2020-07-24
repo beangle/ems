@@ -6,59 +6,49 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0</version>
   </parent>
   <artifactId>beangle-ems-portal_2.13</artifactId>
   <packaging>war</packaging>
   <name>Beangle Ems Portal</name>
 
+  <properties>
+    <bundle.symbolicName>org.beangle.ems.portal</bundle.symbolicName>
+    <bundle.namespace>org.beangle</bundle.namespace>
+  </properties>
+
   <dependencies>
     <dependency>
-      <groupId>org.beangle.ems</groupId>
-      <artifactId>beangle-ems-app_2.13</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.beangle.ems</groupId>
-      <artifactId>beangle-ems-core_2.13</artifactId>
+      <artifactId>beangle-ems-web_2.13</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.beangle.webmvc</groupId>
-      <artifactId>beangle-webmvc-entity-plugin_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.webmvc</groupId>
-      <artifactId>beangle-webmvc-spring-plugin_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.webui</groupId>
-      <artifactId>beangle-webui-tag_2.13</artifactId>
-      <version>${beangle.webui.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.webui</groupId>
-      <artifactId>beangle-webui-bootstrap_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.data</groupId>
-      <artifactId>beangle-data-hibernate_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-jcache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
+      <groupId>org.beangle.commons</groupId>
+      <artifactId>beangle-commons-text_2.13</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
+      <groupId>org.beangle.webui</groupId>
+      <artifactId>beangle-webui-bootstrap_2.13</artifactId>
+      <version>${beangle.webui.version}</version>
     </dependency>
   </dependencies>
 </project>

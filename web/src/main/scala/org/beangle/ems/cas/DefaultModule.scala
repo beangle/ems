@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.cas.web
+package org.beangle.ems.cas
 
 import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.cas.action.EditAction
 import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction, ServiceValidateAction, SessionAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper
 
-class WebModule extends BindModule {
+class DefaultModule extends BindModule {
   override def binding(): Unit = {
     bind(classOf[LoginAction])
     bind(classOf[ServiceValidateAction])

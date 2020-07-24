@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0</version>
   </parent>
   <artifactId>beangle-ems-ws_2.13</artifactId>
   <packaging>war</packaging>
@@ -19,13 +19,22 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.beangle.ems</groupId>
-      <artifactId>beangle-ems-app_2.13</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.beangle.ems</groupId>
-      <artifactId>beangle-ems-core_2.13</artifactId>
+      <artifactId>beangle-ems-web_2.13</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -33,36 +42,8 @@
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.beangle.webmvc</groupId>
-      <artifactId>beangle-webmvc-core_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.webmvc</groupId>
-      <artifactId>beangle-webmvc-spring-plugin_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.webmvc</groupId>
-      <artifactId>beangle-webmvc-entity-plugin_2.13</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.beangle.serializer</groupId>
       <artifactId>beangle-serializer-text_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.beangle.data</groupId>
-      <artifactId>beangle-data-hibernate_2.13</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-jcache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ehcache</groupId>
-      <artifactId>ehcache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
     </dependency>
     <dependency>
       <groupId>org.beangle.cache</groupId>
