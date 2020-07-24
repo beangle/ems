@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.index.action
+package org.beangle.ems.index
 
 import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.index.action.IndexAction
 
 class DefaultModule extends BindModule {
 

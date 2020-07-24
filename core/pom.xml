@@ -57,20 +57,16 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.beangle.cache</groupId>
-      <artifactId>beangle-cache-api_2.13</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.beangle.data</groupId>
       <artifactId>beangle-data-hibernate_2.13</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>org.beangle.cache</groupId>
+      <artifactId>beangle-cache-api_2.13</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
     </dependency>
   </dependencies>
 

@@ -7,12 +7,12 @@
     <module class="org.beangle.ems.admin.BulletinModule"/>
     <module class="org.beangle.ems.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.DefaultModule"/>
-    <module class="org.beangle.ems.index.action.DefaultModule"/>
+    <module class="org.beangle.ems.index.DefaultModule"/>
   </container>
 
   <container>
     <module class="org.beangle.ems.app.cas.DefaultModule"/>
-    <module class="org.beangle.ems.portal.DaoModule"/>
+    <module class="org.beangle.ems.web.DaoModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>

@@ -44,6 +44,7 @@
     <module>static</module>
     <module>app</module>
     <module>core</module>
+    <module>web</module>
     <module>cas</module>
     <module>ws</module>
     <module>portal</module>

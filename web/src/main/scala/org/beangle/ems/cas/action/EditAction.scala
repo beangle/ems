@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.cas.web
+package org.beangle.ems.cas.action
 
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems

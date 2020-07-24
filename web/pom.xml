@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.beangle.ems</groupId>
+    <artifactId>beangle-ems-parent</artifactId>
+    <version>4.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>beangle-ems-web_2.13</artifactId>
+  <packaging>jar</packaging>
+  <name>Beangle Ems Web</name>
+
+  <properties>
+    <bundle.symbolicName>org.beangle.ems.web</bundle.symbolicName>
+    <bundle.namespace>org.beangle</bundle.namespace>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.beangle.ems</groupId>
+      <artifactId>beangle-ems-core_2.13</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beangle.webmvc</groupId>
+      <artifactId>beangle-webmvc-spring-plugin_2.13</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.beangle.webmvc</groupId>
+      <artifactId>beangle-webmvc-entity-plugin_2.13</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.beangle.webmvc</groupId>
+      <artifactId>beangle-webmvc-view_2.13</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jcache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
