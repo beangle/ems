@@ -23,19 +23,16 @@ import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
 import org.beangle.security.Securities
 import org.beangle.webmvc.api.action.{ActionSupport, ServletSupport}
-import org.beangle.webmvc.api.annotation.{action, mapping}
 import org.beangle.webmvc.api.view.View
 import org.beangle.ems.core.bulletin.model.{Doc, Notice}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.User
 
-@action("")
 class IndexAction extends ActionSupport with ServletSupport {
   var entityDao: EntityDao = _
 
   var domainService: DomainService = _
 
-  @mapping("")
   def index(): View = {
     val ctx = NavContext.get(request)
     put("nav", ctx)

@@ -9,7 +9,7 @@
   <groupId>org.beangle.ems</groupId>
   <artifactId>beangle-ems-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.1.0</version>
+  <version>4.1.1</version>
   <name>Beangle Ems Parent</name>
 
   <organization>
@@ -24,7 +24,7 @@
     <beangle.commons.version>5.1.17</beangle.commons.version>
     <beangle.cdi.version>0.2.2</beangle.cdi.version>
     <beangle.data.version>5.3.7</beangle.data.version>
-    <beangle.webmvc.version>0.3.41</beangle.webmvc.version>
+    <beangle.webmvc.version>0.3.42</beangle.webmvc.version>
     <beangle.webui.version>0.3.41</beangle.webui.version>
     <beangle.template.version>0.0.27</beangle.template.version>
     <beangle.security.version>4.2.20</beangle.security.version>

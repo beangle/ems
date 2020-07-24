@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>beangle-ems-app_2.13</artifactId>
