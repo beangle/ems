@@ -28,7 +28,6 @@
               <tbody>
               [#list notices as notice]
               <tr>
-                <td>${notice.app.title}</td>
                 <td><a href="${webappBase}/user/notice/${notice.id}" target="_blank"> ${notice.title}</a></td>
                 <td>${notice.createdAt?string('yyyy-MM-dd')}</td>
               </tr>
@@ -53,7 +52,6 @@
               [#assign extMap={"xls":'xls.gif',"xlsx":'xls.gif',"docx":"doc.gif","doc":"doc.gif","pdf":"pdf.gif","zip":"zip.gif","":"generic.gif"}]
               [#list docs as doc]
               <tr>
-                <td>${doc.app.title}</td>
                 <td>
                   <image src="${b.static_url("ems","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
                   <a href="${webappBase}/user/doc/${doc.id}" target="_blank">${doc.name}</a>

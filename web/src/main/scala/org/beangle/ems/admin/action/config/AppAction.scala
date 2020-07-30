@@ -43,6 +43,9 @@ class AppAction(dbService: DbService) extends RestfulAction[App] {
   }
 
   protected override def editSetting(entity: App): Unit = {
+    if(!entity.persisted){
+      entity.enabled=true
+    }
     put("groups", appService.getGroups())
     put("appTypes", entityDao.getAll(classOf[AppType]))
     put("credentials", entityDao.getAll(classOf[Credential]))

@@ -12,6 +12,5 @@
   [@b.formfoot]
     [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit" /]
   [/@]
-</table>
 [/@]
 [@b.foot/]
