@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>4.1.3</version>
   </parent>
   <artifactId>beangle-ems-index</artifactId>
   <packaging>war</packaging>
