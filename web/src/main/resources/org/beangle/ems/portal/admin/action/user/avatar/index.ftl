@@ -32,32 +32,32 @@
          [/#list]
         <div style="clear:both"></div>
       </div>
-       <ul class="pagination pull-right">
+       <ul class="pagination float-right">
          [#if users.pageIndex>1]
-             <li><a href="#" onclick="gotoPage(${users.pageIndex-1})">&laquo;</a></li>
+             <li class="page-item"><a href="#" onclick="gotoPage(${users.pageIndex-1})" class="page-link">&laquo;</a></li>
              [#if users.pageIndex > 1]
-               <li><a onclick="gotoPage(1)">1</a></li>
+               <li class="page-item"><a class="page-link" onclick="gotoPage(1)">1</a></li>
              [/#if]
              [#if users.pageIndex > 3]
                <li><a>...</a></li>
              [/#if]
-         [#else] <li class="disabled"><a href="#">&laquo;</a></li>
+         [#else] <li class="disabled" class="page-item"><a href="#" class="page-link">&laquo;</a></li>
          [/#if]
          [#list (users.pageIndex - 3)..(users.pageIndex + 3) as p]
            [#if p > 0 && (p > 1 || users.pageIndex == 1) && p <= users.totalPages && (p < users.totalPages || users.pageIndex == users.totalPages)]
-             <li class="[#if p == users.pageIndex]active[/#if]"><a onclick="gotoPage(${p})">${p}</a></li>
+             <li class="page-item [#if p == users.pageIndex]active[/#if]"><a class="page-link" onclick="gotoPage(${p})">${p}</a></li>
            [/#if]
          [/#list]
          [#if users.pageIndex != users.totalPages && users.totalPages > 0]
            [#if users.totalPages - users.pageIndex > 3]
-             <li><a>...</a></li>
+             <li class="page-item"><a class="page-link">...</a></li>
            [/#if]
            [#if users.pageIndex < users.totalPages]
-             <li><a onclick="gotoPage(${users.totalPages})">${users.totalPages}</a></li>
+             <li class="page-item"><a class="page-link" onclick="gotoPage(${users.totalPages})">${users.totalPages}</a></li>
            [/#if]
-           <li><a onclick="gotoPage(${users.pageIndex+1})">&raquo;</a></li>
+           <li class="page-item"><a class="page-link" onclick="gotoPage(${users.pageIndex+1})">&raquo;</a></li>
          [#else]
-           <li class="disabled"><a href="#">&raquo;</a></li>
+           <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
          [/#if]
        </ul>
        <script>

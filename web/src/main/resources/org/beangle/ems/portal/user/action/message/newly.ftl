@@ -1,5 +1,5 @@
 [#list messages as message]
-    <a class="dropdown-item" href="${ems.webapp}/user/message/${message.id}" target="_blank">
+    <a class="dropdown-item" href="${ems.webapp}${base}/user/message/${message.id}" target="_blank">
       <div class="media">
         <img src="${avatarUrls[message.sender.code]}" class="img-size-32 mr-3 img-circle" alt="${message.sender.name}">
         <div class="media-body">
@@ -13,7 +13,7 @@
     <div class="dropdown-divider"></div>
   [/#list]
   <div>
-    <a  class="float-right text-sm text-muted" href="${ems.webapp}/user/message" target="_blank">
+    <a  class="float-right text-sm text-muted" href="${ems.webapp}${base}/user/message" target="_blank">
      <span>查看所有消息</span>
     </a>
   </div>
