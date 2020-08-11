@@ -24,7 +24,6 @@
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
   width: 171px;
 }
-
 @media (max-width: 767.98px) {
   .main-sidebar, .main-sidebar::before {
     box-shadow: none !important;
@@ -189,7 +188,7 @@
   </aside>
   <div class="control-sidebar-bg"></div>
 </div>
-<script>
+<script type="text/javascript">
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}',"title":'${domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'beangle-webui-bootstrap'}
