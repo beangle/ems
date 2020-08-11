@@ -8,7 +8,7 @@
     <artifactId>beangle-ems-parent</artifactId>
     <version>4.1.4</version>
   </parent>
-  <artifactId>beangle-ems-index</artifactId>
+  <artifactId>beangle-ems-index_2.13</artifactId>
   <packaging>war</packaging>
   <name>Beangle Ems Index</name>
 
