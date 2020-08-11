@@ -2,7 +2,7 @@
 <mvc>
   <static>
     <bundle name="local" version="default"/>
-    <bundle name="ems" version="4.1.3">
+    <bundle name="ems" version="4.1.4">
       <module name="ems" js="js/ems.js"/>
       <module name="ems-nav" js="js/nav.js" css="css/nav.css" depends="adminlte,ems" />
     </bundle>
