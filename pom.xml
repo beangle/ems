@@ -9,7 +9,7 @@
   <groupId>org.beangle.ems</groupId>
   <artifactId>beangle-ems-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.1.2</version>
+  <version>4.1.3</version>
   <name>Beangle Ems Parent</name>
 
   <organization>
@@ -48,6 +48,7 @@
     <module>cas</module>
     <module>ws</module>
     <module>portal</module>
+    <module>index</module>
   </modules>
 
   <dependencyManagement>

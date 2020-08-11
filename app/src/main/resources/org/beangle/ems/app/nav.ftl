@@ -1,12 +1,21 @@
 [#macro displayFrame mainHref="" ]
 <style>
-[#--限定宽度为171px--]
+[#--限定宽度为171px,这两个宽度的css定义要放在一个文件里面,仅仅重置768，而不重置991的不起作用--]
 @media (min-width: 768px) {
   body:not(.sidebar-mini-md) .content-wrapper,
   body:not(.sidebar-mini-md) .main-footer,
   body:not(.sidebar-mini-md) .main-header {
     transition: margin-left 0.3s ease-in-out;
     margin-left: 171px;
+  }
+}
+@media (max-width: 991.98px) {
+  body:not(.sidebar-mini-md) .content-wrapper, body:not(.sidebar-mini-md) .content-wrapper::before,
+  body:not(.sidebar-mini-md) .main-footer,
+  body:not(.sidebar-mini-md) .main-footer::before,
+  body:not(.sidebar-mini-md) .main-header,
+  body:not(.sidebar-mini-md) .main-header::before {
+    margin-left: 0;
   }
 }
 .main-sidebar, .main-sidebar::before {

@@ -24,7 +24,6 @@
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
   width: 171px;
 }
-
 @media (max-width: 767.98px) {
   .main-sidebar, .main-sidebar::before {
     box-shadow: none !important;
@@ -142,7 +141,7 @@
     </nav>
 
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="${base}/portal" class="brand-link navbar-lightblue" title="${nav.org.name}">
+    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name}">
       <img src="${nav.org.logoUrl!}" class="brand-image"/>
       <span class="brand-text font-weight-light" id="appName" ></span>
     </a>
@@ -189,7 +188,7 @@
   </aside>
   <div class="control-sidebar-bg"></div>
 </div>
-<script>
+<script type="text/javascript">
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}',"title":'${domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'beangle-webui-bootstrap'}

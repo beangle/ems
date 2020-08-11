@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<mvc>
+  <profile name="ems-index" package="org.beangle.ems.index.web.action">
+    <url path="/" suffix="" style="seo" />
+  </profile>
+</mvc>
