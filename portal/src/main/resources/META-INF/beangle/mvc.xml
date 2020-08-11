@@ -1,13 +1,17 @@
 <?xml version="1.0"?>
 <mvc>
-  <profile name="ems-portal" package="org.beangle.ems.*.action">
+  <profile name="ems-portal" package="org.beangle.ems.portal.*.action">
     <url path="/" suffix="" style="seo" />
     <interceptors>
       <interceptor name="web.Interceptor.hibernate" />
       <interceptor name="web.Interceptor.security" />
     </interceptors>
   </profile>
-  <profile name="ems-index" package="org.beangle.ems.index.action">
+  <profile name="ems-portal-index" package="org.beangle.ems.portal.action">
     <url path="/" suffix="" style="seo" />
+    <interceptors>
+      <interceptor name="web.Interceptor.hibernate" />
+      <interceptor name="web.Interceptor.security" />
+    </interceptors>
   </profile>
 </mvc>

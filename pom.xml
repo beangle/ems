@@ -48,6 +48,7 @@
     <module>cas</module>
     <module>ws</module>
     <module>portal</module>
+    <module>index</module>
   </modules>
 
   <dependencyManagement>

@@ -142,7 +142,7 @@
     </nav>
 
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="${base}/portal" class="brand-link navbar-lightblue" title="${nav.org.name}">
+    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name}">
       <img src="${nav.org.logoUrl!}" class="brand-image"/>
       <span class="brand-text font-weight-light" id="appName" ></span>
     </a>

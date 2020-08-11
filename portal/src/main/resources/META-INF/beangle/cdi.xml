@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
 <cdi>
   <container name="web">
-    <module class="org.beangle.ems.admin.ConfigModule"/>
-    <module class="org.beangle.ems.admin.SecurityModule"/>
-    <module class="org.beangle.ems.admin.BlobModule"/>
-    <module class="org.beangle.ems.admin.BulletinModule"/>
-    <module class="org.beangle.ems.user.DefaultModule"/>
+    <module class="org.beangle.ems.portal.admin.ConfigModule"/>
+    <module class="org.beangle.ems.portal.admin.SecurityModule"/>
+    <module class="org.beangle.ems.portal.admin.BlobModule"/>
+    <module class="org.beangle.ems.portal.admin.BulletinModule"/>
+    <module class="org.beangle.ems.portal.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.DefaultModule"/>
-    <module class="org.beangle.ems.index.DefaultModule"/>
   </container>
 
   <container>

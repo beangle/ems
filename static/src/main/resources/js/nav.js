@@ -542,7 +542,6 @@
   function changeProfile(id){
     var p = ems.config.profiles.changeProfile(id);
     navMenu.nav.params['profile']=p.id;
-    navMenu.nav.params['school']=p.schoolId;
     navMenu.displayCurrent();
   }
 
@@ -580,7 +579,7 @@
       return;
     }
     jQuery.ajax({
-      url: params['webapp']+'/user/message/newly?callback=messageCallBack',cache:false,
+      url: params['webapp']+'/portal/user/message/newly?callback=messageCallBack',cache:false,
       type: "GET",dataType: "html",
       complete: function( jqXHR) {
           try{
@@ -611,7 +610,7 @@
       bar.css("margin","50px 0px 0px 0px")
       bar.show();
     }else{
-      bar.css("margin","00px 0px 0px 0px")
+      bar.css("margin","0px 0px 0px 0px")
       bar.hide();
     }
   }
