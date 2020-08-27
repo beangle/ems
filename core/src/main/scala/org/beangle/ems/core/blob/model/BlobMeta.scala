@@ -26,9 +26,9 @@ class BlobMeta extends LongId with Updated {
   var domain:Domain=_
   var owner: String = _
   var name: String = _
-  var size: Long = _
+  var fileSize: Long = _
   var sha: String = _
   var mediaType: String = _
   var profile: Profile = _
-  var path: String = _
+  var filePath: String = _
 }

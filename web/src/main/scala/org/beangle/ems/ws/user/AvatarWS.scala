@@ -57,7 +57,7 @@ class AvatarWS(entityDao: EntityDao, cacheManager: CacheManager)
   private def loadAvatarPath(avatarId: String): Option[String] = {
     val query = OqlBuilder.from[String](classOf[Avatar].getName, "a")
     query.where("a.id = :id", avatarId)
-    query.select("a.path")
+    query.select("a.filePath")
     entityDao.search(query).headOption
   }
 

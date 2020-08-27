@@ -32,7 +32,7 @@ class Notification extends LongId {
   var subject: String = _
 
   /** 内容 */
-  var content: String = _
+  var contents: String = _
 
   /**接受人*/
   var recipient: User = _

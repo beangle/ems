@@ -2,7 +2,7 @@
 [@b.head/]
 [@b.grid items=blobMetas var="blobMeta" sortable="true"]
   [@b.gridbar]
-   bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,path:存储路径,size:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
+   bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
   [/@]
   [@b.row]
     [@b.boxcol /]
@@ -14,11 +14,11 @@
       [@b.a href="!info?id="+blobMeta.id target="_blank"]${blobMeta.name}[/@]
       </span>
     [/@]
-    [@b.col  width="34%" property="path" title="路径"]
-       <span style="font-size:0.8em" title="${blobMeta.profile.name}">${blobMeta.path}</span>
+    [@b.col  width="34%" property="filePath" title="路径"]
+       <span style="font-size:0.8em" title="${blobMeta.profile.name}">${blobMeta.filePath}</span>
     [/@]
-    [@b.col  width="8%" property="size" title="大小"]
-       ${(blobMeta.size/1024.0)?string(".##")}K
+    [@b.col  width="8%" property="fileSize" title="大小"]
+       ${(blobMeta.fileSize/1024.0)?string(".##")}K
     [/@]
     [@b.col  width="8%" property="mediaType" title="类型"/]
     [@b.col  width="10%" property="updatedAt" title="更新时间"]

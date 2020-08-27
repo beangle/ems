@@ -15,7 +15,7 @@
           <span class="mailbox-read-time float-right">${message.sentAt?string('yyyy-MM-dd HH:mm')}</span></h6>
       </div>
       <div class="mailbox-read-message">
-        ${message.content}
+        ${message.contents}
       </div>
     </div>
 

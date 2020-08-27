@@ -84,8 +84,8 @@ class NoticeAction extends RestfulAction[Notice] {
     if (null == notice.createdAt) {
       notice.createdAt = notice.updatedAt
     }
-    val words = entityDao.getAll(classOf[SensitiveWord]).map(_.content).toSet
-    val results = SensitiveFilter(words).matchedWords(notice.content)
+    val words = entityDao.getAll(classOf[SensitiveWord]).map(_.contents).toSet
+    val results = SensitiveFilter(words).matchedWords(notice.contents)
     if (results.nonEmpty) {
       addFlashMessage("找到敏感词汇:" + results.mkString(","))
       throw new RuntimeException("找到敏感词汇:" + results.mkString(","))

@@ -34,7 +34,7 @@ class Notice extends LongId with DateRange {
 
   var title: String = _
 
-  var content: String = _
+  var contents: String = _
 
   var userCategories: mutable.Set[UserCategory] = Collections.newSet
 

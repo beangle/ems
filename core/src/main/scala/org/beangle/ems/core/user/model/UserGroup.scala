@@ -28,7 +28,7 @@ import org.beangle.ems.core.config.model.Org
 /**
  * @author chaostone
  */
-class Group extends IntId with Named with Updated with Enabled with Hierarchical[Group] with Profile with Principal with Remark {
+class UserGroup extends IntId with Named with Updated with Enabled with Hierarchical[UserGroup] with Profile with Principal with Remark {
   var properties: collection.mutable.Map[Dimension, String] = new collection.mutable.HashMap[Dimension, String]
   var creator: User = _
   var members: collection.mutable.Seq[GroupMember] = new collection.mutable.ListBuffer[GroupMember]

@@ -73,9 +73,9 @@ class LocalRepository(val base: String, val dir: String) extends Repository {
     val meta = new BlobMeta()
     meta.sha = sha
     meta.updatedAt = Instant.now
-    meta.size = target.length().asInstanceOf[Int]
+    meta.fileSize = target.length().asInstanceOf[Int]
     meta.mediaType = MediaTypes.get(ext, MediaTypes.ApplicationOctetStream).toString()
-    meta.path = s"$folder/${sha}"
+    meta.filePath = s"$folder/${sha}"
     meta
   }
 

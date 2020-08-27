@@ -23,11 +23,11 @@ import org.beangle.data.model.pojo.Updated
 class BlobMeta extends Updated {
   var name: String = _
 
-  var size: Int = _
+  var fileSize: Int = _
 
   var sha: String = _
 
   var mediaType: String = _
 
-  var path: String = _
+  var filePath: String = _
 }
