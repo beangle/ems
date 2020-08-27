@@ -29,13 +29,16 @@ object DefaultMapping extends MappingModule {
 
     bind[Dimension].declare { e =>
       e.name & e.title are length(40)
-      e.source is length(6000)
+      e.source is(column("source_"), length(6000))
       e.keyName is length(20)
       e.properties is length(100)
       index("idx_dimension_name", true, e.domain, e.name)
     }
 
     bind[RoleMember].declare { e =>
+      e.member is column("is_member")
+      e.granter is column("is_granter")
+      e.manager is column("is_manager")
       index("idx_role_member_user", false, e.user)
     }
 
@@ -60,7 +63,7 @@ object DefaultMapping extends MappingModule {
 
     bind[Account].declare { e =>
       e.password is length(200)
-      index("idx_account", true,e.user,e.domain)
+      index("idx_account", true, e.user, e.domain)
     }
 
     bind[PasswordConfig].declare { e =>
@@ -75,12 +78,16 @@ object DefaultMapping extends MappingModule {
 
     bind[UserProfile].declare { e =>
       e.properties is eleLength(2000)
-      index("idx_user_profile",false,e.user,e.domain)
+      index("idx_user_profile", false, e.user, e.domain)
     }
 
-    bind[GroupMember]
+    bind[GroupMember].declare { e =>
+      e.member is column("is_member")
+      e.granter is column("is_granter")
+      e.manager is column("is_manager")
+    }
 
-    bind[Group].declare { e =>
+    bind[UserGroup].declare { e =>
       e.getName is length(100)
       e.children is depends("parent")
       e.members is depends("group")
@@ -91,7 +98,7 @@ object DefaultMapping extends MappingModule {
     bind[Avatar].declare { e =>
       e.id is length(50)
       e.fileName is length(50)
-      e.path is length(300)
+      e.filePath is length(300)
     }.generator(IdGenerator.Assigned)
 
     bind[Root]

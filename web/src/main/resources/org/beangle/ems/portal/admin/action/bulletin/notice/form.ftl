@@ -13,7 +13,7 @@
   [@b.radios name="notice.sticky" label="是否置顶" value=notice.sticky required="true" /]
   [@b.radios name="notice.popup" label="是否弹窗" value=notice.popup required="true" /]
   [@b.startend label="有效期限" name="notice.beginOn,notice.endOn" required="true,true" start=notice.beginOn end=notice.endOn format="date"/]
-  [@b.editor name="notice.content" id="notice_content" label="内容" rows="20" cols="80" value=notice.content maxlength="10000" required="true"/]
+  [@b.editor name="notice.contents" id="notice_content" label="内容" rows="20" cols="80" value=notice.contents maxlength="10000" required="true"/]
 
   [#list 1..(3-notice.docs?size) as i]
   [@b.file label="附件"+i name="notice_doc" maxSize="5MB" extensions="doc,docx,pdf,xls,xlsx"/]

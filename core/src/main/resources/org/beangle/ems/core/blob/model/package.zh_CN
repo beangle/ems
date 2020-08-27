@@ -1,0 +1,14 @@
+Profile=文件配置
+
+Profile.base=基础路径
+Profile.namedBySha=按照sha命名
+Profile.publicDownload=公开下载
+Profile.users=用户名
+
+BlobMeta=文件信息
+BlobMeta.owner=所有者
+BlobMeta.name=名称
+BlobMeta.fileSize=大小
+BlobMeta.sha=Sha
+BlobMeta.mediaType=文件类型
+BlobMeta.filePath=文件路径

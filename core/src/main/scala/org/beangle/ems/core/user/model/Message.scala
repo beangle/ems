@@ -18,7 +18,6 @@
  */
 package org.beangle.ems.core.user.model
 
-import java.time.LocalDateTime
 import org.beangle.data.model.LongId
 import java.time.Instant
 
@@ -33,7 +32,7 @@ class Message extends LongId {
   var title: String = _
 
   /** 内容 */
-  var content: String = _
+  var contents: String = _
 
   /** 发送人 */
   var sender: User = _

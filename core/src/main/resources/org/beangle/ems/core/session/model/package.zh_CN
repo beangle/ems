@@ -1,2 +1,15 @@
 SessionEvent=会话日志
+
+SessionEvent.principal=用户名
+SessionEvent.username=账户
+SessionEvent.detail=明细
+SessionEvent.ip=IP
+SessionEvent.eventType=时间类型
+
 SessionConfig=会话配置
+
+SessionConfig.ttiMinutes=过期时间
+SessionConfig.concurrent=多重会话数
+SessionConfig.capacity=最大容量
+SessionConfig.checkConcurrent=是否检查多重会话
+SessionConfig.checkCapacity=是否检查容量

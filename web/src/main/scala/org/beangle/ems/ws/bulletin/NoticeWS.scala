@@ -79,10 +79,10 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
   }
 
   private def convert(notice: Notice): Properties = {
-    val not = new Properties(notice, "id", "title", "title", "createdAt", "popup", "sticky", "content")
+    val not = new Properties(notice, "id", "title", "title", "createdAt", "popup", "sticky", "contents")
     val docs = notice.docs map { doc =>
       val d = new Properties(doc, "id", "name")
-      EmsApp.getBlobRepository(true).path(doc.path) foreach { url =>
+      EmsApp.getBlobRepository(true).path(doc.filePath) foreach { url =>
         d.put("url", url)
       }
       d

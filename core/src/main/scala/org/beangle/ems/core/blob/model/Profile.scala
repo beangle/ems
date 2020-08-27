@@ -24,9 +24,8 @@ import org.beangle.ems.core.config.model.Domain
 
 class Profile extends IntId with Named {
   var domain: Domain = _
-  var path: String = _
+  var base: String = _
   var namedBySha: Boolean = _
   var users: Option[String] = None
-  var publicList: Boolean = _
   var publicDownload: Boolean = _
 }

@@ -27,7 +27,7 @@ object DefaultMapping extends MappingModule {
     defaultCache("ems.security", "read-write")
 
     bind[Profile].declare { e =>
-      e.path & e.name are length(100)
+      e.base & e.name are length(100)
       e.users is length(200)
     }.generator(IdGenerator.AutoIncrement)
 
@@ -35,7 +35,7 @@ object DefaultMapping extends MappingModule {
       e.owner is length(100)
       e.name is length(300)
       e.mediaType is length(60)
-      e.path is length(400)
+      e.filePath is length(400)
     }
 
     all.except(classOf[BlobMeta]).cacheAll()

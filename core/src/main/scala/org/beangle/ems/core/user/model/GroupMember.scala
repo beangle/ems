@@ -28,12 +28,12 @@ import MemberShip.{ Granter, Manager, Member, Ship }
  */
 class GroupMember extends LongId with Updated {
   var user: User = _
-  var group: Group = _
+  var group: UserGroup = _
   var member: Boolean = _
   var granter: Boolean = _
   var manager: Boolean = _
 
-  def this(user: User, group: Group) {
+  def this(user: User, group: UserGroup) {
     this()
     this.user = user
     this.group = group

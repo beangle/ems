@@ -52,7 +52,7 @@
             <td width="7%"><input type="checkbox" name="message.id" value="${message.id}"></td>
             <td class="mailbox-name" width="13%">[@b.a href="!info?id=${message.id}"]${message.sender.name}[/@]</td>
             <td class="mailbox-subject" width="65%">
-               <b>${message.title}</b> - [#if message.content?length>30]${message.content?substring(0,30)?html}...[#else]${message.content?html}[/#if]
+               <b>${message.title}</b> - [#if message.contents?length>30]${message.contents?substring(0,30)?html}...[#else]${message.contents?html}[/#if]
             </td>
             <td class="mailbox-date" style="font-size:0.8em" width="15%">${message.sentAt?string('yy-MM-dd HH:mm')}</td>
           </tr>

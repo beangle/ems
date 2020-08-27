@@ -11,11 +11,12 @@ User.beginOn-endOn=有效期
 User.avatarId=头像ID
 User.properties=属性
 
-
+Account=账户
 Account.enabled=是否启用
 Account.locked=是否锁定
 Account.password=密码
 Account.passwdExpiredOn=密码过期日期
+Account.passwdInactiveOn=密码不可用日期
 
 UserCategory=用户类别
 UserCategory.enName=英文名
@@ -29,8 +30,8 @@ Role=角色
 Role.properties=角色属性
 Role.users=成员
 
-Group=组
-Group.properties=组属性
+UserGroup=组
+UserGroup.properties=组属性
 
 GroupMember=组成员
 GroupMember.member=成员
@@ -44,6 +45,7 @@ Profile=用户配置
 Avatar=头像
 Avatar.image=图像
 Avatar.fileName=文件名
+Avatar.filePath=文件路径
 
 Dimension=数据维度
 Dimension.name=名称
@@ -61,7 +63,7 @@ UserProfile.properties=用户配置-属性
 
 Message=消息
 Message.title=标题
-Message.content=内容
+Message.contents=内容
 Message.sender=发送人
 Message.recipient=接受人
 Message.status=状态
@@ -69,10 +71,24 @@ Message.sentAt=发送时间
 
 Notification=通知
 Notification.subject=主题
-Notification.content=内容
+Notification.contents=内容
 Notification.recipient=接受人
 Notification.importance=重要程度
 Notification.sentAt=发送时间
 
 Todo=待办
-Todo.content=内容
+Todo.contents=内容
+
+PasswordConfig=密码配置
+PasswordConfig.minlen=密码的最小长度
+PasswordConfig.maxlen=密码的最大长度
+PasswordConfig.mindays=密码可更改的最小天数
+PasswordConfig.maxdays=密码保持有效的最大天数
+PasswordConfig.warnage=用户密码到期前，提前收到警告信息的天数
+PasswordConfig.idledays=密码停滞的天数
+PasswordConfig.dcredit=密码中最少含有多少个数字
+PasswordConfig.lcredit=密码中最少含有多少个小写字母
+PasswordConfig.ucredit=密码中最少含有多少个大写字母
+PasswordConfig.ocredit=密码中最少含有多少个其他字母
+PasswordConfig.minclass=密码中最少含有几类字符
+PasswordConfig.usercheck=是否检查密码中含有用户名

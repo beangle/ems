@@ -29,15 +29,15 @@ object DefaultMapping extends MappingModule {
     bind[Doc]
 
     bind[News] declare { e =>
-      e.content is lob
+      e.contents is lob
     }
 
     bind[Notice].declare { e =>
-      e.content is lob
+      e.contents is lob
     }
 
     bind[SensitiveWord].declare { e =>
-      e.content is length(30)
+      e.contents is length(30)
     }
   }
 }
