@@ -23,7 +23,7 @@
     <bundle.namespace>org.ems</bundle.namespace>
     <beangle.commons.version>5.1.17</beangle.commons.version>
     <beangle.cdi.version>0.2.2</beangle.cdi.version>
-    <beangle.data.version>5.3.9-SNAPSHOT</beangle.data.version>
+    <beangle.data.version>5.3.9</beangle.data.version>
     <beangle.webmvc.version>0.3.43</beangle.webmvc.version>
     <beangle.webui.version>0.3.43</beangle.webui.version>
     <beangle.template.version>0.0.27</beangle.template.version>
@@ -31,7 +31,7 @@
     <beangle.cache.version>0.0.19</beangle.cache.version>
     <beangle.serializer.version>0.0.14</beangle.serializer.version>
     <beangle.ids.version>0.2.10</beangle.ids.version>
-    <beangle.maven.version>0.3.27</beangle.maven.version>
+    <beangle.maven.version>0.3.28</beangle.maven.version>
 
     <HikariCP.version>3.4.5</HikariCP.version>
     <hibernate.version>5.4.17.Final</hibernate.version>

@@ -5,7 +5,6 @@
   [@b.textfield name="profile.name" required="true" label="common.name" value="${profile.name!}" maxlength="50" style="width:250px"/]
   [@b.textfield name="profile.base" required="true" label="路径" value="${profile.base!}" maxlength="50"  comment="路径唯一"/]
   [@b.radios label="按照sha命名" name="profile.namedBySha"  items="1:是,0:否" value= profile.namedBySha /]
-  [@b.radios label="目录公开查看" name="profile.publicList" value=profile.publicList  items="1:是,0:否"/]
   [@b.radios label="文件公开下载" name="profile.publicDownload" value=profile.publicDownload  items="1:是,0:否"/]
   [@b.select2 label="可写应用" name1st="alternativeApp.id" name2nd="app.id"
        items1st=alternativeApps items2nd= profileApps

@@ -67,7 +67,7 @@ class DocAction extends ActionSupport with ServletSupport {
   @mapping("{id}")
   def info(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
-    EmsApp.getBlobRepository(true).path(doc.path) match {
+    EmsApp.getBlobRepository(true).path(doc.filePath) match {
       case Some(p) => response.sendRedirect(p)
       case None => response.setStatus(404)
     }

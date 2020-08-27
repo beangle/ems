@@ -67,7 +67,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     put("notices", notices)
     put("docs", docs)
     put("user", me)
-    put("webappBase", Ems.webapp)
+    put("webappBase", Ems.portal)
     forward()
   }
 
