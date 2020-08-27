@@ -23,5 +23,5 @@ import org.beangle.ems.core.config.model.Domain
 
 class SensitiveWord extends IntId {
   var domain: Domain = _
-  var content: String = _
+  var contents: String = _
 }

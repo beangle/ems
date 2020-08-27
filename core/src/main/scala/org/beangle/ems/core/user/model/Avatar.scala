@@ -31,7 +31,7 @@ class Avatar extends StringId with Updated {
 
   var user: User = _
 
-  var path:String = _
+  var filePath:String = _
 
   var fileName: String = _
 

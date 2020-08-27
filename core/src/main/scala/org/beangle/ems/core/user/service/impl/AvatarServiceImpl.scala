@@ -41,15 +41,15 @@ class AvatarServiceImpl extends AvatarService {
       avatar.id = Digests.md5Hex(user.code)
     } else {
       avatar = avatars.head
-      if(null!=avatar.path) {
-        repo.remove(avatar.path)
+      if(null!=avatar.filePath) {
+        repo.remove(avatar.filePath)
       }
     }
     val meta = repo.upload(s"/avatar/${user.beginOn.getYear}", is, filename, user.code + " " + user.name)
     user.avatarId = Some(avatar.id)
     avatar.fileName = meta.name
     avatar.updatedAt = meta.updatedAt
-    avatar.path = meta.path
+    avatar.filePath = meta.filePath
     entityDao.saveOrUpdate(avatar, user)
   }
 }

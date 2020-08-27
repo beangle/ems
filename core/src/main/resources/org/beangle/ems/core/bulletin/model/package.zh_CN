@@ -1,23 +1,25 @@
 Attachment=附件
-Attachment.size=大小
-Attachment.content=内容
+Attachment.fileSize=大小
+Attachment.contents=内容
 Attachment.fileName=文件名
 
 Doc=文档
 Doc.name=名称
-Doc.path=路径
+Doc.filePath=路径
+Doc.fileSize=大小
 Doc.uploadBy=上传人
 Doc.archived=是否归档
+Doc.userCategories=适用用户类别
 
 News=新闻
 News.title=标题
 News.url=链接地址
-News.content=内容
+News.contents=内容
 News.publishedOn=发布日期
 News.archived=是否归档
 
 Notice=公告
-Notice.content=内容
+Notice.contents=内容
 Notice.title=标题
 Notice.publishedAt=发布日期
 Notice.createdAt=创建时间
@@ -28,3 +30,7 @@ Notice.sticky=是否置顶
 Notice.archived=是否归档
 Notice.popup=是否弹窗
 Notice.docs=公告附件
+Notice.userCategories=适用用户类别
+
+SensitiveWord=敏感词汇
+SensitiveWord.contents=敏感词汇列表

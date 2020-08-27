@@ -36,15 +36,15 @@ class DocServiceImpl extends DocService {
     val meta = repo.upload(s"/doc/${doc.updatedAt.atZone(ZoneId.systemDefault()).getYear}", is, filename, user.code + " " + user.name)
     doc.name = meta.name
     doc.updatedAt = meta.updatedAt
-    doc.path = meta.path
-    doc.size=meta.size
+    doc.filePath = meta.filePath
+    doc.fileSize=meta.fileSize
     entityDao.saveOrUpdate(doc)
     doc
   }
 
   def remove(doc:Doc):Unit={
     val repo = EmsApp.getBlobRepository(true)
-    repo.remove(doc.path)
+    repo.remove(doc.filePath)
     entityDao.remove(doc)
   }
 }

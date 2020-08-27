@@ -47,6 +47,7 @@ object DefaultMapping extends MappingModule {
     bind[FuncResource].declare { e =>
       e.name is(notnull, length(200))
       e.app & e.scope are notnull
+      e.scope is column("scope_")
       e.title is(notnull, length(200))
       e.remark & e.actions are length(200)
     }
@@ -54,6 +55,7 @@ object DefaultMapping extends MappingModule {
     bind[DataResource].declare { e =>
       e.name & e.typeName are length(200)
       e.title is length(200)
+      e.scope is column("scope_")
       e.remark & e.actions are length(200)
     }
 

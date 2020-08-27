@@ -45,7 +45,7 @@ class IndexAction(ds: DataSource) extends ActionSupport {
       categories.put(category.id, category)
     }
 
-    sql = "select id,principal,description,ip,agent,os,login_at,last_access_at,category_id from session.session_infoes s"
+    sql = "select id,principal,description,ip,agent,os,login_at,last_access_at,category_id from ssn.session_infoes s"
     sql += " where s.domain_id=" + domainService.getDomain.id
     sql += (" order by " + get(Order.OrderStr, "login_at desc"))
     val limit = QueryHelper.pageLimit
@@ -71,7 +71,7 @@ class IndexAction(ds: DataSource) extends ActionSupport {
       }
       info
     }
-    val total = jdbcExecutor.queryForInt("select count(*) from session.session_infoes where domain_id=" + domainService.getDomain.id)
+    val total = jdbcExecutor.queryForInt("select count(*) from ssn.session_infoes where domain_id=" + domainService.getDomain.id)
     val page = new SinglePage[SessionInfo](limit.pageIndex, limit.pageSize, total.getOrElse(0), datas)
     put("sessionInfoes", page)
     forward()

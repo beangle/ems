@@ -34,6 +34,12 @@ Db.databaseName=数据库名
 Db.driver=驱动
 Db.serverName=服务器地址
 Db.url=Java数据库连接字符串
+Db.properties=数据源属性
 
 Domain=业务系统
 Domain.title=标题
+Domain.hostname=主机域名
+
+AppGroup=应用分组
+AppGroup.indexno=顺序号
+AppGroup.title=标题

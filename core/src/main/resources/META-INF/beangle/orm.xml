@@ -11,7 +11,7 @@
     <profile package = "org.beangle.ems.core.config" pluralize="true" schema="cfg"/>
     <profile package = "org.beangle.ems.core.security" pluralize="true" schema="se"/>
     <profile package = "org.beangle.ems.core.user" pluralize="true" schema="usr"/>
-    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="session"/>
-    <profile package = "org.beangle.ems.core.blob" pluralize="true" schema="blob"/>
+    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="ssn"/>
+    <profile package = "org.beangle.ems.core.blob" pluralize="true" schema="blb"/>
   </naming>
 </orm>

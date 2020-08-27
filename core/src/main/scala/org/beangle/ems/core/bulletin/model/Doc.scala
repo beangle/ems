@@ -34,9 +34,9 @@ class Doc extends LongId with Updated {
 
   var name: String = _
 
-  var size: Int = _
+  var fileSize: Int = _
 
-  var path: String = _
+  var filePath: String = _
 
   var userCategories: mutable.Set[UserCategory] = Collections.newSet
 

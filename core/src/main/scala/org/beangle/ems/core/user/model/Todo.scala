@@ -28,7 +28,7 @@ class Todo extends LongId with Updated {
 
   var domain: Domain = _
 
-  var content: String = _
+  var contents: String = _
 
   var isDone: Boolean = _
 }

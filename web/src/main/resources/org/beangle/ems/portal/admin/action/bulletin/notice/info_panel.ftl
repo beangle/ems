@@ -6,7 +6,7 @@
         <span class="mailbox-read-time pull-right">${notice.createdAt?string('yyyy-MM-dd')}</span></h5>
     </div>
     <div class="mailbox-read-message">
-      ${notice.content}
+      ${notice.contents}
     </div>
     [#if notice.docs?size>0]
     <div class="mailbox-read-message">
