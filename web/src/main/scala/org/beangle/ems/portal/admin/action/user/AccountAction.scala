@@ -47,8 +47,6 @@ class AccountAction extends RestfulAction[Account] {
 
   var domainService: DomainService = _
 
-  var passwordConfigService: PasswordConfigService = _
-
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
   }
@@ -266,9 +264,6 @@ class AccountAction extends RestfulAction[Account] {
     if (account.persisted) {
       if (Strings.isNotBlank(password)) {
         credentialStore.updatePassword(user.code, password)
-      }else{
-        account.passwdInactiveOn=account.passwdExpiredOn.plusDays(passwordConfigService.get().idledays)
-        entityDao.saveOrUpdate(account)
       }
     } else {
       if (null != password) {

@@ -20,18 +20,25 @@ package org.beangle.ems.core.user.service.impl
 
 import java.time.{Instant, LocalDate, ZoneId}
 
+import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.{Account, RoleMember, User, UserProfile}
+import org.beangle.ems.core.user.model.{Account, PasswordConfig, RoleMember, User, UserProfile}
 import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
+import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile}
 
-class AccountServiceImpl extends AccountService {
+class AccountServiceImpl extends AccountService with Initializing {
 
   var entityDao: EntityDao = _
   var domainService: DomainService = _
   var userService: UserService = _
   var passwordConfigService: PasswordConfigService = _
+
+  private var config: PasswordConfig = _
+
+  override def init(): Unit = {
+    config = passwordConfigService.get()
+  }
 
   def get(code: String): Option[Account] = {
     val query = OqlBuilder.from(classOf[Account], "acc")
@@ -46,7 +53,7 @@ class AccountServiceImpl extends AccountService {
     builder.where("c.user.code=:code", code)
     builder.where("c.user.org=:org", domainService.getOrg)
     builder.where("c.domain=:domain", domainService.getDomain)
-    builder.where("c.passwdInactiveOn>=:now", LocalDate.now)
+    builder.where("c.passwdExpiredOn >= :now", LocalDate.now.minusDays(config.idledays))
     builder.select("c.password")
     entityDao.search(builder).headOption
   }
@@ -59,7 +66,7 @@ class AccountServiceImpl extends AccountService {
         val account = new DefaultAccount(user.code, user.name)
         account.accountExpired = acc.accountExpired
         account.accountLocked = acc.locked
-        account.credentialExpired = acc.passwdInactive
+        account.credentialExpired = acc.passwdInactive(config.idledays)
         account.disabled = !acc.enabled
         account.categoryId = user.category.id
 
@@ -101,7 +108,7 @@ class AccountServiceImpl extends AccountService {
   }
 
   override def getPasswordAge(code: String): Option[CredentialAge] = {
-    get(code) map { c => CredentialAge(c.updatedAt, c.passwdExpiredOn, c.passwdInactiveOn) }
+    get(code) map { c => CredentialAge(c.updatedAt, c.passwdExpiredOn, c.passwdExpiredOn.plusDays(config.idledays)) }
   }
 
   override def updatePassword(code: String, rawPassword: String): Unit = {
@@ -123,7 +130,6 @@ class AccountServiceImpl extends AccountService {
       acc.updatedAt = Instant.now
       val maxdays = if (config.mindays > 10000) 10000 else config.maxdays
       acc.passwdExpiredOn = LocalDate.ofInstant(acc.updatedAt, ZoneId.systemDefault()).plusDays(maxdays)
-      acc.passwdInactiveOn = acc.passwdExpiredOn.plusDays(config.idledays)
       entityDao.saveOrUpdate(acc)
     }
   }
@@ -135,7 +141,6 @@ class AccountServiceImpl extends AccountService {
     acc.updatedAt = Instant.now
     val maxdays = if (config.mindays > 10000) 10000 else config.maxdays
     acc.passwdExpiredOn = LocalDate.ofInstant(acc.updatedAt, ZoneId.systemDefault()).plusDays(maxdays)
-    acc.passwdInactiveOn = acc.passwdExpiredOn.plusDays(config.idledays)
     entityDao.saveOrUpdate(acc)
   }
 }
