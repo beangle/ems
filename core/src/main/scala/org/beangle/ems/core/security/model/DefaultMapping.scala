@@ -40,15 +40,15 @@ object DefaultMapping extends MappingModule {
       e.app & e.indexno & e.name & e.title are notnull
       e.name & e.title & e.remark are length(100)
       e.indexno is length(50)
-      e.children is(depends("parent"), orderby("indexno"))
+      e.children.is(depends("parent"), orderby("indexno"))
       e.params is length(200)
     }
 
     bind[FuncResource].declare { e =>
-      e.name is(notnull, length(200))
+      e.name.is(notnull, length(200))
       e.app & e.scope are notnull
       e.scope is column("scope_")
-      e.title is(notnull, length(200))
+      e.title.is(notnull, length(200))
       e.remark & e.actions are length(200)
     }
 

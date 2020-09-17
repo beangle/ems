@@ -33,7 +33,7 @@ class GroupMember extends LongId with Updated {
   var granter: Boolean = _
   var manager: Boolean = _
 
-  def this(user: User, group: UserGroup) {
+  def this(user: User, group: UserGroup) = {
     this()
     this.user = user
     this.group = group

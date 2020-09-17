@@ -19,7 +19,7 @@
 package org.beangle.ems.app.web
 
 import com.google.gson.Gson
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.beangle.commons.web.util.CookieUtils
 import org.beangle.security.authc.Profile
 import org.beangle.webmvc.api.context.Params

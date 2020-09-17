@@ -49,7 +49,7 @@ class FuncPermission extends LongId with Permission with TemporalAt with Remark 
   var actions: Option[String] = None
   var restrictions: Option[String] = None
 
-  def this(role: Role, resource: FuncResource) {
+  def this(role: Role, resource: FuncResource) = {
     this();
     this.role = role
     this.resource = resource

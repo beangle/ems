@@ -59,7 +59,7 @@ class AccountServiceImpl extends AccountService {
         val account = new DefaultAccount(user.code, user.name)
         account.accountExpired = acc.accountExpired
         account.accountLocked = acc.locked
-        account.credentialExpired = acc.passwdExpired
+        account.credentialExpired = acc.passwdInactive
         account.disabled = !acc.enabled
         account.categoryId = user.category.id
 

@@ -20,7 +20,7 @@ package org.beangle.ems.portal.admin.action.user
 
 import java.io._
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.apache.commons.compress.archivers.zip.ZipFile
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.io.IOs

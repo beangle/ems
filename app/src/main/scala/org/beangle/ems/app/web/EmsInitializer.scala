@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.app.web
 
-import javax.servlet.ServletContext
+import jakarta.servlet.ServletContext
 import org.beangle.commons.web.init.Initializer
 import org.beangle.ems.app.Ems
 

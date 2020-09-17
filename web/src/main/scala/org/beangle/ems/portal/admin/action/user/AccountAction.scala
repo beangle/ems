@@ -31,7 +31,7 @@ import org.beangle.webmvc.entity.action.RestfulAction
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model._
-import org.beangle.ems.core.user.service.{AccountService, UserService}
+import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
 
 /**
  * 用户管理响应处理类
@@ -46,6 +46,8 @@ class AccountAction extends RestfulAction[Account] {
   var credentialStore: DBCredentialStore = _
 
   var domainService: DomainService = _
+
+  var passwordConfigService: PasswordConfigService = _
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
@@ -264,6 +266,9 @@ class AccountAction extends RestfulAction[Account] {
     if (account.persisted) {
       if (Strings.isNotBlank(password)) {
         credentialStore.updatePassword(user.code, password)
+      }else{
+        account.passwdInactiveOn=account.passwdExpiredOn.plusDays(passwordConfigService.get().idledays)
+        entityDao.saveOrUpdate(account)
       }
     } else {
       if (null != password) {

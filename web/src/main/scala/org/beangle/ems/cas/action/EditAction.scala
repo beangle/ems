@@ -51,7 +51,7 @@ class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegi
       val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
       if (users.size == 1) {
         val user = users.head
-        credentialStore.updatePassword(user.code, DefaultPasswordEncoder.generate(p, null, "sha"))
+        credentialStore.updatePassword(Securities.user, DefaultPasswordEncoder.generate(p, null, "sha"))
       }
     }
     get("service") match {

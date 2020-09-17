@@ -71,7 +71,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[UserCategory].declare { e =>
-      e.code is(length(30), unique)
+      e.code.is(length(30), unique)
       e.name is length(100)
       index("idx_user_category", true, e.org, e.name)
     }

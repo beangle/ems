@@ -50,16 +50,16 @@ object DaoModule extends BindModule {
       .property("properties", ref("HibernateConfig.default"))
       .property("configLocations", "classpath*:META-INF/hibernate.cfg.xml")
       .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
-      .primary
+      .primary()
 
-    bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary
+    bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary()
 
     bind("TransactionProxy.template", classOf[TransactionProxyFactoryBean]).setAbstract().property(
       "transactionAttributes",
       props("save*=PROPAGATION_REQUIRED", "update*=PROPAGATION_REQUIRED", "delete*=PROPAGATION_REQUIRED",
         "batch*=PROPAGATION_REQUIRED", "execute*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED",
         "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED",
-        "*=PROPAGATION_REQUIRED,readOnly")).primary
+        "*=PROPAGATION_REQUIRED,readOnly")).primary()
 
     bind("EntityDao.hibernate", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")

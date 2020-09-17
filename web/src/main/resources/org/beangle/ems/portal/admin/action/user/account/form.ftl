@@ -16,7 +16,8 @@
         [@b.radios name="account.locked" value=account.locked items="1:锁定,0:解锁"/]
         [@b.password label="account.password" name="password" value="" maxlength="20" showStrength="true"/]
         [@b.startend label="有效期" name="account.beginOn,account.endOn" required="true,false" start=account.beginOn end=account.endOn format="date"/]
-        [@b.date name="account.passwdExpiredOn" value=account.passwdExpiredOn format="date"/]
+        [@b.date name="account.passwdExpiredOn" value=account.passwdExpiredOn format="date"  required="true" comment="过期后，仍可登录，但需要及时更新密码。"/]
+        [@b.field label="密码失效"]截至到${(account.passwdInactiveOn?string('yyyy-MM-dd'))!}，次日失效。失效后不能登录，需要管理员再次更新激活。[/@]
         [@b.textarea cols="50" rows="1" name="user.remark" label="备注" value=user.remark! maxlength="50"/]
         [@b.formfoot]
           <input type="hidden" name="user.id" value="${user.id}" />

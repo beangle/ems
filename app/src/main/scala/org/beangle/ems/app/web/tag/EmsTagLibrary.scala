@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.app.web.tag
 
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.beangle.webmvc.view.tag.AbstractTagLibrary
 
 class EmsTagLibrary extends AbstractTagLibrary {
