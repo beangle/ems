@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.1.7-SNAPSHOT</version>
+    <version>4.1.7</version>
   </parent>
   <artifactId>beangle-ems-portal_2.13</artifactId>
   <packaging>war</packaging>
@@ -42,8 +42,8 @@
       <artifactId>beangle-commons-text_2.13</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.beangle.webui</groupId>

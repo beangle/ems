@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.portal.user.action
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems

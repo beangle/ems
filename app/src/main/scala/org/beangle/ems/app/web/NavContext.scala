@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.app.web
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.web.url.UrlBuilder

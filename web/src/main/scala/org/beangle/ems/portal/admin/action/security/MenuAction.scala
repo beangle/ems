@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.portal.admin.action.security
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals

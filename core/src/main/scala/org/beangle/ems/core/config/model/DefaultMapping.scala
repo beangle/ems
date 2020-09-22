@@ -28,7 +28,7 @@ object DefaultMapping extends MappingModule {
     defaultCache("ems.security", "read-write")
 
     bind[Org].declare { e =>
-      e.code is(length(50), unique)
+      e.code.is(length(50), unique)
       e.name & e.shortName are length(100)
       e.wwwUrl & e.logoUrl are length(200)
     }
@@ -64,7 +64,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Db].declare { e =>
-      e.name is(length(100), unique)
+      e.name.is(length(100), unique)
       e.driver is length(100)
       e.databaseName & e.serverName is length(100)
       e.url is length(200)
@@ -73,8 +73,8 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Domain].declare { e =>
-      e.name is(length(100), unique)
-      e.hostname is(length(100), unique)
+      e.name.is(length(100), unique)
+      e.hostname.is(length(100), unique)
       e.title is length(200)
       index("idx_domain", true, e.org, e.hostname)
     }
