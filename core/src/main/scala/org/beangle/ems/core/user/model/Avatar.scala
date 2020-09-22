@@ -35,7 +35,7 @@ class Avatar extends StringId with Updated {
 
   var fileName: String = _
 
-  def this(user: User) {
+  def this(user: User) = {
     this()
     this.user = user
   }

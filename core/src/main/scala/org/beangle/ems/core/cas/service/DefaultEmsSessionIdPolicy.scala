@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.core.cas.service
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import org.beangle.ems.app.Ems
 import org.beangle.ids.cas.id.impl.DefaultIdGenerator
 import org.beangle.security.web.session.CookieSessionIdPolicy

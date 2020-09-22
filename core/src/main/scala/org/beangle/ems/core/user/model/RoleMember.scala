@@ -33,14 +33,14 @@ class RoleMember extends LongId with Updated {
   var granter: Boolean = _
   var manager: Boolean = _
 
-  def this(user: User, role: Role) {
+  def this(user: User, role: Role) = {
     this()
     this.user = user
     this.role = role
   }
 
   import MemberShip._
-  def this(user: User, role: Role, ship: Ship) {
+  def this(user: User, role: Role, ship: Ship) = {
     this(user, role)
     ship match {
       case Member => member = true

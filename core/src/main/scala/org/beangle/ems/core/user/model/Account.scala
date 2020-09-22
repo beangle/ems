@@ -36,8 +36,6 @@ class Account extends LongId with Updated with Enabled with TemporalOn {
 
   var passwdExpiredOn: LocalDate = _
 
-  var passwdInactiveOn: LocalDate = _
-
   def accountExpired: Boolean = {
     endOn match {
       case Some(e) => LocalDate.now.isAfter(e)
@@ -49,7 +47,7 @@ class Account extends LongId with Updated with Enabled with TemporalOn {
     LocalDate.now.isAfter(passwdExpiredOn)
   }
 
-  def passwdInactive: Boolean = {
-    LocalDate.now.isAfter(passwdInactiveOn)
+  def passwdInactive(idleDays: Int): Boolean = {
+    LocalDate.now.isAfter(passwdExpiredOn.plusDays(idleDays))
   }
 }

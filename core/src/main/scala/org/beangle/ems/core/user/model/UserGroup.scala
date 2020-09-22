@@ -44,7 +44,7 @@ class UserGroup extends IntId with Named with Updated with Enabled with Hierarch
     if (lastPart.isEmpty) Numbers.toInt(indexno) else Numbers.toInt(lastPart)
   }
 
-  def this(id: Int, name: String) {
+  def this(id: Int, name: String) = {
     this()
     this.id = id
     this.name = name

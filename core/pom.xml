@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.1.6</version>
+    <version>4.1.7</version>
   </parent>
   <artifactId>beangle-ems-core_2.13</artifactId>
   <packaging>jar</packaging>
@@ -51,7 +51,7 @@
       <version>${beangle.ids.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>javax.servlet</groupId>
+          <groupId>jakarta.servlet</groupId>
           <artifactId>servlet-api</artifactId>
         </exclusion>
       </exclusions>
@@ -65,8 +65,8 @@
       <artifactId>beangle-cache-api_2.13</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
   </dependencies>
 

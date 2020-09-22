@@ -18,6 +18,7 @@
  */
 package org.beangle.ems.app
 
+import org.beangle.security.codec.DefaultPasswordEncoder
 import org.junit.runner.RunWith
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec

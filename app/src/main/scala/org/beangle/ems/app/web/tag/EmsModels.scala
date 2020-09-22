@@ -18,7 +18,7 @@
  */
 package org.beangle.ems.app.web.tag
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import org.beangle.webmvc.view.tag.{AbstractModels, ComponentContext}
 import org.beangle.ems.app.Ems
 

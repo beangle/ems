@@ -20,7 +20,7 @@ package org.beangle.ems.portal.admin.action.bulletin
 
 import java.time.{Instant, LocalDate}
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.security.Securities
 import org.beangle.webmvc.api.annotation.ignore

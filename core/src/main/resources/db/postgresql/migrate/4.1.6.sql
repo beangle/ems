@@ -29,6 +29,8 @@ alter table usr.role_members rename column manager to is_manager;
 alter table usr.todoes rename column content to contents;
 
 alter table usr.user_profiles_properties rename column value to value_;
+alter table cfg.dbs_properties rename COLUMN value TO value_;
+alter table usr.users_properties rename COLUMN value TO value_;
 
 comment on table blb.blob_metas is '文件信息';
 comment on table blb.profiles is '文件配置';

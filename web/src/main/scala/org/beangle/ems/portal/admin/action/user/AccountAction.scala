@@ -31,7 +31,7 @@ import org.beangle.webmvc.entity.action.RestfulAction
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model._
-import org.beangle.ems.core.user.service.{AccountService, UserService}
+import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
 
 /**
  * 用户管理响应处理类
