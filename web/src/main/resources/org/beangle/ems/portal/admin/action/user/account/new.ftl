@@ -5,7 +5,7 @@
 [@b.form name="userForm" action="!save" class="listform" theme="list"]
     [@b.textfield name="user.code"label="账户"  style="width:200px;" required="true" maxlength="30"/]
     [@b.textfield name="user.name" label="姓名" value="" style="width:200px;" required="true" maxlength="50" /]
-    [@b.select name="user.category.id" label="身份" items=categories /]
+    [@b.select name="user.category.id" label="身份" items=categories required="true" /]
     [@b.radios name="account.enabled"  value=account.enabled items="1:action.activate,0:action.freeze"/]
     [@b.radios name="account.locked" value=account.locked items="1:锁定,0:解锁"/]
     [@b.password label="account.password" name="password" value="" maxlength="20"  required="true" showStrength="true"/]
