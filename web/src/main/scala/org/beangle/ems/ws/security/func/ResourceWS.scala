@@ -35,7 +35,11 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[
 
   @response
   def index(@param("app") appName: String): Seq[Any] = {
-    val app = appService.getApp(appName).head
+    val appResult = appService.getApp(appName)
+    if(appResult.isEmpty){
+      return List.empty
+    }
+    val app = appResult.head
     val query = OqlBuilder.from(classOf[FuncResource], "fr")
       .where("fr.app=:app", app)
 

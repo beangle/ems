@@ -58,7 +58,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
     query.where("uc.id=:categoryId", category.toInt)
     query.where(":now between notice.beginOn and notice.endOn", LocalDate.now)
     query.where("notice.status=:status", NoticeStatus.Passed)
-    query.orderBy("notice.sticky desc,notice.publishAt desc")
+    query.orderBy("notice.sticky desc,notice.publishedAt desc")
     for (pi <- getInt("pageIndex"); ps <- getInt("pageSize")) {
       query.limit(pi, ps)
     }
