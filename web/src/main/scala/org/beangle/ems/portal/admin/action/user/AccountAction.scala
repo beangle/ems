@@ -62,8 +62,8 @@ class AccountAction extends RestfulAction[Account] {
     val params = new collection.mutable.ListBuffer[Object]
     val roleName = get("roleName", "")
     if (Strings.isNotEmpty(roleName)) {
-      sb.append("exists(from user.members m where ")
-      sb.append("m.role.name like :roleName and m.domain=:domain ")
+      sb.append("exists(from account.user.roles m where ")
+      sb.append("m.role.name like :roleName and m.role.domain=:domain ")
       params += ("%" + roleName + "%")
       params += domain
       sb.append(')')

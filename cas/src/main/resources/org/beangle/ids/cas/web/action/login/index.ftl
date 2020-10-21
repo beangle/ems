@@ -31,9 +31,17 @@
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
      [#if Parameters['keyboard']??]<input type="hidden" name="keyboard" value="${Parameters['keyboard']?html}">[/#if]
         <table class="logintable">
-            <tr style="height:30px">
+            <tr [#if !setting.remoteLogoutUrl??] style="height:30px;"[/#if]>
                 <td colspan="2" style="text-align:center;color:red;">${error!}</td>
             </tr>
+            [#if setting.remoteLogoutUrl??]
+            <tr>
+              <td colspan="2" >
+                  <input type="radio" name="loginType" value="local" checked="checked" id="local_login"><label for="local_login">本地登录</label>
+                  <input type="radio" name="loginType"  onchange="remoteLogin(this,this.form)" value="remote" id="remote_login"><label for="remote_login">统一身份认证</label>
+              </td>
+            </tr>
+            [/#if]
             <tr>
                 <td><label for="username">用户名:&nbsp;</label></td>
                 <td>
@@ -117,6 +125,16 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
 
     function change_captcha(){
        document.getElementById('captcha_image').src="${b.url("!captcha")}?t="+(new Date()).getTime();
+    }
+    function remoteLogin(elem,form){
+      if(elem.checked){
+        var input = document.createElement('input');
+        input.setAttribute("name","remote");
+        input.setAttribute("value","1");
+        input.setAttribute("type","hidden");
+        form.appendChild(input);
+        form.submit();
+      }
     }
 </script>
 </body>

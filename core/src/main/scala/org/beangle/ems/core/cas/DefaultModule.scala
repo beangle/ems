@@ -79,7 +79,9 @@ class DefaultModule extends BindModule with PropertySource {
       .property("clients", List("http://localhost", Ems.base) ++ clients)
 
     remoteCasServer foreach { casServer =>
-      setting.property("remoteLogoutUrl", new CasConfig(casServer).logoutUrl)
+      val remoteCasServer = new CasConfig(casServer)
+      setting.property("remoteLoginUrl", remoteCasServer.loginUrl)
+      setting.property("remoteLogoutUrl", remoteCasServer.logoutUrl)
     }
   }
 
