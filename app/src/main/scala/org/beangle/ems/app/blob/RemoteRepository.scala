@@ -32,9 +32,10 @@ import org.beangle.commons.conversion.Converter
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.Strings.isEmpty
+import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.http.{HttpMethods, Https}
 
-class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository {
+class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
 
   private var formater = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
   require(!dir.endsWith("/"))
@@ -116,15 +117,28 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     ds.flush()
     ds.close()
     os.close() //don't forget to close the OutputStream
-    if (conn.getResponseCode != 200) {
-      println(IOs.readString(conn.getInputStream))
-      throw new Exception("Upload Failed,Response code is " + conn.getResponseCode)
-    } else {
-      val response = IOs.readString(conn.getInputStream)
-      import com.google.gson.GsonBuilder
-      val gson = new GsonBuilder().registerTypeAdapter(classOf[Instant], new InstantAdapter).create
-      gson.fromJson(response, classOf[BlobMeta])
+    try {
+      if (conn.getResponseCode == 200) {
+        val response = IOs.readString(conn.getInputStream)
+        import com.google.gson.GsonBuilder
+        val gson = new GsonBuilder().registerTypeAdapter(classOf[Instant], new InstantAdapter).create
+        gson.fromJson(response, classOf[BlobMeta])
+      } else {
+        val e = new RuntimeException("Upload Failed,Response code is " + conn.getResponseCode)
+        logger.error(IOs.readString(conn.getInputStream), e)
+        throw e
+      }
+    } catch {
+      case e: Throwable =>
+        logger.warn("Upload failure:url:" + url.toString + " fileName:" + fileName + " params:" + params + " basicAuth:" + basicAuth.orNull)
+        throw e
     }
+  }
+
+  @throws[RuntimeException]
+  private def logError(str: String, e: Throwable): Unit = {
+    logger.error(str, e)
+    throw e
   }
 
   import com.google.gson.JsonElement

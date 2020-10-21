@@ -15,6 +15,7 @@
     <url path="/" suffix="" style="seo" />
     <interceptors>
       <interceptor name="web.Interceptor.security" />
+      <interceptor name="web.Interceptor.hibernate" />
     </interceptors>
   </profile>
 </mvc>

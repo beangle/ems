@@ -7,7 +7,7 @@
     <div class="mailbox-read-info">
       <h3>${notice.title}</h3>
       <h5>发自: ${notice.operator.name}(${notice.operator.code})
-        <span class="mailbox-read-time pull-right">${notice.publishedAt?string('yyyy-MM-dd')}</span></h5>
+        <span class="mailbox-read-time pull-right">${(notice.publishedAt?string('yyyy-MM-dd'))!"尚未发布"}</span></h5>
     </div>
     <div class="mailbox-read-message">
       ${notice.contents}

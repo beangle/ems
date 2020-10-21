@@ -119,13 +119,15 @@
               <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
               <p>
                 ${nav.principal.description} - (${nav.principal.name})[#if nav.username != nav.principal.name] 模拟${nav.username}[/#if]
-                <small>[#if nav.principal.remoteToken??]本地登录[#else]统一身份平台登录[/#if]</small>
+                <small>[#if nav.principal.remoteToken??]统一身份平台登录[#else]本地登录[/#if]</small>
               </p>
             </li>
             <li class="user-footer">
+              [#if !nav.principal.remoteToken??]
               <div class="float-sm-left">
                 <a href="/cas/edit" class="btn btn-default btn-flat"><i class="nav-icon far fa-user"></i>修改密码</a>
               </div>
+              [/#if]
               <div class="float-sm-right">
                 <a href="${b.url('!logout')}" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
