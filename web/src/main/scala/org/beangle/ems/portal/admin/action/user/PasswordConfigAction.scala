@@ -18,18 +18,24 @@
  */
 package org.beangle.ems.portal.admin.action.user
 
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.user.model.PasswordConfig
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.beangle.ems.core.user.model.PasswordConfig
 
 class PasswordConfigAction extends RestfulAction[PasswordConfig] {
 
+  var domainService: DomainService = _
+
   override def index(): View = {
-    put("passwordConfigs", entityDao.search(getQueryBuilder))
+    val builder = getQueryBuilder
+    builder.where("passwordConfig.domain=:domain", domainService.getDomain)
+    put("passwordConfigs", entityDao.search(builder))
     forward()
   }
 
   override protected def saveAndRedirect(entity: PasswordConfig): View = {
+    entity.domain = domainService.getDomain
     saveOrUpdate(entity)
     redirect("index", "info.save.success")
   }
