@@ -18,25 +18,38 @@
  */
 package org.beangle.ems.core.user.service.impl
 
-import java.util.Date
-
-import org.beangle.data.dao.{ EntityDao, OqlBuilder }
-import org.beangle.ems.core.user.model.{ Role, User }
-import org.beangle.ems.core.user.service.RoleService
-import org.beangle.data.model.util.Hierarchicals
 import java.time.ZonedDateTime
+
+import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.data.model.util.Hierarchicals
+import org.beangle.ems.app.EmsApp
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.user.model.{MemberShip, Role, RoleMember, Root, User}
+import org.beangle.ems.core.user.service.RoleService
+import org.beangle.security.Securities
 
 class RoleServiceImpl extends RoleService {
 
   var entityDao: EntityDao = _
+  var domainService: DomainService = _
+
   override def isManagedBy(manager: User, role: Role): Boolean = {
-    true
+    if (manager.roles.exists(rm => rm.manager && rm.role == role)) {
+      true
+    } else {
+      val rq = OqlBuilder.from(classOf[Root], "r")
+      rq.where("r.user=:user and r.app.name=:appName", manager, EmsApp.name)
+      rq.where("r.app.domain=:domain", domainService.getDomain)
+      entityDao.search(rq).nonEmpty
+    }
   }
 
   override def create(creator: User, role: Role): Unit = {
     role.creator = creator
     role.updatedAt = ZonedDateTime.now.toInstant
-    entityDao.saveOrUpdate(role)
+    val rm = new RoleMember(creator, role, MemberShip.Manager)
+    rm.granter = true
+    entityDao.saveOrUpdate(role, rm)
   }
 
   override def move(role: Role, parent: Role, indexno: Int): Unit = {
