@@ -22,8 +22,7 @@ import java.time.Instant
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
-import MemberShip.{ Granter, Manager, Member, Ship }
-
+import MemberShip._
 /**
  * @author chaostone
  */
@@ -41,7 +40,6 @@ class RoleMember extends LongId with Updated {
     this.updatedAt = Instant.now
   }
 
-  import MemberShip._
   def this(user: User, role: Role, ship: Ship) = {
     this(user, role)
     ship match {

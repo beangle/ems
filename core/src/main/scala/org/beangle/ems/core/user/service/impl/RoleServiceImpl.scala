@@ -53,6 +53,13 @@ class RoleServiceImpl extends RoleService {
   }
 
   override def move(role: Role, parent: Role, indexno: Int): Unit = {
+    role.parent foreach { p =>
+      if (null == parent || p != parent) {
+        role.parent = None
+        entityDao.saveOrUpdate(role)
+        entityDao.refresh(p)
+      }
+    }
     val nodes =
       if (null != parent) {
         Hierarchicals.move(role, parent, indexno)

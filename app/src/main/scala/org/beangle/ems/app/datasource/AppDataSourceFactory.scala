@@ -44,6 +44,6 @@ class AppDataSourceFactory extends DataSourceFactory {
   }
 
   private def getDatasourceUrl(resourceKey: String): String = {
-    Ems.api + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".json?secret=" + EmsApp.secret
+    Ems.api + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
   }
 }
