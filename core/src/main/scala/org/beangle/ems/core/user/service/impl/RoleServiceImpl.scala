@@ -26,7 +26,6 @@ import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{MemberShip, Role, RoleMember, Root, User}
 import org.beangle.ems.core.user.service.RoleService
-import org.beangle.security.Securities
 
 class RoleServiceImpl extends RoleService {
 

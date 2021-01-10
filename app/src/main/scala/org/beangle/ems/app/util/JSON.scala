@@ -20,75 +20,46 @@ package org.beangle.ems.app.util
 
 import java.{util => ju}
 
-import javax.script.ScriptEngineManager
-import org.beangle.commons.collection.Properties
-import org.beangle.commons.lang.Strings
+import com.google.gson.Gson
 
+import scala.collection.mutable
 import scala.jdk.javaapi.CollectionConverters.asScala
 
-//FIXME generalize it.
 object JSON {
-  def parse(string: String): Any = {
-    if (Strings.isBlank(string) || "{}".equals(string)) {
-      return Map.empty[String, Any]
-    }
-    val sem = new ScriptEngineManager
-    val engine = sem.getEngineByName("javascript")
-    engine.eval("result =" + string) match {
-      case d: String => d
-      case n: Number => n
-      case b: ju.Map[_, _] =>
-        if (isArray(string)) {
-          asScala(b.values).map { x => convert(x.asInstanceOf[Object]) }
-        } else {
-          val iter = b.entrySet().iterator()
-          val result = new Properties
-          while (iter.hasNext) {
-            val one = iter.next
-            result.put(one.getKey.toString, convert(one.getValue.asInstanceOf[Object]))
-          }
-          result.toMap
-        }
-      case l: ju.Collection[_] => asScala(l)
-    }
+  private val gson = new Gson()
+
+  def parseValue[T](json: String, clazz: Class[T]): T = {
+    gson.fromJson(json, clazz)
   }
 
-  def convert(value: Object): Object = {
+  def parseObj(json: String): collection.Map[String, Any] = {
+    val map = gson.fromJson(json, classOf[java.util.Map[_, _]])
+    convert(map).asInstanceOf[collection.Map[String, Any]]
+  }
+
+  def parseSeq(json: String): collection.Seq[Any] = {
+    val list = gson.fromJson(json, classOf[java.util.List[_]])
+    convert(list).asInstanceOf[collection.Seq[Any]]
+  }
+
+  def convert(value: Any): Any = {
     value match {
-      case d: String => d
-      case n: Number => n
       case b: ju.Map[_, _] =>
-        val iter = b.entrySet().iterator()
-        val signature = b.toString
-        if (signature.contains("Array")) {
-          val result = new collection.mutable.ArrayBuffer[Any]
-          while (iter.hasNext) {
-            val one = iter.next
-            result += convert(one.getValue.asInstanceOf[Object])
-          }
-          result
-        } else {
-          val result = new Properties
-          while (iter.hasNext) {
-            val one = iter.next
-            result.put(one.getKey.toString, convert(one.getValue.asInstanceOf[Object]))
-          }
-          result.toMap
+        val iter = b.entrySet().iterator
+        val result = new mutable.HashMap[Any, Any]
+        while (iter.hasNext) {
+          val one = iter.next
+          result.put(one.getKey, convert(one.getValue))
         }
-      case l: ju.Collection[_] => asScala(l)
-      case _ => value
+        result
+      case l: ju.Collection[_] => asScala(l).map(convert)
+      case null => null
+      case _ =>
+        if (value.getClass.isArray) {
+          value.asInstanceOf[Array[_]].map(convert).toList
+        } else {
+          value
+        }
     }
-  }
-
-  def isArray(str: String): Boolean = {
-    var i = 0
-    while (i < str.length) {
-      val c = str.charAt(i)
-      if (!Character.isWhitespace(c)) {
-        return c == '['
-      }
-      i += 1
-    }
-    false
   }
 }
