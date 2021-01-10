@@ -26,6 +26,7 @@ import org.beangle.ems.ws.config.{DatasourceWS, OrgWS}
 import org.beangle.ems.ws.oauth.TokenWS
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user._
+import org.beangle.webmvc.execution.DefaultResponseCache
 
 class DefaultModule extends BindModule {
 
@@ -44,5 +45,6 @@ class DefaultModule extends BindModule {
 
     bind(classOf[MemTokenRepository])
     bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)
+    bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(ref("cache.Caffeine"))
   }
 }
