@@ -68,6 +68,10 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     parents ++= entityDao.search(query)
     parents --= Hierarchicals.getFamily(role)
     put("parents", parents)
+
+    if (!role.persisted) {
+      role.enabled = true
+    }
     forward()
   }
 

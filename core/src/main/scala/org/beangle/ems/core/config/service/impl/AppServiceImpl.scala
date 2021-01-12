@@ -55,13 +55,13 @@ class AppServiceImpl(entityDao: EntityDao) extends AppService {
     entityDao.search(OqlBuilder.from(classOf[App], "app")
       .where("app.appType.name=:typ and app.enabled=true", AppType.Webapp)
       .where("app.domain=:domain", domainService.getDomain)
-      .orderBy("app.indexno"))
+      .orderBy("app.group.indexno,app.indexno"))
   }
 
   override def getApps: Seq[App] = {
     entityDao.search(OqlBuilder.from(classOf[App], "app")
       .where("app.enabled=true")
       .where("app.domain=:domain", domainService.getDomain)
-      .orderBy("app.indexno"))
+      .orderBy("app.group.indexno,app.indexno"))
   }
 }

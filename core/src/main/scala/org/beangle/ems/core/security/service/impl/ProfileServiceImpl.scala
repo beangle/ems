@@ -50,7 +50,7 @@ class ProfileServiceImpl extends ProfileService {
 
     if (source.startsWith("json:")) {
       val json = source.substring(5)
-      JSON.parse(json).asInstanceOf[Seq[Any]].filter { x => Properties.get(x, keyname) }
+      JSON.parseSeq(json).filter { x => Properties.get(x, keyname) }
     } else if (source.startsWith("csv:")) {
       val csv = source.substring(4)
       val lines = Strings.split(Strings.replace(csv, "\r", ""), "\n")

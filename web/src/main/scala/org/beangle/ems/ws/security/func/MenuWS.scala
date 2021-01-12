@@ -51,14 +51,14 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     menus map (m => convert(m))
   }
 
-  @response
+  @response(true)
   @mapping("user/{user}")
   def user(@param("app") appName: String, @param("user") username: String): Any = {
-    val up = userService.get(username)
-    if (up.isEmpty) {
+    val user = userService.get(username)
+    if (user.isEmpty) {
       return "{}"
     }
-    val u = up.get
+    val u = user.get
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
     app match {

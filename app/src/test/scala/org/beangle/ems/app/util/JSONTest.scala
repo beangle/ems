@@ -19,8 +19,8 @@
 package org.beangle.ems.app.util
 
 import org.junit.runner.RunWith
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.junit.JUnitRunner
 
 /**
@@ -30,14 +30,15 @@ import org.scalatestplus.junit.JUnitRunner
 class JSONTest extends AnyFunSpec with Matchers {
   describe("JSON") {
     it("parse") {
-      val result = JSON.parse("""
+      val result = JSON.parseObj(
+        """
             {"accountLocked":false,"details":{"isRoot":false},"authorities":[1,2],"accountExpired":false,"description":"duan","principal":"abc","credentialExpired":false,"disabled":false}
             """)
-      assert(result.asInstanceOf[Map[String, _]]("authorities").isInstanceOf[collection.Seq[_]])
+      assert(result("authorities").isInstanceOf[Iterable[_]])
       val a = """[{"roles":[],"scope":"Protected","name":"/config/home","title":"首页","id":94}]"""
-      val data = JSON.parse(a)
-      assert(data.isInstanceOf[Iterable[_]])
-      assert(data.asInstanceOf[Iterable[_]].head.isInstanceOf[Map[_, _]])
+      val data = JSON.parseSeq(a)
+      assert(null != data)
+      assert(data.head.isInstanceOf[collection.Map[_, _]])
     }
   }
 }

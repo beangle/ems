@@ -18,17 +18,16 @@
  */
 package org.beangle.ems.ws.user
 
-import org.beangle.cache.CacheManager
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.lang.ClassLoaders
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.app.EmsApp
+import org.beangle.ems.core.user.model.Avatar
 import org.beangle.webmvc.api.action.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.view.{Stream, View}
-import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.user.model.Avatar
 
-class AvatarWS(entityDao: EntityDao, cacheManager: CacheManager)
+class AvatarWS(entityDao: EntityDao)
   extends ActionSupport with ServletSupport {
 
   var expireMinutes: Int = 60 * 24 * 7

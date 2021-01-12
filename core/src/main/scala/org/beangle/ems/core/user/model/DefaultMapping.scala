@@ -29,7 +29,7 @@ object DefaultMapping extends MappingModule {
 
     bind[Dimension].declare { e =>
       e.name & e.title are length(40)
-      e.source is(column("source_"), length(6000))
+      e.source.is(column("source_"), length(6000))
       e.keyName is length(20)
       e.properties is length(100)
       index("idx_dimension_name", true, e.domain, e.name)

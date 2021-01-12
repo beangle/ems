@@ -35,7 +35,7 @@ object RemoteService {
     val res = getText(url)
     if (res.status == 200) {
       val resources = Collections.newSet[String]
-      resources ++= JSON.parse(res.getText).asInstanceOf[Iterable[String]]
+      resources ++= JSON.parseSeq(res.getText).map(_.toString)
       Some(resources.toSet)
     } else {
       None
@@ -49,8 +49,9 @@ object RemoteService {
 
   protected[security] def toAuthorities(content: String): collection.Seq[Authority] = {
     val resources = Collections.newBuffer[Authority]
-    val resourceJsons = JSON.parse(content).asInstanceOf[Iterable[collection.Map[String, _]]]
-    resourceJsons.map { r =>
+    val resourceJsons = JSON.parseSeq(content)
+    resourceJsons.map { rj =>
+      val r = rj.asInstanceOf[collection.Map[String, _]]
       val roles = r.get("roles") match {
         case None => Set.empty[String]
         case Some(roleList) => roleList.asInstanceOf[Iterable[Number]].map(_.intValue.toString).toSet
@@ -72,14 +73,14 @@ object RemoteService {
     getText(Ems.api + "/platform/user/apps/" + Securities.user + ".json").getOrElse(null)
   }
 
-  def getProfiles(userCode: String,  function: String): String = {
+  def getProfiles(userCode: String, function: String): String = {
     val url = Ems.api + "/platform/user/profiles/" + userCode + ".json"
     getText(url).getOrElse(null)
   }
 
   def getOrg: Ems.Org = {
     val json = getText(Ems.api + "/platform/config/orgs.json").getOrElse(null)
-    val data = JSON.parse(json).asInstanceOf[collection.Map[String, Any]]
+    val data = JSON.parseObj(json)
     val org = new Ems.Org
     data.get("id") foreach (e => org.id = e.asInstanceOf[Number].intValue)
     data.get("code") foreach (e => org.code = e.toString)
