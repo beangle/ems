@@ -21,6 +21,7 @@ package org.beangle.ems.app.util
 import java.{util => ju}
 
 import com.google.gson.Gson
+import org.beangle.commons.lang.Strings
 
 import scala.collection.mutable
 import scala.jdk.javaapi.CollectionConverters.asScala
@@ -33,13 +34,21 @@ object JSON {
   }
 
   def parseObj(json: String): collection.Map[String, Any] = {
-    val map = gson.fromJson(json, classOf[java.util.Map[_, _]])
-    convert(map).asInstanceOf[collection.Map[String, Any]]
+    if (Strings.isEmpty(json)) {
+      Map.empty
+    } else {
+      val map = gson.fromJson(json, classOf[java.util.Map[_, _]])
+      convert(map).asInstanceOf[collection.Map[String, Any]]
+    }
   }
 
   def parseSeq(json: String): collection.Seq[Any] = {
-    val list = gson.fromJson(json, classOf[java.util.List[_]])
-    convert(list).asInstanceOf[collection.Seq[Any]]
+    if (Strings.isEmpty(json)) {
+      List.empty
+    } else {
+      val list = gson.fromJson(json, classOf[java.util.List[_]])
+      convert(list).asInstanceOf[collection.Seq[Any]]
+    }
   }
 
   def convert(value: Any): Any = {

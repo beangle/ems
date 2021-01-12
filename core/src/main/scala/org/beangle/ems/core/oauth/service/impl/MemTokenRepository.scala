@@ -18,14 +18,12 @@
  */
 package org.beangle.ems.core.oauth.service.impl
 
-import org.beangle.cache.CacheManager
+import org.beangle.cache.{Cache, CacheManager}
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.TokenRepository
 import org.beangle.ems.core.config.model.AccessToken
 
-class MemTokenRepository(val cacheManager: CacheManager) extends TokenRepository {
-
-  val tokens = cacheManager.getCache("app.token", classOf[String], classOf[AccessToken])
+class MemTokenRepository(val tokens: Cache[String, AccessToken]) extends TokenRepository {
 
   override def get(token: String): Option[AccessToken] = {
     tokens.get(token)
