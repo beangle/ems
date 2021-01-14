@@ -38,7 +38,7 @@ class ProfileWS(entityDao: EntityDao) extends ActionSupport {
 
   var domainService: DomainService = _
 
-  @response(true)
+  @response(cacheable = true)
   @mapping("{userCode}")
   def index(@param("userCode") userCode: String): Any = {
     userService.get(userCode) match {
