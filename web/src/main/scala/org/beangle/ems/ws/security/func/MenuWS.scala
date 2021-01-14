@@ -20,13 +20,13 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.EntityDao
-import org.beangle.webmvc.api.action.{ActionSupport, EntitySupport}
-import org.beangle.webmvc.api.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.webmvc.api.action.{ActionSupport, EntitySupport}
+import org.beangle.webmvc.api.annotation.{mapping, param, response}
 
 import scala.collection.mutable
 
@@ -51,7 +51,7 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     menus map (m => convert(m))
   }
 
-  @response(true)
+  @response(cacheable = true)
   @mapping("user/{user}")
   def user(@param("app") appName: String, @param("user") username: String): Any = {
     val user = userService.get(username)
