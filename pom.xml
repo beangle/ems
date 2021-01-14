@@ -23,7 +23,7 @@
     <bundle.namespace>org.ems</bundle.namespace>
     <beangle.commons.version>5.2.1</beangle.commons.version>
     <beangle.cdi.version>0.2.5</beangle.cdi.version>
-    <beangle.data.version>5.3.17</beangle.data.version>
+    <beangle.data.version>5.3.18</beangle.data.version>
     <beangle.webmvc.version>0.3.46</beangle.webmvc.version>
     <beangle.webui.version>0.3.48</beangle.webui.version>
     <beangle.template.version>0.0.29</beangle.template.version>
