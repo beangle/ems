@@ -9,7 +9,7 @@
   bar.addItem("${b.text("action.freeze")}",activateUser('false'),'action-freeze');
   bar.addItem("${b.text("action.activate")}",activateUser('true'),'action-activate');
   bar.addItem("${b.text("action.delete")}",action.remove());
-  bar.addItem("${b.text("action.export")}",action.exportData("code:账户,name:姓名,category.name:身份,beginOn:创建日期,endOn:结束日期,enabled:是否启用,locked:是否锁定","Xlsx","&fileName=用户信息"));
+  bar.addItem("${b.text("action.export")}",action.exportData("user.code:账户,user.name:姓名,user.category.name:身份,beginOn:创建日期,endOn:结束日期,enabled:是否启用,locked:是否锁定","Xlsx","&fileName=用户信息"));
  [/@]
   [@b.row]
     [@b.boxcol width="5%"/]
