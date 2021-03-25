@@ -30,6 +30,7 @@
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
      [#if Parameters['keyboard']??]<input type="hidden" name="keyboard" value="${Parameters['keyboard']?html}">[/#if]
+     [#if Parameters['local']??]<input type="hidden" name="local" value="${Parameters['local']?html}">[/#if]
         <table class="logintable">
             <tr [#if !setting.remoteLogoutUrl??] style="height:30px;"[/#if]>
                 <td colspan="2" style="text-align:center;color:red;">${error!}</td>
