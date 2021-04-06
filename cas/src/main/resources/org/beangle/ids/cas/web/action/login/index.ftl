@@ -30,11 +30,12 @@
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
      [#if Parameters['keyboard']??]<input type="hidden" name="keyboard" value="${Parameters['keyboard']?html}">[/#if]
-     [#if Parameters['local']??]<input type="hidden" name="local" value="${Parameters['local']?html}">[/#if]
         <table class="logintable">
-            <tr [#if !setting.remoteLogoutUrl??] style="height:30px;"[/#if]>
-                <td colspan="2" style="text-align:center;color:red;">${error!}</td>
+            [#if error?? && error?length>0]
+            <tr style="height:30px;">
+                <td colspan="2" style="text-align:center;color:red;">${error}</td>
             </tr>
+            [/#if]
             [#if setting.remoteLogoutUrl??]
             <tr>
               <td colspan="2" >
@@ -116,11 +117,13 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
             alert("验证码不能为空");return false;
         }
         [/#if]
+
         try{
           var encryptedData = CryptoJS.AES.encrypt(form['password_text'].value, key, {mode: CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
           form['password_text'].disabled=true;
           form['password'].value=("?"+encryptedData.ciphertext);
         }catch(e){alert(e);return false;}
+        addHidden(form,"local","1");
         return true;
     }
 
@@ -129,13 +132,16 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
     }
     function remoteLogin(elem,form){
       if(elem.checked){
-        var input = document.createElement('input');
-        input.setAttribute("name","remote");
-        input.setAttribute("value","1");
-        input.setAttribute("type","hidden");
-        form.appendChild(input);
+        addHidden(form,"remote","1");
         form.submit();
       }
+    }
+    function addHidden(form,name,value){
+      var input = document.createElement('input');
+      input.setAttribute("name",name);
+      input.setAttribute("value",value);
+      input.setAttribute("type","hidden");
+      form.appendChild(input);
     }
 </script>
 </body>
