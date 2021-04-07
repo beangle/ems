@@ -73,6 +73,7 @@ class DefaultModule extends BindModule with PropertySource {
     val setting = bind("casSetting", classOf[CasSetting])
       .property("enableCaptcha", $("login.enableCaptcha"))
       .property("forceHttps", $("login.forceHttps"))
+      .property("displayLoginSwitch", $("login.displayLoginSwitch","false"))
       .property("key", $("login.key"))
       .property("origin", $("login.origin"))
       .property("checkPasswordStrength", $("login.checkPasswordStrength"))
