@@ -36,7 +36,7 @@
                 <td colspan="2" style="text-align:center;color:red;">${error}</td>
             </tr>
             [/#if]
-            [#if setting.remoteLogoutUrl??]
+            [#if setting.remoteLogoutUrl?? && setting.displayLoginSwitch]
             <tr>
               <td colspan="2" >
                   <input type="radio" name="loginType" value="local" checked="checked" id="local_login"><label for="local_login">本地登录</label>
