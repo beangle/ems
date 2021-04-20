@@ -81,17 +81,11 @@ object DefaultMapping extends MappingModule {
 
     bind[AppType]
 
-    bind[TextTemplate].declare { e =>
-      e.contents is lob
-      index("", true, e.app, e.path)
+    bind[Template].declare { e =>
+      index("", true, e.app, e.name)
     }
 
-    bind[DocTemplate].declare { e =>
-      e.contents is lob
-      index("", true, e.app, e.path)
-    }
-
-    all.except(classOf[DocTemplate], classOf[DocTemplate]).cacheAll()
+    all.except(classOf[Template]).cacheAll()
   }
 
 }

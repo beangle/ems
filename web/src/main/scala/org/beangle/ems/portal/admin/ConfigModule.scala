@@ -19,7 +19,7 @@
 package org.beangle.ems.portal.admin
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.admin.action.config.{AppAction, AppGroupAction, CredentialAction, DbAction}
+import org.beangle.ems.portal.admin.action.config.{AppAction, AppGroupAction, CredentialAction, DbAction, TemplateAction}
 
 class ConfigModule extends BindModule {
 
@@ -27,5 +27,6 @@ class ConfigModule extends BindModule {
     bind(classOf[AppAction],classOf[AppGroupAction])
     bind(classOf[DbAction])
     bind(classOf[CredentialAction])
+    bind(classOf[TemplateAction])
   }
 }

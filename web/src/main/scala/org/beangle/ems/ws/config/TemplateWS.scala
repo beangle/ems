@@ -1,16 +1,32 @@
+/*
+ * Beangle, Agile Development Scaffold and Toolkits.
+ *
+ * Copyright © 2020, The Beangle Software.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.beangle.ems.ws.config
 
-import org.beangle.commons.activation.MediaTypes
-import org.beangle.commons.lang.Charsets
-import org.beangle.commons.lang.Strings.substringAfterLast
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.core.config.model.{DocTemplate, TextTemplate}
+import org.beangle.ems.app.EmsApp
+import org.beangle.ems.core.config.model.Template
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.{mapping, param}
-import org.beangle.webmvc.api.view.{Status, Stream, View}
-
-import java.io.ByteArrayInputStream
+import org.beangle.webmvc.api.context.ActionContext
+import org.beangle.webmvc.api.view.{Status, View}
 
 class TemplateWS extends ActionSupport {
 
@@ -20,33 +36,26 @@ class TemplateWS extends ActionSupport {
 
   @mapping(value = "{app}/{path*}")
   def index(@param("app") app: String, @param("path") path: String): View = {
+    val ext = Strings.substringAfterLast(ActionContext.current.request.getRequestURI, ".")
+    val name = "/" + path + "." + ext
     val apps = appService.getApp(app)
     if (apps.isEmpty) return Status.NotFound
     val exist = apps.head
-    val contentType = MediaTypes.get(substringAfterLast(path, "."), MediaTypes.ApplicationOctetStream).toString
 
-    val fileName = substringAfterLast(path, "/")
-    if (contentType.startsWith("text/")) {
-      val query = OqlBuilder.from(classOf[TextTemplate], "tt")
-      query.where("tt.app=:app and tt.path=:path", exist, path)
-      val templates = entityDao.search(query)
-      templates.headOption match {
-        case Some(tt) =>
-          val is = new ByteArrayInputStream(tt.contents.getBytes(Charsets.UTF_8))
-          Stream(is, contentType, fileName)
-        case None => Status.NotFound
-      }
-    } else {
-      val query = OqlBuilder.from(classOf[DocTemplate], "tt")
-      query.where("tt.app=:app and tt.path=:path", exist, path)
-      val templates = entityDao.search(query)
-      templates.headOption match {
-        case Some(tt) =>
-          val is = new ByteArrayInputStream(tt.contents)
-          Stream(is, contentType, fileName)
-        case None => Status.NotFound
-      }
+    val query = OqlBuilder.from(classOf[Template], "tt")
+    query.where("tt.app=:app and tt.name=:name", exist, name)
+    val templates = entityDao.search(query).headOption
+    val response = ActionContext.current.response
+    templates match {
+      case Some(template) =>
+        val repo = EmsApp.getBlobRepository(true)
+        repo.path(template.filePath) match {
+          case Some(p) => response.sendRedirect(p)
+          case None => response.setStatus(404)
+        }
+      case None =>
+        response.setStatus(404)
     }
-
+    null
   }
 }

@@ -16,16 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.app.web.tag
+package org.beangle.ems.core.config.model
 
-import org.beangle.webmvc.api.context.ActionContext
-import org.beangle.webmvc.view.tag.AbstractTagLibrary
+import org.beangle.commons.lang.Strings
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.{Named, Updated}
 
-class EmsTagLibrary extends AbstractTagLibrary {
+class Template extends LongId with Named with Updated {
+  var app: App = _
+  var mediaType: String = _
+  var fileSize: Int = _
+  var filePath: String = _
 
-  override def models(): AnyRef = {
-    val req = ActionContext.current.request
-    new EmsModels(buildComponentContext(req), req)
+  def path: String = {
+    Strings.substringAfterLast(name, "/")
   }
 
+  def isText: Boolean = {
+    mediaType.startsWith("text/")
+  }
 }

@@ -42,8 +42,8 @@ object EmsApp extends Logging {
   }
 
   def getBlobRepository(remote: Boolean = true): Repository = {
-    var dir = Strings.substringBeforeLast(name, "-");
-    dir = "/" + Strings.replace(dir, "-", "/");
+    var dir = Strings.substringBeforeLast(name, "-")
+    dir = "/" + Strings.replace(dir, "-", "/")
     if (remote) {
       new RemoteRepository(env.blob, dir, name,secret)
     } else {
