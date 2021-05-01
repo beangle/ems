@@ -93,7 +93,7 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
     key=CryptoJS.enc.Utf8.parse(key);
 
    [#if Parameters['keyboard']??]
-    var keyboardOption={usePreview :false,autoAccept:true,maxLength:20,display: { 'accept' : 'OK' }}
+    var keyboardOption={usePreview :false,autoAccept:true,maxLength:50,display: { 'accept' : 'OK' }}
     $('#username').keyboard(keyboardOption);
     $('#password_text').keyboard(keyboardOption);
      [#if setting.enableCaptcha]

@@ -42,8 +42,8 @@ object EmsApp extends Logging {
   }
 
   def getBlobRepository(remote: Boolean = true): Repository = {
-    var dir = Strings.substringBeforeLast(name, "-");
-    dir = "/" + Strings.replace(dir, "-", "/");
+    var dir = Strings.substringBeforeLast(name, "-")
+    dir = "/" + Strings.replace(dir, "-", "/")
     if (remote) {
       new RemoteRepository(env.blob, dir, name,secret)
     } else {
@@ -62,7 +62,7 @@ object EmsApp extends Logging {
       val res = HttpUtils.getText(tokenUrl)
       if (res.status == 200) {
         val token = JSON.parseObj(res.getText)
-        _token = Token(token("token").asInstanceOf[String], (new String2DateConverter).convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
+        _token = Token(token("token").asInstanceOf[String], String2DateConverter.convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
       } else {
         throw new RuntimeException("cannot find token")
       }

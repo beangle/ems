@@ -81,7 +81,11 @@ object DefaultMapping extends MappingModule {
 
     bind[AppType]
 
-    all.cacheAll()
+    bind[Template].declare { e =>
+      index("", true, e.app, e.name)
+    }
+
+    all.except(classOf[Template]).cacheAll()
   }
 
 }
