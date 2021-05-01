@@ -4,7 +4,8 @@
   [@b.gridbar]
    bar.addItem("${b.text("action.new")}",action.add());
    bar.addItem("${b.text("action.edit")}",action.edit());
-   bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
+   bar.addItem("${b.text("action.delete")}",action.remove());
+   bar.addItem("${b.text("action.export")}",action.exportData("app.title:应用,name:文件路径,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=模板信息"));
   [/@]
   [@b.row]
     [@b.boxcol /]

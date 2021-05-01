@@ -62,7 +62,7 @@ object EmsApp extends Logging {
       val res = HttpUtils.getText(tokenUrl)
       if (res.status == 200) {
         val token = JSON.parseObj(res.getText)
-        _token = Token(token("token").asInstanceOf[String], (new String2DateConverter).convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
+        _token = Token(token("token").asInstanceOf[String], String2DateConverter.convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
       } else {
         throw new RuntimeException("cannot find token")
       }

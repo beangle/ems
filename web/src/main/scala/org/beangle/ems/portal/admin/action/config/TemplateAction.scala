@@ -80,6 +80,14 @@ class TemplateAction extends RestfulAction[Template] {
     redirect("search", "info.save.success")
   }
 
+  override protected def removeAndRedirect(entities: Seq[Template]): View = {
+    val repo = EmsApp.getBlobRepository(true)
+    entities foreach { t =>
+      repo.remove(t.filePath)
+    }
+    super.removeAndRedirect(entities)
+  }
+
   @mapping(value = "{id}")
   override def info(id: String): View = {
     val response = ActionContext.current.response
