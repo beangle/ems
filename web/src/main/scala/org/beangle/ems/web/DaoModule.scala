@@ -66,7 +66,7 @@ object DaoModule extends BindModule {
 
     bind("web.Interceptor.hibernate", classOf[OpenSessionInViewInterceptor])
 
-    bind(classOf[DomainFactory])
+    bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
   }
 
 }

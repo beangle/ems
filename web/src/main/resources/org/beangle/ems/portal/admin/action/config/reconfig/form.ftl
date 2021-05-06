@@ -1,0 +1,13 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建/修改"]bar.addBack();[/@]
+<style>form.listform label.title{width:120px;}</style>
+[@b.form action=b.rest.save(reconfig) theme="list"   enctype="multipart/form-data"]
+  [@b.select name="reconfig.app.id" label="应用" value=reconfig.app! option="id,title" required="true" items=apps/]
+  [@b.textarea name="reconfig.contents" value=reconfig.contents! cols="80" rows="20" label="xml内容" maxlength="1000" required="true"/]
+  [@b.textarea name="reconfig.remark" value=reconfig.remark! cols="80" rows="3" label="备注" maxlength="200" required="true"/]
+  [@b.formfoot]
+   [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+  [/@]
+[/@]
+[@b.foot/]

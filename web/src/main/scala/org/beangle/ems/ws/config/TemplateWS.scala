@@ -26,7 +26,7 @@ import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.context.ActionContext
-import org.beangle.webmvc.api.view.{Status, View}
+import org.beangle.webmvc.api.view.View
 
 class TemplateWS extends ActionSupport {
 
@@ -34,28 +34,54 @@ class TemplateWS extends ActionSupport {
 
   var entityDao: EntityDao = _
 
-  @mapping(value = "{app}/{path*}")
-  def index(@param("app") app: String, @param("path") path: String): View = {
-    val ext = Strings.substringAfterLast(ActionContext.current.request.getRequestURI, ".")
-    val name = "/" + path + "." + ext
-    val apps = appService.getApp(app)
-    if (apps.isEmpty) return Status.NotFound
-    val exist = apps.head
-
-    val query = OqlBuilder.from(classOf[Template], "tt")
-    query.where("tt.app=:app and tt.name=:name", exist, name)
-    val templates = entityDao.search(query).headOption
+  @mapping(value = "{app}/{path*}", method = "head")
+  def info(@param("app") app: String, @param("path") path: String): View = {
     val response = ActionContext.current.response
-    templates match {
+    getTemplate(app, path) match {
       case Some(template) =>
-        val repo = EmsApp.getBlobRepository(true)
-        repo.path(template.filePath) match {
-          case Some(p) => response.sendRedirect(p)
-          case None => response.setStatus(404)
-        }
+        response.addDateHeader("Last-Modified", template.updatedAt.toEpochMilli)
+        response.setContentLength(template.fileSize)
+        response.setStatus(200)
       case None =>
         response.setStatus(404)
     }
     null
+  }
+
+  private def getTemplate(app: String, path: String): Option[Template] = {
+    val ext = Strings.substringAfterLast(ActionContext.current.request.getRequestURI, ".")
+    val name = path + "." + ext
+    val apps = appService.getApp(app)
+    if (apps.isEmpty) return None
+    val exist = apps.head
+
+    val query = OqlBuilder.from(classOf[Template], "tt")
+    query.where("tt.app=:app and tt.name=:name", exist, name).cacheable()
+    entityDao.search(query).headOption
+  }
+
+  @mapping(value = "{app}/{path*}")
+  def index(@param("app") app: String, @param("path") path: String): View = {
+    val response = ActionContext.current.response
+    if (path == "files") {
+      val query = OqlBuilder.from(classOf[Template], "tt")
+      query.where("tt.app.name=:app", app).cacheable()
+      val templates = entityDao.search(query)
+      val contents = templates.map(_.name).mkString(",")
+      response.getWriter.write(contents)
+      null
+    } else {
+      getTemplate(app, path) match {
+        case Some(template) =>
+          val repo = EmsApp.getBlobRepository(true)
+          repo.path(template.filePath) match {
+            case Some(p) => response.sendRedirect(p)
+            case None => response.setStatus(404)
+          }
+        case None =>
+          response.setStatus(404)
+      }
+      null
+    }
   }
 }

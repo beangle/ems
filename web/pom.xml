@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.beangle.ems</groupId>
     <artifactId>beangle-ems-parent</artifactId>
-    <version>4.1.16</version>
+    <version>4.1.17</version>
   </parent>
   <artifactId>beangle-ems-web_2.13</artifactId>
   <packaging>jar</packaging>
