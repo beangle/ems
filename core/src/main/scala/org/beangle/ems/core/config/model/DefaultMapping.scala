@@ -85,6 +85,10 @@ object DefaultMapping extends MappingModule {
       index("", true, e.app, e.name)
     }
 
+    bind[Reconfig].declare { e =>
+      e.contents is length(1000)
+      index("", true, e.app)
+    }
     all.except(classOf[Template]).cacheAll()
   }
 

@@ -16,18 +16,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.portal.admin
+package org.beangle.ems.core.config.model
 
-import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.admin.action.config._
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.{Remark, Updated}
 
-class ConfigModule extends BindModule {
-
-  protected override def binding(): Unit = {
-    bind(classOf[AppAction], classOf[AppGroupAction])
-    bind(classOf[DbAction])
-    bind(classOf[CredentialAction])
-    bind(classOf[TemplateAction])
-    bind(classOf[ReconfigAction])
-  }
+class Reconfig extends LongId with Updated with Remark {
+  var app: App = _
+  var contents: String = _
 }

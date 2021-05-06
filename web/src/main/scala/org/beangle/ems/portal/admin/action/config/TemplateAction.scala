@@ -22,7 +22,7 @@ import jakarta.servlet.http.Part
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.Template
+import org.beangle.ems.core.config.model.{App, Template}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
@@ -61,16 +61,19 @@ class TemplateAction extends RestfulAction[Template] {
       if (!template.name.endsWith("/")) {
         template.name += "/"
       }
-      if (!template.name.startsWith("/")) {
-        template.name = "/" + template.name
-      }
       template.name += filename
+    }
+    if (template.name.startsWith("/")) {
+      template.name = template.name.substring(1)
     }
     val is = part.getInputStream
     if (template.persisted) {
       repo.remove(template.filePath)
     }
-    val meta = repo.upload(s"/template", is, filename, user.code + " " + user.name)
+    val app = entityDao.get(classOf[App], template.app.id)
+    var storeFileName = template.name
+    storeFileName = Strings.replace(storeFileName.substring(1), "/", "_")
+    val meta = repo.upload(s"/template/${app.name}", is, storeFileName, user.code + " " + user.name)
     template.updatedAt = meta.updatedAt
     template.filePath = meta.filePath
     template.fileSize = meta.fileSize
