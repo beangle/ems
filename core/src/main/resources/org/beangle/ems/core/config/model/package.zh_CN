@@ -43,3 +43,11 @@ Domain.hostname=主机域名
 AppGroup=应用分组
 AppGroup.indexno=顺序号
 AppGroup.title=标题
+
+Template=模板
+Template.mediaType=类型
+Template.fileSize=文件大小
+Template.filePath=路径
+
+Reconfig=再配置信息
+Reconfig.contents=内容
