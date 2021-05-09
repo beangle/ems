@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Login</title>
     ${b.css("bootstrap","css/bootstrap.min.css")}
+    ${b.css("font-awesome","css/all.min.css")}
     ${b.css("ems","css/login.css")}
     [#if Parameters['keyboard']??]
     ${b.css("virtual-keyboard","dist/css/keyboard.min.css")}
@@ -25,59 +26,57 @@
         <table><tr><td><img style="width:100%;height:230px" src="${b.static_url('local','images/bg.jpg')}"/></td></tr></table>
     </div>
     <div class="login">
-   <img style="width:182px;height:35px;margin-top:22px;margin-bottom:23px" src="${b.static_url('local','images/system.jpg')}"/>
+   <img style="width:182px;height:35px;margin-top:20px;margin-bottom:23px" src="${b.static_url('local','images/system.jpg')}"/>
      <form name="loginForm" action="${base}/login" target="_top" method="post">
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
      [#if Parameters['keyboard']??]<input type="hidden" name="keyboard" value="${Parameters['keyboard']?html}">[/#if]
-        <table class="logintable">
-            [#if error?? && error?length>0]
-            <tr style="height:30px;">
-                <td colspan="2" style="text-align:center;color:red;">${error}</td>
-            </tr>
-            [/#if]
-            [#if setting.remoteLogoutUrl?? && setting.displayLoginSwitch]
-            <tr>
-              <td colspan="2" >
+        <div style="text-align:center;color:red;margin-top: -24px;" id="error_msg">${error!'&nbsp;'}</div>
+        <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
+            [#if setting.remoteLogoutUrl?? && (setting.displayLoginSwitch!false)]
+            <div>
                   <input type="radio" name="loginType" value="local" checked="checked" id="local_login"><label for="local_login">本地登录</label>
                   <input type="radio" name="loginType"  onchange="remoteLogin(this,this.form)" value="remote" id="remote_login"><label for="remote_login">统一身份认证</label>
-              </td>
-            </tr>
+            </div>
             [/#if]
-            <tr>
-                <td><label for="username">用户名:&nbsp;</label></td>
-                <td>
-                    <input name="username" id="username" tabindex="1" autofocus="autofocus" title="请输入用户名"  maxlength="18" placeholder="用户名" type="text" value="${(Parameters['username']?html)!}" style="width:105px;"/>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="password_text">密　码:&nbsp;</label></td>
-                <td>
-                  <input id="password_text" name="password_text"  tabindex="2" type="password" style="width:105px;" autocomplete="off" placeholder="密码"/>
-                  <input name="password" type="hidden"/>
-                </td>
-            </tr>
+                  <div class="col-auto">
+                    <div class="input-group mb-1">
+                      <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
+                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="用户名" type="text" value="">
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="input-group mb-1">
+                      <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
+                      <input name="password_text" id="password_text" tabindex="2" autocomplete="off" class="form-control" placeholder="密码" type="password" value="">
+                      <input name="password" type="hidden"/>
+                    </div>
+                  </div>
             [#if setting.enableCaptcha]
-            <tr>
-                <td><label for="captcha_response">验证码:&nbsp;</label></td>
-                <td>
-                  <input id="captcha_response" name="captcha_response" tabindex="3" type="text" style="width:50px;" placeholder="验证码"/>
-                  <img src="${b.url("!captcha")}?t=${current_timestamp}" id="captcha_image" style="vertical-align:top;margin-top:1px;border:0px" width="90" height="25"  title="点击更换" onclick="change_captcha()">
-                </td>
-            </tr>
+                  <div class="col-auto">
+                    <div class="input-group mb-1">
+                      <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
+                      <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="验证码">
+                      <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
+                        <img src="${b.url("!captcha")}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
+                      </div></div>
+                    </div>
+                  </div>
             [/#if]
-            <tr>
-                <td colspan="2">
-                    <input type="submit" name="submitBtn" tabindex="6" class="blue-button"  onclick="return checkLogin(this.form)" value="登录"/>
-                </td>
-            </tr>
-        </table>
+            <div class="col-auto">
+              <div class="input-group mb-1">
+                    <div style="padding-top: 5px;margin-right: 50px;"><a href="safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
+                    <input type="submit" name="submitBtn" tabindex="6" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
+              </div>
+            </div>
+         </div>
+        </form>
         <table class="foottable">
             <tr>
-                <td><img src="${b.static_url('local','images/weixin.png')}" height="80px"></td>
+                <td><img src="${b.static_url('local','images/weixin.png')}" height="75px"></td>
             </tr>
         </table>
-     </form>
+
    </div>
 </div>
 ${b.script("cryptojs","rollups/aes.js")}
@@ -104,17 +103,17 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
     var form  = document.loginForm;
     function checkLogin(form){
         if(!form['username'].value){
-            alert("用户名称不能为空");return false;
+            displayError("用户名称不能为空");return false;
         }
         if(!(/^\w+$/.test(form['username'].value))){
-            alert("用户名中只能包含数字,字母");return false;
+            displayError("用户名中只能包含数字,字母");return false;
         }
         if(!form['password_text'].value){
-            alert("密码不能为空");return false;
+            displayError("密码不能为空");return false;
         }
         [#if setting.enableCaptcha]
         if(!form['captcha_response'].value){
-            alert("验证码不能为空");return false;
+            displayError("验证码不能为空");return false;
         }
         [/#if]
 
@@ -142,6 +141,9 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
       input.setAttribute("value",value);
       input.setAttribute("type","hidden");
       form.appendChild(input);
+    }
+    function displayError(msg){
+        document.getElementById("error_msg").innerHTML=msg;
     }
 </script>
 </body>

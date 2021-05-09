@@ -27,5 +27,4 @@ object NoticeStatus extends Enumeration(0) {
   class Status(val title: String) extends super.Val {
   }
 
-
 }

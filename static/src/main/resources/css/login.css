@@ -43,36 +43,10 @@ body {
 
 .logindiv .logintable {
   width : 220px;
-  height : 145px;
-
-  border : 1px #7DC4DB solid;
-  -webkit-border-radius : 5px;
-     -moz-border-radius : 5px;
-      -ms-border-radius : 5px;
-       -o-border-radius : 5px;
-          border-radius : 5px;
-  background : url("../images/login/dotdotdot.png") repeat-x scroll 0 0 transparent;
+  border: 0px;
+  border-bottom:1px #7DC4DB solid;
+  margin:auto;
 }
-.logintable input[type=text],input[type=password] {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-}
-.logintable tr td:nth-child(1) {
-  width : 70px;
-  text-align: right;
-}
-.logintable tr td:nth-child(2) {
-  text-align : left;
-}
-.logintable tr td:nth-child(3) {
-  width : 60px;
-  text-align: center;
-  vertical-align: middle;
-}
-.logintable tr:nth-last-child(1) td {
-  text-align: center;
-}
-
 .logindiv .bulletin {
     width : 525px;
     margin-top: 20px;
