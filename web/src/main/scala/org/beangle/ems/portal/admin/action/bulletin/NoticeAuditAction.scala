@@ -18,17 +18,17 @@
  */
 package org.beangle.ems.portal.admin.action.bulletin
 
-import java.time.{Instant, LocalDate}
-
+import org.beangle.ems.core.bulletin.model.{Notice, NoticeStatus}
+import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.user.model.User
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.EntityAction
-import org.beangle.ems.core.bulletin.model.{Notice, NoticeStatus}
-import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.User
-import org.beangle.ems.core.user.service.UserService
+
+import java.time.{Instant, LocalDate}
 
 class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   var userService: UserService = _
@@ -71,6 +71,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
     getBoolean("attached") foreach { attached =>
       builder.where(if (attached) "size(notice.docs)>0" else "size(notice.docs)=0")
     }
+    builder.where("notice.operator.code != :me", Securities.user)
     put("notices", entityDao.search(builder))
     forward()
   }
@@ -80,14 +81,16 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
     val passed = getBoolean("passed", defaultValue = false)
     val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notices foreach { notice =>
-      notice.auditor = Some(me)
-      notice.updatedAt = Instant.now
-      if (passed) {
-        notice.publishedAt = Some(Instant.now)
-        notice.status = NoticeStatus.Passed
-      } else {
-        notice.publishedAt = None
-        notice.status = NoticeStatus.Unpassed
+      if (notice.operator != me) {
+        notice.auditor = Some(me)
+        notice.updatedAt = Instant.now
+        if (passed) {
+          notice.publishedAt = Some(Instant.now)
+          notice.status = NoticeStatus.Passed
+        } else {
+          notice.publishedAt = None
+          notice.status = NoticeStatus.Unpassed
+        }
       }
     }
     entityDao.saveOrUpdate(notices)

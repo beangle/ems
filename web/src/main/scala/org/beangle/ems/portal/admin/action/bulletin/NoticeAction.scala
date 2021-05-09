@@ -18,20 +18,20 @@
  */
 package org.beangle.ems.portal.admin.action.bulletin
 
-import java.time.{Instant, LocalDate}
-
 import jakarta.servlet.http.Part
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.core.bulletin.model._
+import org.beangle.ems.core.bulletin.service.DocService
+import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.webmvc.api.annotation.ignore
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.beangle.ems.core.bulletin.model._
-import org.beangle.ems.core.bulletin.service.DocService
-import org.beangle.ems.core.config.model.{App, AppType}
-import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.{User, UserCategory}
-import org.beangle.ems.core.user.service.UserService
+
+import java.time.{Instant, LocalDate}
 
 class NoticeAction extends RestfulAction[Notice] {
 
@@ -45,7 +45,6 @@ class NoticeAction extends RestfulAction[Notice] {
     put("apps", appService.getWebapps)
   }
 
-
   override protected def editSetting(entity: Notice): Unit = {
     put("userCategories", userService.getCategories())
     put("apps", appService.getWebapps)
@@ -53,7 +52,6 @@ class NoticeAction extends RestfulAction[Notice] {
       entity.status = NoticeStatus.Draft
     }
   }
-
 
   override protected def removeAndRedirect(notices: Seq[Notice]): View = {
     val docs = notices.flatMap(_.docs)
@@ -93,16 +91,27 @@ class NoticeAction extends RestfulAction[Notice] {
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notice.userCategories.clear()
     notice.userCategories ++= entityDao.find(classOf[UserCategory], intIds("userCategory"))
+    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf")
+    var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
       val doc = new Doc
       doc.app = notice.app
       doc.uploadBy = notice.operator
       doc.userCategories ++= notice.userCategories
       doc.updatedAt = Instant.now
-      docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
-      notice.docs += doc
+      if (allowExts.contains(Strings.substringAfterLast(docFile.getSubmittedFileName, "."))) {
+        docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
+        notice.docs += doc
+      } else {
+        disallowed = true
+      }
     }
-    notice.status = NoticeStatus.Submited
-    super.saveAndRedirect(notice)
+    if (disallowed) {
+      addFlashMessage("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf后缀的文件")
+      throw new RuntimeException("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf后缀的文件")
+    } else {
+      notice.status = NoticeStatus.Submited
+      super.saveAndRedirect(notice)
+    }
   }
 }

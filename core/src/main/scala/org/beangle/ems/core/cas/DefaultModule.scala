@@ -64,7 +64,6 @@ class DefaultModule extends BindModule with PropertySource {
     }
     interceptor.property("filters", filters)
 
-
     //authorizer and manager
     bind("security.SecurityManager.default", classOf[WebSecurityManager])
     bind(classOf[DefaultSecurityContextBuilder])
