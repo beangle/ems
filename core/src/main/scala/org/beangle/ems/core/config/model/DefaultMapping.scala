@@ -81,6 +81,8 @@ object DefaultMapping extends MappingModule {
 
     bind[AppType]
 
+    bind[File]
+
     all.cacheAll()
   }
 
