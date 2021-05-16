@@ -51,35 +51,35 @@ class FileAction extends RestfulAction[File] {
     super.editSetting(entity)
   }
 
-  override protected def saveAndRedirect(template: File): View = {
+  override protected def saveAndRedirect(f: File): View = {
     val repo = EmsApp.getBlobRepository(true)
     val user = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    var filename = Strings.substringAfterLast(template.name, "/")
+    var filename = Strings.substringAfterLast(f.name, "/")
     val part = get("attachment", classOf[Part]).get
     if (!filename.contains(".")) {
       filename = part.getSubmittedFileName
-      if (!template.name.endsWith("/")) {
-        template.name += "/"
+      if (!f.name.endsWith("/")) {
+        f.name += "/"
       }
-      template.name += filename
+      f.name += filename
     }
-    if (template.name.startsWith("/")) {
-      template.name = template.name.substring(1)
+    if (f.name.startsWith("/")) {
+      f.name = f.name.substring(1)
     }
     val is = part.getInputStream
-    if (template.persisted) {
-      repo.remove(template.filePath)
+    if (f.persisted) {
+      repo.remove(f.filePath)
     }
-    val app = entityDao.get(classOf[App], template.app.id)
-    var storeFileName = template.name
+    val app = entityDao.get(classOf[App], f.app.id)
+    var storeFileName = f.name
     storeFileName = Strings.replace(storeFileName.substring(1), "/", "_")
     val meta = repo.upload(s"/file/${app.name}", is, storeFileName, user.code + " " + user.name)
-    template.updatedAt = meta.updatedAt
-    template.filePath = meta.filePath
-    template.fileSize = meta.fileSize
-    template.mediaType = meta.mediaType
+    f.updatedAt = meta.updatedAt
+    f.filePath = meta.filePath
+    f.fileSize = meta.fileSize
+    f.mediaType = meta.mediaType
 
-    entityDao.saveOrUpdate(template)
+    entityDao.saveOrUpdate(f)
     redirect("search", "info.save.success")
   }
 

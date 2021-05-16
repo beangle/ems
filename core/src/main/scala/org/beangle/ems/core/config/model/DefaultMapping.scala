@@ -81,15 +81,7 @@ object DefaultMapping extends MappingModule {
 
     bind[AppType]
 
-    bind[File].declare { e =>
-      index("", true, e.app, e.name)
-    }
-
-    bind[Reconfig].declare { e =>
-      e.contents is length(1000)
-      index("", true, e.app)
-    }
-    all.except(classOf[File]).cacheAll()
+    all.cacheAll()
   }
 
 }
