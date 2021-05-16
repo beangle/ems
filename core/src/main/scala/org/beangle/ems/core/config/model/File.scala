@@ -18,10 +18,21 @@
  */
 package org.beangle.ems.core.config.model
 
+import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Remark, Updated}
+import org.beangle.data.model.pojo.{Named, Updated}
 
-class Reconfig extends LongId with Updated with Remark {
+class File extends LongId with Named with Updated {
   var app: App = _
-  var contents: String = _
+  var mediaType: String = _
+  var fileSize: Int = _
+  var filePath: String = _
+
+  def path: String = {
+    Strings.substringAfterLast(name, "/")
+  }
+
+  def isText: Boolean = {
+    mediaType.startsWith("text/")
+  }
 }

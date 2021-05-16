@@ -81,7 +81,7 @@ object DefaultMapping extends MappingModule {
 
     bind[AppType]
 
-    bind[Template].declare { e =>
+    bind[File].declare { e =>
       index("", true, e.app, e.name)
     }
 
@@ -89,7 +89,7 @@ object DefaultMapping extends MappingModule {
       e.contents is length(1000)
       index("", true, e.app)
     }
-    all.except(classOf[Template]).cacheAll()
+    all.except(classOf[File]).cacheAll()
   }
 
 }
