@@ -1,3 +1,15 @@
+CREATE OR REPLACE FUNCTION public.add_seconds(
+  timestamp without time zone,
+  integer)
+RETURNS timestamp without time zone
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE
+AS $BODY$
+begin
+  return $1 +  $2 * (interval '1' second);
+end;
+$BODY$;
 CREATE SEQUENCE public.seq_date
     CYCLE
     INCREMENT 1
@@ -55,7 +67,7 @@ begin
   update table_sequences a set currval = currval+1 where a.table_name=$1 returning currval into nextid;
 
   if nextid is null then
-    for rec in EXECUTE 'select max(id)+1 as maxid  from ' || $1 loop
+    for rec in EXECUTE 'select (max(id)+1)::bigint as maxid  from ' || $1 loop
       nextid = rec.maxid;
     end loop;
     if nextid is null then

@@ -22,7 +22,7 @@ import jakarta.servlet.http.Part
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.{App, Template}
+import org.beangle.ems.core.config.model.{App, File}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
@@ -31,7 +31,7 @@ import org.beangle.webmvc.api.context.ActionContext
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 
-class TemplateAction extends RestfulAction[Template] {
+class FileAction extends RestfulAction[File] {
 
   var domainService: DomainService = _
   var appService: AppService = _
@@ -40,50 +40,50 @@ class TemplateAction extends RestfulAction[Template] {
     put("apps", appService.getWebapps)
   }
 
-  override protected def getQueryBuilder: OqlBuilder[Template] = {
+  override protected def getQueryBuilder: OqlBuilder[File] = {
     val query = super.getQueryBuilder
     val domain = domainService.getDomain
-    query.where("template.app.domain=:domain", domain)
+    query.where("file.app.domain=:domain", domain)
   }
 
-  override protected def editSetting(entity: Template): Unit = {
+  override protected def editSetting(entity: File): Unit = {
     put("apps", appService.getWebapps)
     super.editSetting(entity)
   }
 
-  override protected def saveAndRedirect(template: Template): View = {
+  override protected def saveAndRedirect(f: File): View = {
     val repo = EmsApp.getBlobRepository(true)
     val user = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    var filename = Strings.substringAfterLast(template.name, "/")
+    var filename = Strings.substringAfterLast(f.name, "/")
     val part = get("attachment", classOf[Part]).get
     if (!filename.contains(".")) {
       filename = part.getSubmittedFileName
-      if (!template.name.endsWith("/")) {
-        template.name += "/"
+      if (!f.name.endsWith("/")) {
+        f.name += "/"
       }
-      template.name += filename
+      f.name += filename
     }
-    if (template.name.startsWith("/")) {
-      template.name = template.name.substring(1)
+    if (f.name.startsWith("/")) {
+      f.name = f.name.substring(1)
     }
     val is = part.getInputStream
-    if (template.persisted) {
-      repo.remove(template.filePath)
+    if (f.persisted) {
+      repo.remove(f.filePath)
     }
-    val app = entityDao.get(classOf[App], template.app.id)
-    var storeFileName = template.name
+    val app = entityDao.get(classOf[App], f.app.id)
+    var storeFileName = f.name
     storeFileName = Strings.replace(storeFileName.substring(1), "/", "_")
-    val meta = repo.upload(s"/template/${app.name}", is, storeFileName, user.code + " " + user.name)
-    template.updatedAt = meta.updatedAt
-    template.filePath = meta.filePath
-    template.fileSize = meta.fileSize
-    template.mediaType = meta.mediaType
+    val meta = repo.upload(s"/file/${app.name}", is, storeFileName, user.code + " " + user.name)
+    f.updatedAt = meta.updatedAt
+    f.filePath = meta.filePath
+    f.fileSize = meta.fileSize
+    f.mediaType = meta.mediaType
 
-    entityDao.saveOrUpdate(template)
+    entityDao.saveOrUpdate(f)
     redirect("search", "info.save.success")
   }
 
-  override protected def removeAndRedirect(entities: Seq[Template]): View = {
+  override protected def removeAndRedirect(entities: Seq[File]): View = {
     val repo = EmsApp.getBlobRepository(true)
     entities foreach { t =>
       repo.remove(t.filePath)
@@ -94,7 +94,7 @@ class TemplateAction extends RestfulAction[Template] {
   @mapping(value = "{id}")
   override def info(id: String): View = {
     val response = ActionContext.current.response
-    val template = entityDao.get(classOf[Template], id.toLong)
+    val template = entityDao.get(classOf[File], id.toLong)
     val repo = EmsApp.getBlobRepository(true)
     repo.path(template.filePath) match {
       case Some(p) => response.sendRedirect(p)

@@ -21,14 +21,14 @@ package org.beangle.ems.ws.config
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.Template
+import org.beangle.ems.core.config.model.File
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.context.ActionContext
 import org.beangle.webmvc.api.view.View
 
-class TemplateWS extends ActionSupport {
+class FileWS extends ActionSupport {
 
   var appService: AppService = _
 
@@ -37,7 +37,7 @@ class TemplateWS extends ActionSupport {
   @mapping(value = "{app}/{path*}", method = "head")
   def info(@param("app") app: String, @param("path") path: String): View = {
     val response = ActionContext.current.response
-    getTemplate(app, path) match {
+    getFile(app, path) match {
       case Some(template) =>
         response.addDateHeader("Last-Modified", template.updatedAt.toEpochMilli)
         response.setContentLength(template.fileSize)
@@ -48,14 +48,14 @@ class TemplateWS extends ActionSupport {
     null
   }
 
-  private def getTemplate(app: String, path: String): Option[Template] = {
+  private def getFile(app: String, path: String): Option[File] = {
     val ext = Strings.substringAfterLast(ActionContext.current.request.getRequestURI, ".")
     val name = path + "." + ext
     val apps = appService.getApp(app)
     if (apps.isEmpty) return None
     val exist = apps.head
 
-    val query = OqlBuilder.from(classOf[Template], "tt")
+    val query = OqlBuilder.from(classOf[File], "tt")
     query.where("tt.app=:app and tt.name=:name", exist, name).cacheable()
     entityDao.search(query).headOption
   }
@@ -63,15 +63,15 @@ class TemplateWS extends ActionSupport {
   @mapping(value = "{app}/{path*}")
   def index(@param("app") app: String, @param("path") path: String): View = {
     val response = ActionContext.current.response
-    if (path == "files") {
-      val query = OqlBuilder.from(classOf[Template], "tt")
+    if (path == "ls") {
+      val query = OqlBuilder.from(classOf[File], "tt")
       query.where("tt.app.name=:app", app).cacheable()
       val templates = entityDao.search(query)
       val contents = templates.map(_.name).mkString(",")
       response.getWriter.write(contents)
       null
     } else {
-      getTemplate(app, path) match {
+      getFile(app, path) match {
         case Some(template) =>
           val repo = EmsApp.getBlobRepository(true)
           repo.path(template.filePath) match {

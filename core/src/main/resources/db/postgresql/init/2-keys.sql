@@ -21,6 +21,7 @@ alter table cfg.dbs add constraint pk_fjmvnbma8ydciv9wa0rocjmw1 primary key (id)
 alter table cfg.dbs_properties add constraint pk_bt0xt6wvgav0aqxwvw5hurxk2 primary key (db_id,value_,name);
 alter table cfg.domains add constraint idx_domain unique (org_id,hostname);
 alter table cfg.domains add constraint pk_qmiqopkrlr3yjian3tuafihea primary key (id);
+alter table cfg.files add constraint pk_8429obi968vjdc8arvkoqgqvw primary key (id);
 alter table cfg.orgs add constraint pk_a9p5unhabl77t6wiof0meuwok primary key (id);
 alter table se.app_permissions add constraint pk_gak8t8oul1xrpq4t02593ihhk primary key (id);
 alter table se.data_permissions add constraint pk_8bdqy5re8q4ab6beh9gxm4qlg primary key (id);

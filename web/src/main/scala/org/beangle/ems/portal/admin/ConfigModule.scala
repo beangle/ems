@@ -27,7 +27,6 @@ class ConfigModule extends BindModule {
     bind(classOf[AppAction], classOf[AppGroupAction])
     bind(classOf[DbAction])
     bind(classOf[CredentialAction])
-    bind(classOf[TemplateAction])
-    bind(classOf[ReconfigAction])
+    bind(classOf[FileAction])
   }
 }
