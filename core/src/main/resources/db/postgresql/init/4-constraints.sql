@@ -25,6 +25,7 @@ alter table cfg.data_sources add constraint fk_oesr23l6pnil7g8wf7vkmk6py foreign
 alter table cfg.dbs add constraint fk_4u0tvc3ehr9sv7vhndvoycp7j foreign key (domain_id) references cfg.domains (id);
 alter table cfg.dbs_properties add constraint fk_n3j3tf9w1smqshbhqtckhcu7x foreign key (db_id) references cfg.dbs (id);
 alter table cfg.domains add constraint fk_354ma4e4xdedfs3u3qx7swqrw foreign key (org_id) references cfg.orgs (id);
+alter table cfg.files add constraint fk_9ujsh4siisy2452s0feta3qjk foreign key (app_id) references cfg.apps (id);
 alter table se.app_permissions add constraint fk_519oiykea6451ts2vmmetx9hv foreign key (app_id) references cfg.apps (id);
 alter table se.app_permissions add constraint fk_lnm7svh5k8hc3drai0ym3m289 foreign key (resource_id) references se.func_resources (id);
 alter table se.data_permissions add constraint fk_7m3urbe7j3v4yvrawll4bhaaj foreign key (func_resource_id) references se.func_resources (id);
