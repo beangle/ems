@@ -109,8 +109,9 @@ class DefaultModule extends BindModule with PropertySource {
         datas += ("login.key" -> getAttribute(e, "key", Ems.base))
         datas += ("login.origin" -> getAttribute(e, "origin", Ems.base))
         datas += ("login.checkPasswordStrength" -> getAttribute(e, "checkPasswordStrength", "true"))
-        getAttribute(e, "passwordReadOnly") foreach { pronly =>
-          datas += ("login.passwordReadOnly" -> pronly)
+        getAttribute(e, "passwordReadOnly") match {
+          case Some(pronly) => datas += ("login.passwordReadOnly" -> pronly)
+          case None => datas.getOrElseUpdate("login.passwordReadOnly", "false")
         }
       }
       if (!datas.contains("login.origin")) {
