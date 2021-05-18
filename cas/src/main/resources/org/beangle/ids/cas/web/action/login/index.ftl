@@ -48,7 +48,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
-                      <input name="password_text" id="password_text" tabindex="2" autocomplete="off" class="form-control" placeholder="密码" type="password" value="">
+                      <input name="password_text" id="password_text" tabindex="2" autocomplete="off" class="form-control" placeholder="[#if setting.passwordReadOnly && setting.remoteLogoutUrl??]统一身份认证密码[#else]密码[/#if]" type="password" value="">
                       <input name="password" type="hidden"/>
                     </div>
                   </div>

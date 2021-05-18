@@ -18,8 +18,6 @@
  */
 package org.beangle.ems.core.cas
 
-import java.io.FileInputStream
-
 import org.beangle.cdi.PropertySource
 import org.beangle.cdi.bind.BindModule
 import org.beangle.commons.collection.Collections
@@ -30,6 +28,8 @@ import org.beangle.security.authz.PublicAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
 import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
+
+import java.io.FileInputStream
 
 /**
  * @author chaostone
@@ -72,10 +72,11 @@ class DefaultModule extends BindModule with PropertySource {
     val setting = bind("casSetting", classOf[CasSetting])
       .property("enableCaptcha", $("login.enableCaptcha"))
       .property("forceHttps", $("login.forceHttps"))
-      .property("displayLoginSwitch", $("login.displayLoginSwitch","false"))
+      .property("displayLoginSwitch", $("login.displayLoginSwitch", "false"))
       .property("key", $("login.key"))
       .property("origin", $("login.origin"))
       .property("checkPasswordStrength", $("login.checkPasswordStrength"))
+      .property("passwordReadOnly", $("login.passwordReadOnly"))
       .property("clients", List("http://localhost", Ems.base) ++ clients)
 
     remoteCasServer foreach { casServer =>
@@ -95,6 +96,7 @@ class DefaultModule extends BindModule with PropertySource {
         datas += ("ldap.user" -> (e \\ "user").text.trim)
         datas += ("ldap.password" -> (e \\ "password").text.trim)
         datas += ("ldap.base" -> (e \\ "base").text.trim)
+        datas += ("login.passwordReadOnly" -> "true") //本系统使用DB，一般使用LDAP即为外部密码库,禁止修改
       }
       (app \\ "redis") foreach { e =>
         datas += ("redis.host" -> (e \\ "host").text.trim)
@@ -107,6 +109,10 @@ class DefaultModule extends BindModule with PropertySource {
         datas += ("login.key" -> getAttribute(e, "key", Ems.base))
         datas += ("login.origin" -> getAttribute(e, "origin", Ems.base))
         datas += ("login.checkPasswordStrength" -> getAttribute(e, "checkPasswordStrength", "true"))
+        getAttribute(e, "passwordReadOnly") match {
+          case Some(pronly) => datas += ("login.passwordReadOnly" -> pronly)
+          case None => datas.getOrElseUpdate("login.passwordReadOnly", "false")
+        }
       }
       if (!datas.contains("login.origin")) {
         datas += ("login.key" -> Ems.base)
@@ -128,6 +134,15 @@ class DefaultModule extends BindModule with PropertySource {
       is.close()
     }
     datas.toMap
+  }
+
+  private def getAttribute(e: scala.xml.Node, name: String): Option[String] = {
+    val v = (e \ ("@" + name)).text.trim
+    if (Strings.isEmpty(v)) {
+      None
+    } else {
+      Some(v)
+    }
   }
 
   private def getAttribute(e: scala.xml.Node, name: String, defaultValue: String): String = {

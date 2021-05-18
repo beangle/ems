@@ -123,7 +123,7 @@
               </p>
             </li>
             <li class="user-footer">
-              [#if !nav.principal.remoteToken??]
+              [#if !nav.principal.credentialReadOnly]
               <div class="float-sm-left">
                 <a href="/cas/edit" class="btn btn-default btn-flat"><i class="nav-icon far fa-user"></i>修改密码</a>
               </div>
