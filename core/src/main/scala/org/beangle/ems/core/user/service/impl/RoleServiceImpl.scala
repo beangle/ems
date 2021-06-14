@@ -18,14 +18,15 @@
  */
 package org.beangle.ems.core.user.service.impl
 
-import java.time.ZonedDateTime
-
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.{MemberShip, Role, RoleMember, Root, User}
+import org.beangle.ems.core.security.model.FuncPermission
+import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.RoleService
+
+import java.time.ZonedDateTime
 
 class RoleServiceImpl extends RoleService {
 
@@ -72,7 +73,10 @@ class RoleServiceImpl extends RoleService {
   }
 
   override def remove(manager: User, roles: Seq[Role]): Unit = {
-    entityDao.remove(roles)
+    val query = OqlBuilder.from(classOf[FuncPermission], "fp")
+    query.where("fp.role in(:roles)", roles)
+    val fps = entityDao.search(query)
+    entityDao.remove(fps :: roles.toList)
   }
 
   def get(id: Int): Role = {

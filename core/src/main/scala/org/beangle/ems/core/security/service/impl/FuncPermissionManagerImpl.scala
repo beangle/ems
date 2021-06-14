@@ -19,11 +19,11 @@
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.Collections
-import org.beangle.data.dao.{ EntityDao, Operation, OqlBuilder }
+import org.beangle.data.dao.{EntityDao, Operation, OqlBuilder}
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.security.model.{ FuncPermission, FuncResource }
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
-import org.beangle.ems.core.user.model.{ Role, User }
+import org.beangle.ems.core.user.model.{Role, User}
 
 class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermissionService {
 
@@ -75,5 +75,25 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
       builder.saveOrUpdate(authority)
     }
     entityDao.execute(builder)
+  }
+
+  override def removeResources(resources: Iterable[FuncResource]): Unit = {
+    //删除相关表
+    val menuBuilder2 = OqlBuilder.from(classOf[Menu], "m").join("m.resources", "r")
+    val menus2 = entityDao.search(menuBuilder2)
+    menus2 foreach (m => m.resources --= resources)
+    entityDao.saveOrUpdate(menus2)
+
+    //重置依次作为入口的菜单
+    val menuBuilder = OqlBuilder.from(classOf[Menu], "m").
+      where("m.entry in(:entries)", resources)
+    val menus = entityDao.search(menuBuilder)
+    menus foreach (m => m.entry = None)
+
+    val query = OqlBuilder.from(classOf[FuncPermission], "fp")
+    query.where("fp.resource in(:res)", resources)
+    val fps = entityDao.search(query)
+    entityDao.remove(fps)
+    entityDao.remove(resources)
   }
 }

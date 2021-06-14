@@ -19,11 +19,10 @@
 package org.beangle.ems.core.security.service
 
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.security.model.{ FuncPermission, FuncResource }
-import org.beangle.ems.core.user.model.{ Role, User }
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
+import org.beangle.ems.core.user.model.{Role, User}
 
 trait FuncPermissionService {
-
   def getResource(app: App, name: String): Option[FuncResource]
 
   def getResourceIdsByRole(roleId: Int): Set[Int]
@@ -37,5 +36,7 @@ trait FuncPermissionService {
   def activate(resourceId: Iterable[Int], active: Boolean): Unit
 
   def authorize(app: App, role: Role, resources: Set[FuncResource]): Unit
+
+  def removeResources(entities: Iterable[FuncResource]): Unit
 
 }

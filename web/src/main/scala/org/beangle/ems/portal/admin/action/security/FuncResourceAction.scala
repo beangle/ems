@@ -20,14 +20,14 @@ package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
+import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
+import org.beangle.ems.core.security.service.FuncPermissionService
+import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.security.authz.Scopes
 import org.beangle.webmvc.api.annotation.ignore
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
-import org.beangle.ems.core.security.service.FuncPermissionService
 
 /**
  * 系统模块管理响应类
@@ -106,19 +106,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
   @ignore
   protected override def removeAndRedirect(entities: Seq[FuncResource]): View = {
     try {
-      //删除相关表
-      val menuBuilder2 = OqlBuilder.from(classOf[Menu], "m").join("m.resources", "r")
-      val menus2 = entityDao.search(menuBuilder2)
-      menus2 foreach (m => m.resources --= entities)
-      entityDao.saveOrUpdate(menus2)
-
-      //重置依次作为入口的菜单
-      val menuBuilder = OqlBuilder.from(classOf[Menu], "m").
-        where("m.entry in(:entries)", entities)
-      val menus = entityDao.search(menuBuilder)
-      menus foreach (m => m.entry = None)
-
-      remove(entities)
+      funcPermissionService.removeResources(entities)
       redirect("search", "info.remove.success")
     } catch {
       case e: Exception =>
