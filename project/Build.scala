@@ -32,7 +32,7 @@ object Dependencies {
   val servletapiVer = "5.0.0"
   val commonsVer = "5.2.5"
   val dataVer = "5.3.24"
-  val cdiVer = "0.3.1"
+  val cdiVer = "0.3.2"
   val webVer = "0.0.1"
   val serializerVer= "0.0.20"
   val springVer = "5.3.6"
