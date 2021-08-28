@@ -55,5 +55,5 @@ class Notice extends LongId with DateRange {
 
   var docs: mutable.Buffer[Doc] = Collections.newBuffer[Doc]
 
-  var status: NoticeStatus.Status = NoticeStatus.Draft
+  var status: NoticeStatus = NoticeStatus.Draft
 }

@@ -33,7 +33,7 @@ lazy val static = (project in file("static"))
   .settings(
     name := "beangle-ems-static",
     commonSettings,
-    crossPaths := false
+    crossPaths := false,
   )
 
 lazy val app = (project in file("app"))
@@ -61,28 +61,31 @@ lazy val cas = (project in file("cas"))
   .settings(
     name := "beangle-ems-cas",
     commonSettings,
-    libraryDependencies ++= Seq(webmvcBootstrap)
-  ).dependsOn(web)
+    libraryDependencies ++= Seq(webmvcBootstrap),
+    libraryDependencies ++= appDepends
+  ).dependsOn(web,app,core)
 
 lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
     commonSettings,
-    libraryDependencies ++= Seq(serializerText,cacheCaffeine)
-  ).dependsOn(web)
+    libraryDependencies ++= Seq(serializerText,cacheCaffeine),
+    libraryDependencies ++= appDepends
+  ).dependsOn(web,core,app)
 
 lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     commonSettings,
-    libraryDependencies ++= Seq(webmvcBootstrap)
-  ).dependsOn(web)
+    libraryDependencies ++= Seq(webmvcBootstrap,idsCas,dataHibernate),
+    libraryDependencies ++= appDepends
+  ).dependsOn(web,app,core)
 
 lazy val index = (project in file("index"))
   .settings(
     name := "beangle-ems-index",
     commonSettings,
     libraryDependencies ++= Seq(webmvcSupport)
-  ).dependsOn(core)
+  ).dependsOn(core,app)
 
 publish / skip := true

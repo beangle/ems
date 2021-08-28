@@ -23,7 +23,8 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member, Ship}
+import org.beangle.ems.core.user.model.MemberShip
+import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
 import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.UserService
 
@@ -46,7 +47,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
     entityDao.find(classOf[User], ids.toList)
   }
 
-  def getRoles(user: User, ship: Ship): collection.Seq[RoleMember] = {
+  def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember] = {
     val domain = domainService.getDomain
     ship match {
       case Manager => user.roles.filter(m => m.manager && m.role.domain == domain)

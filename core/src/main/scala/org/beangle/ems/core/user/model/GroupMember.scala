@@ -19,9 +19,6 @@ package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
-
-import MemberShip.{ Granter, Manager, Member, Ship }
-
 /**
  * @author chaostone
  */
@@ -38,12 +35,11 @@ class GroupMember extends LongId with Updated {
     this.group = group
   }
 
-  import MemberShip._
-  def is(ship: Ship): Boolean = {
+  def is(ship: MemberShip): Boolean = {
     ship match {
-      case Member => member
-      case Manager => manager
-      case Granter => granter
+      case MemberShip.Member => member
+      case MemberShip.Manager => manager
+      case MemberShip.Granter => granter
       case _ => false
     }
   }

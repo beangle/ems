@@ -27,7 +27,7 @@ trait UserService {
 
   def getUsers(id: Long*): collection.Seq[User]
 
-  def getRoles(user: User, ship: MemberShip.Ship): collection.Seq[RoleMember]
+  def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember]
 
   def isManagedBy(manager: User, user: User): Boolean
 

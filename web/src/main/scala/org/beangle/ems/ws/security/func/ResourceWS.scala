@@ -19,7 +19,7 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.security.authz.Scopes
+import org.beangle.security.authz.Scope
 import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.AppService
@@ -43,7 +43,7 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[
       .where("fr.app=:app", app)
 
     get("scope") foreach { s =>
-      query.where("fr.scope = :scope", Scopes.withName(s))
+      query.where("fr.scope = :scope", Scope.valueOf(s))
     }
     val resources = entityDao.search(query)
     val premQuery = OqlBuilder.from[Array[Object]](classOf[FuncPermission].getName, "fp")
@@ -90,7 +90,7 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[
     val app = appService.getApp(appName).head
     val query = OqlBuilder.from(classOf[FuncResource], "fr")
       .where("fr.app=:app", app)
-      .where("fr.scope=:scope", Scopes.Public)
+      .where("fr.scope=:scope", Scope.Public)
       .cacheable()
     entityDao.search(query)
   }

@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.security.authz.Scopes
+import org.beangle.security.authz.Scope
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
@@ -89,7 +89,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
   protected override def editSetting(resource: FuncResource): Unit = {
     put("apps", appService.getApps)
     if (!resource.persisted) {
-      resource.scope = Scopes.Private
+      resource.scope = Scope.Private
       resource.enabled = true
     }
   }

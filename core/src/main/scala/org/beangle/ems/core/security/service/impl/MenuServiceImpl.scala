@@ -21,7 +21,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.security.authz.Scopes
+import org.beangle.security.authz.Scope
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
@@ -242,7 +242,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         resource.app = app
         resource.name = name
         resource.title = title
-        resource.scope = Scopes.withName(scope).asInstanceOf[Scopes.Scope]
+        resource.scope = Scope.valueOf(scope)
         if (Strings.isEmpty(enabled)) {
           resource.enabled = true
         } else {

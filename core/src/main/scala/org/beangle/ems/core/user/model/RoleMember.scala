@@ -21,7 +21,7 @@ import java.time.Instant
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
-import MemberShip._
+
 /**
  * @author chaostone
  */
@@ -39,20 +39,20 @@ class RoleMember extends LongId with Updated {
     this.updatedAt = Instant.now
   }
 
-  def this(user: User, role: Role, ship: Ship) = {
+  def this(user: User, role: Role, ship: MemberShip) = {
     this(user, role)
     ship match {
-      case Member => member = true
-      case Manager => manager = true
-      case Granter => granter = true
+      case MemberShip.Member => member = true
+      case MemberShip.Manager => manager = true
+      case MemberShip.Granter => granter = true
     }
   }
 
-  def is(ship: Ship): Boolean = {
+  def is(ship: MemberShip): Boolean = {
     ship match {
-      case Member => member
-      case Manager => manager
-      case Granter => granter
+      case MemberShip.Member => member
+      case MemberShip.Manager => manager
+      case MemberShip.Granter => granter
     }
   }
 }

@@ -10,7 +10,7 @@ object BuildSettings {
     startYear := Some(2005),
     scalaVersion := buildScalaVersion,
     scalacOptions := Seq("-Xtarget:11","-deprecation","-feature"),
-    crossPaths := true,
+    crossPaths := false,
 
     publishMavenStyle := true,
     publishConfiguration := publishConfiguration.value.withOverwrite(true),
@@ -26,7 +26,7 @@ object BuildSettings {
 }
 
 object Dependencies {
-  val logbackVer = "1.2.4"
+  val logbackVer = "1.3.0-alpha9"
   val scalatestVer = "3.2.9"
   val scalaxmlVer = "2.0.1"
   val servletapiVer = "5.0.0"
@@ -44,11 +44,12 @@ object Dependencies {
   val idsVer="0.2.21"
   val gsonVer="2.8.6"
   val ehcacheVer = "3.9.5"
+  val jxbVer="2.3.1"
 
   val scalatest = "org.scalatest" %% "scalatest" % scalatestVer % "test"
   val scalaxml = "org.scala-lang.modules" %% "scala-xml" % scalaxmlVer
-  val logbackClassic = "ch.qos.logback" % "logback-classic" % logbackVer % "test"
-  val logbackCore = "ch.qos.logback" % "logback-core" % logbackVer % "test"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % logbackVer
+  val logbackCore = "ch.qos.logback" % "logback-core" % logbackVer
   val servletapi = "jakarta.servlet" % "jakarta.servlet-api" % servletapiVer
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
@@ -60,7 +61,9 @@ object Dependencies {
   val dataHibernate = "org.beangle.data" %% "beangle-data-hibernate" % dataVer
   val dataTransfer = "org.beangle.data" %% "beangle-data-transfer" % dataVer
   val hibernateJCache = "org.hibernate" % "hibernate-jcache" % hibernateVer  exclude("org.hibernate","hibernate-core")
-  val ehcache = "org.ehcache" % "ehcache" % ehcacheVer % "test"
+  val ehcache = "org.ehcache" % "ehcache" % ehcacheVer
+  val jaxb="javax.xml.bind" % "jaxb-api" % jxbVer exclude("xml-apis","xml-apis")
+  val jaxbImpl = "com.sun.xml.bind" % "jaxb-impl" % "2.3.5"
 
   val cdiApi = "org.beangle.cdi" %% "beangle-cdi-api" % cdiVer
   val cdiSpring = "org.beangle.cdi" %% "beangle-cdi-spring" % cdiVer
@@ -86,10 +89,10 @@ object Dependencies {
   val securityCas= "org.beangle.security" %% "beangle-security-cas" % securityVer
 
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
+  val HikariCP = "com.zaxxer" % "HikariCP" % "5.0.0"
 
   val gson = "com.google.code.gson" % "gson" % gsonVer
 
-  var appDepends = Seq(commonsCore,commonsFile, logbackClassic, logbackCore, scalatest, webAction,cdiApi,gson) ++
-                   Seq(dataModel,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateFreemarker)
+  var appDepends = Seq(commonsCore,commonsFile, logbackClassic, logbackCore, scalatest, webAction,cdiApi,gson,HikariCP) ++
+                   Seq(dataModel,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateFreemarker,ehcache,jaxb,jaxbImpl)
 }
-

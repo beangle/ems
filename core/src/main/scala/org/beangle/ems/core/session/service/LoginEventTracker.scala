@@ -22,7 +22,7 @@ import java.time.Instant
 import org.beangle.commons.event.{Event, EventListener}
 import org.beangle.data.dao.EntityDao
 import org.beangle.security.authc.Account
-import org.beangle.security.session.{EventTypes, LoginEvent}
+import org.beangle.security.session.{EventType, LoginEvent}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.session.model.SessionEvent
 
@@ -33,7 +33,7 @@ class LoginEventTracker extends EventListener[LoginEvent] {
 
   override def onEvent(event: LoginEvent): Unit = {
     val login = new SessionEvent
-    login.eventType = EventTypes.Login
+    login.eventType = EventType.Login
     login.updatedAt = Instant.now
     val session = event.session
 

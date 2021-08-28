@@ -22,7 +22,7 @@ import java.time.Instant
 
 import org.beangle.data.model.{ IntId, LongId }
 import org.beangle.data.model.pojo.{ Named, Remark }
-import org.beangle.security.authz.{ Permission, Resource, Scopes }
+import org.beangle.security.authz.{ Permission, Resource, Scope }
 import org.beangle.ems.core.config.model.{ App, Domain }
 import org.beangle.ems.core.user.model.Role
 
@@ -45,7 +45,7 @@ class DataPermission extends LongId  with Permission with Remark {
 
 class DataResource extends IntId with Named with Resource with Remark {
   var domain: Domain = _
-  var scope = Scopes.Public
+  var scope = Scope.Public
   var typeName: String = _
   var title: String = _
   var actions: Option[String] = None

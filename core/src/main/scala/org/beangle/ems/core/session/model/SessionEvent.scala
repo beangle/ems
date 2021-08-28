@@ -19,14 +19,14 @@ package org.beangle.ems.core.session.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventTypes
+import org.beangle.security.session.EventType
 import org.beangle.ems.core.config.model.Domain
 
 class SessionEvent extends LongId with Updated with Named {
 
   var domain:Domain=_
 
-  var eventType: EventTypes.Type = _
+  var eventType: EventType = _
 
   var principal: String = _
 

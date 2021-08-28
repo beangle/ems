@@ -17,13 +17,9 @@
 
 package org.beangle.ems.core.bulletin.model
 
-object NoticeStatus extends Enumeration(0) {
-  val Draft = new Status("草稿")
-  val Submited = new Status("已提交")
-  val Unpassed = new Status("审核不通过")
-  val Passed = new Status("审核通过")
-
-  class Status(val title: String) extends super.Val {
-  }
-
+enum NoticeStatus(val title: String) {
+  case Draft extends NoticeStatus("草稿")
+  case Submited extends NoticeStatus("已提交")
+  case Unpassed extends NoticeStatus("审核不通过")
+  case Passed extends NoticeStatus("审核通过")
 }

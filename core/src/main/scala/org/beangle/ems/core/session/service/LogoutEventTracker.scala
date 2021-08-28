@@ -23,7 +23,7 @@ import java.time.{Instant, ZoneId}
 import org.beangle.commons.event.{Event, EventListener}
 import org.beangle.data.dao.EntityDao
 import org.beangle.security.authc.Account
-import org.beangle.security.session.{EventTypes, LogoutEvent}
+import org.beangle.security.session.{EventType, LogoutEvent}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.session.model.SessionEvent
 
@@ -35,7 +35,7 @@ class LogoutEventTracker extends EventListener[LogoutEvent] {
 
   override def onEvent(event: LogoutEvent): Unit = {
     val logout = new SessionEvent
-    logout.eventType = EventTypes.Logout
+    logout.eventType = EventType.Logout
     logout.updatedAt = Instant.now
     val session = event.session
     logout.principal = session.principal.getName

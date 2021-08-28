@@ -16,13 +16,14 @@
  */
 
 package org.beangle.ems.core.user.model
-
+object MemberShip {
+  def fromId(id:Int):MemberShip= fromOrdinal(id-1)
+}
 /**
  * @author chaostone
  */
-object MemberShip extends Enumeration(1) {
-  type Ship = Value
-  val Member = Value("Member")
-  val Granter = Value("Granter")
-  val Manager = Value("Manager")
+enum MemberShip(val id:Int){
+  case Member extends MemberShip(1)
+  case Granter extends MemberShip(2)
+  case Manager extends MemberShip(3)
 }

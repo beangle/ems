@@ -19,7 +19,7 @@ package org.beangle.ems.core.security.model
 
 import java.security.Principal
 
-import org.beangle.security.authz.{ Permission, Resource, Scopes }
+import org.beangle.security.authz.{ Permission, Resource, Scope }
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.Role
 import org.beangle.data.model.LongId
@@ -33,7 +33,7 @@ import java.time.Instant
 
 class FuncResource extends IntId with Named with Enabled with Resource with Remark {
   var app: App = _
-  var scope = Scopes.Public
+  var scope = Scope.Public
   var title: String = _
   var actions: Option[String] = None
 
