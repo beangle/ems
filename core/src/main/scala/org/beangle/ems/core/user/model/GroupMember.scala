@@ -40,7 +40,6 @@ class GroupMember extends LongId with Updated {
       case MemberShip.Member => member
       case MemberShip.Manager => manager
       case MemberShip.Granter => granter
-      case _ => false
     }
   }
 }

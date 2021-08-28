@@ -1,6 +1,6 @@
-import Dependencies._
-import BuildSettings._
-import sbt.url
+import org.beangle.parent.Settings._
+import org.beangle.parent.Dependencies._
+import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
 ThisBuild / version := "4.1.21-SNAPSHOT"
@@ -32,35 +32,35 @@ lazy val root = (project in file("."))
 lazy val static = (project in file("static"))
   .settings(
     name := "beangle-ems-static",
-    commonSettings,
+    common,
     crossPaths := false,
   )
 
 lazy val app = (project in file("app"))
   .settings(
     name := "beangle-ems-app",
-    commonSettings,
+    common,
     libraryDependencies ++= appDepends
   )
 
 lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
-    commonSettings,
+    common,
     libraryDependencies ++= Seq(idsCas,dataHibernate)
   ).dependsOn(app)
 
 lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
-    commonSettings,
-    libraryDependencies ++= Seq(webmvcSupport,hibernateJCache,ehcache)
+    common,
+    libraryDependencies ++= Seq(webmvcSupport,hibernate_jcache,ehcache)
   ).dependsOn(core)
 
 lazy val cas = (project in file("cas"))
   .settings(
     name := "beangle-ems-cas",
-    commonSettings,
+    common,
     libraryDependencies ++= Seq(webmvcBootstrap),
     libraryDependencies ++= appDepends
   ).dependsOn(web,app,core)
@@ -68,7 +68,7 @@ lazy val cas = (project in file("cas"))
 lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
-    commonSettings,
+    common,
     libraryDependencies ++= Seq(serializerText,cacheCaffeine),
     libraryDependencies ++= appDepends
   ).dependsOn(web,core,app)
@@ -76,7 +76,7 @@ lazy val ws = (project in file("ws"))
 lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
-    commonSettings,
+    common,
     libraryDependencies ++= Seq(webmvcBootstrap,idsCas,dataHibernate),
     libraryDependencies ++= appDepends
   ).dependsOn(web,app,core)
@@ -84,7 +84,7 @@ lazy val portal = (project in file("portal"))
 lazy val index = (project in file("index"))
   .settings(
     name := "beangle-ems-index",
-    commonSettings,
+    common,
     libraryDependencies ++= Seq(webmvcSupport)
   ).dependsOn(core,app)
 
