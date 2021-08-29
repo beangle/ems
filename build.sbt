@@ -58,6 +58,7 @@ lazy val web = (project in file("web"))
   ).dependsOn(core)
 
 lazy val cas = (project in file("cas"))
+  .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,
@@ -66,6 +67,7 @@ lazy val cas = (project in file("cas"))
   ).dependsOn(web,app,core)
 
 lazy val ws = (project in file("ws"))
+  .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,
@@ -74,6 +76,7 @@ lazy val ws = (project in file("ws"))
   ).dependsOn(web,core,app)
 
 lazy val portal = (project in file("portal"))
+  .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
@@ -82,6 +85,7 @@ lazy val portal = (project in file("portal"))
   ).dependsOn(web,app,core)
 
 lazy val index = (project in file("index"))
+  .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-index",
     common,
