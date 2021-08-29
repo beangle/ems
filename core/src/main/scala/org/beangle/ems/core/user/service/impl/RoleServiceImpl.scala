@@ -1,31 +1,31 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.core.user.service.impl
 
-import java.time.ZonedDateTime
+package org.beangle.ems.core.user.service.impl
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.{MemberShip, Role, RoleMember, Root, User}
+import org.beangle.ems.core.security.model.FuncPermission
+import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.RoleService
+
+import java.time.ZonedDateTime
 
 class RoleServiceImpl extends RoleService {
 
@@ -72,7 +72,10 @@ class RoleServiceImpl extends RoleService {
   }
 
   override def remove(manager: User, roles: Seq[Role]): Unit = {
-    entityDao.remove(roles)
+    val query = OqlBuilder.from(classOf[FuncPermission], "fp")
+    query.where("fp.role in(:roles)", roles)
+    val fps = entityDao.search(query)
+    entityDao.remove(fps :: roles.toList)
   }
 
   def get(id: Int): Role = {

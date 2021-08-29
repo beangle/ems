@@ -5,7 +5,7 @@
   [@b.gridbar]
   function activateUser(isActivate){return action.multi("activate","确定提交?","isActivate="+isActivate);}
   bar.addItem("${b.text("action.modify")}",action.edit());
-  bar.addItem("${b.text("action.export")}",action.exportData("code:账户,name:姓名,category.name:身份,beginOn:创建日期,endOn:结束日期,enabled:是否启用,locked:是否锁定","Xlsx","&fileName=用户信息"));
+  bar.addItem("${b.text("action.export")}",action.exportData("code:账户,name:姓名,category.name:身份,beginOn:创建日期,endOn:结束日期","Xlsx","&fileName=用户信息"));
   [/@]
   [@b.row]
     [@b.boxcol/]
@@ -18,7 +18,6 @@
       [#list members?sort_by(['role','indexno']) as m][#if m.member]${m.role.name}&nbsp;[/#if][/#list]
     [/@]
     [@b.col property="beginOn" title="user.beginOn-endOn" width="20%"]${user.beginOn}~${(user.endOn)!}[/@]
-    [@b.col property="enabled" width="8%"][@enableInfo user.enabled/][/@]
   [/@]
 [/@]
 [@b.foot/]

@@ -1,21 +1,20 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.beangle.ems.core.user.service.impl
 
 import java.time.Instant
@@ -24,7 +23,8 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member, Ship}
+import org.beangle.ems.core.user.model.MemberShip
+import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
 import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.UserService
 
@@ -47,7 +47,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
     entityDao.find(classOf[User], ids.toList)
   }
 
-  def getRoles(user: User, ship: Ship): collection.Seq[RoleMember] = {
+  def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember] = {
     val domain = domainService.getDomain
     ship match {
       case Manager => user.roles.filter(m => m.manager && m.role.domain == domain)

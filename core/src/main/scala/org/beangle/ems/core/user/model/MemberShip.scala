@@ -1,29 +1,29 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.beangle.ems.core.user.model
 
+package org.beangle.ems.core.user.model
+object MemberShip {
+  def fromId(id:Int):MemberShip= fromOrdinal(id-1)
+}
 /**
  * @author chaostone
  */
-object MemberShip extends Enumeration(1) {
-  type Ship = Value
-  val Member = Value("Member")
-  val Granter = Value("Granter")
-  val Manager = Value("Manager")
+enum MemberShip(val id:Int){
+  case Member extends MemberShip(1)
+  case Granter extends MemberShip(2)
+  case Manager extends MemberShip(3)
 }

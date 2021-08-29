@@ -121,9 +121,11 @@
               </p>
             </li>
             <li class="user-footer">
+            [#if !nav.principal.credentialReadOnly]
               <div class="float-sm-left">
                 <a href="/cas/edit" class="btn btn-default btn-flat"><i class="nav-icon far fa-user"></i>修改密码</a>
               </div>
+            [/#if]
               <div class="float-sm-right">
                 <a href="${b.url('!logout')}" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;

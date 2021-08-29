@@ -1,28 +1,27 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.security.authz.Scopes
+import org.beangle.security.authz.Scope
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
@@ -243,7 +242,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         resource.app = app
         resource.name = name
         resource.title = title
-        resource.scope = Scopes.withName(scope).asInstanceOf[Scopes.Scope]
+        resource.scope = Scope.valueOf(scope)
         if (Strings.isEmpty(enabled)) {
           resource.enabled = true
         } else {

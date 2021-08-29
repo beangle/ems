@@ -1,33 +1,32 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
-import org.beangle.security.authz.Scopes
-import org.beangle.webmvc.api.annotation.ignore
-import org.beangle.webmvc.api.view.View
-import org.beangle.webmvc.entity.action.RestfulAction
-import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
+import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.security.authz.Scope
+import org.beangle.web.action.annotation.ignore
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
 
 /**
  * 系统模块管理响应类
@@ -90,7 +89,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
   protected override def editSetting(resource: FuncResource): Unit = {
     put("apps", appService.getApps)
     if (!resource.persisted) {
-      resource.scope = Scopes.Private
+      resource.scope = Scope.Private
       resource.enabled = true
     }
   }
@@ -106,19 +105,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
   @ignore
   protected override def removeAndRedirect(entities: Seq[FuncResource]): View = {
     try {
-      //删除相关表
-      val menuBuilder2 = OqlBuilder.from(classOf[Menu], "m").join("m.resources", "r")
-      val menus2 = entityDao.search(menuBuilder2)
-      menus2 foreach (m => m.resources --= entities)
-      entityDao.saveOrUpdate(menus2)
-
-      //重置依次作为入口的菜单
-      val menuBuilder = OqlBuilder.from(classOf[Menu], "m").
-        where("m.entry in(:entries)", entities)
-      val menus = entityDao.search(menuBuilder)
-      menus foreach (m => m.entry = None)
-
-      remove(entities)
+      funcPermissionService.removeResources(entities)
       redirect("search", "info.remove.success")
     } catch {
       case e: Exception =>

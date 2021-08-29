@@ -1,28 +1,27 @@
 /*
- * Beangle, Agile Development Scaffold and Toolkits.
- *
- * Copyright © 2020, The Beangle Software.
+ * Copyright (C) 2005, The Beangle Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.security.authz.Scopes
-import org.beangle.webmvc.api.action.{ActionSupport, EntitySupport}
-import org.beangle.webmvc.api.annotation.{mapping, param, response}
+import org.beangle.security.authz.Scope
+import org.beangle.web.action.support.{ActionSupport, EntitySupport}
+import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
 
@@ -44,7 +43,7 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[
       .where("fr.app=:app", app)
 
     get("scope") foreach { s =>
-      query.where("fr.scope = :scope", Scopes.withName(s))
+      query.where("fr.scope = :scope", Scope.valueOf(s))
     }
     val resources = entityDao.search(query)
     val premQuery = OqlBuilder.from[Array[Object]](classOf[FuncPermission].getName, "fp")
@@ -91,7 +90,7 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[
     val app = appService.getApp(appName).head
     val query = OqlBuilder.from(classOf[FuncResource], "fr")
       .where("fr.app=:app", app)
-      .where("fr.scope=:scope", Scopes.Public)
+      .where("fr.scope=:scope", Scope.Public)
       .cacheable()
     entityDao.search(query)
   }
