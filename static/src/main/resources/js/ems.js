@@ -17,10 +17,10 @@
 
   function init(profiles,cookie){
     var profile=null;
-    if(cookie && cookie.profileId){
+    if(cookie && cookie.profile){
       for(var i=0;i<profiles.length;i++){
         var p = profiles[i];
-        if(p.id == cookie.profileId){
+        if(p.id == cookie.profile){
           profile=p;
           break;
         }

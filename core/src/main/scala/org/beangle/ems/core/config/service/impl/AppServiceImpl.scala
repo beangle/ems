@@ -18,7 +18,7 @@
 package org.beangle.ems.core.config.service.impl
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.core.config.model.{App, AppGroup, AppType, Domain}
+import org.beangle.ems.core.config.model.{App, AppGroup, AppType, Credential, Domain}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 
 /**
@@ -31,6 +31,12 @@ class AppServiceImpl(entityDao: EntityDao) extends AppService {
   override def getGroups(): Seq[AppGroup] = {
     val query = OqlBuilder.from(classOf[AppGroup], "ag")
     query.where("ag.domain=:domain", domainService.getDomain)
+    entityDao.search(query)
+  }
+
+  override def getCredentials(): Seq[Credential] = {
+    val query = OqlBuilder.from(classOf[Credential], "c")
+    query.where("c.domain=:domain", domainService.getDomain)
     entityDao.search(query)
   }
 

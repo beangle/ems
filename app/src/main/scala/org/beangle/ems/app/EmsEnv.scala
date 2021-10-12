@@ -17,16 +17,17 @@
 
 package org.beangle.ems.app
 
-import java.io.File
-
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.SystemInfo
 import org.beangle.commons.logging.Logging
 
+import java.io.File
+
 object EmsEnv extends Logging {
 
   def findHome(): String = {
-    SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + "/.ems")
+    val profile = SystemInfo.properties.getOrElse("ems.profile", "default")
+    SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + s"/.ems/$profile")
   }
 
   def readConfig(location: String): Map[String, String] = {

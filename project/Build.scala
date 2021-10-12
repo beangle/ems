@@ -3,16 +3,16 @@ import sbt._
 import org.beangle.parent.Dependencies._
 
 object EmsDepends {
-  val commonsVer = "5.2.5"
-  val dataVer = "5.3.24"
-  val cdiVer = "0.3.2"
-  val webVer = "0.0.1"
-  val serializerVer= "0.0.20"
-  val cacheVer= "0.0.23"
-  val templateVer ="0.0.33"
-  val webmvcVer="0.4.4"
-  val securityVer="4.2.30"
-  val idsVer="0.2.21"
+  val commonsVer = "5.2.6"
+  val dataVer = "5.3.25"
+  val cdiVer = "0.3.3"
+  val webVer = "0.0.2"
+  val serializerVer= "0.0.21"
+  val cacheVer= "0.0.24"
+  val templateVer ="0.0.34"
+  val webmvcVer="0.4.5"
+  val securityVer="4.2.31"
+  val idsVer="0.2.22"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -39,6 +39,6 @@ object EmsDepends {
   val securityCas= "org.beangle.security" %% "beangle-security-cas" % securityVer
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
 
-  var appDepends = Seq(commonsCore,commonsFile, logback_classic, logback_core, scalatest, webAction,cdiApi,gson,HikariCP) ++
+  val appDepends = Seq(commonsCore,commonsFile, logback_classic, logback_core, scalatest, webAction,cdiApi,gson,HikariCP) ++
                    Seq(dataModel,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateFreemarker,ehcache,jaxb,jaxb_impl)
 }

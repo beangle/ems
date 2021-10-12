@@ -47,7 +47,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App] {
     }
     put("groups", appService.getGroups())
     put("appTypes", entityDao.getAll(classOf[AppType]))
-    put("credentials", entityDao.getAll(classOf[Credential]))
+    put("credentials", appService.getCredentials())
   }
 
   override protected def getQueryBuilder: OqlBuilder[App] = {
