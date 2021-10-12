@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.config.service
 
-import org.beangle.ems.core.config.model.{App, AppGroup, Domain}
+import org.beangle.ems.core.config.model.{App, AppGroup, Credential, Domain}
 
 /**
  * @author chaostone
@@ -33,5 +33,7 @@ trait AppService {
   def getApps: Seq[App]
 
   def getGroups(): Seq[AppGroup]
+
+  def getCredentials():Seq[Credential]
 
 }
