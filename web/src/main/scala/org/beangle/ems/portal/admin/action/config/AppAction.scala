@@ -26,7 +26,7 @@ import org.beangle.ems.core.config.service.{AppService, DbService, DomainService
 
 class AppAction(dbService: DbService) extends RestfulAction[App] {
 
-  override def simpleEntityName = "app"
+  override protected def simpleEntityName = "app"
 
   var domainService: DomainService = _
   var appService: AppService = _
