@@ -26,8 +26,15 @@ import java.io.File
 object EmsEnv extends Logging {
 
   def findHome(): String = {
-    val profile = SystemInfo.properties.getOrElse("ems.profile", "default")
-    SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + s"/.ems/$profile")
+    SystemInfo.properties.get("ems.base") match {
+      case Some(base) => base
+      case None =>
+        val home = SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + s"/.ems")
+        SystemInfo.properties.get("ems.profile") match {
+          case Some(p) => home + "/" + p
+          case None => home
+        }
+    }
   }
 
   def readConfig(location: String): Map[String, String] = {
