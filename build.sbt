@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies._
 import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.1.23"
+ThisBuild / version := "4.1.24"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -27,7 +27,7 @@ ThisBuild / resolvers += Resolver.mavenLocal
 
 lazy val root = (project in file("."))
   .settings()
-  .aggregate(static,app,core,web,cas,ws,portal,index)
+  .aggregate(static,app,core,web,cas,service,portal,index,ws)
 
 lazy val static = (project in file("static"))
   .settings(
@@ -54,7 +54,7 @@ lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(webmvcSupport,hibernate_jcache,ehcache)
+    libraryDependencies ++= Seq(idsWeb,webmvcSupport,hibernate_jcache,ehcache,webmvcBootstrap,dataHibernate,webmvcFreemarker)
   ).dependsOn(core)
 
 lazy val cas = (project in file("cas"))
@@ -62,25 +62,30 @@ lazy val cas = (project in file("cas"))
   .settings(
     name := "beangle-ems-cas",
     common,
-    libraryDependencies ++= Seq(webmvcBootstrap),
     libraryDependencies ++= appDepends
   ).dependsOn(web,app,core)
+
+lazy val service = (project in file("service"))
+  .enablePlugins(WarPlugin)
+  .settings(
+    name := "beangle-ems-service",
+    common,
+    libraryDependencies ++= Seq(webmvcSupport,serializerText,cacheCaffeine),
+    libraryDependencies ++= appDepends
+  ).dependsOn(core,app)
 
 lazy val ws = (project in file("ws"))
   .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,
-    libraryDependencies ++= Seq(serializerText,cacheCaffeine),
-    libraryDependencies ++= appDepends
-  ).dependsOn(web,core,app)
+  ).dependsOn(service)
 
 lazy val portal = (project in file("portal"))
   .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(webmvcBootstrap,idsCas,dataHibernate),
     libraryDependencies ++= appDepends
   ).dependsOn(web,app,core)
 

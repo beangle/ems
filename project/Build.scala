@@ -3,16 +3,16 @@ import sbt._
 import org.beangle.parent.Dependencies._
 
 object EmsDepends {
-  val commonsVer = "5.2.7"
+  val commonsVer = "5.2.8"
   val dataVer = "5.3.25"
   val cdiVer = "0.3.3"
-  val webVer = "0.0.2"
+  val webVer = "0.0.3"
   val serializerVer= "0.0.21"
   val cacheVer= "0.0.24"
-  val templateVer ="0.0.34"
-  val webmvcVer="0.4.5"
+  val templateVer ="0.0.35"
+  val webmvcVer="0.4.6"
   val securityVer="4.2.31"
-  val idsVer="0.2.22"
+  val idsVer="0.2.23"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -28,6 +28,7 @@ object EmsDepends {
   val templateApi = "org.beangle.template" %% "beangle-template-api" % templateVer
   val templateFreemarker = "org.beangle.template" %% "beangle-template-freemarker" % templateVer
   val webAction = "org.beangle.web" %% "beangle-web-action" % webVer
+  val webServlet = "org.beangle.web" %% "beangle-web-servlet" % webVer
   val webmvcCore= "org.beangle.webmvc" %% "beangle-webmvc-core" % webmvcVer
   val webmvcFreemarker= "org.beangle.webmvc" %% "beangle-webmvc-freemarker" % webmvcVer
   val webmvcSupport= "org.beangle.webmvc" %% "beangle-webmvc-support" % webmvcVer
@@ -38,7 +39,8 @@ object EmsDepends {
   val securitySession= "org.beangle.security" %% "beangle-security-session" % securityVer
   val securityCas= "org.beangle.security" %% "beangle-security-cas" % securityVer
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
+  val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
 
   val appDepends = Seq(commonsCore,commonsFile, logback_classic, logback_core, scalatest, webAction,cdiApi,gson,HikariCP) ++
-                   Seq(dataModel,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateFreemarker,ehcache,jaxb,jaxb_impl)
+                   Seq(dataModel,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateApi,ehcache,jaxb,jaxb_impl)
 }
