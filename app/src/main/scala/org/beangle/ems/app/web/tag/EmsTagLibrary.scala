@@ -17,15 +17,12 @@
 
 package org.beangle.ems.app.web.tag
 
+import org.beangle.template.api.TagLibrary
 import org.beangle.web.action.context.ActionContext
-import org.beangle.template.api.AbstractTagLibrary
 
-class EmsTagLibrary extends AbstractTagLibrary {
+class EmsTagLibrary extends TagLibrary {
 
   override def models(): AnyRef = {
-    new EmsModels(buildComponentContext())
-  }
-  def buildServices(): Map[String, AnyRef] = {
-    Map.empty
+    new EmsModels(null)
   }
 }

@@ -26,7 +26,8 @@ import org.beangle.ems.ws.config.{DatasourceWS, OrgWS, FileWS}
 import org.beangle.ems.ws.oauth.TokenWS
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user._
-import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
+import org.beangle.webmvc.execution.{DefaultResponseCache}
+import org.beangle.web.action.execution.CacheResult
 
 class DefaultModule extends BindModule {
 
