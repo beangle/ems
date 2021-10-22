@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies._
 import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.1.26"
+ThisBuild / version := "4.1.27"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -69,7 +69,7 @@ lazy val service = (project in file("service"))
   .settings(
     name := "beangle-ems-service",
     common,
-    libraryDependencies ++= Seq(webmvcSupport,serializerText,cacheCaffeine),
+    libraryDependencies ++= Seq(webmvcSupport,serializerText,cacheCaffeine,hibernate_jcache,ehcache),
     libraryDependencies ++= appDepends
   ).dependsOn(core,app)
 
