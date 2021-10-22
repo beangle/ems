@@ -69,7 +69,7 @@ lazy val service = (project in file("service"))
   .settings(
     name := "beangle-ems-service",
     common,
-    libraryDependencies ++= Seq(webmvcSupport,serializerText,cacheCaffeine),
+    libraryDependencies ++= Seq(webmvcSupport,serializerText,cacheCaffeine,hibernate_jcache,ehcache),
     libraryDependencies ++= appDepends
   ).dependsOn(core,app)
 
