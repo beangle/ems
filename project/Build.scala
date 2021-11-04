@@ -10,9 +10,9 @@ object EmsDepends {
   val serializerVer= "0.0.22"
   val cacheVer= "0.0.25"
   val templateVer ="0.0.36"
-  val webmvcVer="0.4.7"
+  val webmvcVer="0.4.8"
   val securityVer="4.2.32"
-  val idsVer="0.2.24"
+  val idsVer="0.2.25"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
