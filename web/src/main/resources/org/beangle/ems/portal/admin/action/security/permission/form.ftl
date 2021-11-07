@@ -70,7 +70,6 @@
   <th width="50%">可用资源</th>
   <th width="6%">${b.text("common.status")}</th>
   </tr>
-  [#macro i18nTitle(entity)][#if locale.language?index_of("en")!=-1][#if entity.engTitle!?trim==""]${entity.title!}[#else]${entity.engTitle!}[/#if][#else][#if entity.title!?trim!=""]${entity.title!}[#else]${entity.engTitle!}[/#if][/#if][/#macro]
   [#list mngMenus?sort_by("indexno") as menu]
 
   <tr class="grayStyle [#if !menu.enabled]ui-disabled[/#if]" id="${menu.indexno}">
@@ -84,7 +83,7 @@
       [#else]
       <a href="#" class="tree-folder-open" id="${menu.indexno}_folder" onclick="bg.tabletree.toggle(this);"></a>[#rt]
       [/#if]
-      &nbsp;${menu.indexno} [@i18nTitle menu/]
+      &nbsp;${menu.indexno} ${menu.title}
     </div>
     </td>
     <td>
