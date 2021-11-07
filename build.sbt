@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies._
 import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.1.30"
+ThisBuild / version := "4.1.31"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -47,14 +47,14 @@ lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(idsCas,dataHibernate)
+    libraryDependencies ++= Seq(commonsCore,idsCas,dataHibernate)
   ).dependsOn(app)
 
 lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(idsWeb,webmvcSupport,hibernate_jcache,ehcache,webmvcBootstrap,dataHibernate,webmvcFreemarker)
+    libraryDependencies ++= Seq(commonsCore,idsWeb,webmvcSupport,hibernate_jcache,ehcache,webmvcBootstrap,dataHibernate,webmvcFreemarker)
   ).dependsOn(core)
 
 lazy val cas = (project in file("cas"))

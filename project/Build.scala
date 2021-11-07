@@ -3,8 +3,8 @@ import sbt._
 import org.beangle.parent.Dependencies._
 
 object EmsDepends {
-  val commonsVer = "5.2.9"
-  val dataVer = "5.3.26"
+  val commonsVer = "5.2.10"
+  val dataVer = "5.3.27"
   val cdiVer = "0.3.4"
   val webVer = "0.0.4"
   val serializerVer= "0.0.22"

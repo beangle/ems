@@ -68,7 +68,7 @@ class PermissionAction extends RestfulAction[FuncPermission] {
     AppHelper.putApps(apps, "app.id", entityDao)
 
     val app: App = ActionContext.current.attribute("current_app")
-    var mngMenus = new collection.mutable.ListBuffer[Menu]
+    val mngMenus = new collection.mutable.ListBuffer[Menu]
     if (null != app) {
       var mngResources: collection.Seq[Object] = null
       if (userService.isRoot(user, app.name) || isPlatformRoot) {
