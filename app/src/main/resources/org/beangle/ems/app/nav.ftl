@@ -191,7 +191,7 @@
 <script type="text/javascript">
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
-    var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'beangle-webui-bootstrap'}
+    var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'adminlte'}
     var portal={"name":'ems-portal','url':'${nav.ems.portal}','title':'首页'}
     var params={}
     [#list nav.params as k,v]

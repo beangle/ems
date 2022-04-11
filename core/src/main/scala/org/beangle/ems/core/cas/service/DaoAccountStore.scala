@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.cas.service
 
-import org.beangle.data.hibernate.spring.SessionUtils
+import org.beangle.data.orm.hibernate.spring.SessionUtils
 import org.beangle.ems.core.user.service.AccountService
 import org.beangle.security.authc.{Account, AccountStore}
 import org.hibernate.SessionFactory

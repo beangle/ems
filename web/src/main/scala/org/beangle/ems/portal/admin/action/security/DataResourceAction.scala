@@ -18,14 +18,15 @@
 package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.data.model.Entity
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.config.service.DataSourceManager
 import org.beangle.ems.core.security.model.DataResource
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
 
 /**
  * 系统模块管理响应类
+ *
  * @author chaostone 2005-10-9
  */
 class DataResourceAction extends RestfulAction[DataResource] {
@@ -48,7 +49,7 @@ class DataResourceAction extends RestfulAction[DataResource] {
 
   protected override def saveAndRedirect(resource: DataResource): View = {
     if (null != resource) {
-      if (entityDao.duplicate(classOf[DataResource], resource.id, "name", resource.name)) {
+      if (entityDao.duplicate(classOf[DataResource], resource.id, Map("name" -> resource.name))) {
         return redirect("edit", "error.notUnique")
       }
     }
