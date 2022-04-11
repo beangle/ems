@@ -18,11 +18,14 @@
 package org.beangle.ems.app.web
 
 import jakarta.servlet.ServletContext
-import org.beangle.web.servlet.init.Initializer
 import org.beangle.ems.app.Ems
+import org.beangle.web.servlet.init.Initializer
 
 class EmsInitializer extends Initializer {
   override def onStartup(servletContext: ServletContext): Unit = {
+  }
+
+  override def onConfig(servletContext: ServletContext): Unit = {
     System.setProperty("beangle.webmvc.static_base", Ems.static)
   }
 }

@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <mvc>
-  <static>
-    <bundle name="echarts" version="4.5.0">
-      <module name="echarts" js="dist/echarts.js"/>
-    </bundle>
-  </static>
-
   <profile name="ems-portal" package="org.beangle.ems.portal.*.action">
     <url path="/" suffix="" style="seo" />
     <interceptors>

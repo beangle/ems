@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies._
 import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.1.32"
+ThisBuild / version := "4.1.33"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -47,18 +47,18 @@ lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(commonsCore,idsCas,dataHibernate)
+    libraryDependencies ++= Seq(commonsCore,idsCas,dataOrm)
   ).dependsOn(app)
 
 lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(commonsCore,idsWeb,webmvcSupport,hibernate_jcache,ehcache,webmvcBootstrap,dataHibernate,webmvcFreemarker)
+    libraryDependencies ++= Seq(commonsCore,idsWeb,webmvcSupport,hibernate_jcache,ehcache,webmvcBootstrap,dataOrm,webmvcFreemarker)
   ).dependsOn(core)
 
 lazy val cas = (project in file("cas"))
-  .enablePlugins(WarPlugin)
+  .enablePlugins(WarPlugin,UndertowPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,
@@ -81,7 +81,7 @@ lazy val ws = (project in file("ws"))
   ).dependsOn(service)
 
 lazy val portal = (project in file("portal"))
-  .enablePlugins(WarPlugin)
+  .enablePlugins(WarPlugin,UndertowPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,

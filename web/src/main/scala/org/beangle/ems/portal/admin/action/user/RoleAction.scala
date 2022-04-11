@@ -17,24 +17,25 @@
 
 package org.beangle.ems.portal.admin.action.user
 
-import java.time.Instant
-
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.security.Securities
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.portal.admin.helper.ProfileHelper
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, RoleService, UserService}
+import org.beangle.ems.portal.admin.helper.ProfileHelper
+import org.beangle.security.Securities
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
+
+import java.time.Instant
 
 /**
  * 角色信息维护响应类
+ *
  * @author chaostone 2005-9-29
  */
 class RoleAction(val roleService: RoleService, val userService: UserService) extends RestfulAction[Role] {
@@ -91,9 +92,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
         return redirect("search", "不能修改该组,你没有" + role.parent.map(p => p.name).orNull + "的管理权限")
       }
     }
-    if (entityDao.duplicate(classOf[Role], role.id, "name", role.getName())) return redirect(
-      "edit",
-      "error.notUnique")
+    if  entityDao.duplicate(classOf[Role], role.id, Map("name" -> role.getName)) then return redirect("edit", "error.notUnique")
     if (!role.persisted) {
       role.indexno = "tmp"
       roleService.create(me, role)

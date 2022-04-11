@@ -43,7 +43,7 @@ class DataPermissionAction extends RestfulAction[DataPermission] {
   }
 
   protected override def saveAndRedirect(dataPermission: DataPermission): View = {
-    if (entityDao.duplicate(classOf[DataPermission], dataPermission.id, "remark", dataPermission.remark)) {
+    if (entityDao.duplicate(classOf[DataPermission], dataPermission.id, Map("remark"-> dataPermission.remark))) {
       addError("限制模式描述重复")
       forward(to(this, "edit"))
     } else {

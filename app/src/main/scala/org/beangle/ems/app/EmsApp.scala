@@ -18,8 +18,7 @@
 package org.beangle.ems.app
 
 import java.io.{File, FileInputStream}
-
-import org.beangle.commons.conversion.converter.String2DateConverter
+import org.beangle.commons.conversion.string.DateConverter
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.logging.Logging
@@ -61,7 +60,7 @@ object EmsApp extends Logging {
       val res = HttpUtils.getText(tokenUrl)
       if (res.status == 200) {
         val token = JSON.parseObj(res.getText)
-        _token = Token(token("token").asInstanceOf[String], String2DateConverter.convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
+        _token = Token(token("token").asInstanceOf[String], DateConverter.convert(token("expiredAt"), classOf[java.util.Date]).asInstanceOf[java.util.Date].getTime)
       } else {
         throw new RuntimeException("cannot find token")
       }

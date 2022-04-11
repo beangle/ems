@@ -2,63 +2,69 @@
 
 [#macro displayFrame mainHref="" ]
 <style>
-[#--限定宽度为171px,这两个宽度的css定义要放在一个文件里面,仅仅重置768，而不重置991的不起作用--]
-@media (min-width: 768px) {
-  body:not(.sidebar-mini-md) .content-wrapper,
-  body:not(.sidebar-mini-md) .main-footer,
-  body:not(.sidebar-mini-md) .main-header {
-    transition: margin-left 0.3s ease-in-out;
-    margin-left: 171px;
+[#--限定宽度为171px,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
+  @media (min-width: 768px) {
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    transition:margin-left .3s ease-in-out;
+    margin-left:171px;
+   }
   }
-}
-@media (max-width: 991.98px) {
-  body:not(.sidebar-mini-md) .content-wrapper, body:not(.sidebar-mini-md) .content-wrapper::before,
-  body:not(.sidebar-mini-md) .main-footer,
-  body:not(.sidebar-mini-md) .main-footer::before,
-  body:not(.sidebar-mini-md) .main-header,
-  body:not(.sidebar-mini-md) .main-header::before {
-    margin-left: 0;
+  @media (max-width:991.98px) {
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    margin-left:0
+   }
   }
-}
-.main-sidebar, .main-sidebar::before {
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-  width: 171px;
-}
-@media (max-width: 767.98px) {
-  .main-sidebar, .main-sidebar::before {
-    box-shadow: none !important;
-    margin-left: -171px;
-  }
-  .sidebar-open .main-sidebar, .sidebar-open .main-sidebar::before {
-    margin-left: 0;
-  }
-}
-.layout-fixed .brand-link {
-    width: 171px;
-}
-.layout-navbar-fixed .wrapper.sidebar-collapse .main-sidebar:hover .brand-link {
-  transition: width 0.3s ease-in-out;
-  width: 171px;
-}
 
-.sidebar-mini.sidebar-collapse .main-sidebar:hover, .sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused {
-  width: 171px;
-}
-[#--字体紧凑 靠左--]
-.nav-legacy {
-    line-height:1.4;
-    background-color:rgb(34, 45, 50);
-    width:171px;
-}
-.nav-legacy.nav-sidebar .nav-item > .nav-link{
-  border-radius: 0;
-  margin-bottom: 0;
-  padding-left:0;
-}
-[#--图标小一点--]
-.nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.glyphicon, .nav-sidebar > .nav-item .nav-icon.ion{
-  font-size: 0.9rem;
-}
+  .sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
+    width:171px
+  }
+
+  .layout-navbar-fixed .wrapper.sidebar-collapse .main-sidebar:hover .brand-link {
+    transition: width 0.3s ease-in-out;
+    width: 171px;
+  }
+
+  .main-sidebar, .main-sidebar::before {
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    width: 171px;
+  }
+
+  @media (max-width:767.98px) {
+   .main-sidebar, .main-sidebar::before {
+    box-shadow:none!important;
+    margin-left:-171px
+   }
+   .sidebar-open .main-sidebar,
+   .sidebar-open .main-sidebar::before {
+    margin-left:0
+   }
+  }
+  .layout-fixed .brand-link {
+   width:171px
+  }
+ .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused,
+ .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover {
+  width:171px
+ }
+  [#--字体紧凑 靠左--]
+  .nav-legacy {
+      line-height:1.2;
+      background-color:rgb(34, 45, 50);
+      width:171px;
+  }
+  .nav-legacy.nav-sidebar .nav-item > .nav-link{
+    border-radius: 0;
+    margin-bottom: 0;
+    padding-left:0;
+  }
+  [#--图标小一点--]
+  .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.glyphicon, .nav-sidebar > .nav-item .nav-icon.ion{
+    font-size: 0.8rem;
+  }
 </style>
 <div class="wrapper">
     <nav class="main-header navbar navbar-expand navbar-dark navbar-lightblue sticky-top border-bottom-0">
@@ -75,8 +81,7 @@
             <i class="far fa-comments"></i>
             <span class="badge badge-danger navbar-badge" id="newly-message-count">0</span>
           </a>
-          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px">
-          </div>
+          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
 
         <li class="nav-item dropdown notifications-menu">
@@ -193,7 +198,7 @@
 <script type="text/javascript">
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
-    var app = {'name':'${nav.app.name}',"title":'${domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'beangle-webui-bootstrap'}
+    var app = {'name':'${nav.app.name}',"title":'${domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'adminlte'}
     var params={}
     [#list nav.params as k,v]
     params['${k}']='${v}';
