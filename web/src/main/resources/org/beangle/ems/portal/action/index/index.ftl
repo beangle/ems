@@ -46,10 +46,10 @@
   .layout-fixed .brand-link {
    width:171px
   }
- .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused,
- .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover {
-  width:171px
- }
+  .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused,
+  .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover {
+    width:171px
+  }
   [#--字体紧凑 靠左--]
   .nav-legacy {
       line-height:1.2;
@@ -64,6 +64,16 @@
   [#--图标小一点--]
   .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.glyphicon, .nav-sidebar > .nav-item .nav-icon.ion{
     font-size: 0.8rem;
+  }
+  [#--每个连接的宽度窄一些--]
+  .sidebar-mini .main-sidebar .nav-legacy .nav-link, .sidebar-mini-md .main-sidebar .nav-legacy .nav-link, .sidebar-mini-xs .main-sidebar .nav-legacy .nav-link {
+    width: 171px;
+  }
+  [#--文件夹的箭头靠右一些--]
+  .nav-sidebar .nav-link > .right, .nav-sidebar .nav-link > p > .right {
+    position: absolute;
+    right: 0.1rem;
+    top: .7rem;
   }
 </style>
 <div class="wrapper">
