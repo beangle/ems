@@ -2,6 +2,7 @@
 
 [#macro displayFrame mainHref="" ]
 <style>
+[#--这一段定制的css，在app模块中的nav.ftl也有一份--]
 [#--限定宽度为171px,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
   @media (min-width: 768px) {
    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,

@@ -18,7 +18,7 @@
 package org.beangle.ems.app.web
 
 import jakarta.servlet.ServletContext
-import org.beangle.ems.app.Ems
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.web.servlet.init.Initializer
 
 class EmsInitializer extends Initializer {
@@ -27,5 +27,6 @@ class EmsInitializer extends Initializer {
 
   override def onConfig(servletContext: ServletContext): Unit = {
     System.setProperty("beangle.webmvc.static_base", Ems.static)
+    System.setProperty("beangle.cdi.reconfig_url",s"${Ems.api}/platform/config/files/${EmsApp.name}/spring-config.xml")
   }
 }
