@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config
-        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-        xmlns='http://www.ehcache.org/v3'
-        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'>
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xmlns='http://www.ehcache.org/v3'
+  xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+  xsi:schemaLocation="
+        http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+        http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
 
-    <cache alias="default-update-timestamps-region">
-        <key-type>java.lang.Object</key-type>
-        <value-type>java.lang.Object</value-type>
-        <expiry>
-            <ttl unit="seconds">900</ttl>
-        </expiry>
-        <heap unit="entries">10000</heap>
-    </cache>
+  <service>
+    <jsr107:defaults enable-management="true" enable-statistics="true"/>
+  </service>
 
-    <cache alias="default-query-results-region">
-        <key-type>java.lang.Object</key-type>
-        <value-type>java.lang.Object</value-type>
-        <expiry>
-            <ttl unit="seconds">900</ttl>
-        </expiry>
-        <heap unit="entries">10000</heap>
-    </cache>
+  <cache alias="default-update-timestamps-region">
+    <key-type>java.lang.Object</key-type>
+    <value-type>java.lang.Object</value-type>
+    <expiry>
+      <ttl unit="seconds">900</ttl>
+    </expiry>
+    <heap unit="entries">10000</heap>
+  </cache>
+
+  <cache alias="default-query-results-region">
+    <key-type>java.lang.Object</key-type>
+    <value-type>java.lang.Object</value-type>
+    <expiry>
+      <ttl unit="seconds">900</ttl>
+    </expiry>
+    <heap unit="entries">10000</heap>
+  </cache>
 </config>
