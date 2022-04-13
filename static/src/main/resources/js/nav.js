@@ -28,7 +28,7 @@
     this.navDomId="top_nav_bar";
     this.sysName=null;
     this.params={};
-    this.maxTopItem=8;
+    this.maxTopItem=9;
     if(params){
       for(var name in params){
         var pv=params[name];
@@ -180,7 +180,7 @@
       jQuery("#"+this.menuDomId+" li a").click(function() {
         if(this.href=="javascript:void(0)"){
           jQuery(this).parent('li').siblings().each(function (i,li){
-              jQuery(li).removeClass('menu-open');
+              jQuery(li).removeClass('menu-open menu-is-opening');
               jQuery(li).children('ul').hide();
               jQuery(li).children('a').removeClass('active');
             }
@@ -265,28 +265,40 @@
     jqueryElem.append(content);
   }
 
+  /**
+   * 展现全部domain内所有group的菜单（最全的）
+   */
   function DomainNav(nav){
     this.nav=nav;
     this.groupTemplate='<li class="nav-item"><a class="nav-link {active_class}" href="javascript:void(0)" id="group_{group.id}">{group.title}</a></li>';
     this.portalTemplate='<li class="nav-item"><a href="{app.url}" class="nav-link" target="_self">{app.title}</a></li>';
-
+    this.dropdownGroupNavTemplate='<a href="javascript:void(0)"  class="dropdown-item {active_class}" id="group_{group.id}">{group.title}</a>'
     /**
-     * 向顶层添加groups
+     * 添加顶层groups
      */
     this.addTopGroups = function(jqueryElem){
       var appItem='';
+      var topItemCount=0;
+      var topMoreHappened=false;
       jQuery('#appName').html(this.nav.sysName);
       prependApps(jqueryElem,this.nav,this.nav.apps,true)
 
-      /*var app=this.nav.app;
-      appItem = this.portalTemplate.replace('{app.url}',this.nav.processUrl(app.url));
-      appItem = appItem.replace('{app.title}',this.nav.portal.title);
-      jqueryElem.append(appItem);*/
-
       for(var i=0;i < this.nav.groups.length; i++){
         var group = this.nav.groups[i];
-        appItem = this.groupTemplate.replace('{group.title}',group.title);
-        appItem = appItem.replace('{group.id}',group.id);
+        topItemCount += 1;
+        if(topItemCount == this.nav.maxTopItem && this.nav.groups.length > this.nav.maxTopItem){
+          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">更多...</a><div id="topMore" aria-labelledby="navbarDropdown" class="dropdown-menu"></div><li>');
+          topMoreHappened=true;
+        }
+        if(topMoreHappened){
+          jqueryElem = jQuery('#topMore');
+        }
+        if(topMoreHappened){
+          appItem = this.dropdownGroupNavTemplate.replace('{group.id}',group.id);
+        }else{
+          appItem = this.groupTemplate.replace('{group.id}',group.id);
+        }
+        appItem = appItem.replace('{group.title}',group.title);
         appItem = appItem.replace('{group.name}',group.name);
         appItem = appItem.replace('{active_class}',(i==0)?"active":"");
         jqueryElem.append(appItem);
@@ -334,7 +346,7 @@
     this.addTopApps = function(jqueryElem){
       var topItemCount=0;
       var appItem='';
-      var topMenuMoreHappened=false;
+      var topMoreHappened=false;
       var thisApp=this.nav.app;
       var groupApps=[this.nav.portal];
       //过滤掉非所在group的app
@@ -351,20 +363,21 @@
       prependApps(jqueryElem,this.nav,groupApps,true)
       for(var i=0;i<groupApps.length;i++){
         var app = groupApps[i];
+        topItemCount += 1;
         if(app.name==this.nav.app.name){
           var appName=app.title;
           if(app.group && app.group.title) appName=app.group.title
           jQuery('#appName').html(appName);
         }
         if(topItemCount == this.nav.maxTopItem && groupApps.length > this.nav.maxTopItem){
-          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">更多...</a><div id="topMenuMore" aria-labelledby="navbarDropdown" class="dropdown-menu"></div><li>');
-          topMenuMoreHappened=true;
+          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">更多...</a><div id="topMore" aria-labelledby="navbarDropdown" class="dropdown-menu"></div><li>');
+          topMoreHappened=true;
         }
-        if(topMenuMoreHappened){
-          jqueryElem = jQuery('#topMenuMore');
+        if(topMoreHappened){
+          jqueryElem = jQuery('#topMore');
         }
         if(app.embeddable){
-          if(topMenuMoreHappened){
+          if(topMoreHappened){
             appItem = this.dropdownAppNavTemplate.replace('{app.id}',app.id);
           }else{
             appItem = this.appNavTemplate.replace('{app.id}',app.id);
@@ -375,7 +388,7 @@
           jqueryElem.append(appItem);
           jQuery("#app_"+app.id).click(function (){changeApp(this);return false;})
         }else{
-          if(topMenuMoreHappened){
+          if(topMoreHappened){
             appItem = this.dropdownAppExternTemplate.replace('{app.id}',app.id);
           }else{
             appItem = this.appExternTemplate.replace('{app.id}',app.id);
@@ -385,7 +398,6 @@
           appItem = appItem.replace('{active_class}',app.name==this.nav.app.name?"active":"");
           jqueryElem.append(appItem);
         }
-        topItemCount +=1;
       }
     }
 
@@ -444,20 +456,20 @@
           jQuery('#appName').html(nav.apps[i].title);
         }
       }
-      var topMenuCount=0;
+      var topItemCount=0;
       var appendHtml='';
-      var menus=this.nav.appMenus[this.nav.app.name];
+      var menus = this.nav.appMenus[this.nav.app.name];
       for(var i=0;i<menus.length;i++){
         var menu = menus[i];
         if(!menu.children || menu.children.length==0){
           continue;
         }
-        topMenuCount +=1;
-        if(topMenuCount == this.nav.maxTopItem){
-          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">更多...</a><div id="topMenuMore" class="dropdown-menu"></div><li>');
+        topItemCount +=1;
+        if(topItemCount == this.nav.maxTopItem){
+          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">更多...</a><div id="topMore" class="dropdown-menu"></div><li>');
         }
-        if(topMenuCount >= this.nav.maxTopItem ){
-          jqueryElem = jQuery('#topMenuMore');
+        if(topItemCount >= this.nav.maxTopItem ){
+          jqueryElem = jQuery('#topMore');
           appendHtml = this.dropdownTopMenuTemplate.replace('{menu.title}',menu.title);
         }else{
           appendHtml = this.topMenuTemplate.replace('{menu.title}',menu.title);
