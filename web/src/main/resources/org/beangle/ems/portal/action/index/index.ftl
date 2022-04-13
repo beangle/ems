@@ -54,7 +54,6 @@
   [#--字体紧凑 靠左--]
   .nav-legacy {
       line-height:1.2;
-      background-color:rgb(34, 45, 50);
       width:171px;
   }
   .nav-legacy.nav-sidebar .nav-item > .nav-link{
@@ -163,7 +162,7 @@
       <img src="${nav.org.logoUrl!}" class="brand-image"/>
       <span class="brand-text font-weight-light" id="appName" ></span>
     </a>
-    <div class="sidebar" style="background-color:#222d32">
+    <div class="sidebar">
       <nav class="mt-2">
         <ul id="menu_ul" class="nav nav-pills nav-sidebar flex-column nav-legacy nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"></ul>
       </nav>
@@ -223,7 +222,7 @@
           params[i] = default_p[i];
         }
       }
-      params['maxTopItem']=7;
+      params['maxTopItem']=8;
     }
     [/#if]
     jQuery(document).ready(function(){
