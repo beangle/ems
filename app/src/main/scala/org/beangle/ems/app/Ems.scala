@@ -75,6 +75,10 @@ object Ems extends Logging {
     env.properties
   }
 
+  def isPlatform(contextPath: String): Boolean = {
+    cas.endsWith(contextPath) || (api + "/platform").endsWith(contextPath) || portal.endsWith(contextPath)
+  }
+
   class Org {
     var id: Int = _
     var code: String = _
@@ -93,5 +97,4 @@ object Ems extends Logging {
   }
 
   case class Sid(name: String, prefix: String)
-
 }
