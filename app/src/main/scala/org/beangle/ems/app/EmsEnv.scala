@@ -20,6 +20,7 @@ package org.beangle.ems.app
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.SystemInfo
 import org.beangle.commons.logging.Logging
+import org.beangle.commons.io.Files./
 
 import java.io.File
 
@@ -29,9 +30,9 @@ object EmsEnv extends Logging {
     SystemInfo.properties.get("ems.base") match {
       case Some(base) => base
       case None =>
-        val home = SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + s"/.ems")
+        val home = SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + / + ".ems")
         SystemInfo.properties.get("ems.profile") match {
-          case Some(p) => home + "/" + p
+          case Some(p) => home + / + p
           case None => home
         }
     }
