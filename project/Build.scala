@@ -40,6 +40,6 @@ object EmsDepends {
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
 
   val appDepends = Seq(commonsCore,commonsFile, logback_classic, logback_core, scalatest, webAction,cdiApi,gson,HikariCP) ++
-                   Seq(dataOrm,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateApi,hibernate_jcache) ++
+                   Seq(dataOrm,hibernate_core,dataJdbc,cacheApi,cacheCaffeine,securitySession,securityCas,templateApi,hibernate_jcache) ++
                    Seq(ehcache,jaxb,jaxb_impl,postgresql)
 }
