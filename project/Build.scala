@@ -3,16 +3,16 @@ import sbt._
 import org.beangle.parent.Dependencies._
 
 object EmsDepends {
-  val commonsVer = "5.2.13"
-  val dataVer = "5.4.0"
-  val cdiVer = "0.3.5"
+  val commonsVer = "5.2.16"
+  val dataVer = "5.4.2"
+  val cdiVer = "0.3.6"
   val webVer = "0.0.6"
   val serializerVer= "0.0.23"
   val cacheVer= "0.0.26"
   val templateVer ="0.0.37"
-  val webmvcVer="0.4.9"
+  val webmvcVer="0.5.0"
   val securityVer="4.2.33"
-  val idsVer="0.2.26"
+  val idsVer="0.2.27"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
