@@ -126,9 +126,11 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
         return true;
     }
 
+[#if setting.enableCaptcha]
     function change_captcha(){
        document.getElementById('captcha_image').src="${captcha_url}?t="+(new Date()).getTime();
     }
+[/#if]
     function remoteLogin(elem,form){
       if(elem.checked){
         addHidden(form,"remote","1");

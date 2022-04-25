@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <cdi>
-  <container name="web">
-    <module class="org.beangle.ems.ws.DefaultModule"/>
-  </container>
-
   <container>
+    <module class="org.beangle.ems.ws.DefaultModule"/>
+
     <module class="org.beangle.serializer.text.DefaultModule"/>
     <module class="org.beangle.serializer.json.DefaultModule"/>
     <module class="org.beangle.serializer.xml.DefaultModule"/>

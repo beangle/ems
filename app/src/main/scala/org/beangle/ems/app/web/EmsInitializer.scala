@@ -18,6 +18,7 @@
 package org.beangle.ems.app.web
 
 import jakarta.servlet.ServletContext
+import org.beangle.cdi.bind.BindRegistry
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.web.servlet.init.Initializer
 
@@ -27,9 +28,8 @@ class EmsInitializer extends Initializer {
 
   override def onConfig(sc: ServletContext): Unit = {
     System.setProperty("beangle.webmvc.static_base", Ems.static)
-    //针对平台应用，不要使用网络配置化，防止自我循环依赖
-    if (!Ems.isPlatform(sc.getContextPath)) {
-      System.setProperty("beangle.cdi.reconfig_url", s"${Ems.api}/platform/config/files/${EmsApp.name}/spring-config.xml")
-    }
+    //针对平台服务，不要使用网络配置化，防止自我循环依赖
+    if (!Ems.isPlatform(sc.getContextPath))
+      sc.setAttribute(BindRegistry.ReconfigUrlProperty, s"${Ems.api}/platform/config/files/${EmsApp.name}/spring-config.xml")
   }
 }
