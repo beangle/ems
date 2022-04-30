@@ -74,7 +74,7 @@ lazy val service = (project in file("service"))
   ).dependsOn(core,app)
 
 lazy val ws = (project in file("ws"))
-  .enablePlugins(WarPlugin)
+  .enablePlugins(WarPlugin,UndertowPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,

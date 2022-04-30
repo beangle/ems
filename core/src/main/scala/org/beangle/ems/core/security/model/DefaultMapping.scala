@@ -33,6 +33,7 @@ object DefaultMapping extends MappingModule {
       e.actions is length(100)
       e.restrictions is length(100)
       e.remark is length(100)
+      index("", false, e.role)
     }
 
     bind[Menu].declare { e =>
@@ -41,6 +42,8 @@ object DefaultMapping extends MappingModule {
       e.indexno is length(50)
       e.children.is(depends("parent"), orderby("indexno"))
       e.params is length(200)
+      index("", false, e.app)
+      index("", false, e.entry)
     }
 
     bind[FuncResource].declare { e =>

@@ -19,19 +19,20 @@ package org.beangle.ems.ws.user
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.model.{App, AppType}
-import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.FuncPermission
 import org.beangle.ems.core.user.model.{Root, User}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 
 /**
  * @author chaostone
  */
 class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSupport with EntitySupport[User] {
 
+  var appService: AppService = _
   var domainService: DomainService = _
 
   @response(cacheable = true)
@@ -40,12 +41,13 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
     userService.get(userCode) match {
       case Some(user) =>
         val domain = domainService.getDomain
+        val webapp = appService.getAppType(AppType.Webapp)
         val fpAppQuery = OqlBuilder.from[App](classOf[FuncPermission].getName, "fp")
           .join("fp.role.members", "m")
           .where("m.user=:user and m.member=true", user)
           .where("fp.resource.app.enabled=true")
           .where("fp.resource.app.domain=:domain", domain)
-          .where(s"fp.resource.app.appType.name='${AppType.Webapp}'")
+          .where(s"fp.resource.app.appType=:webapp", webapp)
           .select("distinct fp.resource.app").cacheable()
 
         val fpApps = entityDao.search(fpAppQuery)
@@ -55,7 +57,7 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
 
         val rootsQuery = OqlBuilder.from(classOf[Root], "root")
           .where("root.app.domain=:domain", domain)
-          .where(s"root.user=:user and root.app.enabled=true and root.app.appType.name='${AppType.Webapp}'", user)
+          .where(s"root.user=:user and root.app.enabled=true and root.app.appType=:webapp", user, webapp)
           .cacheable()
         val roots = entityDao.search(rootsQuery)
         apps ++= roots.map(a => a.app)

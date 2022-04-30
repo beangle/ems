@@ -17,16 +17,28 @@
 
 package org.beangle.ems.core.config.service.impl
 
+import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.core.config.model.{App, AppGroup, AppType, Credential, Domain}
+import org.beangle.ems.app.Ems
+import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 
 /**
  * @author chaostone
  */
-class AppServiceImpl(entityDao: EntityDao) extends AppService {
+class AppServiceImpl(entityDao: EntityDao) extends AppService with Initializing {
 
+  private var appTypes: Map[String, AppType] = _
   var domainService: DomainService = _
+
+  override def init(): Unit = {
+    val rs = entityDao.getAll(classOf[AppType])
+    appTypes = rs.map(x => (x.name, x)).toMap
+  }
+
+  override def getAppType(typeName: String): AppType = {
+    appTypes(typeName)
+  }
 
   override def getGroups(): Seq[AppGroup] = {
     val query = OqlBuilder.from(classOf[AppGroup], "ag")
