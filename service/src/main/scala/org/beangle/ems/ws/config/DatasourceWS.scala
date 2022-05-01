@@ -17,12 +17,14 @@
 
 package org.beangle.ems.ws.config
 
+import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.model.DataSource
 import org.beangle.ems.core.config.service.AppService
+import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 
 class DatasourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[DataSource] {
 
@@ -34,9 +36,9 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport with EntitySuppor
     val secret = get("secret", "")
 
     val apps = appService.getApp(app)
-    if (apps.isEmpty) return "error:error_app_name"
+    if (apps.isEmpty) return reportError("error:error_app_name")
     val exist = apps.head
-    if (exist.secret != secret) return "error:error_secret"
+    if (exist.secret != secret) return reportError("error:error_secret")
 
     val query = OqlBuilder.from(classOf[DataSource], "ds")
     query.where("ds.app=:app and ds.name=:key", exist, name)
@@ -59,7 +61,13 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport with EntitySuppor
         ds.put(k, v)
       }
       ds
-    } else "error:error_resource_key"
+    } else reportError("error:error_resource_key")
   }
 
+  private def reportError(msg: String): String = {
+    val res = ActionContext.current.response
+    res.getWriter.print(msg)
+    res.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+    null
+  }
 }
