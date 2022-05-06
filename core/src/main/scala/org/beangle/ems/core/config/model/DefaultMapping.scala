@@ -78,7 +78,9 @@ object DefaultMapping extends MappingModule {
       index("idx_domain", true, e.org, e.hostname)
     }
 
-    bind[AppType]
+    bind[AppType].declare { e =>
+      index("", true, e.name)
+    }
 
     bind[File]
 

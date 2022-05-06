@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies._
 import EmsDepends._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.1.37"
+ThisBuild / version := "4.1.38"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -74,7 +74,7 @@ lazy val service = (project in file("service"))
   ).dependsOn(core,app)
 
 lazy val ws = (project in file("ws"))
-  .enablePlugins(WarPlugin)
+  .enablePlugins(WarPlugin,UndertowPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,
