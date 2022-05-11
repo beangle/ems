@@ -26,8 +26,8 @@ import org.scalatest.funspec.AnyFunSpec
 class EmsAppTest extends AnyFunSpec with Matchers {
   describe("EmsApp") {
     it("init") {
-      assert(EmsApp.name == "ems-testwebapp")
-      assert(EmsApp.path == "/ems/testwebapp")
+      assert(EmsApp.name == "platform-testwebapp")
+      assert(EmsApp.path == "/platform/testwebapp")
     }
   }
 }
