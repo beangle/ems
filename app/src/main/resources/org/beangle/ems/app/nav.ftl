@@ -1,13 +1,14 @@
 [#macro displayFrame mainHref="" ]
 <style>
 [#--这一段定制的css，在app模块中的nav.ftl也有一份--]
-[#--限定宽度为171px,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
+[#assign sidebar_width=161/]
+[#--限定宽度为sidebar_widthpx,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
   @media (min-width: 768px) {
    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
     transition:margin-left .3s ease-in-out;
-    margin-left:171px;
+    margin-left:${sidebar_width}px;
    }
   }
   @media (max-width:991.98px) {
@@ -19,23 +20,23 @@
   }
 
   .sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
-    width:171px
+    width:${sidebar_width}px;
   }
 
   .layout-navbar-fixed .wrapper.sidebar-collapse .main-sidebar:hover .brand-link {
     transition: width 0.3s ease-in-out;
-    width: 171px;
+    width: ${sidebar_width}px;
   }
 
   .main-sidebar, .main-sidebar::before {
     transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    width: 171px;
+    width: ${sidebar_width}px;
   }
 
   @media (max-width:767.98px) {
    .main-sidebar, .main-sidebar::before {
     box-shadow:none!important;
-    margin-left:-171px
+    margin-left:-${sidebar_width}px
    }
    .sidebar-open .main-sidebar,
    .sidebar-open .main-sidebar::before {
@@ -43,16 +44,17 @@
    }
   }
   .layout-fixed .brand-link {
-   width:171px
+   width:${sidebar_width}px
   }
   .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused,
   .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover {
-    width:171px
+    width:${sidebar_width}px
   }
   [#--字体紧凑 靠左--]
   .nav-legacy {
-      line-height:1.2;
-      width:171px;
+      line-height:1.1;
+      width:${sidebar_width}px;
+      font-size:13px;
   }
   .nav-legacy.nav-sidebar .nav-item > .nav-link{
     border-radius: 0;
@@ -61,17 +63,48 @@
   }
   [#--图标小一点--]
   .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.glyphicon, .nav-sidebar > .nav-item .nav-icon.ion{
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+  }
+  [#--靠左边一点--]
+  .text-sm .nav-legacy.nav-sidebar > .nav-item > .nav-link.active > .nav-icon {
+    margin-left: 3px;
+  }
+  [#--层级之间的缩进小一点--]
+ .text-sm .nav-legacy.nav-sidebar .nav-item > .nav-link > .nav-icon {
+    margin-left: 3px;
+  }
+  .nav-sidebar .nav-treeview > .nav-item > .nav-link > .nav-icon{
+    width: 1.3rem;
+  }
+  [#--图标窄一点--]
+  .nav-sidebar .nav-treeview > .nav-item  .nav-icon {
+    width: 1.3rem;
   }
   [#--每个连接的宽度窄一些--]
   .sidebar-mini .main-sidebar .nav-legacy .nav-link, .sidebar-mini-md .main-sidebar .nav-legacy .nav-link, .sidebar-mini-xs .main-sidebar .nav-legacy .nav-link {
-    width: 171px;
+    width: ${sidebar_width}px;
   }
   [#--文件夹的箭头靠右一些--]
   .nav-sidebar .nav-link > .right, .nav-sidebar .nav-link > p > .right {
     position: absolute;
     right: 0.1rem;
     top: .7rem;
+  }
+  [#--缩小时宽度变为3rem--]
+  @media (min-width: 992px){
+    .sidebar-mini.sidebar-collapse.layout-fixed .brand-link {
+      width: 3rem;
+    }
+    .sidebar-mini.sidebar-collapse .main-sidebar, .sidebar-mini.sidebar-collapse .main-sidebar::before {
+      margin-left: 0;
+      width: 3rem;
+    }
+    .sidebar-mini.sidebar-collapse .content-wrapper, .sidebar-mini.sidebar-collapse .main-footer, .sidebar-mini.sidebar-collapse .main-header {
+      margin-left: 3rem !important;
+    }
+  }
+  #navbar-setting .nav-link{
+    padding:0.3125rem 0.5rem;
   }
 </style>
 <div class="wrapper">
@@ -83,14 +116,13 @@
       </ul>
       <ul class="nav navbar-nav" id="top_nav_bar"></ul>
 
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ml-auto" id="navbar-setting">
         <li class="nav-item dropdown">
           <a href="#" class="nav-link" data-toggle="dropdown">
             <i class="far fa-comments"></i>
             <span class="badge badge-danger navbar-badge" id="newly-message-count">0</span>
           </a>
-          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px">
-          </div>
+          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
 
         <li class="nav-item dropdown notifications-menu">
@@ -124,8 +156,13 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown user user-menu">
-          <a href="#" class="nav-link" data-toggle="dropdown" title="${nav.principal.description}" style="padding:.35rem 0.35rem">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+          </a>
+        </li>
+        <li class="nav-item dropdown user user-menu" style="margin-right: -5px;">
+          <a href="#" class="nav-link" data-toggle="dropdown" title="${nav.principal.description}" style="padding-left: 5px;padding-right: 0px;">
             <img src="${nav.avatarUrl}" class="user-image">
           </a>
           <ul class="dropdown-menu">
@@ -133,15 +170,15 @@
               <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
               <p>
                 ${nav.principal.description} - (${nav.principal.name})[#if nav.username != nav.principal.name] 模拟${nav.username}[/#if]
-                <small>[#if nav.principal.remoteToken??]本地登录[#else]统一身份平台登录[/#if]</small>
+                <small>[#if nav.principal.remoteToken??]统一身份平台登录[#else]本地登录[/#if]</small>
               </p>
             </li>
             <li class="user-footer">
-            [#if !nav.principal.credentialReadOnly]
+              [#if !nav.principal.credentialReadOnly]
               <div class="float-sm-left">
                 <a href="/cas/edit" class="btn btn-default btn-flat"><i class="nav-icon far fa-user"></i>修改密码</a>
               </div>
-            [/#if]
+              [/#if]
               <div class="float-sm-right">
                 <a href="${b.url('!logout')}" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
@@ -151,17 +188,29 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#" style="padding:.35rem 0.35rem" class="nav-link" data-slide="true" data-widget="control-sidebar"><i class="fa fa-cog"></i></a>
+          <a href="#" style="padding:0.3125rem 0.35rem" class="nav-link" data-slide="true" data-widget="control-sidebar"><i class="fa fa-cog"></i></a>
         </li>
       </ul>
     </nav>
 
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name}">
-      <img src="${nav.org.logoUrl!}" class="brand-image"/>
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
+    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name}" style="height: 47px;border:0px;">
+      <img src="${nav.org.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" ></span>
     </a>
-    <div class="sidebar">
+    <div class="form-inline" style="display:none">
+      <div class="input-group">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" id="menu_searcher"
+               style="height: 29px;font-size: 12px;">
+        <div class="input-group-append">
+          <button class="btn btn-sidebar" style="border-left-width: 0px;padding-top: 0px;padding-bottom: 0px;">
+            <i class="fas fa-search fa-fw" style="width: 0.6rem;"></i>
+          </button>
+        </div>
+      </div>
+      <div class="sidebar-search-results"><div class="list-group"></div></div>
+    </div>
+    <div class="sidebar" style="padding-right:0px">
       <nav class="mt-2">
         <ul id="menu_ul" class="nav nav-pills nav-sidebar flex-column nav-legacy nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"></ul>
       </nav>
@@ -173,7 +222,7 @@
   [@b.div id="main" class="content-wrapper" /]
   [/#if]
 
-<aside class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
+  <aside class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li class="nav-item"><a class="nav-link active" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
       <li class="nav-item"><a class="nav-link" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
@@ -208,7 +257,7 @@
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'adminlte'}
-    var portal={"name":'ems-portal','url':'${nav.ems.portal}','title':'首页'}
+    var portal={"name":'platform-portal','url':'${nav.ems.portal}','title':'首页'}
     var params={}
     [#list nav.params as k,v]
     params['${k}']='${v}';
@@ -218,19 +267,19 @@
     if(ems.config.profiles.length>0 && ems.config.profile){
       var default_p = ems.config.profile
       for(var i in default_p){
-        if(i != "id"){
-          params[i] = default_p[i];
-        }
+        if(i != "id") params[i] = default_p[i];
       }
       params['maxTopItem']=8;
     }
     [/#if]
     jQuery(document).ready(function(){
-      emsnav.createGroupNav(app,portal,${nav.menusJson},params);
+      var navMenu = emsnav.createDomainNav(app,portal,${nav.menusJson},params,false);
+      navMenu.displayAppMenus('${nav.app.name}');
       [#if nav.profiles??]
       emsnav.createProfileNav();
       [/#if]
       emsnav.setup(params);
+      emsnav.enableSearch('menu_searcher');
     });
   });
 </script>
