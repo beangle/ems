@@ -765,9 +765,9 @@
     var searchDom = jQuery('#'+searchInputId).parent().parent();
     searchDom.show();
     searchDom.removeClass("sidebar-search-open");
-    searchDom.find(".input-group-append .btn i").click(function (event) {
-        event.preventDefault();
-        navMenu.toggleSearchResults();
+    searchDom.find(".input-group-append .btn").click(function (event) {
+      event.preventDefault();
+      navMenu.toggleSearchResults();
     });
     jQuery(document).on('keyup', '#'+searchInputId, function (event) {
       setTimeout(function () {

@@ -15,14 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.ws.config
 
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Named
+import org.beangle.commons.collection.Properties
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.web.action.annotation.response
+import org.beangle.web.action.support.ActionSupport
 
-class Domain extends IntId with Named {
-  var title: String = _
-  var hostname: String = _
-  var org: Org = _
-  var logoUrl: String = _
+class DomainWS extends ActionSupport {
+
+  var domainService: DomainService = _
+
+  @response
+  def index(): Properties = {
+    val domain = domainService.getDomain
+    val org = domainService.getOrg
+    val orgProperties = new Properties(org, "id", "code", "name", "shortName", "logoUrl", "wwwUrl")
+    val domainProperties = new Properties(domain, "id", "title", "name", "hostname", "logoUrl")
+    domainProperties.put("org", orgProperties)
+    domainProperties
+  }
+
 }

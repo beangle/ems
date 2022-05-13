@@ -22,18 +22,17 @@ import org.beangle.cdi.bind.BindModule
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.impl.MemTokenRepository
 import org.beangle.ems.ws.bulletin.NoticeWS
-import org.beangle.ems.ws.config.{DatasourceWS, OrgWS, FileWS}
-import org.beangle.ems.ws.oauth.TokenWS
 import org.beangle.ems.ws.security.{data, func}
-import org.beangle.ems.ws.user._
-import org.beangle.webmvc.execution.{DefaultResponseCache}
+import org.beangle.ems.ws.user.*
+import org.beangle.ems.ws.{config, oauth}
 import org.beangle.web.action.execution.CacheResult
+import org.beangle.webmvc.execution.DefaultResponseCache
 
 class DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
-    bind(classOf[DatasourceWS], classOf[OrgWS], classOf[FileWS])
-    bind(classOf[TokenWS])
+    bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
+    bind(classOf[oauth.TokenWS],classOf[config.DomainWS])
 
     bind(classOf[NoticeWS])
 
