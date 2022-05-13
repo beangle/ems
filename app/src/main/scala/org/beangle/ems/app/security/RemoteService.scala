@@ -19,10 +19,10 @@ package org.beangle.ems.app.security
 
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.net.http.HttpUtils.getText
-import org.beangle.security.Securities
-import org.beangle.security.authz.Authority
 import org.beangle.ems.app.util.JSON
 import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.security.Securities
+import org.beangle.security.authz.Authority
 
 /**
  * @author chaostone
@@ -80,13 +80,30 @@ object RemoteService {
   def getOrg: Ems.Org = {
     val json = getText(Ems.api + "/platform/config/orgs.json").getOrElse(null)
     val data = JSON.parseObj(json)
+    convert2Org(data)
+  }
+
+  def getDomain: Ems.Domain = {
+    val json = getText(Ems.api + "/platform/config/domains.json").getOrElse(null)
+    val data = JSON.parseObj(json)
+    val domain = new Ems.Domain
+    data.get("id") foreach (e => domain.id = e.asInstanceOf[Number].intValue)
+    data.get("name") foreach (e => domain.name = e.toString)
+    data.get("title") foreach (e => domain.title = e.toString)
+    data.get("logoUrl") foreach (e => domain.logoUrl = e.toString)
+    domain.org = convert2Org(data.get("org").orNull.asInstanceOf[collection.Map[String, Any]])
+    domain
+  }
+
+  private def convert2Org(data: collection.Map[String, Any]): Ems.Org = {
     val org = new Ems.Org
-    data.get("id") foreach (e => org.id = e.asInstanceOf[Number].intValue)
-    data.get("code") foreach (e => org.code = e.toString)
-    data.get("name") foreach (e => org.name = e.toString)
-    data.get("shortName") foreach (e => org.shortName = e.toString)
-    data.get("logoUrl") foreach (e => org.logoUrl = e.toString)
-    data.get("wwwUrl") foreach (e => org.wwwUrl = e.toString)
+    if null != data then
+      data.get("id") foreach (e => org.id = e.asInstanceOf[Number].intValue)
+      data.get("code") foreach (e => org.code = e.toString)
+      data.get("name") foreach (e => org.name = e.toString)
+      data.get("shortName") foreach (e => org.shortName = e.toString)
+      data.get("logoUrl") foreach (e => org.logoUrl = e.toString)
+      data.get("wwwUrl") foreach (e => org.wwwUrl = e.toString)
     org
   }
 }

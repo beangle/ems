@@ -194,8 +194,8 @@
     </nav>
 
   <aside class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
-    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name}" style="height: 47px;border:0px;">
-      <img src="${nav.org.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
+    <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="height: 47px;border:0px;">
+      <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" ></span>
     </a>
     <div class="form-inline" style="display:none">
@@ -259,6 +259,7 @@
     var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'adminlte'}
     var portal={"name":'platform-portal','url':'${nav.ems.portal}','title':'首页'}
     var params={}
+    params['sysName']='${nav.domain.title}';
     [#list nav.params as k,v]
     params['${k}']='${v}';
     [/#list]

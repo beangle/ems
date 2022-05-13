@@ -37,8 +37,6 @@ class IndexAction extends ActionSupport with ServletSupport {
   def index(): View = {
     val ctx = NavContext.get(request)
     put("nav", ctx)
-
-    put("domain", domainService.getDomain)
     put("ems", Ems)
     forward()
   }

@@ -24,4 +24,5 @@ class Domain extends IntId with Named {
   var title: String = _
   var hostname: String = _
   var org: Org = _
+  var logoUrl: String = _
 }

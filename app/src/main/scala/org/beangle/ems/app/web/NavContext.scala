@@ -20,19 +20,23 @@ package org.beangle.ems.app.web
 import jakarta.servlet.http.HttpServletRequest
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
-import org.beangle.web.servlet.url.UrlBuilder
-import org.beangle.web.servlet.util.RequestUtils
+import org.beangle.ems.app.security.RemoteService
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authc.Account
 import org.beangle.web.action.context.ActionContext
-import org.beangle.ems.app.security.RemoteService
-import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.web.servlet.url.UrlBuilder
+import org.beangle.web.servlet.util.RequestUtils
 
 object NavContext {
   def get(request: HttpServletRequest): NavContext = {
     val ctx = new NavContext
     ctx.menusJson = RemoteService.getDomainMenusJson
-    ctx.org = RemoteService.getOrg
+
+    ctx.domain = RemoteService.getDomain
+    if null == ctx.domain.org then ctx.org = RemoteService.getOrg
+    else ctx.org = ctx.domain.org
+
     val builder = new UrlBuilder(request.getContextPath)
     builder.setScheme(if (RequestUtils.isHttps(request)) "https" else "http")
       .setServerName(request.getServerName)
@@ -71,12 +75,13 @@ object NavContext {
 }
 
 class NavContext {
+  val params = Collections.newMap[String, String]
   var menusJson: String = _
   var org: Ems.Org = _
+  var domain: Ems.Domain = _
   var app: App = _
   var principal = Securities.session.get.principal
   var username = Securities.user
-  val params = Collections.newMap[String, String]
   var profiles: Option[String] = None
   var cookie: Option[String] = None
 

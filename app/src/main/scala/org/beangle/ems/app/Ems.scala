@@ -43,18 +43,6 @@ object Ems extends Logging {
     env.base
   }
 
-  def cas: String = {
-    env.cas
-  }
-
-  def portal: String = {
-    env.portal
-  }
-
-  def api: String = {
-    env.api
-  }
-
   def blob: String = {
     env.blob
   }
@@ -79,6 +67,18 @@ object Ems extends Logging {
     cas.endsWith(contextPath) || (api + "/platform").endsWith(contextPath) || portal.endsWith(contextPath)
   }
 
+  def cas: String = {
+    env.cas
+  }
+
+  def portal: String = {
+    env.portal
+  }
+
+  def api: String = {
+    env.api
+  }
+
   class Org {
     var id: Int = _
     var code: String = _
@@ -88,6 +88,16 @@ object Ems extends Logging {
     var wwwUrl: String = _
   }
 
+  class Domain {
+    var id: Int = _
+    var name: String = _
+    var title: String = _
+    var logoUrl: String = _
+    var org: Org = _
+  }
+
+  case class Sid(name: String, prefix: String)
+
   object Sid {
     def apply(properties: Map[String, String]): Sid = {
       val name = properties.getOrElse("session_id_name", "EMS_SID")
@@ -95,6 +105,4 @@ object Ems extends Logging {
       Sid(name, prefix)
     }
   }
-
-  case class Sid(name: String, prefix: String)
 }
