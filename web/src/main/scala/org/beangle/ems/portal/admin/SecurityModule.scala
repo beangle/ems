@@ -34,8 +34,6 @@ class SecurityModule extends BindModule {
     bind(classOf[DataPermissionAction])
     bind(classOf[DataResourceAction])
 
-    //bind(classOf[IndexAction])
-
     bind(classOf[action.session.IndexAction])
     bind(classOf[action.session.ConfigAction])
     bind(classOf[action.session.EventAction])

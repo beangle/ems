@@ -61,7 +61,5 @@ class DefaultModule extends BindModule {
 
     //authorizer and manager
     bind("security.Authorizer.remote", classOf[RemoteAuthorizer])
-
   }
-
 }

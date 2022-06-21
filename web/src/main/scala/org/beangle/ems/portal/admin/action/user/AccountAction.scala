@@ -17,26 +17,31 @@
 
 package org.beangle.ems.portal.admin.action.user
 
-import java.time.Instant
-
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
+import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.log.BusinessLogStore
+import org.beangle.ems.app.web.BusinessLogSupport
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.user.model.*
+import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
 import org.beangle.security.Securities
 import org.beangle.security.authc.DBCredentialStore
 import org.beangle.security.codec.DefaultPasswordEncoder
+import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.view.View
+import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model._
-import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
+
+import java.time.Instant
 
 /**
  * 用户管理响应处理类
+ *
  * @author chaostone 2005-9-29
  */
-class AccountAction extends RestfulAction[Account] {
+class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
 
   var userService: UserService = _
 
@@ -48,64 +53,6 @@ class AccountAction extends RestfulAction[Account] {
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
-  }
-
-  protected override def getQueryBuilder: OqlBuilder[Account] = {
-    val domain = domainService.getDomain
-    put("domain", domain)
-    val accQuery = OqlBuilder.from(classOf[Account], "account")
-    accQuery.where("account.domain=:domain", domain)
-    accQuery.join("account.user", "user")
-    // 查询角色
-    val sb = new StringBuilder()
-    val params = new collection.mutable.ListBuffer[Object]
-    val roleName = get("roleName", "")
-    if (Strings.isNotEmpty(roleName)) {
-      sb.append("exists(from account.user.roles m where ")
-      sb.append("m.role.name like :roleName and m.role.domain=:domain ")
-      params += ("%" + roleName + "%")
-      params += domain
-      sb.append(')')
-    }
-    if (sb.nonEmpty) {
-      val roleCondition = new Condition(sb.toString)
-      roleCondition.params(params)
-      accQuery.where(roleCondition)
-    }
-    populateConditions(accQuery)
-    accQuery.tailOrder("account.id")
-    accQuery.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
-    accQuery
-  }
-
-  /**
-   * 保存用户信息
-   */
-  protected override def saveAndRedirect(account: Account): View = {
-    val user =
-      if (getLong("user.id").isEmpty) {
-        val code = get("user.code").head
-        val org = domainService.getOrg
-        val userQuery = OqlBuilder.from(classOf[User], "u")
-        userQuery.where("u.code=:code and u.org=:org", code, org)
-        entityDao.search(userQuery).headOption match {
-          case Some(v) => v
-          case None => populateEntity(classOf[User], "user")
-        }
-      } else {
-        populateEntity(classOf[User], "user")
-      }
-    // check account exists
-    if (!user.persisted) {
-      user.beginOn = account.beginOn
-      user.endOn = account.endOn
-      userService.create(loginUser, user)
-    } else {
-      entityDao.saveOrUpdate(user)
-    }
-    account.user = user
-    updateAccount(account.user, account)
-    redirect("search", "info.save.success")
   }
 
   def saveRole(): View = {
@@ -153,44 +100,6 @@ class AccountAction extends RestfulAction[Account] {
     entityDao.execute(ob)
     entityDao.refresh(user)
     redirect("search", "info.save.success")
-  }
-
-  protected override def editSetting(account: Account): Unit = {
-    put("categories", userService.getCategories())
-    val domain = domainService.getDomain
-    val manager = loginUser
-    val roles = new collection.mutable.HashSet[Role]
-    val mngMemberMap = new collection.mutable.HashMap[Role, RoleMember]
-    val emsAdmin = userService.isRoot(manager, EmsApp.name)
-    if (emsAdmin) {
-      val roleQuery = OqlBuilder.from(classOf[Role], "r").orderBy("r.indexno")
-      roleQuery.where("r.domain=:domain", domain)
-      roles ++= entityDao.search(roleQuery)
-      for (role <- roles)
-        mngMemberMap.put(role, new RoleMember(manager, role, MemberShip.Granter))
-    } else {
-      val members = userService.getRoles(manager, MemberShip.Granter)
-      for (gm <- members) {
-        roles.add(gm.role)
-        mngMemberMap.put(gm.role, gm)
-      }
-    }
-    put("roles", roles)
-
-    val memberMap = new collection.mutable.HashMap[Role, RoleMember]
-    if (null != account.user) {
-      for (gm <- account.user.roles) {
-        if (gm.role.domain == domain) {
-          memberMap.put(gm.role, gm)
-        }
-      }
-    }
-    put("memberMap", memberMap)
-    put("mngMemberMap", mngMemberMap)
-  }
-
-  private def loginUser: User = {
-    userService.get(Securities.user).head
   }
 
   /**
@@ -252,6 +161,69 @@ class AccountAction extends RestfulAction[Account] {
     redirect("search")
   }
 
+  protected override def getQueryBuilder: OqlBuilder[Account] = {
+    val domain = domainService.getDomain
+    put("domain", domain)
+    val accQuery = OqlBuilder.from(classOf[Account], "account")
+    accQuery.where("account.domain=:domain", domain)
+    accQuery.join("account.user", "user")
+    // 查询角色
+    val sb = new StringBuilder()
+    val params = new collection.mutable.ListBuffer[Object]
+    val roleName = get("roleName", "")
+    if (Strings.isNotEmpty(roleName)) {
+      sb.append("exists(from account.user.roles m where ")
+      sb.append("m.role.name like :roleName and m.role.domain=:domain ")
+      params += ("%" + roleName + "%")
+      params += domain
+      sb.append(')')
+    }
+    if (sb.nonEmpty) {
+      val roleCondition = new Condition(sb.toString)
+      roleCondition.params(params)
+      accQuery.where(roleCondition)
+    }
+    populateConditions(accQuery)
+    accQuery.tailOrder("account.id")
+    accQuery.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
+    accQuery
+  }
+
+  /**
+   * 保存用户信息
+   */
+  protected override def saveAndRedirect(account: Account): View = {
+    val user =
+      if (getLong("user.id").isEmpty) {
+        val code = get("user.code").head
+        val org = domainService.getOrg
+        val userQuery = OqlBuilder.from(classOf[User], "u")
+        userQuery.where("u.code=:code and u.org=:org", code, org)
+        entityDao.search(userQuery).headOption match {
+          case Some(v) => v
+          case None => populateEntity(classOf[User], "user")
+        }
+      } else {
+        populateEntity(classOf[User], "user")
+      }
+    // check account exists
+    if (!user.persisted) {
+      user.beginOn = account.beginOn
+      user.endOn = account.endOn
+      userService.create(loginUser, user)
+    } else {
+      publishBusinessLog("修改账户", user.id, ActionContext.current.params.toString)
+      entityDao.saveOrUpdate(user)
+    }
+    account.user = user
+    updateAccount(account.user, account)
+    redirect("search", "info.save.success")
+  }
+
+  private def loginUser: User = {
+    userService.get(Securities.user).head
+  }
+
   protected def updateAccount(user: User, account: Account): Unit = {
     var password = get("password").orNull
     if (Strings.isBlank(password) && !user.persisted) {
@@ -270,5 +242,39 @@ class AccountAction extends RestfulAction[Account] {
       }
       accountService.createAccount(user, account)
     }
+  }
+
+  protected override def editSetting(account: Account): Unit = {
+    put("categories", userService.getCategories())
+    val domain = domainService.getDomain
+    val manager = loginUser
+    val roles = new collection.mutable.HashSet[Role]
+    val mngMemberMap = new collection.mutable.HashMap[Role, RoleMember]
+    val emsAdmin = userService.isRoot(manager, EmsApp.name)
+    if (emsAdmin) {
+      val roleQuery = OqlBuilder.from(classOf[Role], "r").orderBy("r.indexno")
+      roleQuery.where("r.domain=:domain", domain)
+      roles ++= entityDao.search(roleQuery)
+      for (role <- roles)
+        mngMemberMap.put(role, new RoleMember(manager, role, MemberShip.Granter))
+    } else {
+      val members = userService.getRoles(manager, MemberShip.Granter)
+      for (gm <- members) {
+        roles.add(gm.role)
+        mngMemberMap.put(gm.role, gm)
+      }
+    }
+    put("roles", roles)
+
+    val memberMap = new collection.mutable.HashMap[Role, RoleMember]
+    if (null != account.user) {
+      for (gm <- account.user.roles) {
+        if (gm.role.domain == domain) {
+          memberMap.put(gm.role, gm)
+        }
+      }
+    }
+    put("memberMap", memberMap)
+    put("mngMemberMap", mngMemberMap)
   }
 }

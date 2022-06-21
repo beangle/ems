@@ -17,7 +17,6 @@
 
 package org.beangle.ems.app
 
-import java.io.{File, FileInputStream}
 import org.beangle.commons.conversion.string.DateConverter
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.{ClassLoaders, Strings}
@@ -27,6 +26,8 @@ import org.beangle.ems.app.Ems.env
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 import org.beangle.ems.app.util.JSON
 
+import java.io.{File, FileInputStream}
+
 object EmsApp extends Logging {
 
   val properties: Map[String, Any] = readProperties()
@@ -35,18 +36,18 @@ object EmsApp extends Logging {
 
   private var _token: Token = _
 
-  def secret: String = {
-    properties.getOrElse("secret", name).asInstanceOf[String]
-  }
-
   def getBlobRepository(remote: Boolean = true): Repository = {
     var dir = Strings.substringBeforeLast(name, "-")
     dir = "/" + Strings.replace(dir, "-", "/")
     if (remote) {
-      new RemoteRepository(env.blob, dir, name,secret)
+      new RemoteRepository(env.blob, dir, name, secret)
     } else {
       new LocalRepository(Ems.home + "/blob", dir)
     }
+  }
+
+  def secret: String = {
+    properties.getOrElse("secret", name).asInstanceOf[String]
   }
 
   def token: String = {
@@ -68,6 +69,21 @@ object EmsApp extends Logging {
     _token.token
   }
 
+  def getAppFile: Option[File] = {
+    val homefile = new File(Ems.home + path + ".xml")
+    if (homefile.exists) Some(homefile)
+    else None
+  }
+
+  def getFile(file: String): Option[File] = {
+    val homefile =
+      if (file.startsWith("/")) new File(Ems.home + path + file)
+      else new File(Ems.home + path + "/" + file)
+
+    if (homefile.exists) Some(homefile)
+    else None
+  }
+
   private def readProperties(): Map[String, Any] = {
     try {
       val configs = ClassLoaders.getResources("META-INF/beangle/ems-app.properties")
@@ -87,15 +103,17 @@ object EmsApp extends Logging {
 
       val result = new collection.mutable.HashMap[String, Any]
       result ++= appManifest
-      val appconf = new File(Ems.home + appPath + "/conf.properties")
-      if (appconf.exists) result ++= IOs.readJavaProperties(appconf.toURI.toURL)
       result.put("path", appPath)
 
       val appFile = new File(Ems.home + appPath + ".xml")
       if (appFile.exists()) {
         val is = new FileInputStream(appFile)
-        scala.xml.XML.load(is) \\ "app" foreach { app =>
+        val rootNode = scala.xml.XML.load(is)
+        rootNode \\ "app" foreach { app =>
           result ++= app.attributes.asAttrMap
+        }
+        rootNode  \ "properties" \ "property" foreach { pNode =>
+          result.put((pNode \ "@name").text.trim, (pNode \ "@value").text.trim)
         }
         IOs.close(is)
       }
@@ -103,21 +121,6 @@ object EmsApp extends Logging {
     } catch {
       case e: Throwable => logger.error("Issue exception when read property", e); System.exit(1); Map.empty
     }
-  }
-
-  def getAppFile: Option[File] = {
-    val homefile = new File(Ems.home + path + ".xml")
-    if (homefile.exists) Some(homefile)
-    else None
-  }
-
-  def getFile(file: String): Option[File] = {
-    val homefile =
-      if (file.startsWith("/")) new File(Ems.home + path + file)
-      else new File(Ems.home + path + "/" + file)
-
-    if (homefile.exists) Some(homefile)
-    else None
   }
 
 }
