@@ -19,6 +19,7 @@ package org.beangle.ems.cas.action
 
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
+import org.beangle.ems.app.web.BusinessLogSupport
 import org.beangle.ems.core.user.model.User
 import org.beangle.ids.cas.ticket.TicketRegistry
 import org.beangle.ids.cas.web.helper.SessionHelper
@@ -28,11 +29,13 @@ import org.beangle.security.codec.DefaultPasswordEncoder
 import org.beangle.security.session.Session
 import org.beangle.security.web.WebSecurityManager
 import org.beangle.security.web.session.CookieSessionIdPolicy
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.annotation.mapping
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.View
 
-class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegistry) extends ActionSupport with ServletSupport {
+class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegistry)
+  extends ActionSupport with ServletSupport with BusinessLogSupport {
 
   var entityDao: EntityDao = _
 
@@ -49,9 +52,9 @@ class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegi
     get("password") foreach { p =>
       val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
       if (users.size == 1) {
-        val user = users.head
         credentialStore.updatePassword(Securities.user, DefaultPasswordEncoder.generate(p, null, "sha"))
       }
+      info(Securities.user + "修改了自己的密码", users.head.id, "密码长度" + p.length)
     }
     get("service") match {
       case None =>

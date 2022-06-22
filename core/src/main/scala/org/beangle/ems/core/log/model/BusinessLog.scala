@@ -15,26 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.core.log.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventType
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.config.model.App
 
-@log
-class SessionEvent extends LongId with Updated with Named {
+import java.time.Instant
 
-  var domain:Domain=_
+class BusinessLog extends LongId {
 
-  var eventType: EventType = _
-
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
+  var app: App = _
+  /** 操作人 */
+  var operator: String = _
+  /** 操作时间 */
+  var operateAt: Instant = _
+  /** 操作内容摘要 */
+  var summary: String = _
+  /** 操作内容 */
+  var details: String = _
+  /** 对应的资源 */
+  var resources: String = _
+  /** IP */
   var ip: String = _
+  /** 操作客户端代理 */
+  var agent: String = _
+  /** 访问入口 */
+  var entry: String = _
+  /** 级别 */
+  var level: Level = _
 }

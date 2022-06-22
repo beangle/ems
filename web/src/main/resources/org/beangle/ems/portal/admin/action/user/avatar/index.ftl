@@ -1,27 +1,27 @@
 [@b.head "照片浏览"/]
   <div class="container ajax_container" style="width:100%">
-    <div class="">
-      <h2>照片管理 <small>照片浏览</small></h2>
-    </div>
     <style>
       .imgdiv{width:88px; float:left; height:145px; overflow: hidden; margin:5px;}
       .imgdiv img{width:100%;}
       .imgdiv .text{text-align: center;}
     </style>
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        [@b.form action="!index" name="photoSearchForm" id = "photoSearchForm" class="navbar-form navbar-left" role="form"]
-        <div class="form-group ">
-            <input type="text" name="user" value="${Parameters['user']!}" placeholder="用户号/姓名" class="form-control">
-        </div>
+    <nav role="navigation" class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="#">照片管理</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active"><a class="nav-link" href="#">照片浏览</a></li>
+        </ul>
+        [@b.form action="!index" name="photoSearchForm" id="photoSearchForm" class="form-inline"]
+          <div class="form-group">
+            <input type="text" name="user" value="210" placeholder="用户号/姓名" class="form-control form-control-sm">
+          </div>
           <input type="hidden" id="pageIndex" name="pageIndex" value="1">
-          [@b.submit class="btn btn-primary" value="搜索"/]
+          <input type="submit" onclick="bg.form.submit('photoSearchForm',null,null,null);return false;" class="btn btn-sm btn-outline-primary" value="搜索">
         [/@]
-        <div class="navbar-form navbar-right">
-          [@b.a href="!uploadSetting" class="btn btn-default"]<span class="glyphicon glyphicon-plus"></span>上传照片[/@]
-        </div>
+        [@b.a href="!uploadSetting" class="btn btn-sm btn-default"]<i class="fa-solid fa-upload"></i></span>上传照片[/@]
       </div>
     </nav>
+
     [#if users?size>0]
       <div style="margin:-10px -5px 0 -5px;">
          [#list users as u]

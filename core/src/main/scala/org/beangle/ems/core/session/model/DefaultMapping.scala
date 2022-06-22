@@ -22,13 +22,12 @@ import org.beangle.data.orm.MappingModule
 object DefaultMapping extends MappingModule {
 
   def binding(): Unit = {
+    bind[SessionConfig].declare { e =>
+      index("idx_session_config", true, e.domain, e.category)
+    }
     bind[SessionEvent].declare { e =>
       e.principal & e.username & e.name are length(100)
       e.detail is length(1000)
-    }
-
-    bind[SessionConfig].declare { e =>
-      index("idx_session_config", true, e.domain, e.category)
     }
   }
 

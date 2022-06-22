@@ -15,26 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.app.log
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventType
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.app.{Ems, EmsApp}
 
-@log
-class SessionEvent extends LongId with Updated with Named {
+class DefaultModule extends BindModule {
 
-  var domain:Domain=_
-
-  var eventType: EventType = _
-
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
-  var ip: String = _
+  override def binding(): Unit = {
+    val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
+    bind(classOf[AsyncBusinessLogStore])
+      .property("appenders",
+        List(
+          new ConsoleAppender(layout),
+          new RemoteAppender(Ems.api + s"/platform/log/{level}/${EmsApp.name}")))
+  }
 }

@@ -15,26 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.portal.admin
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventType
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.portal.admin.action.bulletin.{DocAction, NewsAction, NoticeAction, NoticeAuditAction}
+import org.beangle.ems.portal.admin.action.log.BusinessAction
 
-@log
-class SessionEvent extends LongId with Updated with Named {
+class LogModule extends BindModule {
 
-  var domain:Domain=_
-
-  var eventType: EventType = _
-
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
-  var ip: String = _
+  protected override def binding(): Unit = {
+    bind(classOf[BusinessAction])
+  }
 }

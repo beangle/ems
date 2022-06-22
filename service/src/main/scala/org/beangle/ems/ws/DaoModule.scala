@@ -29,7 +29,7 @@ object DaoModule extends BindModule {
 
   protected override def binding(): Unit = {
     wiredEagerly(false)
-    bind("DataSource.security", classOf[AppDataSourceFactory])
+    bind("DataSource.default", classOf[AppDataSourceFactory])
 
     bind("HibernateConfig.default", classOf[PropertiesFactoryBean]).property(
       "properties",
@@ -47,7 +47,6 @@ object DaoModule extends BindModule {
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("properties", ref("HibernateConfig.default"))
-      .property("configLocations", "classpath*:META-INF/hibernate.cfg.xml")
       .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
       .primary()
 
@@ -60,11 +59,10 @@ object DaoModule extends BindModule {
         "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED",
         "*=PROPAGATION_REQUIRED,readOnly")).primary()
 
-    bind("EntityDao.hibernate", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
+    bind("EntityDao.default", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
 
     bind("web.Interceptor.hibernate", classOf[OpenSessionInViewInterceptor])
-
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
   }
 

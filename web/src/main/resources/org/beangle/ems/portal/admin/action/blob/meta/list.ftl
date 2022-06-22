@@ -1,5 +1,10 @@
 [#ftl]
 [@b.head/]
+[#assign mediaTypes={'application/msword':'fa-file-word',"application/pdf":'fa-file-pdf',
+                     "application/vnd.ms-excel":'fa-file-excel',"application/zip":'fa-file-zipper',
+                     "application/x-rar-compressed":'fa-file-zipper',
+                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document":'fa-file-word',
+                     "application/x-7z-compressed":'fa-file-zipper'}/]
 [@b.grid items=blobMetas var="blobMeta" sortable="true"]
   [@b.gridbar]
    bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
@@ -14,13 +19,23 @@
       [@b.a href="!info?id="+blobMeta.id target="_blank"]${blobMeta.name}[/@]
       </span>
     [/@]
-    [@b.col  width="34%" property="filePath" title="路径"]
+    [@b.col  width="37%" property="filePath" title="路径"]
        <span style="font-size:0.8em" title="${blobMeta.profile.name}">${blobMeta.filePath}</span>
     [/@]
     [@b.col  width="8%" property="fileSize" title="大小"]
        ${(blobMeta.fileSize/1024.0)?string(".##")}K
     [/@]
-    [@b.col  width="8%" property="mediaType" title="类型"/]
+    [@b.col  width="5%" property="mediaType" title="类型"]
+      <span title="${blobMeta.mediaType}">
+        [#if mediaTypes[blobMeta.mediaType]??]
+           <i class="fa-solid ${mediaTypes[blobMeta.mediaType]}"></i>
+        [#else]
+          [#if blobMeta.mediaType?starts_with('image')]<i class="fas fa-file-image"></i>[#else]
+          <i class="fa-solid fa-file"></i>
+          [/#if]
+      [/#if]
+      </span>
+    [/@]
     [@b.col  width="10%" property="updatedAt" title="更新时间"]
       ${blobMeta.updatedAt?string("yy-MM-dd HH:mm")}
     [/@]

@@ -15,26 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.app.log
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventType
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.security.Securities
 
-@log
-class SessionEvent extends LongId with Updated with Named {
+import java.time.Instant
 
-  var domain:Domain=_
+object BusinessLogStore {
+  def newEntry(summary: String): BusinessLogEvent = {
+    val entry = new BusinessLogEvent()
+    entry.operator = Securities.user
+    entry.operateAt = Instant.now
+    entry.entry = Securities.resource
+    Securities.session foreach { s =>
+      entry.agent = s"${s.agent.os} ${s.agent.name}"
+    }
+    entry.summary = summary
+    entry
+  }
+}
 
-  var eventType: EventType = _
+trait BusinessLogStore {
 
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
-  var ip: String = _
+  def publish(entry: BusinessLogEvent): Unit
 }
