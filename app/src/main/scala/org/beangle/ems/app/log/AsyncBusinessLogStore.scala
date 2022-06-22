@@ -31,7 +31,7 @@ object AsyncBusinessLogStore {
     override def run(): Unit = {
       while (store.started && !stopped) {
         try {
-          val elements = new ju.ArrayList[BusinessLogEntry]
+          val elements = new ju.ArrayList[BusinessLogEvent]
           val e0 = store.queue.take()
           elements.add(e0)
           store.queue.drainTo(elements)
@@ -51,16 +51,16 @@ object AsyncBusinessLogStore {
 class AsyncBusinessLogStore extends BusinessLogStore with Initializing with Disposable {
   var appenders: List[Appender] = _
   var queueSize: Int = 512
-  private var queue: BlockingQueue[BusinessLogEntry] = _
+  private var queue: BlockingQueue[BusinessLogEvent] = _
   private var started: Boolean = _
   private var worker: Worker = _
 
-  override def publish(entry: BusinessLogEntry): Unit = {
+  override def publish(entry: BusinessLogEvent): Unit = {
     queue.offer(entry)
   }
 
   override def init(): Unit = {
-    queue = new ArrayBlockingQueue[BusinessLogEntry](queueSize)
+    queue = new ArrayBlockingQueue[BusinessLogEvent](queueSize)
     started = true
     worker = new Worker(this)
     worker.setDaemon(true)

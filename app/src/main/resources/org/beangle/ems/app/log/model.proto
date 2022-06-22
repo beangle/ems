@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "org.beangle.ems.app.log";
+option java_outer_classname = "BusinessLogProto";
+
+message BusinessLogEvent {
+    string operator = 1;
+    int64 operateAt = 2;
+    string summary = 3;
+    string details = 4;
+    string resources = 5;
+    string ip = 6;
+    string agent = 7;
+    string entry = 8;
+}

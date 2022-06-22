@@ -22,8 +22,8 @@ import org.beangle.security.Securities
 import java.time.Instant
 
 object BusinessLogStore {
-  def newEntry(summary: String): BusinessLogEntry = {
-    val entry = new BusinessLogEntry()
+  def newEntry(summary: String): BusinessLogEvent = {
+    val entry = new BusinessLogEvent()
     entry.operator = Securities.user
     entry.operateAt = Instant.now
     entry.entry = Securities.resource
@@ -37,5 +37,5 @@ object BusinessLogStore {
 
 trait BusinessLogStore {
 
-  def publish(entry: BusinessLogEntry): Unit
+  def publish(entry: BusinessLogEvent): Unit
 }

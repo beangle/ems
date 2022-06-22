@@ -18,12 +18,16 @@
 package org.beangle.ems.app.log
 
 import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.app.{Ems, EmsApp}
 
 class DefaultModule extends BindModule {
 
-  override def binding(): Unit ={
+  override def binding(): Unit = {
     val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
     bind(classOf[AsyncBusinessLogStore])
-      .property("appenders", List(new ConsoleAppender(layout)))
+      .property("appenders",
+        List(
+          new ConsoleAppender(layout),
+          new RemoteAppender(Ems.api + s"/platform/log/{level}/${EmsApp.name}")))
   }
 }

@@ -15,14 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.log
+package org.beangle.ems.core.log.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
+import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
 
-class BusinessLogEntry {
+class BusinessLog extends LongId {
+
+  var app: App = _
   /** 操作人 */
   var operator: String = _
   /** 操作时间 */
@@ -39,15 +41,6 @@ class BusinessLogEntry {
   var agent: String = _
   /** 访问入口 */
   var entry: String = _
-
-  def from(ip: String): BusinessLogEntry = {
-    this.ip = ip
-    this
-  }
-
-  def operateOn(resources: String, details: String): BusinessLogEntry = {
-    this.resources = resources
-    this.details = details
-    this
-  }
+  /** 级别 */
+  var level: Level = _
 }

@@ -212,7 +212,7 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
       user.endOn = account.endOn
       userService.create(loginUser, user)
     } else {
-      publishBusinessLog("修改账户", user.id, ActionContext.current.params.toString)
+      info("修改账户", user.id, ActionContext.current.params.toString)
       entityDao.saveOrUpdate(user)
     }
     account.user = user

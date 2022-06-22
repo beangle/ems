@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 import scala.collection.mutable
 
 trait Layout {
-  def mkString(entry: BusinessLogEntry): String
+  def mkString(entry: BusinessLogEvent): String
 }
 
 case class Part(content: String, isVariable: Boolean)
@@ -55,7 +55,7 @@ class PatternLayout(pattern: String) extends Layout {
     parts.toList
   }
 
-  override def mkString(entry: BusinessLogEntry): String = {
+  override def mkString(entry: BusinessLogEvent): String = {
     val result = new mutable.StringBuilder
     parts foreach { p =>
       if p.isVariable then

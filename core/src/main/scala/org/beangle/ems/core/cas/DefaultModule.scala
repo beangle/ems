@@ -113,6 +113,7 @@ class DefaultModule extends BindModule with PropertySource {
           case None => datas.getOrElseUpdate("login.passwordReadOnly", "false")
         }
       }
+
       if (!datas.contains("login.origin")) {
         datas += ("login.key" -> Ems.base)
         datas += ("login.origin" -> Ems.base)

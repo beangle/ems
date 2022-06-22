@@ -6,12 +6,16 @@
   <mapping class="org.beangle.ems.core.user.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.session.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.blob.model.DefaultMapping"/>
+  <mapping class="org.beangle.ems.core.log.model.DefaultMapping"/>
   <naming>
     <profile package = "org.beangle.ems.core.bulletin" pluralize="true" schema="bulletin"/>
     <profile package = "org.beangle.ems.core.config" pluralize="true" schema="cfg"/>
     <profile package = "org.beangle.ems.core.security" pluralize="true" schema="se"/>
     <profile package = "org.beangle.ems.core.user" pluralize="true" schema="usr"/>
-    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="ssn"/>
+    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="ssn">
+      <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" schema="log"/>
+    </profile>
     <profile package = "org.beangle.ems.core.blob" pluralize="true" schema="blb"/>
+    <profile package = "org.beangle.ems.core.log" pluralize="true" schema="log"/>
   </naming>
 </orm>

@@ -17,15 +17,28 @@
 
 package org.beangle.ems.app.web
 
-import org.beangle.ems.app.log.BusinessLogStore
+import org.beangle.ems.app.log.{BusinessLogStore, Level}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.servlet.util.RequestUtils
 
 trait BusinessLogSupport {
   var businessLogStore: BusinessLogStore = _
 
-  def publishBusinessLog(summary: String, resources: Any, details: Any): Unit = {
+  def info(summary: String, resources: Any, details: Any): Unit = {
+    log(Level.Info, summary, resources, details)
+  }
+
+  def warn(summary: String, resources: Any, details: Any): Unit = {
+    log(Level.Warn, summary, resources, details)
+  }
+
+  def error(summary: String, resources: Any, details: Any): Unit = {
+    log(Level.Error, summary, resources, details)
+  }
+
+  def log(level: Level, summary: String, resources: Any, details: Any): Unit = {
     val log = BusinessLogStore.newEntry(summary)
+    log.level = level
     val context = ActionContext.current
     log.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, details.toString)
     businessLogStore.publish(log)
