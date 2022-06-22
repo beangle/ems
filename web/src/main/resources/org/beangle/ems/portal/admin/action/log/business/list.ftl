@@ -1,0 +1,25 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=businessLogs var="businessLog" sortable="true"]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.col  width="10%" property="app.name" title="应用"]
+       <span style="font-size:0.9em">${businessLog.app.title}</span>
+    [/@]
+    [@b.col  width="8%" property="level.name" title="级别"/]
+    [@b.col  width="10%" property="operator" title="操作人"/]
+    [@b.col  width="35%" property="summary" title="操作内容摘要"]
+      [@b.a href="!info?id="+businessLog.id title="查看明细"]${businessLog.summary}[/@]
+    [/@]
+    [@b.col  width="15%" property="entry" title="入口"]
+      <span style="font-size:0.8em" title="${businessLog.entry}">${businessLog.entry}</span>
+    [/@]
+    [@b.col  width="8%" property="ip" title="IP"]
+       <span style="font-size:0.8em" title="${businessLog.agent}">${businessLog.ip}</span>
+    [/@]
+    [@b.col  width="10%" property="operateAt" title="操作时间"]
+      ${businessLog.operateAt?string("yy-MM-dd HH:mm")}
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

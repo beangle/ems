@@ -5,6 +5,7 @@
     <module class="org.beangle.ems.portal.admin.SecurityModule"/>
     <module class="org.beangle.ems.portal.admin.BlobModule"/>
     <module class="org.beangle.ems.portal.admin.BulletinModule"/>
+    <module class="org.beangle.ems.portal.admin.LogModule"/>
     <module class="org.beangle.ems.portal.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.DefaultModule"/>
 

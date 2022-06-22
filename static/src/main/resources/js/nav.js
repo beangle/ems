@@ -224,7 +224,7 @@
           menuItem = menuItem.replace('{menu.title}',menu.title);
           menuItem = menuItem.replace('{icon_class}',this.getIconClass(menu.title));
           menuItem = menuItem.replace('{menu.entry}',menu.entry);
-          menuItem = menuItem.replace('{menu.target}',menu.target);
+          menuItem = menuItem.replaceAll('{menu.target}',menu.target);//menu.target twice
           jqueryElem.append(menuItem);
         }
       }
