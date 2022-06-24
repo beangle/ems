@@ -11,7 +11,7 @@ object EmsDepends {
   val cacheVer= "0.0.26"
   val templateVer ="0.0.37"
   val webmvcVer="0.5.0"
-  val securityVer="4.2.33"
+  val securityVer="4.2.34"
   val idsVer="0.2.27"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer

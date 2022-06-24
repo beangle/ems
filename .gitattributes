@@ -15,6 +15,7 @@ text eol=lf
 *.sh      eol=lf
 *.txt     eol=lf
 *.xml     eol=lf
+*.ftl     eol=lf
 
 # Windows-specific files get windows endings
 *.bat     eol=crlf

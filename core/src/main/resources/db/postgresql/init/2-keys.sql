@@ -10,6 +10,7 @@ alter table bulletin.sensitive_words add constraint pk_93tcwxw8v9r64kdlt5ljsawak
 alter table cfg.app_groups add constraint idx_app_group unique (domain_id,name);
 alter table cfg.app_groups add constraint pk_kya1tu2eyjl7ubus7ik809f1o primary key (id);
 alter table cfg.app_types add constraint pk_8tlkrjx3okd543sof65hv26ww primary key (id);
+alter table cfg.app_types add constraint uk_fiof2g9fn0dk5dghxnctssvf0 unique (name);
 alter table cfg.apps add constraint idx_app unique (domain_id,name);
 alter table cfg.apps add constraint pk_hy5ovfd6iqkwwmeqkoyovyc0f primary key (id);
 alter table cfg.credentials add constraint idx_credential unique (domain_id,name);
@@ -23,6 +24,9 @@ alter table cfg.domains add constraint idx_domain unique (org_id,hostname);
 alter table cfg.domains add constraint pk_qmiqopkrlr3yjian3tuafihea primary key (id);
 alter table cfg.files add constraint pk_8429obi968vjdc8arvkoqgqvw primary key (id);
 alter table cfg.orgs add constraint pk_a9p5unhabl77t6wiof0meuwok primary key (id);
+alter table log.business_logs add constraint pk_e7nfc0kcwyw2dvnpa3ik7dryx primary key (id);
+alter table log.levels add constraint pk_fagiox162rmboh86j3wvglkic primary key (id);
+alter table log.session_events add constraint pk_let8o6waxxtw4p6ae3tvfbgij primary key (id);
 alter table se.app_permissions add constraint pk_gak8t8oul1xrpq4t02593ihhk primary key (id);
 alter table se.data_permissions add constraint pk_8bdqy5re8q4ab6beh9gxm4qlg primary key (id);
 alter table se.data_resources add constraint pk_ccp9osc7grc5vtqdjdfr47f4w primary key (id);
@@ -32,7 +36,6 @@ alter table se.menus add constraint pk_f3r7oef25midhmnnur5fthqah primary key (id
 alter table se.menus_resources add constraint pk_e7bj714s46w1fks68ay6vrhc9 primary key (menu_id,func_resource_id);
 alter table ssn.session_configs add constraint idx_session_config unique (domain_id,category_id);
 alter table ssn.session_configs add constraint pk_qd06y5urtnkq9yc35lfb79s7c primary key (id);
-alter table ssn.session_events add constraint pk_let8o6waxxtw4p6ae3tvfbgij primary key (id);
 alter table usr.accounts add constraint idx_account unique (user_id,domain_id);
 alter table usr.accounts add constraint pk_e9c7rnsff82leuiecb1tbk45a primary key (id);
 alter table usr.avatars add constraint pk_kc3w67oufvtlendg1b4uvayqb primary key (id);

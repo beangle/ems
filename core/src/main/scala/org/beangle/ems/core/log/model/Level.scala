@@ -26,6 +26,7 @@ object Level {
   var Error = 3
 }
 
+/**日志级别*/
 class Level extends IntId with Named {
 
   def this(i: Int) = {

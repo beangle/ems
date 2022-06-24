@@ -1,0 +1,10 @@
+Level=日志级别
+BusinessLog=业务日志
+BusinessLog.operator=操作人
+BusinessLog.operateAt=操作时间
+BusinessLog.summary=操作内容摘要
+BusinessLog.details=操作内容
+BusinessLog.resources=对应的资源
+BusinessLog.ip=IP
+BusinessLog.agent=操作客户端代理
+BusinessLog.entry=访问入口
