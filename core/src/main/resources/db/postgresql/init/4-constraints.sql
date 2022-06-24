@@ -26,6 +26,9 @@ alter table cfg.dbs add constraint fk_4u0tvc3ehr9sv7vhndvoycp7j foreign key (dom
 alter table cfg.dbs_properties add constraint fk_n3j3tf9w1smqshbhqtckhcu7x foreign key (db_id) references cfg.dbs (id);
 alter table cfg.domains add constraint fk_354ma4e4xdedfs3u3qx7swqrw foreign key (org_id) references cfg.orgs (id);
 alter table cfg.files add constraint fk_9ujsh4siisy2452s0feta3qjk foreign key (app_id) references cfg.apps (id);
+alter table log.business_logs add constraint fk_mmndjgdrq4yk8r6cfpn9v8bh6 foreign key (app_id) references cfg.apps (id);
+alter table log.business_logs add constraint fk_sjqwybis3f1lherr191kkp7w5 foreign key (level_id) references log.levels (id);
+alter table log.session_events add constraint fk_huk1kecp8pak9wspg9ny8n4x4 foreign key (domain_id) references cfg.domains (id);
 alter table se.app_permissions add constraint fk_519oiykea6451ts2vmmetx9hv foreign key (app_id) references cfg.apps (id);
 alter table se.app_permissions add constraint fk_lnm7svh5k8hc3drai0ym3m289 foreign key (resource_id) references se.func_resources (id);
 alter table se.data_permissions add constraint fk_7m3urbe7j3v4yvrawll4bhaaj foreign key (func_resource_id) references se.func_resources (id);
@@ -44,7 +47,6 @@ alter table se.menus_resources add constraint fk_85c54bayea1rq13muto8ut7jy forei
 alter table se.menus_resources add constraint fk_ocur23bmgil049dkq6fyksnga foreign key (func_resource_id) references se.func_resources (id);
 alter table ssn.session_configs add constraint fk_8mc2lu8rgxtpbwf3uth0p6d0m foreign key (domain_id) references cfg.domains (id);
 alter table ssn.session_configs add constraint fk_9clhlrwfu3jvj1inq5phu458y foreign key (category_id) references usr.user_categories (id);
-alter table ssn.session_events add constraint fk_huk1kecp8pak9wspg9ny8n4x4 foreign key (domain_id) references cfg.domains (id);
 alter table usr.accounts add constraint fk_jigc9jvxh4i629qfxqgqo9tix foreign key (domain_id) references cfg.domains (id);
 alter table usr.accounts add constraint fk_njuop33mo69pd79ctplkck40n foreign key (user_id) references usr.users (id);
 alter table usr.avatars add constraint fk_dh0goytewcg1geffkf1clp4kh foreign key (user_id) references usr.users (id);

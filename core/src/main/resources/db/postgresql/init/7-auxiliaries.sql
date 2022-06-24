@@ -10,6 +10,7 @@ begin
   return $1 +  $2 * (interval '1' second);
 end;
 $BODY$;
+
 CREATE SEQUENCE public.seq_date
     CYCLE
     INCREMENT 1
