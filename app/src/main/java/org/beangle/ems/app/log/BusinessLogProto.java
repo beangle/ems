@@ -124,6 +124,24 @@ public final class BusinessLogProto {
      */
     com.google.protobuf.ByteString
         getEntryBytes();
+
+    /**
+     * <code>int32 level = 9;</code>
+     * @return The level.
+     */
+    int getLevel();
+
+    /**
+     * <code>string appName = 10;</code>
+     * @return The appName.
+     */
+    java.lang.String getAppName();
+    /**
+     * <code>string appName = 10;</code>
+     * @return The bytes for appName.
+     */
+    com.google.protobuf.ByteString
+        getAppNameBytes();
   }
   /**
    * Protobuf type {@code BusinessLogEvent}
@@ -145,6 +163,7 @@ public final class BusinessLogProto {
       ip_ = "";
       agent_ = "";
       entry_ = "";
+      appName_ = "";
     }
 
     @java.lang.Override
@@ -222,6 +241,17 @@ public final class BusinessLogProto {
               java.lang.String s = input.readStringRequireUtf8();
 
               entry_ = s;
+              break;
+            }
+            case 72: {
+
+              level_ = input.readInt32();
+              break;
+            }
+            case 82: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              appName_ = s;
               break;
             }
             default: {
@@ -533,6 +563,55 @@ public final class BusinessLogProto {
       }
     }
 
+    public static final int LEVEL_FIELD_NUMBER = 9;
+    private int level_;
+    /**
+     * <code>int32 level = 9;</code>
+     * @return The level.
+     */
+    @java.lang.Override
+    public int getLevel() {
+      return level_;
+    }
+
+    public static final int APPNAME_FIELD_NUMBER = 10;
+    private volatile java.lang.Object appName_;
+    /**
+     * <code>string appName = 10;</code>
+     * @return The appName.
+     */
+    @java.lang.Override
+    public java.lang.String getAppName() {
+      java.lang.Object ref = appName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        appName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string appName = 10;</code>
+     * @return The bytes for appName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAppNameBytes() {
+      java.lang.Object ref = appName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        appName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -571,6 +650,12 @@ public final class BusinessLogProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(entry_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 8, entry_);
       }
+      if (level_ != 0) {
+        output.writeInt32(9, level_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(appName_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, appName_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -605,6 +690,13 @@ public final class BusinessLogProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(entry_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, entry_);
       }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(9, level_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(appName_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, appName_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -636,6 +728,10 @@ public final class BusinessLogProto {
           .equals(other.getAgent())) return false;
       if (!getEntry()
           .equals(other.getEntry())) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
+      if (!getAppName()
+          .equals(other.getAppName())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -664,6 +760,10 @@ public final class BusinessLogProto {
       hash = (53 * hash) + getAgent().hashCode();
       hash = (37 * hash) + ENTRY_FIELD_NUMBER;
       hash = (53 * hash) + getEntry().hashCode();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
+      hash = (37 * hash) + APPNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getAppName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -813,6 +913,10 @@ public final class BusinessLogProto {
 
         entry_ = "";
 
+        level_ = 0;
+
+        appName_ = "";
+
         return this;
       }
 
@@ -847,6 +951,8 @@ public final class BusinessLogProto {
         result.ip_ = ip_;
         result.agent_ = agent_;
         result.entry_ = entry_;
+        result.level_ = level_;
+        result.appName_ = appName_;
         onBuilt();
         return result;
       }
@@ -924,6 +1030,13 @@ public final class BusinessLogProto {
         }
         if (!other.getEntry().isEmpty()) {
           entry_ = other.entry_;
+          onChanged();
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
+        }
+        if (!other.getAppName().isEmpty()) {
+          appName_ = other.appName_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1517,6 +1630,113 @@ public final class BusinessLogProto {
         onChanged();
         return this;
       }
+
+      private int level_ ;
+      /**
+       * <code>int32 level = 9;</code>
+       * @return The level.
+       */
+      @java.lang.Override
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <code>int32 level = 9;</code>
+       * @param value The level to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLevel(int value) {
+
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 level = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLevel() {
+
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object appName_ = "";
+      /**
+       * <code>string appName = 10;</code>
+       * @return The appName.
+       */
+      public java.lang.String getAppName() {
+        java.lang.Object ref = appName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          appName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string appName = 10;</code>
+       * @return The bytes for appName.
+       */
+      public com.google.protobuf.ByteString
+          getAppNameBytes() {
+        java.lang.Object ref = appName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          appName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string appName = 10;</code>
+       * @param value The appName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAppName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+
+        appName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string appName = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAppName() {
+
+        appName_ = getDefaultInstance().getAppName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string appName = 10;</code>
+       * @param value The bytes for appName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAppNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+
+        appName_ = value;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -1584,12 +1804,13 @@ public final class BusinessLogProto {
   static {
     java.lang.String[] descriptorData = {
       "\n6src/main/resources/org/beangle/ems/app" +
-      "/log/model.proto\"\226\001\n\020BusinessLogEvent\022\020\n" +
+      "/log/model.proto\"\266\001\n\020BusinessLogEvent\022\020\n" +
       "\010operator\030\001 \001(\t\022\021\n\toperateAt\030\002 \001(\003\022\017\n\007su" +
       "mmary\030\003 \001(\t\022\017\n\007details\030\004 \001(\t\022\021\n\tresource" +
       "s\030\005 \001(\t\022\n\n\002ip\030\006 \001(\t\022\r\n\005agent\030\007 \001(\t\022\r\n\005en" +
-      "try\030\010 \001(\tB+\n\027org.beangle.ems.app.logB\020Bu" +
-      "sinessLogProtob\006proto3"
+      "try\030\010 \001(\t\022\r\n\005level\030\t \001(\005\022\017\n\007appName\030\n \001(" +
+      "\tB+\n\027org.beangle.ems.app.logB\020BusinessLo" +
+      "gProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1600,7 +1821,7 @@ public final class BusinessLogProto {
     internal_static_BusinessLogEvent_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BusinessLogEvent_descriptor,
-        new java.lang.String[] { "Operator", "OperateAt", "Summary", "Details", "Resources", "Ip", "Agent", "Entry", });
+        new java.lang.String[] { "Operator", "OperateAt", "Summary", "Details", "Resources", "Ip", "Agent", "Entry", "Level", "AppName", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

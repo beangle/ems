@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app.log
 
+import org.beangle.ems.app.EmsApp
 import org.beangle.security.Securities
 
 import java.time.Instant
@@ -24,6 +25,7 @@ import java.time.Instant
 object BusinessLogStore {
   def newEntry(summary: String): BusinessLogEvent = {
     val entry = new BusinessLogEvent()
+    entry.appName = EmsApp.name
     entry.operator = Securities.user
     entry.operateAt = Instant.now
     entry.entry = Securities.resource

@@ -26,4 +26,9 @@
       <interceptor name="web.Interceptor.cors" />
     </interceptors>
   </profile>
+
+  <profile name="ems-ws-log-push" package="org.beangle.ems.ws.log.PushWS">
+    <action suffix="WS" defaultMethod="index" />
+    <url path="/log/" suffix="" style="seo" />
+  </profile>
 </mvc>

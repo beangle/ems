@@ -68,6 +68,8 @@ class RemoteAppender(val url: String) extends Appender {
     builder.setIp(event.ip)
     builder.setAgent(event.agent)
     builder.setEntry(event.entry)
+    builder.setLevel(event.level.ordinal + 1)
+    builder.setAppName(event.appName)
     val os = new ByteArrayOutputStream()
     builder.build().writeTo(os)
     val upload = new URL(url.replace("{level}", Strings.uncapitalize(event.level.toString)))

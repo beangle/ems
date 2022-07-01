@@ -23,6 +23,7 @@ import org.beangle.data.model.annotation.log
 import java.time.Instant
 
 class BusinessLogEvent {
+  var appName: String = _
   /** 操作人 */
   var operator: String = _
   /** 操作时间 */
@@ -39,7 +40,7 @@ class BusinessLogEvent {
   var agent: String = _
   /** 访问入口 */
   var entry: String = _
-  /**日志级别*/
+  /** 日志级别 */
   var level: Level = _
 
   def from(ip: String): BusinessLogEvent = {

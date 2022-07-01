@@ -40,7 +40,7 @@ class DefaultModule extends BindModule {
     bind(classOf[func.ResourceWS], classOf[func.PermissionWS])
     bind(classOf[data.PermissionWS], classOf[data.ResourceWS])
 
-    bind(classOf[log.IndexWS])
+    bind(classOf[log.PushWS])
 
     bind(classOf[AccountWS], classOf[AppWS], classOf[DimensionWS], classOf[AvatarWS])
     bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS])
