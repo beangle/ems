@@ -64,7 +64,7 @@ class AsyncBusinessLogStore extends BusinessLogStore with Initializing with Disp
     started = true
     worker = new Worker(this)
     worker.setDaemon(true)
-    worker.setName("AsyncBusinessLogStore-Worker")
+    worker.setName("Beangle async business logstore worker")
     worker.start()
   }
 

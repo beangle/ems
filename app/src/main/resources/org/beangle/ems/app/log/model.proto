@@ -12,4 +12,6 @@ message BusinessLogEvent {
     string ip = 6;
     string agent = 7;
     string entry = 8;
+    int32 level=9;
+    string appName=10;
 }

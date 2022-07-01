@@ -24,8 +24,8 @@ object DefaultMapping extends MappingModule {
   def binding(): Unit = {
     bind[BusinessLog].declare { e =>
       e.operator is length(200)
-      e.summary is length(500)
-      e.details is length(2000)
+      e.summary is length(1000)
+      e.details is length(4000)
       e.resources is length(300)
       e.ip is length(50)
       e.agent is length(100)

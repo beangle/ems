@@ -99,6 +99,14 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
     for (m <- removedMembers) ob.remove(m)
     entityDao.execute(ob)
     entityDao.refresh(user)
+
+    //记录日志
+    val newRoleNames = newMembers.map(_.role.getName).mkString(",")
+    val removeRoleNames = removedMembers.map(_.role.getName).mkString(",")
+    val summary1 = if newMembers.nonEmpty then s",新增了${newRoleNames}" else ""
+    val summary2 = if removedMembers.nonEmpty then s",删除了${removeRoleNames}" else ""
+    info(s"修改${user.name}的角色${summary1}${summary2}", user.id, ActionContext.current.params)
+
     redirect("search", "info.save.success")
   }
 
@@ -212,7 +220,7 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
       user.endOn = account.endOn
       userService.create(loginUser, user)
     } else {
-      info("修改账户", user.id, ActionContext.current.params.toString)
+      info(s"修改${user.name}的账户", user.id, ActionContext.current.params)
       entityDao.saveOrUpdate(user)
     }
     account.user = user

@@ -34,7 +34,9 @@ bar.addBack("${b.text("action.back")}");
   </tr>
   <tr>
     <td class="title">详细、参数等:</td>
-    <td class="content" colspan="3">${businessLog.details}</td>
+    <td class="content" colspan="3">
+      <pre>${businessLog.details}</pre>
+    </td>
   </tr>
 </table>
 [@b.foot/]

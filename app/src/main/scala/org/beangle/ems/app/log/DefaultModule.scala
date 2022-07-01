@@ -28,6 +28,6 @@ class DefaultModule extends BindModule {
       .property("appenders",
         List(
           new ConsoleAppender(layout),
-          new RemoteAppender(Ems.api + s"/platform/log/{level}/${EmsApp.name}")))
+          new RemoteAppender(Ems.api + s"/platform/log/push")))
   }
 }

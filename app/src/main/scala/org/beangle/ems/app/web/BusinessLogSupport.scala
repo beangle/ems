@@ -17,9 +17,12 @@
 
 package org.beangle.ems.app.web
 
+import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.log.{BusinessLogStore, Level}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.servlet.util.RequestUtils
+
+import scala.collection.mutable
 
 trait BusinessLogSupport {
   var businessLogStore: BusinessLogStore = _
@@ -40,7 +43,21 @@ trait BusinessLogSupport {
     val log = BusinessLogStore.newEntry(summary)
     log.level = level
     val context = ActionContext.current
-    log.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, details.toString)
+    val detailStr = details match {
+      case null => "--"
+      case m: collection.Map[_, _] =>
+        val sb = new mutable.ArrayBuffer[String]
+        m foreach { case (k, v) =>
+          val key = k.toString
+          if !key.startsWith("_") then
+            val value = if k.toString.contains("password") then "*****" else v.toString
+            sb += s"$k = $value"
+        }
+        val mapString = sb.sorted.mkString("\n")
+        Strings.abbreviate(mapString, 4000)
+      case e: Any => e.toString
+    }
+    log.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, detailStr)
     businessLogStore.publish(log)
   }
 }
