@@ -17,21 +17,22 @@
 
 package org.beangle.ems.core.security.model
 
-import scala.collection.mutable
-
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{ Enabled, Hierarchical, Named, Remark }
+import org.beangle.data.model.pojo.{Enabled, Hierarchical, Named, Remark}
 import org.beangle.ems.core.config.model.App
+
+import scala.collection.mutable
 
 class Menu extends IntId with Named with Enabled with Hierarchical[Menu] with Remark {
   var app: App = _
-  var title: String = _
+  var enName: String = _
   var entry: Option[FuncResource] = None
   var params: Option[String] = None
+  var fonticon: Option[String] = None
   var resources: mutable.Set[FuncResource] = new mutable.HashSet[FuncResource]
 
   def description: String = {
-    indexno + " " + title
+    indexno + " " + name
   }
 
   override def compare(m: Menu): Int = {

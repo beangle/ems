@@ -24,8 +24,8 @@ import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 
 import scala.collection.mutable
 
@@ -99,7 +99,8 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
   }
 
   private def convert(one: Menu): Properties = {
-    val menu = new Properties(one, "id", "title", "indexno")
+    val menu = new Properties(one, "id", "name", "enName","fonticon", "indexno")
+    menu.put("title", one.name)
     if (one.entry.isDefined) menu.put("entry", one.entry.get.name + (if (one.params.isDefined) "?" + one.params.get else ""))
     if (one.children.nonEmpty) {
       val children = new mutable.ListBuffer[Properties]

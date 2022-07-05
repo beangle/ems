@@ -37,8 +37,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Menu].declare { e =>
-      e.app & e.indexno & e.name & e.title are notnull
-      e.name & e.title & e.remark are length(100)
+      e.name & e.enName & e.remark are length(100)
       e.indexno is length(50)
       e.children.is(depends("parent"), orderby("indexno"))
       e.params is length(200)
