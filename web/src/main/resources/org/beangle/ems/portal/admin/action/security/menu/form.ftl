@@ -5,8 +5,9 @@
 [#assign labelInfo]${b.text("ui.editForm",userMsg)}[/#assign]
 
 [@b.form action=b.rest.save(menu) title=labelInfo theme="list"]
-  [@b.textfield label="common.name" name="menu.name" value="${menu.name!}" style="width:200px;"  required="true" maxlength="100" /]
-  [@b.textfield label="标题" name="menu.title" value="${menu.title!}" style="width:200px;" required="true" maxlength="50"/]
+  [@b.textfield label="common.name" name="menu.name" value=menu.name! style="width:200px;"  required="true" maxlength="100" /]
+  [@b.textfield label="英文名称" name="menu.enName" value=menu.enName! style="width:200px;" required="true" maxlength="100"/]
+  [@b.textfield label="字体图标" name="menu.fonticon" value=menu.fonticon! required="false" maxlength="100"/]
   [@b.select label="上级菜单" name="parent.id" value=(menu.parent)! style="width:200px;"  items=parents option="id,description" empty="..."/]
   [@b.number label="同级顺序号" name="indexno" value="${menu.lastindex!}" required="true" maxlength="2" min="1" max="100" /]
   [@b.radios label="common.status"  name="menu.enabled" value=menu.enabled items="1:action.activate,0:action.freeze" comment="冻结会禁用该菜单及其所有下级"/]

@@ -160,6 +160,12 @@ class MenuAction extends RestfulAction[Menu] {
     query.where("menu.parent is null")
     val menus = entityDao.search(query)
     put("menus", menus)
+
+    if menus.nonEmpty then
+      val app = menus.head.app
+      put("resources", entityDao.findBy(classOf[FuncResource], "app", app))
+    else
+      put("resources",List.empty[FuncResource])
     forward()
   }
 
