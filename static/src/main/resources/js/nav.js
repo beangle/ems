@@ -76,10 +76,10 @@
     }
     this.menuTempalte='<li class="nav-item"><a class="nav-link" onclick="return bg.Go(this,\'{menu.target}\')" href="{menu.entry}" target="{menu.target}" ><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
     if(document.getElementById('main').tagName!='DIV'){
-      this.menuTempalte='<li class="nav-item"><a class="nav-link" target="main" href="{menu.entry}"><i class="nav-icon fa fa-circle-o"></i><p>{menu.title}</p></a></li>';
+      this.menuTempalte='<li class="nav-item"><a class="nav-link" target="main" href="{menu.entry}"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
     }
-    this.foldTemplate='<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon fa fa-list"></i><p>{menu.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu{menu.id}"></ul></li>'
-    this.appFoldTemplate='<li class="nav-item has_treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon fa fa-list"></i><p>{app.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu_app{app.id}"></ul></li>'
+    this.foldTemplate='<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{menu.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu{menu.id}"></ul></li>'
+    this.appFoldTemplate='<li class="nav-item has_treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{app.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu_app{app.id}"></ul></li>'
     if(!this.app.navStyle){
      this.app.navStyle="unkown";
     }
@@ -205,8 +205,10 @@
       var menuItem='';
       for(var i=0; i <menus.length;i++){
         var menu = menus[i];
+        var fonticon="fa fa-list"
         if(menu.menus){//menu is an app
           var appItem = this.appFoldTemplate.replace('{app.id}',menu.app.id);
+          appItem = appItem.replace('{icon_class}',fonticon);
           appItem = appItem.replace('{app.title}',menu.app.title);
           appItem = appItem.replace('{open_class}',(openMenuId==menu.app.id)?"menu-open":"");
           appItem = appItem.replace('{active_class}',(openMenuId==menu.app.id)?"active":"");
@@ -214,6 +216,8 @@
           this.createMenus(jQuery('#menu_app'+menu.app.id),menu.menus);
         }else if(menu.children){//fold
           menuItem = this.foldTemplate.replace('{menu.id}',menu.id);
+          if(menu.fonticon) fonticon = menu.fonticon;
+          menuItem = menuItem.replace('{icon_class}',fonticon);
           menuItem = menuItem.replace('{menu.title}',menu.title);
           menuItem = menuItem.replace('{open_class}',(openMenuId==menu.id)?"menu-open":"");
           menuItem = menuItem.replace('{active_class}',(openMenuId==menu.id)?"active":"");
@@ -222,9 +226,11 @@
         }else{//menu
           menuItem = this.menuTempalte.replace('{menu.id}',menu.id);
           menuItem = menuItem.replace('{menu.title}',menu.title);
-          menuItem = menuItem.replace('{icon_class}',this.getIconClass(menu.title));
+          if(menu.fonticon){ fonticon = menu.fonticon; }
+          else{ fonticon = this.getIconClass(menu.title);}
+          menuItem = menuItem.replace('{icon_class}',fonticon);
           menuItem = menuItem.replace('{menu.entry}',menu.entry);
-          menuItem = menuItem.replaceAll('{menu.target}',menu.target);//menu.target twice
+          menuItem = menuItem.replaceAll('{menu.target}',menu.target);
           jqueryElem.append(menuItem);
         }
       }

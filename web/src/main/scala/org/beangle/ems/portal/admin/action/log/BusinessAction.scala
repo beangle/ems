@@ -17,10 +17,27 @@
 
 package org.beangle.ems.portal.admin.action.log
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.bulletin.model.Doc
-import org.beangle.ems.core.log.model.BusinessLog
+import org.beangle.ems.core.config.service.AppService
+import org.beangle.ems.core.log.model.{BusinessLog, Level}
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.helper.QueryHelper
 
 class BusinessAction extends RestfulAction[BusinessLog] {
+
+  var appService: AppService = _
+
+  override protected def indexSetting(): Unit = {
+    put("apps", appService.getApps)
+    put("levels", entityDao.getAll(classOf[Level]))
+    super.indexSetting()
+  }
+
+  override protected def getQueryBuilder: OqlBuilder[BusinessLog] = {
+    val builder = super.getQueryBuilder
+    QueryHelper.dateBetween(builder, null, "operateAt", "beginOn", "endOn")
+    builder
+  }
 
 }

@@ -24,6 +24,8 @@ import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authz.Authority
 
+import java.util.Locale
+
 /**
  * @author chaostone
  */
@@ -60,12 +62,12 @@ object RemoteService {
     resources
   }
 
-  def getMenusJson: String = {
-    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json").getOrElse(null)
+  def getMenusJson(locale: Locale): String = {
+    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?request_locale=" + locale.toString).getOrElse(null)
   }
 
-  def getDomainMenusJson: String = {
-    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1").getOrElse(null)
+  def getDomainMenusJson(locale: Locale): String = {
+    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString).getOrElse(null)
   }
 
   def getAppsJson: String = {
@@ -83,8 +85,8 @@ object RemoteService {
     convert2Org(data)
   }
 
-  def getDomain: Ems.Domain = {
-    val json = getText(Ems.api + "/platform/config/domains.json").getOrElse(null)
+  def getDomain(locale: Locale): Ems.Domain = {
+    val json = getText(Ems.api + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
     val data = JSON.parseObj(json)
     val domain = new Ems.Domain
     data.get("id") foreach (e => domain.id = e.asInstanceOf[Number].intValue)

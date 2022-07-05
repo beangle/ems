@@ -24,9 +24,11 @@ import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 
+import java.util.Locale
 import scala.collection.mutable
 
 class MenuWS extends ActionSupport with EntitySupport[Menu] {
@@ -47,7 +49,8 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
       case Some(app) => menuService.getTopMenus(app)
       case None => List.empty[Menu]
     }
-    menus map (m => convert(m))
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
+    menus map (m => convert(m, isEnName))
   }
 
   @response(cacheable = true)
@@ -57,35 +60,41 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     if (user.isEmpty) {
       return "{}"
     }
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
     val u = user.get
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
     app match {
       case Some(app) =>
         if (forDomain) {
-          getDomainMenus(u)
+          getDomainMenus(u, isEnName)
         } else {
-          val appProps = new Properties(app, "id", "name", "title", "base", "url", "logoUrl", "navStyle")
-          val menus = menuService.getTopMenus(app, u) map (m => convert(m))
-          val domain = new Properties(app.domain, "id", "name", "title")
-          val group = new Properties(app.group, "id", "name", "title", "indexno")
+          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          appProps.put("title", app.getTitle(isEnName))
+          val menus = menuService.getTopMenus(app, u) map (m => convert(m, isEnName))
+          val domain = new Properties(app.domain, "id", "name")
+          domain.put("title", app.domain.getTitle(isEnName))
+          val group = new Properties(app.group, "id", "name", "indexno")
+          group.put("title", app.group.getTitle(isEnName))
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
-        getDomainMenus(u)
+        getDomainMenus(u, isEnName)
     }
   }
 
-  private def getDomainMenus(u: User): DomainMenus = {
+  private def getDomainMenus(u: User, isEnName: Boolean): DomainMenus = {
     val menus = menuService.getTopMenus(u)
     val appsMenus = menus.groupBy(_.app)
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {
       case (oned, _) =>
-        val group = new Properties(oned, "id", "name", "title", "indexno")
+        val group = new Properties(oned, "id", "name", "indexno")
+        group.put("title", if isEnName then oned.enTitle else oned.title)
         val appMenus = groupApps(oned).toBuffer.sorted map { app =>
-          val appProps = new Properties(app, "id", "name", "title", "base", "url", "logoUrl", "navStyle")
-          AppMenus(appProps, appsMenus(app).map(convert))
+          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          appProps.put("title", if isEnName then app.enTitle else app.title)
+          AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
         }
         (oned, GroupMenus(group, appMenus))
     }
@@ -94,17 +103,20 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     directMenuMaps.keys.toSeq.sorted foreach { g =>
       groups += directMenuMaps(g)
     }
-    val domain = new Properties(domainService.getDomain, "id", "name", "title")
-    DomainMenus(domain, groups)
+    val domain = domainService.getDomain
+    val domainp = new Properties(domain, "id", "name")
+    domainp.put("title", domain.getTitle(isEnName))
+    DomainMenus(domainp, groups)
   }
 
-  private def convert(one: Menu): Properties = {
-    val menu = new Properties(one, "id", "title", "indexno")
+  private def convert(one: Menu, isEnName: Boolean): Properties = {
+    val menu = new Properties(one, "id", "fonticon", "indexno")
+    menu.put("title", if isEnName then one.enName else one.name)
     if (one.entry.isDefined) menu.put("entry", one.entry.get.name + (if (one.params.isDefined) "?" + one.params.get else ""))
     if (one.children.nonEmpty) {
       val children = new mutable.ListBuffer[Properties]
       one.children foreach { child =>
-        children += convert(child)
+        children += convert(child, isEnName)
       }
       menu.put("children", children)
     }

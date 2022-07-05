@@ -26,12 +26,14 @@ class DomainWS extends ActionSupport {
 
   var domainService: DomainService = _
 
-  @response
+  @response(cacheable = true)
   def index(): Properties = {
     val domain = domainService.getDomain
     val org = domainService.getOrg
     val orgProperties = new Properties(org, "id", "code", "name", "shortName", "logoUrl", "wwwUrl")
-    val domainProperties = new Properties(domain, "id", "title", "name", "hostname", "logoUrl")
+    val domainProperties = new Properties(domain, "id", "name", "hostname", "logoUrl")
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
+    domainProperties.put("title", domain.getTitle(isEnName))
     domainProperties.put("org", orgProperties)
     domainProperties
   }

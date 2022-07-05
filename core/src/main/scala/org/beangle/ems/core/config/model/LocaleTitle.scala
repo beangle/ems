@@ -15,21 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.ws.config
+package org.beangle.ems.core.config.model
 
-import org.beangle.commons.collection.Properties
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.annotation.response
-import org.beangle.ems.core.config.service.DomainService
+trait LocaleTitle {
 
-class OrgWS extends ActionSupport {
+  def title: String
 
-  var domainService: DomainService = _
+  def enTitle: String
 
-  @response(cacheable = true)
-  def index(): Properties = {
-    val org = domainService.getOrg
-    new Properties(org, "id", "code", "name", "shortName", "logoUrl", "wwwUrl")
+  def getTitle(isEn: Boolean): String = {
+    if isEn then enTitle else title
   }
-
 }

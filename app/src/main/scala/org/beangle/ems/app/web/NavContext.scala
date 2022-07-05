@@ -31,9 +31,9 @@ import org.beangle.web.servlet.util.RequestUtils
 object NavContext {
   def get(request: HttpServletRequest): NavContext = {
     val ctx = new NavContext
-    ctx.menusJson = RemoteService.getDomainMenusJson
+    ctx.menusJson = RemoteService.getDomainMenusJson(ActionContext.current.locale)
 
-    ctx.domain = RemoteService.getDomain
+    ctx.domain = RemoteService.getDomain(ActionContext.current.locale)
     if null == ctx.domain.org then ctx.org = RemoteService.getOrg
     else ctx.org = ctx.domain.org
 

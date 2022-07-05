@@ -1,5 +1,6 @@
 Menu=菜单
-Menu.title=标题
+Menu.enName=英文标题
+Menu.fonticon=字体图标
 Menu.params=参数
 Menu.resources=菜单关联资源
 

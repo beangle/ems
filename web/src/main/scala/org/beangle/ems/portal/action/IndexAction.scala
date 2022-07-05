@@ -20,13 +20,14 @@ package org.beangle.ems.portal.action
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
-import org.beangle.security.Securities
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.View
 import org.beangle.ems.core.bulletin.model.{Doc, Notice}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.User
+import org.beangle.security.Securities
 import org.beangle.web.action.annotation.mapping
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
+import org.beangle.web.action.view.View
 
 class IndexAction extends ActionSupport with ServletSupport {
   var entityDao: EntityDao = _
@@ -38,6 +39,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     val ctx = NavContext.get(request)
     put("nav", ctx)
     put("ems", Ems)
+    put("locale", ActionContext.current.locale)
     forward()
   }
 
