@@ -1,6 +1,11 @@
 [#ftl]
 [@b.head/]
 [@b.grid items=businessLogs var="businessLog" sortable="true"]
+  [@b.gridbar]
+    [#if businessLogs.totalItems<10000]
+    bar.addItem("${b.text("action.export")}",action.exportData("id:流水号,app.name:应用名,level.name:日志级别,operator:操作者,operateAt:操作时间,summary:操作内容摘要,entry:入口地址,agent:客户端,ip:IP,resources:资源,details:明细",null,"fileName=日志明细"));
+    [/#if]
+  [/@]
   [@b.row]
     [@b.boxcol /]
     [@b.col  width="10%" property="app.name" title="应用"]
