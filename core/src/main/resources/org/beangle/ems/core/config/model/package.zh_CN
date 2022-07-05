@@ -4,6 +4,7 @@ App=应用
 App.name=应用名称
 App.remark=备注
 App.title=标题
+App.enTitle=英文标题
 App.secret=密钥
 App.url=应用地址
 App.indexno=排序索引号
@@ -44,6 +45,7 @@ Domain.logoUrl=logo 网址
 AppGroup=应用分组
 AppGroup.indexno=顺序号
 AppGroup.title=标题
+AppGroup.enTitle=英文标题
 
 File=项目文件
 File.mediaType=类型

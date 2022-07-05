@@ -63,7 +63,7 @@ object RemoteService {
   }
 
   def getMenusJson(locale: Locale): String = {
-    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json&request_locale=" + locale.toString).getOrElse(null)
+    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?request_locale=" + locale.toString).getOrElse(null)
   }
 
   def getDomainMenusJson(locale: Locale): String = {
@@ -85,8 +85,8 @@ object RemoteService {
     convert2Org(data)
   }
 
-  def getDomain: Ems.Domain = {
-    val json = getText(Ems.api + "/platform/config/domains.json").getOrElse(null)
+  def getDomain(locale: Locale): Ems.Domain = {
+    val json = getText(Ems.api + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
     val data = JSON.parseObj(json)
     val domain = new Ems.Domain
     data.get("id") foreach (e => domain.id = e.asInstanceOf[Number].intValue)

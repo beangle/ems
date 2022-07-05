@@ -49,7 +49,7 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
       case Some(app) => menuService.getTopMenus(app)
       case None => List.empty[Menu]
     }
-    val isEnName = get("request_locale","zh_CN").startsWith("en")
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
     menus map (m => convert(m, isEnName))
   }
 
@@ -60,7 +60,7 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     if (user.isEmpty) {
       return "{}"
     }
-    val isEnName = get("request_locale","zh_CN").startsWith("en")
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
     val u = user.get
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
@@ -69,10 +69,13 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
         if (forDomain) {
           getDomainMenus(u, isEnName)
         } else {
-          val appProps = new Properties(app, "id", "name", "title", "base", "url", "logoUrl", "navStyle")
+          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          appProps.put("title", app.getTitle(isEnName))
           val menus = menuService.getTopMenus(app, u) map (m => convert(m, isEnName))
-          val domain = new Properties(app.domain, "id", "name", "title")
-          val group = new Properties(app.group, "id", "name", "title", "indexno")
+          val domain = new Properties(app.domain, "id", "name")
+          domain.put("title", app.domain.getTitle(isEnName))
+          val group = new Properties(app.group, "id", "name", "indexno")
+          group.put("title", app.group.getTitle(isEnName))
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
@@ -86,9 +89,11 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {
       case (oned, _) =>
-        val group = new Properties(oned, "id", "name", "title", "indexno")
+        val group = new Properties(oned, "id", "name", "indexno")
+        group.put("title", if isEnName then oned.enTitle else oned.title)
         val appMenus = groupApps(oned).toBuffer.sorted map { app =>
-          val appProps = new Properties(app, "id", "name", "title", "base", "url", "logoUrl", "navStyle")
+          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          appProps.put("title", if isEnName then app.enTitle else app.title)
           AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
         }
         (oned, GroupMenus(group, appMenus))
@@ -98,8 +103,10 @@ class MenuWS extends ActionSupport with EntitySupport[Menu] {
     directMenuMaps.keys.toSeq.sorted foreach { g =>
       groups += directMenuMaps(g)
     }
-    val domain = new Properties(domainService.getDomain, "id", "name", "title")
-    DomainMenus(domain, groups)
+    val domain = domainService.getDomain
+    val domainp = new Properties(domain, "id", "name")
+    domainp.put("title", domain.getTitle(isEnName))
+    DomainMenus(domainp, groups)
   }
 
   private def convert(one: Menu, isEnName: Boolean): Properties = {

@@ -25,9 +25,10 @@ import org.beangle.data.model.pojo.{Enabled, Named, Remark}
 
 import scala.collection.mutable
 
-class App extends IntId with Named with Enabled with Ordered[App] with Principal with Remark {
+class App extends IntId with Named with Enabled with Ordered[App] with Principal with Remark with LocaleTitle {
   var secret: String = _
   var title: String = _
+  var enTitle: String = _
   var datasources: mutable.Buffer[DataSource] = Collections.newBuffer[DataSource]
   var appType: AppType = _
   var url: String = _

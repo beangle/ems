@@ -26,7 +26,7 @@ class OrgWS extends ActionSupport {
 
   var domainService: DomainService = _
 
-  @response
+  @response(cacheable = true)
   def index(): Properties = {
     val org = domainService.getOrg
     new Properties(org, "id", "code", "name", "shortName", "logoUrl", "wwwUrl")
