@@ -19,16 +19,20 @@ package org.beangle.ems.portal.admin.action.security
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.web.action.annotation.{ignore, param}
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
+import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.web.action.annotation.{ignore, param}
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
+
+import java.net.{URL, URLConnection}
 
 class MenuAction extends RestfulAction[Menu] {
   var menuService: MenuService = _
@@ -42,6 +46,11 @@ class MenuAction extends RestfulAction[Menu] {
 
   override def search(): View = {
     AppHelper.remember("menu.app.id")
+    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    val domain = domainService.getDomain
+    for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
+      put("remoteMenuURL", url + s"/api/${profile}/menus/${app.name}.xml")
+    }
     super.search()
     forward()
   }
@@ -56,7 +65,7 @@ class MenuAction extends RestfulAction[Menu] {
     //search profile in app scope
     val app = entityDao.get(classOf[App], menu.app.id)
 
-    var folders = Collections.newBuffer[Menu]
+    val folders = Collections.newBuffer[Menu]
     // 查找可以作为父节点的菜单
     val folderBuilder = OqlBuilder.from(classOf[Menu], "m")
     folderBuilder.where("m.entry is null and m.app=:app", app)
@@ -165,8 +174,34 @@ class MenuAction extends RestfulAction[Menu] {
       val app = menus.head.app
       put("resources", entityDao.findBy(classOf[FuncResource], "app", app))
     else
-      put("resources",List.empty[FuncResource])
+      put("resources", List.empty[FuncResource])
     forward()
+  }
+
+  def displayRemoteMenu(): View = {
+    val domain = domainService.getDomain
+    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
+      val remoteUrl = url + s"/api/${profile}/menus/${app.name}.xml"
+      put("remoteMenuURL", remoteUrl)
+      val res = HttpUtils.getText(remoteUrl)
+      put("remoteContent", res.getText)
+      put("remoteResponse", res.status)
+    }
+    forward()
+  }
+
+  def importFormRemote(): View = {
+    val domain = domainService.getDomain
+    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    var remoteUrl: Option[String] = None
+    for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
+      remoteUrl = Some(url + s"/api/${profile}/menus/${EmsApp.name}.xml")
+    }
+    remoteUrl foreach { rl =>
+      menuService.importFrom(app, scala.xml.XML.load(new URL(rl).openConnection().getInputStream))
+    }
+    redirect("search", "info.save.success")
   }
 
   def importFromXml(): View = {

@@ -16,8 +16,10 @@
   bar.addItem("${b.text("action.freeze")}",activate(0),'action-freeze');
   bar.addItem("${b.text("action.activate")}",activate(1),'action-activate');
   bar.addItem("${b.text("action.delete")}",action.remove());
-  bar.addItem("${b.text("action.export")}",action.method("exportToXml",null,null,'_blank'));
-  bar.addItem("导入",action.method('importFromXml'));
+  var exportMenu = bar.addMenu("导入导出...");
+  exportMenu.addItem("${b.text("action.export")}",action.method("exportToXml",null,null,'_blank'));
+  exportMenu.addItem("文件导入",action.method('importFromXml'));
+  exportMenu.addItem("远程导入",action.method('displayRemoteMenu'));
 [/@]
   [@b.row]
     <tr [#if menu??] title="入口及备注:${(menu.entry.name)!} ${(menu.remark?html)!}" id="${menu.indexno}"[/#if]>
