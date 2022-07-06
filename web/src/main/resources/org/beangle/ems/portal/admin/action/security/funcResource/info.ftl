@@ -19,7 +19,7 @@
    </tr>
    <tr>
      <td class="title">引用菜单:</td>
-     <td class="content">[#list menus as menu](${menu.indexno})${menu.title}<br/>[/#list]</td>
+     <td class="content">[#list menus as menu](${menu.indexno})${menu.name}<br/>[/#list]</td>
      <td class="title">${b.text("common.remark")}:</td>
      <td class="content">${resource.remark!}</td>
    </tr>

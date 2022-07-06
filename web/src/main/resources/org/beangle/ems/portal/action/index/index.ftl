@@ -66,6 +66,9 @@
   .nav-sidebar > .nav-item .nav-icon{
     font-size: 0.7rem;
   }
+  .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.fal, .nav-sidebar > .nav-item .nav-icon.fad, .nav-sidebar > .nav-item .nav-icon.svg-inline--fa, .nav-sidebar > .nav-item .nav-icon.ion {
+    font-size: 0.7rem;
+  }
   [#--靠左边一点--]
   .text-sm .nav-legacy.nav-sidebar > .nav-item > .nav-link.active > .nav-icon {
     margin-left: 3px;

@@ -39,6 +39,7 @@ Db.properties=数据源属性
 
 Domain=业务系统
 Domain.title=标题
+Domain.enTitle=英文标题
 Domain.hostname=主机域名
 Domain.logoUrl=logo 网址
 
