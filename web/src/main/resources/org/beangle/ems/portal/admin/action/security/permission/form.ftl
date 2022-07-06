@@ -83,7 +83,7 @@
       [#else]
       <a href="#" class="tree-folder-open" id="${menu.indexno}_folder" onclick="bg.tabletree.toggle(this);"></a>[#rt]
       [/#if]
-      &nbsp;${menu.indexno} ${menu.title}
+      &nbsp;${menu.indexno} ${menu.name}
     </div>
     </td>
     <td>

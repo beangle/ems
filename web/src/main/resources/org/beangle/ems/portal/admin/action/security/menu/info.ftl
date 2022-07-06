@@ -13,10 +13,10 @@ bar.addBack("${b.text("action.back")}");
    </td>
    </tr>
    <tr>
-   <td class="title" >&nbsp;标题:</td>
-   <td class="content">${menu.title}</td>
    <td class="title" >&nbsp;${b.text("common.name")}:</td>
    <td class="content">${menu.name!}</td>
+   <td class="title" >&nbsp;英文名:</td>
+   <td class="content">${menu.enName}</td>
    </tr>
    <tr>
   <td class="title" >&nbsp;${b.text("common.remark")}:</td>
