@@ -11,8 +11,8 @@
     <td class="content">${app.indexno} ${app.title}</td>
   </tr>
   <tr>
-    <td class="title">领域</td>
-    <td class="content">${app.domain.title}(${app.domain.name})</td>
+    <td class="title">分组</td>
+    <td class="content">${app.group.title}(${app.group.name})</td>
     <td class="title">类型</td>
     <td class="content">${app.appType.title}(${app.appType.name})</td>
   </tr>

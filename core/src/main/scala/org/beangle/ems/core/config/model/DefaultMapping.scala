@@ -83,9 +83,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[File]
-
     all.cacheAll()
-
   }
 
 }

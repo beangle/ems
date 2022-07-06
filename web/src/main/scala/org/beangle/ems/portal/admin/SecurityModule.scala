@@ -39,5 +39,6 @@ class SecurityModule extends BindModule {
     bind(classOf[action.session.EventAction])
 
     bind("userDashboardHelper", classOf[UserDashboardHelper])
+
   }
 }

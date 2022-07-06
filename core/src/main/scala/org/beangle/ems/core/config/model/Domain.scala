@@ -20,10 +20,12 @@ package org.beangle.ems.core.config.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 
-class Domain extends IntId with Named  with LocaleTitle {
+class Domain extends IntId with Named with LocaleTitle {
   var title: String = _
   var enTitle: String = _
   var hostname: String = _
   var org: Org = _
   var logoUrl: String = _
+  var sashubBase: Option[String] = None
+  var sashubProfile: Option[String] = None
 }
