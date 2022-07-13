@@ -12,3 +12,7 @@ alter table log.business_logs add constraint fk_sjqwybis3f1lherr191kkp7w5 foreig
 insert into log.levels(id,name) values(1,'信息');
 insert into log.levels(id,name) values(2,'警告');
 insert into log.levels(id,name) values(3,'错误');
+
+alter table cfg.domains add logo_url varchar(300);
+update cfg.domains d set logo_url=(select o.logo_url from cfg.orgs o where o.id=d.org_id);
+update cfg.apps set nav_style ='adminlte' where nav_style is not null;
