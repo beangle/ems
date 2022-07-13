@@ -230,7 +230,8 @@
           else{ fonticon = this.getIconClass(menu.title);}
           menuItem = menuItem.replace('{icon_class}',fonticon);
           menuItem = menuItem.replace('{menu.entry}',menu.entry);
-          menuItem = menuItem.replaceAll('{menu.target}',menu.target);
+          menuItem = menuItem.replace('{menu.target}',menu.target);//replaceAll was not supported widely.
+          menuItem = menuItem.replace('{menu.target}',menu.target);
           jqueryElem.append(menuItem);
         }
       }

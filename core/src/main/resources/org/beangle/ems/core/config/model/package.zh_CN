@@ -42,6 +42,8 @@ Domain.title=标题
 Domain.enTitle=英文标题
 Domain.hostname=主机域名
 Domain.logoUrl=logo 网址
+Domain.sashubBase=SasHub的地址
+Domain.sashubProfile=SasHub上注册的key
 
 AppGroup=应用分组
 AppGroup.indexno=顺序号

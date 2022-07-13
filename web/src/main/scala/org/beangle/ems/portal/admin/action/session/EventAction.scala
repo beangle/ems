@@ -18,14 +18,25 @@
 package org.beangle.ems.portal.admin.action.session
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.session.model.SessionEvent
+import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.helper.QueryHelper
+
+import java.time.LocalDate
 
 class EventAction extends RestfulAction[SessionEvent] {
   var domainService: DomainService = _
 
+  override protected def indexSetting(): Unit = {
+    put("beginOn", LocalDate.of(LocalDate.now().getYear, 1, 1))
+    put("endOn", LocalDate.of(LocalDate.now().getYear, 12, 31))
+    super.indexSetting()
+  }
+
   override protected def getQueryBuilder: OqlBuilder[SessionEvent] = {
-    super.getQueryBuilder.where("sessionEvent.domain=:domain", domainService.getDomain)
+    val query = super.getQueryBuilder
+    QueryHelper.dateBetween(query, "sessionEvent", "updatedAt", "beginOn", "endOn")
+    query.where("sessionEvent.domain=:domain", domainService.getDomain)
   }
 }
