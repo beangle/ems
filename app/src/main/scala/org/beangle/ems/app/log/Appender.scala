@@ -89,12 +89,9 @@ class RemoteAppender(val url: String) extends Appender {
     os.close() //don't forget to close the OutputStream
     try {
       conn.connect()
-      //read the inputstream and print it
-      //val lines = IOs.readString(conn.getInputStream)
       Response(conn.getResponseCode, "")
     } catch {
       case e: Exception =>
-        e.printStackTrace()
         Response(HTTP_NOT_FOUND, conn.getResponseMessage)
     } finally
       if (null != conn) conn.disconnect()

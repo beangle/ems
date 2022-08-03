@@ -18,14 +18,14 @@
 package org.beangle.ems.app.web
 
 import org.beangle.commons.lang.Strings
-import org.beangle.ems.app.log.{BusinessLogStore, Level}
+import org.beangle.ems.app.log.{BusinessLogger, Level}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.servlet.util.RequestUtils
 
 import scala.collection.mutable
 
 trait BusinessLogSupport {
-  var businessLogStore: BusinessLogStore = _
+  var businessLogger: BusinessLogger = _
 
   def info(summary: String, resources: Any, details: Any): Unit = {
     log(Level.Info, summary, resources, details)
@@ -40,7 +40,7 @@ trait BusinessLogSupport {
   }
 
   def log(level: Level, summary: String, resources: Any, details: Any): Unit = {
-    val log = BusinessLogStore.newEntry(summary)
+    val log = BusinessLogger.newEvent(summary)
     log.level = level
     val context = ActionContext.current
     val detailStr = details match {
@@ -58,6 +58,6 @@ trait BusinessLogSupport {
       case e: Any => e.toString
     }
     log.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, detailStr)
-    businessLogStore.publish(log)
+    businessLogger.publish(log)
   }
 }

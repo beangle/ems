@@ -24,7 +24,7 @@ class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
     val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
-    bind(classOf[AsyncBusinessLogStore])
+    bind(classOf[AsyncBusinessLogger])
       .property("appenders",
         List(
           new ConsoleAppender(layout),

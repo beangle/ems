@@ -196,7 +196,7 @@ class MenuAction extends RestfulAction[Menu] {
     val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
     var remoteUrl: Option[String] = None
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
-      remoteUrl = Some(url + s"/api/${profile}/menus/${EmsApp.name}.xml")
+      remoteUrl = Some(url + s"/api/${profile}/menus/${app.name}.xml")
     }
     remoteUrl foreach { rl =>
       menuService.importFrom(app, scala.xml.XML.load(new URL(rl).openConnection().getInputStream))
