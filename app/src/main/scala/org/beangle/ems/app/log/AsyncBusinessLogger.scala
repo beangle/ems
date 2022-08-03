@@ -19,13 +19,13 @@ package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.logging.Logging
-import org.beangle.ems.app.log.AsyncBusinessLogStore.Worker
+import org.beangle.ems.app.log.AsyncBusinessLogger.Worker
 
 import java.util as ju
 import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
 
-object AsyncBusinessLogStore {
-  class Worker(store: AsyncBusinessLogStore) extends Thread {
+object AsyncBusinessLogger {
+  class Worker(store: AsyncBusinessLogger) extends Thread {
     var stopped: Boolean = false
 
     override def run(): Unit = {
@@ -48,7 +48,7 @@ object AsyncBusinessLogStore {
   }
 }
 
-class AsyncBusinessLogStore extends BusinessLogStore with Initializing with Disposable {
+class AsyncBusinessLogger extends BusinessLogger with Initializing with Disposable {
   var appenders: List[Appender] = _
   var queueSize: Int = 512
   private var queue: BlockingQueue[BusinessLogEvent] = _

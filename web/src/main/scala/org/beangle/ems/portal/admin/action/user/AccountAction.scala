@@ -21,7 +21,6 @@ import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.app.log.BusinessLogStore
 import org.beangle.ems.app.web.BusinessLogSupport
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
