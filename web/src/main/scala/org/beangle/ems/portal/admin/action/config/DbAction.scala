@@ -17,17 +17,17 @@
 
 package org.beangle.ems.portal.admin.action.config
 
-import java.sql.DriverManager
-
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.{Strings, Throwables}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.jdbc.vendor.Vendors
 import org.beangle.ems.app.util.AesEncryptor
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.config.model.{Credential, Db}
 import org.beangle.ems.core.config.service.{CredentialService, DomainService}
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
+
+import java.sql.DriverManager
 
 class DbAction extends RestfulAction[Db] {
 
@@ -35,7 +35,7 @@ class DbAction extends RestfulAction[Db] {
 
   var domainService: DomainService = _
 
-  var credentialService:CredentialService=_
+  var credentialService: CredentialService = _
 
   override protected def getQueryBuilder: OqlBuilder[Db] = {
     val builder = super.getQueryBuilder
@@ -44,7 +44,8 @@ class DbAction extends RestfulAction[Db] {
   }
 
   def testSetting(): View = {
-    val entities = getModels[Db](entityName, ids(simpleEntityName, entityDao.domain.getEntity(entityName).get.id.clazz))
+    val entityType = entityDao.domain.getEntity(entityClass).get
+    val entities = getModels[Db](entityType, ids(simpleEntityName, entityType.id.clazz))
     put("credentials", entityDao.getAll(classOf[Credential]))
     put("datasource", entities.head)
     forward()
@@ -73,7 +74,8 @@ class DbAction extends RestfulAction[Db] {
     var username = get("username", "")
     var password = get("password", "")
     put("credentials", credentialService.getAll())
-    val entities = getModels[Db](entityName, ids(simpleEntityName, entityDao.domain.getEntity(entityName).get.id.clazz))
+    val entityType = entityDao.domain.getEntity(entityClass).get
+    val entities = getModels[Db](entityType, ids(simpleEntityName, entityType.id.clazz))
     val cfg = entities.head
 
     val useCredential = getBoolean("use_credential", false)

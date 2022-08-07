@@ -17,16 +17,16 @@
 
 package org.beangle.ems.portal.user.action
 
-import java.time.Instant
-
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.app.Ems
+import org.beangle.ems.core.user.model.{Message, User}
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{ignore, mapping, param}
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.user.model.{Message, User}
-import org.beangle.commons.codec.digest.Digests
-import org.beangle.ems.app.Ems
+
+import java.time.Instant
 
 class MessageAction extends RestfulAction[Message] {
 
@@ -41,7 +41,7 @@ class MessageAction extends RestfulAction[Message] {
 
   @mapping(value = "{id}")
   override def info(@param("id") id: String): View = {
-    val msg = getModel[Message](entityName, convertId(id))
+    val msg: Message = getModel(id.toLong)
     val me = Securities.user
     if (msg.status == Message.Newly && msg.recipient.code == me) {
       msg.status = Message.Readed

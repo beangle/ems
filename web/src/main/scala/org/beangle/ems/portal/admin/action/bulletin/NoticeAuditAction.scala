@@ -22,8 +22,8 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
-import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.annotation.{mapping, param}
+import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.EntityAction
 
@@ -98,7 +98,8 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
 
   @mapping(value = "{id}")
   def info(@param("id") id: String): View = {
-    put(simpleEntityName, getModel[Notice](entityName, convertId(id)))
+    val notice: Notice = getModel(id.toLong)
+    put(simpleEntityName, notice)
     forward()
   }
 }
