@@ -43,7 +43,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
 
   def index(): View = {
     val query = OqlBuilder.from(classOf[User], "user")
-    QueryHelper.populateConditions(query)
+    QueryHelper.populate(query)
     get("user") foreach { u =>
       query.where("user.code like :u or user.name like :u", "%" + u + "%")
     }

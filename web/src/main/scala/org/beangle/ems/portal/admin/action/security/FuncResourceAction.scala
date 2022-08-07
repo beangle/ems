@@ -30,6 +30,7 @@ import org.beangle.webmvc.support.action.RestfulAction
 
 /**
  * 系统模块管理响应类
+ *
  * @author chaostone 2005-10-9
  */
 class FuncResourceAction extends RestfulAction[FuncResource] {
@@ -73,7 +74,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
   }
 
   override def info(id: String): View = {
-    val entity = getModel[Entity[_]](entityName, id)
+    val entity: FuncResource = getModel(id.toInt)
     val query = OqlBuilder.from(classOf[Menu], "menu")
     query.join("menu.resources", "r").where("r.id=:resourceId", entity.id)
       .orderBy("menu.app.id,menu.indexno")

@@ -58,11 +58,8 @@ class DataResourceAction extends RestfulAction[DataResource] {
   }
 
   override def info(id: String): View = {
-    val entity = getModel[Entity[_]](entityName, id)
-    //    val roleQuery = OqlBuilder.from(classOf[AppDataPermission], "auth")
-    //    roleQuery.where("auth.resource=:resource", entity).select("auth.role")
+    val entity: DataResource = getModel(id.toInt)
     put(simpleEntityName, entity)
-    //    put("roles", entityDao.search(roleQuery))
     forward()
   }
 

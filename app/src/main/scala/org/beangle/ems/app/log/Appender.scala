@@ -20,7 +20,6 @@ package org.beangle.ems.app.log
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.{Charsets, Strings}
-import org.beangle.commons.net.http.HttpUtils.report
 import org.beangle.commons.net.http.{HttpMethods, Https, Response}
 
 import java.io.*
