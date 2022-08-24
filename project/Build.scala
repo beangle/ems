@@ -4,13 +4,13 @@ import org.beangle.parent.Dependencies._
 
 object EmsDepends {
   val commonsVer = "5.3.0"
-  val dataVer = "5.4.6"
+  val dataVer = "5.4.8"
   val cdiVer = "0.3.7"
   val webVer = "0.1.0"
   val serializerVer= "0.0.24"
   val cacheVer= "0.0.27"
   val templateVer ="0.0.38"
-  val webmvcVer="0.5.2"
+  val webmvcVer="0.5.5"
   val securityVer="4.2.35"
   val idsVer="0.2.28"
 
