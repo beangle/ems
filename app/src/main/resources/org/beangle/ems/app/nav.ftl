@@ -62,7 +62,10 @@
     padding-left:0;
   }
   [#--图标小一点--]
-  .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.glyphicon, .nav-sidebar > .nav-item .nav-icon.ion{
+  .nav-sidebar > .nav-item .nav-icon{
+    font-size: 0.7rem;
+  }
+  .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.fal, .nav-sidebar > .nav-item .nav-icon.fad, .nav-sidebar > .nav-item .nav-icon.svg-inline--fa, .nav-sidebar > .nav-item .nav-icon.ion {
     font-size: 0.7rem;
   }
   [#--靠左边一点--]
@@ -229,23 +232,32 @@
     </ul>
     <div class="tab-content">
       <div id="control-sidebar-theme-options-tab" class="tab-pane active">
-        <h4 class="control-sidebar-heading">布局选项</h4>
+        <h5 class="control-sidebar-heading">布局选项</h5 >
         <div class="form-group">
-          <label class="control-sidebar-subheading"><input type="checkbox" checked="true" id="sticky_header">固定头部导航</label>
-          <label class="control-sidebar-subheading">
+          <div class="mb-2"><input type="checkbox" checked="true" id="sticky_header">固定头部导航</div>
+          <div class="mb-2">
             每页数据量<select id="page_size_selector">
               [#list [10,20,30,50,70,100,300] as ps]
               <option value="${ps}" [#if ps==20]selected[/#if]>${ps}</option>
               [/#list]
             </select>
-          </label>
+          </div>
+          <div class="mb-2">
+            界面语言:
+            <input name="request_locale" value="zh_CN" type="radio" [#if !locale?string?contains('en')] checked="checked"[/#if]  id="local_zh" onclick="changeLocale(this.value)">
+              <label for="local_zh">中文</label>
+            <input name="request_locale" value="en_US" type="radio" [#if locale?string?contains('en')] checked="checked"[/#if] id="local_en" onclick="changeLocale(this.value)">
+              <label for="local_en">英文</label>
+            <script>
+               function changeLocale(locale){
+                  this.location=("${b.url('!index')}"+"?request_locale="+locale);
+               }
+            </script>
+          </div>
         </div>
       </div>
       <div class="tab-pane" id="control-sidebar-home-tab">
-        <h4 class="control-sidebar-heading">近期活动</h4>
-        <ul class="control-sidebar-menu">
-        </ul>
-        <h4 class="control-sidebar-heading">工作进程</h4>
+        <h5 class="control-sidebar-heading">近期活动</h5>
         <ul class="control-sidebar-menu">
         </ul>
       </div>
