@@ -72,7 +72,7 @@ class FileWS extends ActionSupport {
     } else {
       getFile(app, path) match {
         case Some(template) =>
-          val repo = EmsApp.getBlobRepository(true)
+          val repo = EmsApp.getBlobRepository()
           repo.path(template.filePath) match {
             case Some(p) => response.sendRedirect(p)
             case None => response.setStatus(404)

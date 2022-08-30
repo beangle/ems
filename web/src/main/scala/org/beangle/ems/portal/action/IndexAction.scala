@@ -20,7 +20,7 @@ package org.beangle.ems.portal.action
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
-import org.beangle.ems.core.bulletin.model.{Doc, Notice}
+import org.beangle.ems.core.bulletin.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
@@ -48,7 +48,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     val noticeQuery = OqlBuilder.from(classOf[Notice], "notice")
     noticeQuery.join("notice.userCategories", "uc")
     noticeQuery.where("uc.id=:category", me.category.id)
-    noticeQuery.where("notice.archived=false")
+    noticeQuery.where("notice.archived=false and notice.status=:status", NoticeStatus.Passed)
     noticeQuery.where("notice.app.domain=:domain", domainService.getDomain)
     noticeQuery.limit(1, 10)
     noticeQuery.orderBy("notice.publishedAt desc")

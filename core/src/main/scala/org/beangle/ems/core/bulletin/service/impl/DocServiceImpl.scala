@@ -17,32 +17,33 @@
 
 package org.beangle.ems.core.bulletin.service.impl
 
-import java.io.InputStream
-import java.time.ZoneId
-
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.bulletin.model.Doc
 import org.beangle.ems.core.bulletin.service.DocService
+
+import java.io.InputStream
+import java.time.ZoneId
 
 class DocServiceImpl extends DocService {
 
   var entityDao: EntityDao = _
 
   def save(doc: Doc, filename: String, is: InputStream): Doc = {
-    val repo = EmsApp.getBlobRepository(true)
+    val repo = EmsApp.getBlobRepository()
     val user = doc.uploadBy
     val meta = repo.upload(s"/doc/${doc.updatedAt.atZone(ZoneId.systemDefault()).getYear}", is, filename, user.code + " " + user.name)
-    doc.name = meta.name
+
+    if null == doc.name then doc.name = meta.name
     doc.updatedAt = meta.updatedAt
     doc.filePath = meta.filePath
-    doc.fileSize=meta.fileSize
+    doc.fileSize = meta.fileSize
     entityDao.saveOrUpdate(doc)
     doc
   }
 
-  def remove(doc:Doc):Unit={
-    val repo = EmsApp.getBlobRepository(true)
+  def remove(doc: Doc): Unit = {
+    val repo = EmsApp.getBlobRepository()
     repo.remove(doc.filePath)
     entityDao.remove(doc)
   }

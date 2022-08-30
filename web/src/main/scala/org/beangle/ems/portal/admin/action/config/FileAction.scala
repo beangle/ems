@@ -51,7 +51,7 @@ class FileAction extends RestfulAction[File] {
   }
 
   override protected def saveAndRedirect(f: File): View = {
-    val repo = EmsApp.getBlobRepository(true)
+    val repo = EmsApp.getBlobRepository()
     val user = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     var filename = Strings.substringAfterLast(f.name, "/")
     val part = get("attachment", classOf[Part]).get
@@ -83,7 +83,7 @@ class FileAction extends RestfulAction[File] {
   }
 
   override protected def removeAndRedirect(entities: Seq[File]): View = {
-    val repo = EmsApp.getBlobRepository(true)
+    val repo = EmsApp.getBlobRepository()
     entities foreach { t =>
       repo.remove(t.filePath)
     }
@@ -94,7 +94,7 @@ class FileAction extends RestfulAction[File] {
   override def info(id: String): View = {
     val response = ActionContext.current.response
     val template = entityDao.get(classOf[File], id.toLong)
-    val repo = EmsApp.getBlobRepository(true)
+    val repo = EmsApp.getBlobRepository()
     repo.path(template.filePath) match {
       case Some(p) => response.sendRedirect(p)
       case None => response.setStatus(404)

@@ -46,7 +46,7 @@ class AvatarWS(entityDao: EntityDao)
   }
 
   private def deliver(path: String): Unit = {
-    EmsApp.getBlobRepository(true).path(path) match {
+    EmsApp.getBlobRepository().path(path) match {
       case Some(p) => response.sendRedirect(p)
       case None => response.setStatus(404)
     }

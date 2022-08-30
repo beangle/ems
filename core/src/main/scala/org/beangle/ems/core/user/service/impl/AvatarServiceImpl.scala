@@ -30,7 +30,7 @@ class AvatarServiceImpl extends AvatarService {
   var entityDao: EntityDao = _
 
   def save(user: User, filename: String, is: InputStream): Unit = {
-    val repo = EmsApp.getBlobRepository(true)
+    val repo = EmsApp.getBlobRepository()
     val query = OqlBuilder.from(classOf[Avatar], "avatar")
     query.where("avatar.user=:user", user)
     val avatars = entityDao.search(query)

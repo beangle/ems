@@ -20,14 +20,16 @@ package org.beangle.ems.portal.user.action
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.security.Securities
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.bulletin.model.Doc
 import org.beangle.ems.core.user.model.User
+import org.beangle.security.Securities
+import org.beangle.web.action.annotation.{mapping, param}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
+import org.beangle.web.action.view.{Status, Stream, View}
+import org.beangle.webmvc.support.helper.QueryHelper
+
+import java.io.File
 
 class DocAction extends ActionSupport with ServletSupport {
 
@@ -66,11 +68,14 @@ class DocAction extends ActionSupport with ServletSupport {
   @mapping("{id}")
   def info(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
-    EmsApp.getBlobRepository(true).path(doc.filePath) match {
-      case Some(p) => response.sendRedirect(p)
-      case None => response.setStatus(404)
+    EmsApp.getBlobRepository().path(doc.filePath) match {
+      case Some(p) =>
+        if p.startsWith("http") then
+          response.sendRedirect(p)
+          null
+        else Stream(new File(p), doc.name)
+      case None => Status.NotFound
     }
-    null
   }
 
 }
