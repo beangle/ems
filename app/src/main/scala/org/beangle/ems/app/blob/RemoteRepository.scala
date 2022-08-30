@@ -36,7 +36,7 @@ import org.beangle.commons.net.http.{HttpMethods, Https}
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
 
-  private val formater = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
+  private val formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
   require(!dir.endsWith("/"))
 
   override def remove(path: String): Boolean = {
@@ -62,7 +62,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
 
   override def url(path: String): Option[URL] = {
     require(path.startsWith("/"))
-    val now = LocalDateTime.now.format(formater)
+    val now = LocalDateTime.now.format(formatter)
     val token = Digests.sha1Hex(s"$dir${path}$user$key$now")
     Some(new URL(s"$base$dir${path}?token=$token&u=$user&t=$now"))
   }

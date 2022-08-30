@@ -33,6 +33,7 @@ object DefaultMapping extends MappingModule {
 
     bind[Notice].declare { e =>
       e.contents is lob
+      e.issuer is length(40)
     }
 
     bind[SensitiveWord].declare { e =>

@@ -17,19 +17,20 @@
 
 package org.beangle.ems.core.bulletin.model
 
-import java.time.Instant
-
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.DateRange
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.{User, UserCategory}
 
+import java.time.Instant
 import scala.collection.mutable
 
 class Notice extends LongId with DateRange {
 
   var app: App = _
+
+  var issuer: String = _
 
   var title: String = _
 

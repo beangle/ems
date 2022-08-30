@@ -2,8 +2,8 @@
   <div class="box-body no-padding">
     <div class="mailbox-read-info">
       <h3>${notice.title}</h3>
-      <h5>发自: ${notice.operator.name}(${notice.operator.code})
-        <span class="mailbox-read-time pull-right">${notice.createdAt?string('yyyy-MM-dd')}</span></h5>
+      <h6>发自: ${notice.issuer}
+        <span class="mailbox-read-time pull-right">${notice.createdAt?string('yyyy-MM-dd')}</span></h6>
     </div>
     <div class="mailbox-read-message">
       ${notice.contents}
