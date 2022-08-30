@@ -36,7 +36,7 @@ import org.beangle.commons.net.http.{HttpMethods, Https}
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
 
-  private var formater = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
+  private val formater = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
   require(!dir.endsWith("/"))
 
   override def remove(path: String): Boolean = {

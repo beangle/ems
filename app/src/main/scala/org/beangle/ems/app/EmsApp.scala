@@ -37,13 +37,9 @@ object EmsApp extends Logging {
   private var _token: Token = _
 
   def getBlobRepository(remote: Boolean = true): Repository = {
-    var dir = Strings.substringBeforeLast(name, "-")
-    dir = "/" + Strings.replace(dir, "-", "/")
-    if (remote) {
-      new RemoteRepository(env.blob, dir, name, secret)
-    } else {
-      new LocalRepository(Ems.home + "/blob", dir)
-    }
+    val dir = "/" + Strings.substringBefore(name, "-")
+    if remote then new RemoteRepository(env.blob, dir, name, secret)
+    else new LocalRepository(Ems.home + "/micdn/blob", dir)
   }
 
   def secret: String = {
@@ -112,7 +108,7 @@ object EmsApp extends Logging {
         rootNode \\ "app" foreach { app =>
           result ++= app.attributes.asAttrMap
         }
-        rootNode  \ "properties" \ "property" foreach { pNode =>
+        rootNode \ "properties" \ "property" foreach { pNode =>
           result.put((pNode \ "@name").text.trim, (pNode \ "@value").text.trim)
         }
         IOs.close(is)

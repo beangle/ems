@@ -17,13 +17,13 @@
 
 package org.beangle.ems.app.blob
 
-import java.io.{File, FileOutputStream, InputStream}
-import java.net.URL
-import java.time.Instant
-
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.file.digest.Sha1
 import org.beangle.commons.io.IOs
+
+import java.io.{File, FileOutputStream, InputStream}
+import java.net.URL
+import java.time.Instant
 
 class LocalRepository(val base: String, val dir: String) extends Repository {
 
@@ -61,20 +61,22 @@ class LocalRepository(val base: String, val dir: String) extends Repository {
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val time = System.currentTimeMillis();
-    val file = new File(s"$base$dir${folder}/$time")
+    val file = new File(s"$base$dir$folder/$time")
+    file.getParentFile.mkdirs()
     val os = new FileOutputStream(file)
     IOs.copy(is, os)
     IOs.close(os)
     val sha = Sha1.digest(file)
-    val target = new File(s"$base$dir${folder}/$sha")
+    val target = new File(s"$base$dir$folder/$sha")
     file.renameTo(target)
     val ext = getExt(fileName)
     val meta = new BlobMeta()
+    meta.name = fileName
     meta.sha = sha
     meta.updatedAt = Instant.now
     meta.fileSize = target.length().asInstanceOf[Int]
     meta.mediaType = MediaTypes.get(ext, MediaTypes.ApplicationOctetStream).toString()
-    meta.filePath = s"$folder/${sha}"
+    meta.filePath = s"$folder/$sha"
     meta
   }
 

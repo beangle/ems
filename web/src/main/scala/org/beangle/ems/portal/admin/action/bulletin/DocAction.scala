@@ -17,21 +17,22 @@
 
 package org.beangle.ems.portal.admin.action.bulletin
 
-import java.time.Instant
-
 import jakarta.servlet.http.Part
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.security.Securities
-import org.beangle.web.action.support.ServletSupport
-import org.beangle.web.action.annotation.{ignore, param}
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.bulletin.model.Doc
 import org.beangle.ems.core.bulletin.service.DocService
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.{User, UserCategory}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.security.Securities
+import org.beangle.web.action.annotation.{ignore, param}
+import org.beangle.web.action.support.ServletSupport
+import org.beangle.web.action.view.{Status, Stream, View}
+import org.beangle.webmvc.support.action.RestfulAction
+
+import java.io.File
+import java.time.Instant
 
 class DocAction extends RestfulAction[Doc] with ServletSupport {
 
@@ -54,18 +55,21 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
     builder
   }
 
-   override protected def editSetting(entity: Doc): Unit = {
+  override protected def editSetting(entity: Doc): Unit = {
     put("userCategories", entityDao.getAll(classOf[UserCategory]))
     put("apps", appService.getWebapps)
   }
 
   def download(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
-    EmsApp.getBlobRepository(true).path(doc.filePath) match {
-      case Some(p) => response.sendRedirect(p)
-      case None => response.setStatus(404)
+    EmsApp.getBlobRepository().path(doc.filePath) match {
+      case Some(p) =>
+        if p.startsWith("http") then
+          response.sendRedirect(p)
+          null
+        else Stream(new File(p), doc.name)
+      case None => Status.NotFound
     }
-    null
   }
 
   @ignore
@@ -77,7 +81,7 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
       redirect("search", "info.remove.success")
     } catch {
       case e: Exception =>
-        logger.info("removeAndForwad failure", e)
+        logger.info("remove failure", e)
         redirect("search", "info.delete.failure")
     }
   }
