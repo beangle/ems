@@ -15,12 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.model
+package org.beangle.ems.portal.admin
 
-import org.beangle.data.model.IntId
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.portal.admin.action.oa.{DocAction, NewsAction, NoticeAction, NoticeAuditAction}
 
-class SensitiveWord extends IntId {
-  var domain: Domain = _
-  var contents: String = _
+class OAModule  extends BindModule {
+
+  protected override def binding(): Unit = {
+    bind(classOf[DocAction], classOf[NoticeAction], classOf[NewsAction], classOf[NoticeAuditAction])
+  }
 }

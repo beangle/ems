@@ -15,19 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.model
+package org.beangle.ems.core.oa.service
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
-import org.beangle.ems.core.config.model.Domain
+import java.io.InputStream
 
-class Todo extends LongId with Updated {
+import org.beangle.ems.core.oa.model.Doc
 
-  var user: User = _
+trait DocService {
 
-  var domain: Domain = _
+  def save(doc:Doc,filename:String,is:InputStream):Doc
 
-  var contents: String = _
-
-  var isDone: Boolean = _
+  def remove(doc:Doc):Unit
 }

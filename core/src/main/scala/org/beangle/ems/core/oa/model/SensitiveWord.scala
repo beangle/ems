@@ -15,29 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.model
+package org.beangle.ems.core.oa.model
 
-import org.beangle.data.orm.{IdGenerator, MappingModule}
+import org.beangle.data.model.IntId
+import org.beangle.ems.core.config.model.Domain
 
-object DefaultMapping extends MappingModule {
-
-  override def binding(): Unit = {
-    defaultIdGenerator(classOf[Long],IdGenerator.DateTime)
-    defaultCache("ems.security", "read-write")
-
-    bind[Doc]
-
-    bind[News] declare { e =>
-      e.contents is lob
-    }
-
-    bind[Notice].declare { e =>
-      e.contents is lob
-      e.issuer is length(40)
-    }
-
-    bind[SensitiveWord].declare { e =>
-      e.contents is length(30)
-    }
-  }
+class SensitiveWord extends IntId {
+  var domain: Domain = _
+  var contents: String = _
 }

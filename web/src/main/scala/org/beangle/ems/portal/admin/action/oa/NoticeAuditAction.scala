@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.admin.action.bulletin
+package org.beangle.ems.portal.admin.action.oa
 
-import org.beangle.ems.core.bulletin.model.{Notice, NoticeStatus}
+import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService

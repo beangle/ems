@@ -15,18 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.model
+package org.beangle.ems.core.oa.model
 
-import java.time.LocalDate
-
-import org.beangle.data.model.LongId
-import org.beangle.ems.core.config.model.Domain
-
-class News extends LongId {
-  var domain: Domain = _
-  var title: String = _
-  var publishedOn: LocalDate = _
-  var url: String = _
-  var contents: Option[String] = None
-  var archived: Boolean = _
+enum NoticeStatus(val title: String) {
+  case Draft extends NoticeStatus("草稿")
+  case Submited extends NoticeStatus("已提交")
+  case Unpassed extends NoticeStatus("审核不通过")
+  case Passed extends NoticeStatus("审核通过")
 }

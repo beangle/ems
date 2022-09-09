@@ -15,15 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.service
+package org.beangle.ems.core.oa.model
 
-import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.core.bulletin.service.impl.DocServiceImpl
-import org.beangle.ems.core.user.service.impl._
+import org.beangle.data.model.LongId
+import org.beangle.ems.core.user.model.User
 
-class DefaultModule extends BindModule {
+import java.time.Instant
 
-  override def binding(): Unit = {
-    bind(classOf[DocServiceImpl])
-  }
+object Notification {
+  val Information = 1
+  val Warning = 2
+}
+
+class Notification extends LongId {
+  /** 主题 */
+  var subject: String = _
+
+  /** 内容 */
+  var contents: String = _
+
+  /**接受人*/
+  var recipient: User = _
+
+  /** 发送日期 */
+  var sentAt: Instant = _
+
+  /**通知级别*/
+  var importance: Int = _
 }

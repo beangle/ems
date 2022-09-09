@@ -15,11 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.admin.action.bulletin
+package org.beangle.ems.core.oa.model
 
-import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.bulletin.model.News
+import org.beangle.data.model.LongId
+import org.beangle.ems.core.user.model.User
 
-class NewsAction extends RestfulAction[News] {
+import java.time.Instant
+
+object Message {
+  val Newly = 1
+  val Readed = 2
+  val InTrash = 3
+}
+
+/** 消息
+ * */
+class Message extends LongId {
+  /** 标题 */
+  var title: String = _
+
+  /** 内容 */
+  var contents: String = _
+
+  /** 发送人 */
+  var sender: User = _
+
+  /** 接受人 */
+  var recipient: User = _
+
+  /** 消息状态 */
+  var status: Int = _
+
+  /** 发送日期 */
+  var sentAt: Instant = _
 
 }

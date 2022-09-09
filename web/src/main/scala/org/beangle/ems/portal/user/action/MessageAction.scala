@@ -20,7 +20,8 @@ package org.beangle.ems.portal.user.action
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.Ems
-import org.beangle.ems.core.user.model.{Message, User}
+import org.beangle.ems.core.oa.model.Message
+import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{ignore, mapping, param}
 import org.beangle.web.action.view.View

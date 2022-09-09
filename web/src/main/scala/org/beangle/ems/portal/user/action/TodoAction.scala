@@ -17,8 +17,8 @@
 
 package org.beangle.ems.portal.user.action
 
+import org.beangle.ems.core.oa.model.Todo
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.user.model.Todo
 
 class TodoAction extends RestfulAction[Todo] {
 

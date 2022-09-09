@@ -15,14 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.admin
+package org.beangle.ems.core.oa.model
 
-import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.admin.action.bulletin.{DocAction, NewsAction, NoticeAction, NoticeAuditAction}
+import org.beangle.data.model.LongId
+import org.beangle.ems.core.config.model.Domain
 
-class BulletinModule  extends BindModule {
+import java.time.LocalDate
 
-  protected override def binding(): Unit = {
-    bind(classOf[DocAction], classOf[NoticeAction], classOf[NewsAction], classOf[NoticeAuditAction])
-  }
+/** 新闻
+ * */
+class News extends LongId {
+  var domain: Domain = _
+  var title: String = _
+  var publishedOn: LocalDate = _
+  var url: String = _
+  var contents: Option[String] = None
+  var archived: Boolean = _
 }

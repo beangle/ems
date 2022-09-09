@@ -1,6 +1,6 @@
-create index idx_mnhsh23ojmojhneyf5676011v on bulletin.docs_user_categories (doc_id);
-create index idx_g9or9x8eeokwhlx25k7ooi0hn on bulletin.notices_docs (notice_id);
-create index idx_6y5q7jvrndh8klm11yw5yc2ou on bulletin.notices_user_categories (notice_id);
+create index idx_mnhsh23ojmojhneyf5676011v on oa.docs_user_categories (doc_id);
+create index idx_g9or9x8eeokwhlx25k7ooi0hn on oa.notices_docs (notice_id);
+create index idx_6y5q7jvrndh8klm11yw5yc2ou on oa.notices_user_categories (notice_id);
 create index idx_ct67xxnq5fxipiwi6w5up3p6c on cfg.data_sources (app_id);
 create index idx_21drxfdntplwf4jp4bp56xy24 on cfg.dbs_properties (db_id);
 create index idx_mddq35fo71y1835ssm1ia6hc0 on se.func_permissions (role_id);

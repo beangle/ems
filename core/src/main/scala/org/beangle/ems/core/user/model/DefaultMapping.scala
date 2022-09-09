@@ -18,6 +18,7 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.orm.{IdGenerator, MappingModule}
+import org.beangle.ems.core.oa.model.{Message, Notification}
 
 object DefaultMapping extends MappingModule {
 
@@ -101,9 +102,6 @@ object DefaultMapping extends MappingModule {
     }.generator(IdGenerator.Assigned)
 
     bind[Root]
-    bind[Message]
-    bind[Notification]
-    bind[Todo]
 
     all.except(classOf[Avatar], classOf[RoleMember], classOf[GroupMember]).cacheAll()
   }

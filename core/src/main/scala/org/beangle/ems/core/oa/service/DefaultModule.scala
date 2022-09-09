@@ -15,11 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.user.action
+package org.beangle.ems.core.oa.service
 
-import org.beangle.ems.core.oa.model.Notification
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.core.oa.service.impl.DocServiceImpl
+import org.beangle.ems.core.user.service.impl._
 
-class NotificationAction extends RestfulAction[Notification] {
+class DefaultModule extends BindModule {
 
+  override def binding(): Unit = {
+    bind(classOf[DocServiceImpl])
+  }
 }

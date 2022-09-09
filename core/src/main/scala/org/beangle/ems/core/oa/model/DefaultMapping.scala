@@ -15,29 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.model
+package org.beangle.ems.core.oa.model
 
-import java.time.Instant
+import org.beangle.data.orm.{IdGenerator, MappingModule}
 
-import org.beangle.data.model.LongId
+object DefaultMapping extends MappingModule {
 
-object Notification {
-  val Information = 1
-  val Warning = 2
-}
+  override def binding(): Unit = {
+    defaultIdGenerator(classOf[Long],IdGenerator.DateTime)
+    defaultCache("ems.security", "read-write")
 
-class Notification extends LongId {
-  /** 主题 */
-  var subject: String = _
+    bind[Doc]
 
-  /** 内容 */
-  var contents: String = _
+    bind[News] declare { e =>
+      e.contents is lob
+    }
 
-  /**接受人*/
-  var recipient: User = _
+    bind[Notice].declare { e =>
+      e.contents is lob
+      e.issuer is length(40)
+    }
 
-  /** 发送日期 */
-  var sentAt: Instant = _
+    bind[SensitiveWord].declare { e =>
+      e.contents is length(30)
+    }
 
-  var importance: Int = _
+    bind[Message]
+    bind[Notification]
+    bind[Todo]
+  }
 }

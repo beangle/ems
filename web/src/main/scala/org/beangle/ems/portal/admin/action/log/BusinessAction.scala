@@ -18,7 +18,7 @@
 package org.beangle.ems.portal.admin.action.log
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.ems.core.bulletin.model.Doc
+import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.{BusinessLog, Level}
 import org.beangle.webmvc.support.action.RestfulAction

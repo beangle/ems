@@ -21,7 +21,7 @@ import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cdi.bind.BindModule
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.impl.MemTokenRepository
-import org.beangle.ems.ws.bulletin.NoticeWS
+import org.beangle.ems.ws.oa.NoticeWS
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.ems.ws.{config, log, oauth}

@@ -42,7 +42,7 @@
                 </table>
             </tables>
         </schema>
-        <schema name="bulletin">
+        <schema name="oa">
             <tables>
                 <table name="docs" comment="文档">
                     <columns>
@@ -71,7 +71,7 @@
                     <primary-key name="pk_9dnkujcthlvg7fnq6mjwr2lv1" columns="doc_id,user_category_id"/>
                     <foreign-keys>
                         <foreign-key name="fk_dns25eb6sy76v277skxxmpcw4" column="doc_id"
-                                     referenced-table="bulletin.docs" referenced-column="id"/>
+                                     referenced-table="oa.docs" referenced-column="id"/>
                         <foreign-key name="fk_ck98wqocenaef81draj19wc9n" column="user_category_id"
                                      referenced-table="usr.user_categories" referenced-column="id"/>
                     </foreign-keys>
@@ -131,9 +131,9 @@
                     <primary-key name="pk_ppflm7s14y4f48ptl6ix8oqlm" columns="notice_id,doc_id"/>
                     <foreign-keys>
                         <foreign-key name="fk_savteekqtgnumi8p2kyh77h09" column="notice_id"
-                                     referenced-table="bulletin.notices" referenced-column="id"/>
+                                     referenced-table="oa.notices" referenced-column="id"/>
                         <foreign-key name="fk_ea713bax2e8obs9hwjvsvi13g" column="doc_id"
-                                     referenced-table="bulletin.docs" referenced-column="id"/>
+                                     referenced-table="oa.docs" referenced-column="id"/>
                     </foreign-keys>
                     <indexes>
                         <index name="idx_g9or9x8eeokwhlx25k7ooi0hn" columns="notice_id"/>
@@ -147,7 +147,7 @@
                     <primary-key name="pk_ji4mbg1919dby7ovm36ch9py7" columns="notice_id,user_category_id"/>
                     <foreign-keys>
                         <foreign-key name="fk_ptcor7fg6nrrvdfavbjqvgdfp" column="notice_id"
-                                     referenced-table="bulletin.notices" referenced-column="id"/>
+                                     referenced-table="oa.notices" referenced-column="id"/>
                         <foreign-key name="fk_g8cnlwsxpfi1xpedsoddjqgya" column="user_category_id"
                                      referenced-table="usr.user_categories" referenced-column="id"/>
                     </foreign-keys>

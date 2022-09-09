@@ -15,15 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.service
+package org.beangle.ems.core.oa.model
 
-import java.io.InputStream
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.Updated
+import org.beangle.ems.core.config.model.App
+import org.beangle.ems.core.user.model.{User, UserCategory}
 
-import org.beangle.ems.core.bulletin.model.Doc
+import scala.collection.mutable
 
-trait DocService {
+class Doc extends LongId with Updated {
 
-  def save(doc:Doc,filename:String,is:InputStream):Doc
+  var app: App = _
 
-  def remove(doc:Doc):Unit
+  var uploadBy: User = _
+
+  var name: String = _
+
+  var fileSize: Int = _
+
+  var filePath: String = _
+
+  var userCategories: mutable.Set[UserCategory] = Collections.newSet
+
+  var archived: Boolean = _
 }

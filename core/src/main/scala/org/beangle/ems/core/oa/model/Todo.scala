@@ -15,29 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.model
+package org.beangle.ems.core.oa.model
 
-import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
-import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.User
 
-import scala.collection.mutable
+/** 代办 */
+class Todo extends LongId with Updated {
 
-class Doc extends LongId with Updated {
+  var user: User = _
 
-  var app: App = _
+  var domain: Domain = _
 
-  var uploadBy: User = _
+  var contents: String = _
 
-  var name: String = _
-
-  var fileSize: Int = _
-
-  var filePath: String = _
-
-  var userCategories: mutable.Set[UserCategory] = Collections.newSet
-
-  var archived: Boolean = _
+  var isDone: Boolean = _
 }

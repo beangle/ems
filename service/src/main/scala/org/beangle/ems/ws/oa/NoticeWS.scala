@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.ws.bulletin
+package org.beangle.ems.ws.oa
 
 import java.time.LocalDate
 
@@ -24,7 +24,7 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.web.action.support.{ActionSupport, EntitySupport}
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.bulletin.model.{Notice, NoticeStatus}
+import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 
 class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[Notice] {

@@ -29,7 +29,7 @@
               [#list notices as notice]
               <tr>
                 <td><a href="${webappBase}/user/notice/${notice.id}" target="_blank"> ${notice.title}</a></td>
-                <td>${notice.createdAt?string('yyyy-MM-dd')}</td>
+                <td><span class="text-muted">${notice.updatedAt?string('MM-dd')}</span></td>
               </tr>
               [/#list]
               </tbody>
@@ -40,6 +40,18 @@
           <a href="${webappBase}/user/notice" target="_blank" class="btn btn-sm btn-default btn-flat float-right">更多...</a>
         [/@]
       [/@]
+
+      [#if user.category.id=2]
+        [@b.card class="card-info card-primary card-outline"]
+          [#assign title]<i class="far fa-bell"></i> 课程班级通知[/#assign]
+          [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"/]
+          [@b.card_body class="p-0"]
+            <div id="clazzNoticeDiv" class="table-responsive">
+            </div>
+            <script>bg.ready(function(){bg.Go('/edu/course/std/notice/index','clazzNoticeDiv')});</script>
+          [/@]
+        [/@]
+      [/#if]
     </section>
     <section class="col-lg-6">
       [@b.card class="card-info card-primary card-outline"]
@@ -56,7 +68,7 @@
                   <image src="${b.static_url("ems","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
                   <a href="${webappBase}/user/doc/${doc.id}" target="_blank">${doc.name}</a>
                 </td>
-                <td>${doc.updatedAt?string('yyyy-MM-dd')}</td>
+                <td><span class="text-muted">${doc.updatedAt?string('MM-dd')}</span></td>
               </tr>
               [/#list]
               </tbody>

@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.bulletin.model
+package org.beangle.ems.portal.admin.action.oa
 
-enum NoticeStatus(val title: String) {
-  case Draft extends NoticeStatus("草稿")
-  case Submited extends NoticeStatus("已提交")
-  case Unpassed extends NoticeStatus("审核不通过")
-  case Passed extends NoticeStatus("审核通过")
+import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.ems.core.oa.model.News
+
+class NewsAction extends RestfulAction[News] {
+
 }

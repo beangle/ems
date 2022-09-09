@@ -24,7 +24,7 @@ import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.context.Params
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.helper.QueryHelper
-import org.beangle.ems.core.bulletin.model.{Notice, NoticeStatus}
+import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 
 class NoticeAction extends ActionSupport {

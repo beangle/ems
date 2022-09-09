@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.admin.action.bulletin
+package org.beangle.ems.portal.admin.action.oa
 
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings

@@ -4,7 +4,7 @@
     <module class="org.beangle.ems.portal.admin.ConfigModule"/>
     <module class="org.beangle.ems.portal.admin.SecurityModule"/>
     <module class="org.beangle.ems.portal.admin.BlobModule"/>
-    <module class="org.beangle.ems.portal.admin.BulletinModule"/>
+    <module class="org.beangle.ems.portal.admin.OAModule"/>
     <module class="org.beangle.ems.portal.admin.LogModule"/>
     <module class="org.beangle.ems.portal.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.DefaultModule"/>
@@ -15,6 +15,6 @@
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>
-    <module class="org.beangle.ems.core.bulletin.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.oa.service.DefaultModule"/>
   </container>
 </cdi>

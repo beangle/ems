@@ -1,5 +1,5 @@
 create schema blb;
-create schema bulletin;
+create schema oa;
 create schema cfg;
 create schema log;
 create schema se;

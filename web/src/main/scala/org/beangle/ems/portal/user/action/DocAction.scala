@@ -21,7 +21,7 @@ import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.bulletin.model.Doc
+import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{mapping, param}

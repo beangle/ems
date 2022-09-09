@@ -20,7 +20,7 @@ package org.beangle.ems.portal.action
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
-import org.beangle.ems.core.bulletin.model.{Doc, Notice, NoticeStatus}
+import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities

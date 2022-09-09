@@ -13,7 +13,7 @@
         </ul>
         [@b.form action="!index" name="photoSearchForm" id="photoSearchForm" class="form-inline"]
           <div class="form-group">
-            <input type="text" name="user" value="210" placeholder="用户号/姓名" class="form-control form-control-sm">
+            <input type="text" name="user" value="" placeholder="用户号/姓名" class="form-control form-control-sm">
           </div>
           <input type="hidden" id="pageIndex" name="pageIndex" value="1">
           <input type="submit" onclick="bg.form.submit('photoSearchForm',null,null,null);return false;" class="btn btn-sm btn-outline-primary" value="搜索">

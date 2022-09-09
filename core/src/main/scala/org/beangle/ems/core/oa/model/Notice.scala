@@ -15,34 +15,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.model
+package org.beangle.ems.core.oa.model
 
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.DateRange
+import org.beangle.ems.core.config.model.App
+import org.beangle.ems.core.user.model.{User, UserCategory}
+
 import java.time.Instant
+import scala.collection.mutable
 
-object Message {
-  val Newly = 1
-  val Readed = 2
-  val InTrash = 3
-}
+/** 公告
+ * */
+class Notice extends LongId with DateRange {
 
-class Message extends LongId {
-  /** 标题 */
+  var app: App = _
+
+  var issuer: String = _
+
   var title: String = _
 
-  /** 内容 */
   var contents: String = _
 
-  /** 发送人 */
-  var sender: User = _
+  var userCategories: mutable.Set[UserCategory] = Collections.newSet
 
-  /**接受人*/
-  var recipient: User = _
+  var sticky: Boolean = _
 
-  /** 消息状态 */
-  var status: Int = _
+  var createdAt: Instant = _
 
-  /** 发送日期 */
-  var sentAt: Instant = _
+  var updatedAt: Instant = _
 
+  var publishedAt: Option[Instant] = None
+
+  var operator: User = _
+
+  var auditor: Option[User] = None
+
+  var archived: Boolean = _
+
+  var popup: Boolean = _
+
+  var docs: mutable.Buffer[Doc] = Collections.newBuffer[Doc]
+
+  var status: NoticeStatus = NoticeStatus.Draft
 }

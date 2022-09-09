@@ -18,7 +18,7 @@
 package org.beangle.ems.portal.admin
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.admin.action.bulletin.{DocAction, NewsAction, NoticeAction, NoticeAuditAction}
+import org.beangle.ems.portal.admin.action.oa.{DocAction, NewsAction, NoticeAction, NoticeAuditAction}
 import org.beangle.ems.portal.admin.action.log.BusinessAction
 
 class LogModule extends BindModule {
