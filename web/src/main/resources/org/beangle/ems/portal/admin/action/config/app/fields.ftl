@@ -3,7 +3,7 @@
 [@b.textfield name="app.title" label="标题" value=app.title! required="true" maxlength="200"/]
 [@b.textfield name="app.enTitle" label="英文标题" value=app.enTitle! required="true" maxlength="200"/]
 [@b.select name="app.appType.id" label="类型" items=appTypes option="id,title" value=app.appType required="true" /]
-[@b.select name="app.group.id" label="分组" value="${(app.group.id)!}" option="id,title" required="true" items=groups/]
+[@b.select name="app.group.id" label="分组" value=app.group! option="id,title" required="true" items=groups?sort_by('indexno')/]
 [@b.textfield name="app.base" label="上下文地址" value="${app.base!}" required="true" maxlength="200" style="width:300px"/]
 [@b.textfield name="app.url" label="入口" value="${app.url!}" required="true" maxlength="200" style="width:300px"/]
 [@b.textfield name="app.navStyle" label="导航风格" value=app.navStyle required="false" /]

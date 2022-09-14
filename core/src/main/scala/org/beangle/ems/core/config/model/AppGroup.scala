@@ -20,9 +20,10 @@ package org.beangle.ems.core.config.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 
-class AppGroup extends IntId with Named with Ordered[AppGroup]  with LocaleTitle{
+class AppGroup extends IntId with Named with Ordered[AppGroup] with LocaleTitle {
   var indexno: String = _
   var title: String = _
+  var shortTitle: String = _
   var enTitle: String = _
   var domain: Domain = _
 

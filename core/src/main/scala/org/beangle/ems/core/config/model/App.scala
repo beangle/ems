@@ -41,7 +41,7 @@ class App extends IntId with Named with Enabled with Ordered[App] with Principal
 
   def getName: String = name
 
-  def fullTitle: String = group.title + " " + title
+  def fullTitle: String = group.shortTitle + " " + title
 
   override def compare(m: App): Int = {
     indexno.compareTo(m.indexno)

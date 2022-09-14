@@ -95,14 +95,19 @@ class MenuAction extends RestfulAction[Menu] {
   @ignore
   protected override def removeAndRedirect(entities: Seq[Menu]): View = {
     val parents = Collections.newBuffer[Menu]
+    val step1 = Collections.newSet[Menu]
     for (menu <- entities) {
       menu.parent foreach { p =>
         p.children -= menu
+        step1 += menu
         parents += p
       }
     }
     entityDao.saveOrUpdate(parents)
-    super.removeAndRedirect(entities)
+    val step2 = entities.toBuffer
+    step2 --= step1
+    remove(step2)
+    redirect("search", "info.remove.success")
   }
 
   @ignore
@@ -128,9 +133,10 @@ class MenuAction extends RestfulAction[Menu] {
       for (one <- family) one.enabled = false
       entityDao.saveOrUpdate(family)
     }
-    entityDao.evict(menu)
-    if (null != parent) {
-      entityDao.evict(parent)
+
+    //refresh all app menus and their children relationships
+    menuService.getMenus(menu.app) foreach { m =>
+      entityDao.refresh(m)
     }
     redirect("search", "info.save.success")
   }
