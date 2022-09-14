@@ -24,5 +24,6 @@ class DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
     bind("mvc.Taglibrary.ems", classOf[EmsTagLibrary])
+    bind(classOf[WebBusinessLogger])
   }
 }

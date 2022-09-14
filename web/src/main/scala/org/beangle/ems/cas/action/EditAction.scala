@@ -19,7 +19,7 @@ package org.beangle.ems.cas.action
 
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
-import org.beangle.ems.app.web.BusinessLogSupport
+import org.beangle.ems.app.web.WebBusinessLogger
 import org.beangle.ems.core.user.model.User
 import org.beangle.ids.cas.ticket.TicketRegistry
 import org.beangle.ids.cas.web.helper.SessionHelper
@@ -35,9 +35,11 @@ import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.View
 
 class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegistry)
-  extends ActionSupport with ServletSupport with BusinessLogSupport {
+  extends ActionSupport with ServletSupport {
 
   var entityDao: EntityDao = _
+
+  var businessLogger: WebBusinessLogger = _
 
   var credentialStore: DBCredentialStore = _
 
@@ -54,7 +56,7 @@ class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegi
       if (users.size == 1) {
         credentialStore.updatePassword(Securities.user, DefaultPasswordEncoder.generate(p, null, "sha"))
       }
-      info(Securities.user + "修改了自己的密码", users.head.id, "密码长度" + p.length)
+      businessLogger.info(Securities.user + "修改了自己的密码", users.head.id, "密码长度" + p.length)
     }
     get("service") match {
       case None =>

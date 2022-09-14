@@ -24,7 +24,8 @@ import org.beangle.web.servlet.util.RequestUtils
 
 import scala.collection.mutable
 
-trait BusinessLogSupport {
+class WebBusinessLogger {
+
   var businessLogger: BusinessLogger = _
 
   def info(summary: String, resources: Any, details: Any): Unit = {
@@ -50,7 +51,13 @@ trait BusinessLogSupport {
         m foreach { case (k, v) =>
           val key = k.toString
           if !key.startsWith("_") then
-            val value = if k.toString.contains("password") then "*****" else v.toString
+            val stringValue = v match {
+              case Some(n) => n.toString
+              case None => "None"
+              case _ => String.valueOf(v)
+            }
+            val value = if k.toString.contains("password") then "*****" else stringValue
+
             sb += s"$k = $value"
         }
         val mapString = sb.sorted.mkString("\n")

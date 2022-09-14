@@ -21,7 +21,7 @@ import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.app.web.BusinessLogSupport
+import org.beangle.ems.app.web.WebBusinessLogger
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
@@ -40,7 +40,7 @@ import java.time.Instant
  *
  * @author chaostone 2005-9-29
  */
-class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
+class AccountAction extends RestfulAction[Account]  {
 
   var userService: UserService = _
 
@@ -49,6 +49,8 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
   var credentialStore: DBCredentialStore = _
 
   var domainService: DomainService = _
+
+  var businessLogger: WebBusinessLogger = _
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
@@ -104,7 +106,7 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
     val removeRoleNames = removedMembers.map(_.role.getName).mkString(",")
     val summary1 = if newMembers.nonEmpty then s",新增了${newRoleNames}" else ""
     val summary2 = if removedMembers.nonEmpty then s",删除了${removeRoleNames}" else ""
-    info(s"修改${user.name}的角色${summary1}${summary2}", user.id, ActionContext.current.params)
+    businessLogger.info(s"修改${user.name}的角色${summary1}${summary2}", user.id, ActionContext.current.params)
 
     redirect("search", "info.save.success")
   }
@@ -219,7 +221,7 @@ class AccountAction extends RestfulAction[Account] with BusinessLogSupport {
       user.endOn = account.endOn
       userService.create(loginUser, user)
     } else {
-      info(s"修改${user.name}的账户", user.id, ActionContext.current.params)
+      businessLogger.info(s"修改${user.name}的账户", user.id, ActionContext.current.params)
       entityDao.saveOrUpdate(user)
     }
     account.user = user

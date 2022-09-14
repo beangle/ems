@@ -18,6 +18,7 @@
 package org.beangle.ems.app.log
 
 import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.app.web.WebBusinessLogger
 import org.beangle.ems.app.{Ems, EmsApp}
 
 class DefaultModule extends BindModule {
