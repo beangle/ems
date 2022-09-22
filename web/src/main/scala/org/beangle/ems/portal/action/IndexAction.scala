@@ -17,11 +17,13 @@
 
 package org.beangle.ems.portal.action
 
+import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
-import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
+import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.mapping
@@ -38,12 +40,11 @@ class IndexAction extends ActionSupport with ServletSupport {
   def index(): View = {
     val ctx = NavContext.get(request)
     put("nav", ctx)
-    put("ems", Ems)
     put("locale", ActionContext.current.locale)
     forward()
   }
 
-  def welcome(): View = {
+  def noticePortalet(): View = {
     val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     val noticeQuery = OqlBuilder.from(classOf[Notice], "notice")
     noticeQuery.join("notice.userCategories", "uc")
@@ -53,6 +54,14 @@ class IndexAction extends ActionSupport with ServletSupport {
     noticeQuery.limit(1, 10)
     noticeQuery.orderBy("notice.publishedAt desc")
     val notices = entityDao.search(noticeQuery)
+    put("notices", notices)
+    put("user", me)
+    put("webappBase", Ems.portal)
+    forward()
+  }
+
+  def docPortalet(): View = {
+    val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
 
     val docQuery = OqlBuilder.from(classOf[Doc], "doc")
     docQuery.join("doc.userCategories", "uc")
@@ -63,10 +72,35 @@ class IndexAction extends ActionSupport with ServletSupport {
     docQuery.orderBy("doc.updatedAt desc")
     val docs = entityDao.search(docQuery)
 
-    put("notices", notices)
     put("docs", docs)
     put("user", me)
     put("webappBase", Ems.portal)
+    forward()
+  }
+
+  def welcome(): View = {
+    val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    val query = OqlBuilder.from(classOf[Portalet], "p")
+    query.where(":category in elements(p.categories)", me.category)
+    query.orderBy("p.idx")
+    query.cacheable()
+    val portalets = entityDao.search(query)
+
+    val rows = portalets.groupBy(p => p.rowIndex)
+    val rowPortalets = Collections.newMap[Int, Seq[Seq[Portalet]]]
+    rows.foreach { case (i, ps) =>
+      val cols = ps.groupBy(_.colspan)
+      if (cols.size == 1) {
+        val divided = 12 / cols.head._1
+        val col1 = cols.head._2.toList.sortBy(_.idx)
+        rowPortalets.put(i, Collections.split(col1, Math.ceil(1.0 * col1.size / divided).toInt))
+      } else {
+        rowPortalets.put(i, cols.values.toSeq.sortBy(x => 0 - x.head.colspan).map(_.sortBy(_.idx)))
+      }
+    }
+
+    put("rowPortalets", rowPortalets)
+    put("user", me)
     forward()
   }
 

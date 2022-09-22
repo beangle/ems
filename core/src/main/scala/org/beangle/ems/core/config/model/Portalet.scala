@@ -17,16 +17,30 @@
 
 package org.beangle.ems.core.config.model
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Named
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.IntId
+import org.beangle.data.model.pojo.{Enabled, Named}
+import org.beangle.ems.core.user.model.UserCategory
 
-/** 页面小部件
- * */
-class Portalet extends LongId with Named {
+import scala.collection.mutable
+
+/**
+ * 小部件
+ */
+class Portalet extends IntId with Named with Enabled {
+
+  var idx: Int = _
 
   var title: String = _
 
   var url: String = _
 
   var usingIframe: Boolean = _
+
+  var rowIndex: Int = _
+
+  var colspan: Int = _
+
+  var categories: mutable.Set[UserCategory] = Collections.newSet[UserCategory]
+
 }

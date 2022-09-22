@@ -73,7 +73,6 @@ class MessageAction extends RestfulAction[Message] {
       (m.sender.code, Ems.api + "/platform/user/avatars/" + Digests.md5Hex(m.sender.code))
     }
     put("avatarUrls", avatarUrls.toMap)
-    put("ems", Ems)
     forward()
   }
 

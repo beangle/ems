@@ -18,11 +18,15 @@
 package org.beangle.ems.app.web.tag
 
 import jakarta.servlet.http.HttpServletRequest
-import org.beangle.template.api.{AbstractModels, ComponentContext}
 import org.beangle.ems.app.Ems
+import org.beangle.template.api.{AbstractModels, ComponentContext}
 
 class EmsModels(context: ComponentContext) extends AbstractModels(context) {
   def api(url: String): String = {
     Ems.api + url
+  }
+
+  def webapp: String = {
+    Ems.webapp
   }
 }

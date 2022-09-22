@@ -18,7 +18,7 @@
 package org.beangle.ems.portal.admin
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.admin.action.config._
+import org.beangle.ems.portal.admin.action.config.*
 
 class ConfigModule extends BindModule {
 
@@ -27,5 +27,7 @@ class ConfigModule extends BindModule {
     bind(classOf[DbAction])
     bind(classOf[CredentialAction])
     bind(classOf[FileAction])
+
+    bind(classOf[PortaletAction])
   }
 }

@@ -16,70 +16,22 @@
   </div>
 </div>
 
-<section class="content">
-  <div class="row">
-    <section class="col-lg-6">
-      [@b.card class="card-info card-primary card-outline"]
-        [#assign title]<i class="far fa-bell"></i> 通知公告[/#assign]
-        [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"/]
-        [@b.card_body class="p-0"]
-          <div class="table-responsive">
-            <table id="notice_table" class="table no-margin m-0 compact">
-              <tbody>
-              [#list notices as notice]
-              <tr>
-                <td><a href="${webappBase}/user/notice/${notice.id}" target="_blank"> ${notice.title}</a></td>
-                <td><span class="text-muted">${notice.updatedAt?string('MM-dd')}</span></td>
-              </tr>
-              [/#list]
-              </tbody>
-            </table>
-          </div>
-        [/@]
-        [@b.card_footer]
-          <a href="${webappBase}/user/notice" target="_blank" class="btn btn-sm btn-default btn-flat float-right">更多...</a>
-        [/@]
-      [/@]
-
-      [#if user.category.id=2]
-        [@b.card class="card-info card-primary card-outline"]
-          [#assign title]<i class="far fa-bell"></i> 课程班级通知[/#assign]
-          [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"/]
-          [@b.card_body class="p-0"]
-            <div id="clazzNoticeDiv" class="table-responsive">
-            </div>
-            <script>bg.ready(function(){bg.Go('/edu/course/std/notice/index','clazzNoticeDiv')});</script>
-          [/@]
-        [/@]
-      [/#if]
-    </section>
-    <section class="col-lg-6">
-      [@b.card class="card-info card-primary card-outline"]
-        [#assign title]<i class="fas fa-file-pdf"></i> 文档下载[/#assign]
-        [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"/]
-        [@b.card_body class="p-0"]
-          <div class="table-responsive">
-            <table class="table no-margin m-0  compact">
-              <tbody>
-              [#assign extMap={"xls":'xls.gif',"xlsx":'xls.gif',"docx":"doc.gif","doc":"doc.gif","pdf":"pdf.gif","zip":"zip.gif","":"generic.gif"}]
-              [#list docs as doc]
-              <tr>
-                <td>
-                  <image src="${b.static_url("ems","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
-                  <a href="${webappBase}/user/doc/${doc.id}" target="_blank">${doc.name}</a>
-                </td>
-                <td><span class="text-muted">${doc.updatedAt?string('MM-dd')}</span></td>
-              </tr>
-              [/#list]
-              </tbody>
-            </table>
-          </div>
-        [/@]
-        [@b.card_footer]
-          <a href="${webappBase}/user/doc" target="_blank" class="btn btn-sm btn-default btn-flat float-right">更多...</a>
-        [/@]
-      [/@]
-    </section>
+[#list rowPortalets?keys?sort as rowIndex]
+  [#assign sections = rowPortalets.get(rowIndex)]
+  <div class="row content">
+    [#list sections as section]
+      <section class="col-lg-${section?first.colspan}">
+        [#list section as portalet]
+          [#if portalet.usingIframe]
+          <iframe scrolling="auto" src="${portalet.url} id="portalet_${portalet.id}" width="100%" height="100%" frameborder="0"></iframe>
+          [#else]
+          <div id="portalet_${portalet.id}"></div>
+          <script>bg.ready(function(){bg.Go('${portalet.url}','portalet_${portalet.id}')});</script>
+          [/#if]
+        [/#list]
+      </section>
+    [/#list]
   </div>
-</section>
+[/#list]
+
 [@b.foot/]
