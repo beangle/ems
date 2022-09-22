@@ -31,6 +31,8 @@ import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.View
 
+import scala.collection.mutable
+
 class IndexAction extends ActionSupport with ServletSupport {
   var entityDao: EntityDao = _
 
@@ -87,21 +89,32 @@ class IndexAction extends ActionSupport with ServletSupport {
     val portalets = entityDao.search(query)
 
     val rows = portalets.groupBy(p => p.rowIndex)
-    val rowPortalets = Collections.newMap[Int, Seq[Seq[Portalet]]]
+    val rowPortalets = Collections.newMap[Int, collection.Seq[collection.Seq[Portalet]]]
     rows.foreach { case (i, ps) =>
       val cols = ps.groupBy(_.colspan)
       if (cols.size == 1) {
         val divided = 12 / cols.head._1
         val col1 = cols.head._2.toList.sortBy(_.idx)
-        rowPortalets.put(i, Collections.split(col1, Math.ceil(1.0 * col1.size / divided).toInt))
+        rowPortalets.put(i, split(col1, divided))
       } else {
         rowPortalets.put(i, cols.values.toSeq.sortBy(x => 0 - x.head.colspan).map(_.sortBy(_.idx)))
       }
     }
-
     put("rowPortalets", rowPortalets)
     put("user", me)
     forward()
+  }
+
+  private def split[T](list: List[T], count: Int): collection.Seq[collection.Seq[T]] = {
+    val subLists = new mutable.ArrayBuffer[mutable.Buffer[T]]
+    (0 until count) foreach (i => subLists.addOne(new mutable.ArrayBuffer[T]))
+    var idx = 0
+    list foreach { l =>
+      val i = idx % count
+      idx += 1
+      subLists(i).addOne(l)
+    }
+    subLists
   }
 
   def logout(): View = {
