@@ -74,10 +74,7 @@
         return "far fa-circle";
       }
     }
-    this.menuTempalte='<li class="nav-item"><a class="nav-link" onclick="return bg.Go(this,\'{menu.target}\')" href="{menu.entry}" target="{menu.target}" ><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
-    if(document.getElementById('main').tagName!='DIV'){
-      this.menuTempalte='<li class="nav-item"><a class="nav-link" target="main" href="{menu.entry}"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
-    }
+    this.menuTempalte='<li class="nav-item"><a class="nav-link" href="{menu.entry}" target="{menu.target}" onclick="return emsnav.openMenu(this,\'{menu.target}\',{menu.iframe})"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
     this.foldTemplate='<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{menu.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu{menu.id}"></ul></li>'
     this.appFoldTemplate='<li class="nav-item has_treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{app.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu_app{app.id}"></ul></li>'
     if(!this.app.navStyle){
@@ -132,13 +129,8 @@
             app.base=app.base.substring(0,app.base.length-1);
           }
           app.base = this.processUrl(app.base);
-          app.embeddable=true;
-          if(app.navStyle != this.app.navStyle){
-            app.embeddable=false;
-          }
-          if(!ems.sameDomain(this.app.base,app.base)){
-            app.embeddable=false;
-          }
+          app.iframe=(app.navStyle != this.app.navStyle);
+          app.embeddable=ems.sameDomain(this.app.base,app.base);
         }
       }
     },
@@ -161,7 +153,7 @@
         if(menu.entry && (menu.title.includes(name) || menu.entry.toLowerCase().includes(name))){
           var resultPath=path.slice();
           resultPath.push(menu.title);
-          var result = {'name':menu.title,'link':menu.entry,'path':resultPath,'target':menu.target}
+          var result = {'name':menu.title,'link':menu.entry,'path':resultPath,'target':menu.target,'iframe':menu.iframe}
           results.push(result);
           if(results.length >= limit) break;
         }else{
@@ -187,9 +179,9 @@
     processMenuEntry : function(app,menus){
       for(var i=0; i <menus.length;i++){
         var menu = menus[i];
-        if(menu.entry  && !menu.entry.startsWith("http")){
-           if(app.embeddable) menu.target="main";
-           else menu.target="_blank";
+        if(menu.entry && !menu.entry.startsWith("http")){
+           if(app.embeddable) menu.target="main"; else menu.target="_blank";
+           menu.iframe = app.iframe;
            menu.entry = this.processUrl(app.base + menu.entry);
         }
         if(menu.children) this.processMenuEntry(app,menu.children);
@@ -230,8 +222,9 @@
           else{ fonticon = this.getIconClass(menu.title);}
           menuItem = menuItem.replace('{icon_class}',fonticon);
           menuItem = menuItem.replace('{menu.entry}',menu.entry);
-          menuItem = menuItem.replace('{menu.target}',menu.target);//replaceAll was not supported widely.
           menuItem = menuItem.replace('{menu.target}',menu.target);
+          menuItem = menuItem.replace('{menu.target}',menu.target);//without replaceAll
+          menuItem = menuItem.replace('{menu.iframe}',menu.iframe);
           jqueryElem.append(menuItem);
         }
       }
@@ -261,6 +254,39 @@
           jQuery(this).addClass('active');
         }
       });
+    },
+    openMenu : function(obj,target,iframe){
+      if(target=="_blank") return true;
+      var targetEle = document.getElementById(target)
+      var mainWrapper = targetEle.parentNode;
+      if(iframe){
+        if(targetEle.tagName=='DIV'){
+          mainWrapper.innerHTML="";
+          var f = document.createElement('iframe')
+          f.setAttribute("width","100%");
+          f.setAttribute("height","100%");
+          f.setAttribute("SCROLLING","auto");
+          f.setAttribute("FRAMEBORDER","0");
+          f.setAttribute("name",target);
+          f.id=target;
+          mainWrapper.appendChild(f);
+        }
+        return true;
+      }else{
+        if(targetEle.tagName=='DIV'){
+          beangle.Go(obj,target);
+        }else if(targetEle.tagName=='IFRAME'){
+          mainWrapper.removeChild(targetEle);
+          var f = document.createElement('div')
+          f.setAttribute("width","100%");
+          f.setAttribute("height","100%");
+          f.setAttribute("class","ajax_container");
+          f.id=target;
+          mainWrapper.appendChild(f);
+          beangle.Go(obj,target);
+        }
+        return false;
+      }
     }
   }
 
@@ -432,7 +458,7 @@
       var resultDom = jQuery(".sidebar-search-results .list-group");
       resultDom.empty();
       if(results.length ==0){
-        var notfound={'name':"找不到结果",'link':'#','path':[],'target':"main"}
+        var notfound={'name':"找不到结果",'link':'#','path':[],'target':"main",'iframe':false}
         resultDom.append(this.renderSearchItem(searchRegExp,notfound))
       }else{
         for(var i=0;i < results.length;i++){
@@ -452,16 +478,19 @@
         }, 100);
       });
     }
+
     this.openSearchResults = function(){
       var searchDom =jQuery('#'+this.searchInputId).parent().parent();
       searchDom.addClass("sidebar-search-open");
       searchDom.find(".input-group-append .btn i").removeClass("fa-search").addClass("fa-times");
     }
+
     this.closeSearchResults = function(){
       var searchDom =jQuery('#'+this.searchInputId).parent().parent();
       searchDom.removeClass("sidebar-search-open");
       searchDom.find(".input-group-append .btn i").removeClass("fa-times").addClass("fa-search");
     }
+
     this.toggleSearchResults = function(){
       var searchDom =jQuery('#'+this.searchInputId).parent().parent();
       if (searchDom.hasClass("sidebar-search-open")) {
@@ -470,17 +499,23 @@
         this.openSearchResults();
       }
     }
+
     this.renderSearchItem = function(searchRegExp,result){
       var pathStr = result.path.join(" -> ");
       var name = result.name.replace(searchRegExp, function (str) {
         return "<strong class=\"text-light\">" + str + "</strong>";
       });
-      var groupItemElement = jQuery('<a/>', {href: decodeURIComponent(result.link), class: 'list-group-item'  });
+      var item = null;
+      if(result.link != '#'){
+        var onclickFunc="return emsnav.openMenu(this,\'"+result.target+"\',"+result.iframe+")";
+        item = jQuery('<a/>', {href: decodeURIComponent(result.link), class: 'list-group-item', target: result.target,onclick: onclickFunc });
+      }else{
+        item = jQuery('<a/>', {href: decodeURIComponent(result.link), class: 'list-group-item', target: result.target });
+      }
       var searchTitleElement = jQuery('<div/>', {class: 'search-title' }).html(name);
       var searchPathElement = jQuery('<div/>', {class: 'search-path'}).html(pathStr);
-      groupItemElement.append(searchTitleElement).append(searchPathElement);
-      if(result.link != '#') groupItemElement.click(function (){return bg.Go(this,result.target)});
-      return groupItemElement;
+      item.append(searchTitleElement).append(searchPathElement);
+      return item;
     }
   }
 
@@ -489,11 +524,11 @@
    */
   function GroupNav(nav){
     this.nav=nav;
-    this.appExternTemplate   ='<li class="nav-item"><a href="{app.url}"  class="nav-link {active_class}" target="_top" id="app_{app.id}">{app.title}</a></li>';
-    this.appNavTemplate='<li class="nav-item"><a href="{app.url}"  class="nav-link {active_class}" id="app_{app.id}">{app.title}</a></li>';
+    this.appExternTemplate = '<li class="nav-item"><a href="{app.url}"  class="nav-link {active_class}" target="_top" id="app_{app.id}">{app.title}</a></li>';
+    this.appNavTemplate = '<li class="nav-item"><a href="{app.url}"  class="nav-link {active_class}" id="app_{app.id}">{app.title}</a></li>';
     //add app in dropdown
-    this.dropdownAppExternTemplate   ='<a href="{app.url}"  class="dropdown-item {active_class}" target="_top">{app.title}</a>';
-    this.dropdownAppNavTemplate='<a href="{app.url}"  class="dropdown-item {active_class}" id="app_{app.id}">{app.title}</a>';
+    this.dropdownAppExternTemplate = '<a href="{app.url}"  class="dropdown-item {active_class}" target="_top">{app.title}</a>';
+    this.dropdownAppNavTemplate = '<a href="{app.url}"  class="dropdown-item {active_class}" id="app_{app.id}">{app.title}</a>';
     /**
      * 向顶层添加app
      */
@@ -602,7 +637,7 @@
    */
   function AppNav(nav){
     this.nav=nav;
-    this.topMenuTemplate='<li class="nav-item"><a  id="topMenu_{menu.idx}" href="javascript:void(0)"  class="nav-link {active_class}">{menu.title}</a></li>';
+    this.topMenuTemplate='<li class="nav-item"><a id="topMenu_{menu.idx}" href="javascript:void(0)"  class="nav-link {active_class}">{menu.title}</a></li>';
     this.dropdownTopMenuTemplate='<a id="topMenu_{menu.idx}" href="javascript:void(0)"  class="dropdown-item {active_class}">{menu.title}</a>';
 
     this.addTopMenus=function(jqueryElem){
@@ -660,7 +695,7 @@
 
   var navMenu ={};
 
-  function createDomainNav (app,portal,domainMenus,params,displayFirstGroup){
+  function createDomainNav(app,portal,domainMenus,params,displayFirstGroup){
     var nav= new Nav(app,portal,domainMenus,params);
     navMenu = new DomainNav(nav);
     navMenu.addTopGroups(jQuery('#'+nav.navDomId));
@@ -745,9 +780,9 @@
       url: params['webapp']+'/portal/user/message/newly?callback=messageCallBack',cache:false,
       type: "GET",dataType: "html",
       complete: function( jqXHR) {
-          try{
-            jQuery("#newly-message").html(jqXHR.responseText);
-          }catch(e){alert(e)}
+        try{
+          jQuery("#newly-message").html(jqXHR.responseText);
+        }catch(e){alert(e)}
       }
     });
   }
@@ -757,11 +792,23 @@
     fetchMessages(params);
     jQuery("#sticky_header").on("click",function(event){
       if(this.checked){
-        jQuery('.main-header').addClass("sticky-top");
+        jQuery('#main_header').addClass("sticky-top");
       }else{
-        jQuery('.main-header').removeClass("sticky-top");
+        jQuery('#main_header').removeClass("sticky-top");
       }
     });
+    jQuery('#main_header').addClass("sticky-top");
+    if(localStorage.getItem("beangle.ems.nav_sidebar_theme")){
+      var theme=localStorage.getItem("beangle.ems.nav_sidebar_theme");
+      if(theme=="dark"){
+        jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
+        jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
+      }else{
+        jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
+        jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
+      }
+      jQuery("#nav_siderbar_theme_"+theme).prop ("checked", true);
+    }
     jQuery("#page_size_selector").on("change",function(event){
        beangle.createCookie("pageSize",this.value,100);
     });
@@ -799,6 +846,9 @@
     }
   }
 
+  function openMenu(obj,target,iframe){
+    return navMenu.nav.openMenu(obj,target,iframe);
+  }
   exports.createDomainNav=createDomainNav;
   exports.createGroupNav=createGroupNav;
   exports.createAppNav=createAppNav;
@@ -807,5 +857,6 @@
   exports.fetchMessages=fetchMessages;
   exports.setup=setup;
   exports.enableSearch=enableSearch;
+  exports.openMenu=openMenu;
   exports.toggleTopBar=toggleTopBar;
 })));

@@ -4,7 +4,7 @@ import org.beangle.parent.Dependencies._
 
 object EmsDepends {
   val commonsVer = "5.4.0"
-  val dataVer = "5.5.1"
+  val dataVer = "5.5.2"
   val cdiVer = "0.4.0"
   val webVer = "0.2.0"
   val serializerVer= "0.1.0"

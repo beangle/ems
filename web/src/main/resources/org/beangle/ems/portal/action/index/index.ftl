@@ -2,7 +2,7 @@
 [#macro displayFrame mainHref="" ]
 <style>
 [#--这一段定制的css，在app模块中的nav.ftl也有一份--]
-[#assign sidebar_width=161/]
+[#assign sidebar_width=156/]
 [#--限定宽度为sidebar_widthpx,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
   @media (min-width: 768px) {
    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
@@ -112,7 +112,7 @@
   }
 </style>
 <div class="wrapper">
-    <nav class="main-header navbar navbar-expand navbar-dark navbar-lightblue sticky-top border-bottom-0">
+    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark navbar-lightblue sticky-top border-bottom-0">
       <ul class="nav navbar-nav">
          <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu"  title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -197,7 +197,7 @@
       </ul>
     </nav>
 
-  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
+  <aside id="main_siderbar" class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
     <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="height: 47px;border:0px;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;"></span>
@@ -205,9 +205,9 @@
     <div class="form-inline" style="display:none">
       <div class="input-group">
         <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" id="menu_searcher"
-               style="height: 29px;font-size: 12px;">
+               style="height: 29px;font-size: 12px;border:0px;border-radius: 0px;">
         <div class="input-group-append">
-          <button class="btn btn-sidebar" style="border-left-width: 0px;padding-top: 0px;padding-bottom: 0px;">
+          <button class="btn btn-sidebar" style="border:0px;padding-top: 0px;padding-bottom: 0px;border-radius: 0px;">
             <i class="fas fa-search fa-fw" style="width: 0.6rem;"></i>
           </button>
         </div>
@@ -220,22 +220,45 @@
       </nav>
     </div>
   </aside>
-  [#if mainHref?? && mainHref?length>0 ]
-  [@b.div id="main" class="content-wrapper" href="${mainHref}"/]
-  [#else]
-  [@b.div id="main" class="content-wrapper" /]
-  [/#if]
+  <div class="content-wrapper" id="main_wrapper" style="padding-left:3px">
+    [#if mainHref?? && mainHref?length>0 ]
+    [@b.div id="main"  href="${mainHref}"/]
+    [#else]
+    [@b.div id="main"/]
+    [/#if]
+  </div>
 
-  <aside class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
+  <aside id="control_sidebar" class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li class="nav-item"><a class="nav-link active" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
       <li class="nav-item"><a class="nav-link" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
     </ul>
     <div class="tab-content">
-      <div id="control-sidebar-theme-options-tab" class="tab-pane active">
-        <h5 class="control-sidebar-heading">布局选项</h5 >
+      <div id="control-sidebar-theme-options-tab" class="tab-pane active" style="padding: 10px 15px;">
+        <h6 class="control-sidebar-heading">布局选项</h6>
         <div class="form-group">
           <div class="mb-2"><input type="checkbox" checked="true" id="sticky_header">固定头部导航</div>
+          <div class="mb-2">
+            导航风格:
+            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="changeNavSidebarTheme(this.value)">
+              <label for="nav_siderbar_theme_dark">暗黑</label>
+            <input name="nav_siderbar_theme" value="light" id="nav_siderbar_theme_light" type="radio" onclick="changeNavSidebarTheme(this.value)">
+              <label for="nav_siderbar_theme_light">浅白</label>
+            <script>
+               function changeNavSidebarTheme(theme){
+                  if(localStorage){
+                    localStorage.setItem("beangle.ems.nav_sidebar_theme",theme)
+                  }
+                  if(theme=="dark"){
+                    jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
+                    jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
+                  }else{
+                    jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
+                    jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
+                  }
+               }
+            </script>
+          </div>
           <div class="mb-2">
             每页数据量<select id="page_size_selector">
               [#list [10,20,30,50,70,100,300] as ps]
@@ -257,8 +280,8 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane" id="control-sidebar-home-tab">
-        <h5 class="control-sidebar-heading">近期活动</h5>
+      <div class="tab-pane" id="control-sidebar-home-tab" style="padding: 10px 15px;">
+        <h6 class="control-sidebar-heading">近期活动</h6>
         <ul class="control-sidebar-menu">
         </ul>
       </div>
@@ -291,6 +314,7 @@
       [/#if]
       emsnav.setup(params);
       emsnav.enableSearch('menu_searcher');
+      window.emsnav=emsnav;
     });
   });
 </script>
