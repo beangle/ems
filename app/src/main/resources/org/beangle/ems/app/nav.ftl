@@ -229,8 +229,8 @@
 
   <aside id="control_sidebar" class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="nav-item"><a class="nav-link active" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
-      <li class="nav-item"><a class="nav-link" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
+      <li class="nav-item"><a class="nav-link active" style="padding: .4rem .8rem;" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
+      <li class="nav-item"><a class="nav-link" style="padding: .4rem .8rem;" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
     </ul>
     <div class="tab-content">
       <div id="control-sidebar-theme-options-tab" class="tab-pane active" style="padding: 10px 15px;">
