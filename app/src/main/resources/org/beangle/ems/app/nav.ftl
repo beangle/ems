@@ -199,7 +199,7 @@
   <aside id="main_siderbar" class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
     <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="height: 47px;border:0px;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
-      <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;"></span>
+      <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
     <div class="form-inline" style="display:none">
       <div class="input-group">

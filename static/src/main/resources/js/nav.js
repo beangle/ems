@@ -267,6 +267,7 @@
           f.setAttribute("height","100%");
           f.setAttribute("SCROLLING","auto");
           f.setAttribute("FRAMEBORDER","0");
+          f.style.minHeight=(document.getElementById("main_siderbar").offsetHeight+"px");
           f.setAttribute("name",target);
           f.id=target;
           mainWrapper.appendChild(f);
