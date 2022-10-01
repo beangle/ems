@@ -197,7 +197,7 @@
       </ul>
     </nav>
 
-  <aside id="main_siderbar" class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;">
+  <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:13px;overflow: hidden;">
     <a href="${base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="height: 47px;border:0px;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
@@ -228,7 +228,7 @@
     [/#if]
   </div>
 
-  <aside id="control_sidebar" class="control-sidebar control-sidebar-dark control-sidebar-open" style="display: block;">
+  <aside id="control_sidebar" class="control-sidebar control-sidebar-light control-sidebar-open" style="display: block;">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li class="nav-item"><a class="nav-link active" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
       <li class="nav-item"><a class="nav-link" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
