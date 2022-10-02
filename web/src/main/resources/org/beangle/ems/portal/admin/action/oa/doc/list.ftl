@@ -14,7 +14,7 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col width="48%" property="name" title="标题" style="text-align:left;padding-left:10px"]
+    [@b.col property="name" title="标题" style="text-align:left;padding-left:10px"]
       [@b.a href="!info?id=${doc.id}" target="_blank"]
         [#assign ext=doc.name?keep_after_last(".")/]
         <image style="width:16px" src="${b.static_url("bui","icons/48x48/mimetypes/"+extMap[ext]!"text-plain.png")}">

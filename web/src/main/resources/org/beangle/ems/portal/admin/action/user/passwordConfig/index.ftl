@@ -9,7 +9,7 @@
         });
     [/@]
     [#assign config = passwordConfigs?first]
-    <div class="card">
+    <div class="card" style="margin:0px 0.5rem 1rem 0.5rem">
       <div class="card-body">
         <h5>密码长度</h5>
         <ul class="list-group">

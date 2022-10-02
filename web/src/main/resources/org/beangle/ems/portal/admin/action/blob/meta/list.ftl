@@ -11,10 +11,10 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col  width="15%" property="owner" title="所有者"]
+    [@b.col width="15%" property="owner" title="所有者"]
        <span style="font-size:0.9em">${blobMeta.owner}</span>
     [/@]
-    [@b.col  width="20%" property="name" title="common.name"]
+    [@b.col property="name" title="common.name"]
       <span [#if blobMeta.name?length>20]style="font-size:0.8em"[/#if]>
       [@b.a href="!info?id="+blobMeta.id target="_blank"]${blobMeta.name}[/@]
       </span>

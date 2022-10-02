@@ -14,7 +14,8 @@
   [@b.row]
     <tr id="${(role.indexno)!}">
     [@b.boxcol /]
-    [@b.treecol property="name" width="36%" title="common.name"][@b.a href="!info?id=${role.id}"]${role.indexno} ${role.name}[/@]
+    [@b.treecol property="name" title="common.name"]
+      [@b.a href="!info?id=${role.id}"]${role.indexno} ${role.name}[/@]
     [/@]
     [@b.col width="18%" property="creator.name" title="common.creator"]${(role.creator.fullname)!}[/@]
     [@b.col width="13%" property="enabled" title="common.status"][@enableInfo role.enabled/][/@]

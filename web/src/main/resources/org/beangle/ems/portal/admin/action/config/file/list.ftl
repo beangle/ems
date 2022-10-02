@@ -10,7 +10,7 @@
   [@b.row]
     [@b.boxcol /]
     [@b.col width="8%" property="app.title" title="应用"/]
-    [@b.col  width="52%" property="name" title="common.name"]
+    [@b.col property="name" title="common.name"]
       <span [#if file.name?length>20]style="font-size:0.8em"[/#if]>
       [@b.a href="!info?id="+file.id target="_blank" title=file.filePath]${file.name}[/@]
       </span>

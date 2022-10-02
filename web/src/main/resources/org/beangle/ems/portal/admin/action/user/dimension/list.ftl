@@ -12,7 +12,7 @@
     [@b.col property="name" width="10%"/]
     [@b.col property="title" width="7%"/]
     [@b.col property="valueType" width="7%"/]
-    [@b.col property="source" width="56%"]
+    [@b.col property="source"]
       <span style="overflow:hidden;font-size:0.8em">${dimension.source}</span>
     [/@]
     [@b.col property="multiple" width="7%"]${dimension.multiple?string('是','否')}[/@]

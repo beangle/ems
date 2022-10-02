@@ -11,7 +11,7 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col width="37%" property="title" title="标题"]
+    [@b.col property="title" title="标题"]
      [@b.a href="!info?id=${notice.id}"]
      [#if notice.docs?size>0]<image src="${b.static_url('bui',"icons/16x16/actions/paperclip.png")}" />[/#if]
      <span [#if notice.archived] style="color:#999999" title="已归档"[/#if]>${notice.title!}</span>

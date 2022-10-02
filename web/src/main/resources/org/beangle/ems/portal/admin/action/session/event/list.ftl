@@ -12,7 +12,7 @@
     [@b.col width="13%" property="updatedAt" title="时间"]
       ${sessionEvent.updatedAt?string("yy-MM-dd HH:mm")}
     [/@]
-    [@b.col width="40%" property="detail" title="明细"]
+    [@b.col property="detail" title="明细"]
        <span> ${sessionEvent.detail?html}</span>
     [/@]
   [/@]

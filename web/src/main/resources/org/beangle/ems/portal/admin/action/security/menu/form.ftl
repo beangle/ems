@@ -4,7 +4,7 @@
 [#assign userMsg]${b.text("entity.menu")}[/#assign]
 [#assign labelInfo]${b.text("ui.editForm",userMsg)}[/#assign]
 
-[@b.form action=b.rest.save(menu) title=labelInfo theme="list"]
+[@b.form action=b.rest.save(menu)  theme="list"]
   [@b.textfield label="common.name" name="menu.name" value=menu.name! style="width:200px;"  required="true" maxlength="100" /]
   [@b.textfield label="英文名称" name="menu.enName" value=menu.enName! style="width:200px;" required="true" maxlength="100"/]
   [@b.textfield label="字体图标" name="menu.fonticon" value=menu.fonticon! required="false" maxlength="100"/]
