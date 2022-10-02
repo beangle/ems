@@ -43,7 +43,7 @@ class DefaultModule extends BindModule {
     bind(classOf[log.PushWS], classOf[log.ListWS])
 
     bind(classOf[AccountWS], classOf[AppWS], classOf[DimensionWS], classOf[AvatarWS])
-    bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS])
+    bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS],classOf[UserWS])
 
     val cm = new CaffeineCacheManager(true)
     val tokensCache = cm.getCache("tokens", classOf[String], classOf[AccessToken])

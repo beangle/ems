@@ -1,4 +1,4 @@
-[#macro displayFrame mainHref="" ]
+[#macro displayFrame mainHref=""]
 <style>
 [#--这一段定制的css，在app模块中的nav.ftl也有一份--]
 [#assign sidebar_width=156/]
@@ -111,7 +111,7 @@
   }
 </style>
 <div class="wrapper">
-    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark navbar-lightblue sticky-top border-bottom-0">
+    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark navbar-lightblue border-bottom-0">
       <ul class="nav navbar-nav">
          <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu"  title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -236,7 +236,7 @@
       <div id="control-sidebar-theme-options-tab" class="tab-pane active" style="padding: 10px 15px;">
         <h6 class="control-sidebar-heading">布局选项</h6>
         <div class="form-group">
-          <div class="mb-2"><input type="checkbox" checked="true" id="sticky_header">固定头部导航</div>
+          <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2">
             导航风格:
             <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="changeNavSidebarTheme(this.value)">
@@ -246,7 +246,7 @@
             <script>
                function changeNavSidebarTheme(theme){
                   if(localStorage){
-                    localStorage.setItem("beangle.ems.nav_sidebar_theme",theme)
+                    localStorage.setItem("beangle.ems.nav_sidebar_theme",theme);
                   }
                   if(theme=="dark"){
                     jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");

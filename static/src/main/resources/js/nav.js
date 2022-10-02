@@ -569,28 +569,47 @@
     });
   }
 
-  function setup (params) {
+  function setLocal(name,value){
+    if(localStorage){
+      localStorage.setItem(name,value);
+    }
+  }
+  function getLocal(name,defaultValue){
+    if(localStorage){
+      return (localStorage.getItem(name) || defaultValue);
+    }else{
+      return defaultValue;
+    }
+  }
+
+  function setup(params) {
     jQuery("body").addClass("sidebar-mini layout-fixed text-sm");
     fetchMessages(params);
+    var stickyHeader = getLocal("beangle.ems.nav_sticky_header","1")
+    if(stickyHeader=="1") {
+      jQuery('#main_header').addClass("sticky-top")
+      jQuery("#sticky_header").prop ("checked", true);;
+    }
+
     jQuery("#sticky_header").on("click",function(event){
       if(this.checked){
         jQuery('#main_header').addClass("sticky-top");
+        if(localStorage)localStorage.setItem("beangle.ems.nav_sticky_header","1");
       }else{
         jQuery('#main_header').removeClass("sticky-top");
+        if(localStorage)localStorage.setItem("beangle.ems.nav_sticky_header","0");
       }
     });
-    jQuery('#main_header').addClass("sticky-top");
-    if(localStorage.getItem("beangle.ems.nav_sidebar_theme")){
-      var theme=localStorage.getItem("beangle.ems.nav_sidebar_theme");
-      if(theme=="dark"){
-        jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
-        jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
-      }else{
-        jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
-        jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
-      }
-      jQuery("#nav_siderbar_theme_"+theme).prop ("checked", true);
+
+    var theme=getLocal("beangle.ems.nav_sidebar_theme","dark");
+    if(theme=="dark"){
+      jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
+      jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
+    }else{
+      jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
+      jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
     }
+    jQuery("#nav_siderbar_theme_"+theme).prop ("checked", true);
     jQuery("#page_size_selector").on("change",function(event){
        beangle.createCookie("pageSize",this.value,100);
     });

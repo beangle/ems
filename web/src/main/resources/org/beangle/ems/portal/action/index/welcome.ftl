@@ -18,7 +18,7 @@
 
 [#list rowPortalets?keys?sort as rowIndex]
   [#assign sections = rowPortalets.get(rowIndex)]
-  <div class="row content">
+  <div class="row content" style="margin:0px">
     [#list sections as section]
       <section class="col-lg-${section?first.colspan}">
         [#list section as portalet]
