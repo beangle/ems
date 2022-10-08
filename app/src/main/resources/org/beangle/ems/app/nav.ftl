@@ -54,7 +54,7 @@
   .nav-legacy {
       line-height:1.1;
       width:${sidebar_width}px;
-      font-size:13px;
+      font-size:0.875rem;
   }
   .nav-legacy.nav-sidebar .nav-item > .nav-link{
     border-radius: 0;
@@ -196,8 +196,8 @@
       </ul>
     </nav>
 
-  <aside id="main_siderbar" class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:13px;overflow: hidden;">
-    <a href="${b.base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="height: 47px;border:0px;">
+  <aside id="main_siderbar" class="main-sidebar sidebar-dark-primary elevation-4" style="font-size:0.875rem;overflow: hidden;">
+    <a href="${b.base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="border:0px;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
@@ -239,31 +239,10 @@
           <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2">
             导航风格:
-            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="dark" checked="checked" id="nav_siderbar_theme_dark" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_dark">暗黑</label>
-            <input name="nav_siderbar_theme" value="light" id="nav_siderbar_theme_light" type="radio" onclick="changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="light" id="nav_siderbar_theme_light" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_light">浅白</label>
-            <script>
-               function changeNavSidebarTheme(theme){
-                  if(localStorage){
-                    localStorage.setItem("beangle.ems.nav_sidebar_theme",theme);
-                  }
-                  if(theme=="dark"){
-                    jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
-                    jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
-                  }else{
-                    jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
-                    jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
-                  }
-               }
-            </script>
-          </div>
-          <div class="mb-2">
-            每页数据量<select id="page_size_selector">
-              [#list [10,20,30,50,70,100,300] as ps]
-              <option value="${ps}" [#if ps==20]selected[/#if]>${ps}</option>
-              [/#list]
-            </select>
           </div>
           <div class="mb-2">
             界面语言:
@@ -276,6 +255,19 @@
                   this.location=("${b.url('!index')}"+"?request_locale="+locale);
                }
             </script>
+          </div>
+          <div class="mb-2">
+            字体大小:
+            <input name="root_font_size" value="0.9286em" id="root_font_size_small" type="radio" ><label for="root_font_size_small">小</label>
+            <input name="root_font_size" value="1em" checked="checked" id="root_font_size_middle" type="radio"><label for="root_font_size_middle">中</label>
+            <input name="root_font_size" value="1.07143em" id="root_font_size_large" type="radio" ><label for="root_font_size_large">大</label>
+          </div>
+          <div class="mb-2">
+            每页数据量<select id="page_size_selector">
+              [#list [10,20,30,50,70,100,300] as ps]
+              <option value="${ps}" [#if ps==20]selected[/#if]>${ps}</option>
+              [/#list]
+            </select>
           </div>
         </div>
       </div>

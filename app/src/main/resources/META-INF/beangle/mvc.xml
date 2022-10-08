@@ -2,13 +2,22 @@
 <mvc>
   <static>
     <bundle name="local" version="default"/>
-    <bundle name="ems" version="4.5.1">
+    <bundle name="ems" version="4.5.4">
       <module name="ems" js="js/ems.js"/>
       <module name="ems-nav" js="js/nav.js" css="css/nav.css" depends="adminlte,ems" />
     </bundle>
     <bundle name="kalendae" version="1.0.2">
       <module name="kalendae" js="js/kalendae.standalone.js" css="css/kalendae.css"/>
     </bundle>
-
+    <bundle name="bui" version="0.4.1">
+      <module name="history" js="js/beangle-history.js"/>
+      <module name="beangle" js="js/beangle.js"/>
+      <module name="bui" js="js/beangle-ui.js"  css="css/beangle-ui.css"/>
+      <module name="bui-tabletree" js="js/beangle-ui-tabletree.js"  css="css/beangle-ui-tabletree.css"/>
+      <module name="bui-ajaxchosen" js="js/beangle-ui-ajaxchosen.js" depends="chosen"/>
+      <module name="jquery-validity" js="js/jquery-validity.js" css="css/jquery.validity.css"/>
+      <module name="jquery-pstrength" js="js/jquery-pstrength,jquery-pstrength_zh.js" css="css/jquery.pstrength.css"/>
+      <module name="jquery-treetable" js="js/jquery-treetable.js" css="css/jquery.treetable.css"/>
+    </bundle>
   </static>
 </mvc>

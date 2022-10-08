@@ -297,7 +297,7 @@
     },
     fillAppName : function(){
       if(this.sysName.length>6){
-        jQuery('#appName').css("font-size","14px")
+        jQuery('#appName').css("font-size","0.875rem")
       }
       jQuery('#appName').html(this.sysName);
     },
@@ -588,9 +588,10 @@
     var stickyHeader = getLocal("beangle.ems.nav_sticky_header","1")
     if(stickyHeader=="1") {
       jQuery('#main_header').addClass("sticky-top")
-      jQuery("#sticky_header").prop ("checked", true);;
+      jQuery("#sticky_header").prop("checked", true);
     }
 
+    jQuery("#control_sidebar input[name=root_font_size]").on("click",function(e){changeFontSize(jQuery(e.target).val())});
     jQuery("#sticky_header").on("click",function(event){
       if(this.checked){
         jQuery('#main_header').addClass("sticky-top");
@@ -601,15 +602,8 @@
       }
     });
 
-    var theme=getLocal("beangle.ems.nav_sidebar_theme","dark");
-    if(theme=="dark"){
-      jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
-      jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
-    }else{
-      jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
-      jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
-    }
-    jQuery("#nav_siderbar_theme_"+theme).prop ("checked", true);
+    changeNavSidebarTheme(getLocal("beangle.ems.nav_sidebar_theme","--"));
+    changeFontSize(getLocal("beangle.ems.root_font_size","--"));
     jQuery("#page_size_selector").on("change",function(event){
        beangle.createCookie("pageSize",this.value,100);
     });
@@ -640,6 +634,26 @@
     return nav.openMenu(obj,target,iframe);
   }
 
+  function changeNavSidebarTheme(theme){
+    if(theme == '--') return;
+    if(localStorage) localStorage.setItem("beangle.ems.nav_sidebar_theme",theme);
+    jQuery("#nav_siderbar_theme_"+theme).prop ("checked", true);
+    if(theme=="dark"){
+      jQuery('#main_siderbar').removeClass("sidebar-light-lightblue").addClass("sidebar-dark-primary");
+      jQuery('#control_sidebar').removeClass("control-sidebar-light").addClass("control-sidebar-dark");
+    }else{
+      jQuery('#main_siderbar').removeClass("sidebar-dark-primary").addClass("sidebar-light-lightblue");
+      jQuery('#control_sidebar').removeClass("control-sidebar-dark").addClass("control-sidebar-light");
+    }
+  }
+
+  function changeFontSize(font_size){
+    if(font_size =="--") return;
+    jQuery("#control_sidebar input[name=root_font_size]").each(function(i,a){ if(jQuery(a).val()==font_size) jQuery(a).prop("checked",true)})
+    if(localStorage) localStorage.setItem("beangle.ems.root_font_size",font_size);
+    document.documentElement.style.setProperty("font-size",font_size);
+  }
+
   exports.createNav=createNav;
   exports.changeGroup=changeGroup;
   exports.createProfileNav=createProfileNav;
@@ -647,4 +661,6 @@
   exports.setup=setup;
   exports.enableSearch=enableSearch;
   exports.openMenu=openMenu;
+  exports.changeNavSidebarTheme=changeNavSidebarTheme;
+  exports.changeFontSize=changeFontSize;
 })));

@@ -8,10 +8,10 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col  width="10%" property="app.name" title="应用"]
+    [@b.col  width="90px" property="app.name" title="应用"]
        <span style="font-size:0.9em">${businessLog.app.title}</span>
     [/@]
-    [@b.col  width="8%" property="level.name" title="级别"/]
+    [@b.col  width="60px" property="level.name" title="级别"/]
     [@b.col  width="10%" property="operator" title="操作人"/]
     [@b.col property="summary" title="操作内容摘要"]
       [@b.a href="!info?id="+businessLog.id title="查看明细"]${businessLog.summary}[/@]
