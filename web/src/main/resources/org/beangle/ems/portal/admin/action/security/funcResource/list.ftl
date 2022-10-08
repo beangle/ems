@@ -14,7 +14,7 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col  width="37%" property="name" style="text-align:left;padding-left:10px"title="common.name"]
+    [@b.col property="name" style="text-align:left;padding-left:10px"title="common.name"]
       [@b.a href="!info?id=${resource.id}"]${resource.name}[/@]
     [/@]
     [@b.col  width="28%" property="title" title="common.title"]${(resource.title)!}[/@]

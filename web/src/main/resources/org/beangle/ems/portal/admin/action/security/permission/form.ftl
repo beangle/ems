@@ -37,7 +37,7 @@
   bar.addItem("${b.text("action.collapse")}","bg.tabletree.collapseAllRowsFor('meunPermissionTable',1);",'tree-folder-open');
   bar.addItem("${b.text("action.save")}",save,'save.png');
   function switchRole(form,roleId){
-    form.action="${base}/admin/security/permission/{roleId}/edit".replace("{roleId}",roleId)
+    form.action="${b.base}/admin/security/permission/{roleId}/edit".replace("{roleId}",roleId)
     form.submit();
   }
 [/@]
