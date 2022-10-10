@@ -20,7 +20,7 @@ package org.beangle.ems.portal.admin.action.config
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.{Strings, Throwables}
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.jdbc.vendor.Vendors
+import org.beangle.data.jdbc.engine.Drivers
 import org.beangle.ems.app.util.AesEncryptor
 import org.beangle.ems.core.config.model.{Credential, Db}
 import org.beangle.ems.core.config.service.{CredentialService, DomainService}
@@ -91,8 +91,9 @@ class DbAction extends RestfulAction[Db] {
         val url =
           cfg.url match {
             case None =>
-              Class.forName(Vendors.drivers(cfg.driver).className)
-              var format = Vendors.drivers(cfg.driver).urlformats.head
+              val driverInfo = Drivers.get(cfg.driver).get
+              Class.forName(driverInfo.className)
+              var format = driverInfo.urlformats.head
               format = Strings.replace(format, "<host>", cfg.serverName)
               format = Strings.replace(format, "<port>", cfg.portNumber.toString)
               format = Strings.replace(format, "<database_name>", cfg.databaseName)
