@@ -109,6 +109,9 @@
   #navbar-setting .nav-link{
     padding:0.3125rem 0.5rem;
   }
+  .control-sidebar, .control-sidebar::before {
+    width:13rem;
+  }
 </style>
 <div class="wrapper">
     <nav id="main_header" class="main-header navbar navbar-expand navbar-dark navbar-lightblue border-bottom-0">

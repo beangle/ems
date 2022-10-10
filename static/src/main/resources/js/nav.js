@@ -607,6 +607,7 @@
     jQuery("#page_size_selector").on("change",function(event){
        beangle.createCookie("pageSize",this.value,100);
     });
+    jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
   }
 
   function enableSearch(searchInputId){
@@ -652,6 +653,7 @@
     jQuery("#control_sidebar input[name=root_font_size]").each(function(i,a){ if(jQuery(a).val()==font_size) jQuery(a).prop("checked",true)})
     if(localStorage) localStorage.setItem("beangle.ems.root_font_size",font_size);
     document.documentElement.style.setProperty("font-size",font_size);
+    jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
   }
 
   exports.createNav=createNav;
