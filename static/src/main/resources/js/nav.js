@@ -264,6 +264,12 @@
     openMenu : function(obj,target,iframe){
       if(target=="_blank") return true;
       var targetEle = document.getElementById(target)
+      if(typeof obj =="object" && obj.tagName.toLowerCase()=="a"){
+        this.currentMenuHref = obj.href;
+      }else if (typeof obj =="string"){
+        this.currentMenuHref = obj;
+      }
+
       var mainWrapper = targetEle.parentNode;
       if(iframe){
         if(targetEle.tagName=='DIV'){
@@ -360,6 +366,7 @@
     },
     /**显示指定group的menu*/
     displayGroupMenus : function (groupId,appId){
+      this.currentGroupId = groupId;
       switchNavActive("#group_"+groupId);
       for(var i=0;i < this.groupMenus.length; i++){
         var groupMenu=this.groupMenus[i];
@@ -608,6 +615,7 @@
        beangle.createCookie("pageSize",this.value,100);
     });
     jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
+    jQuery(document).ready(restoreNav);
   }
 
   function enableSearch(searchInputId){
@@ -656,6 +664,27 @@
     jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
   }
 
+  function restoreNav(){
+    if(sessionStorage){
+       var groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
+       if(groupId) nav.displayGroupMenus(groupId);
+       var menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
+       if(menuHref) {
+         jQuery('#main_siderbar a[href="'+menuHref+'"]').trigger("click");
+       }
+    }
+  }
+
+  function saveNavState(){
+    if(sessionStorage){
+      sessionStorage.setItem("beangle.ems.nav_group_id",nav.currentGroupId);
+      if(nav.currentMenuHref){
+        sessionStorage.setItem("beangle.ems.nav_menu_href",nav.currentMenuHref);
+      }
+    }
+  }
+
+  jQuery(window).bind("unload",saveNavState);
   exports.createNav=createNav;
   exports.changeGroup=changeGroup;
   exports.createProfileNav=createProfileNav;
