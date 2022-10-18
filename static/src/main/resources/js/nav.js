@@ -237,10 +237,6 @@
     },
     activate : function(){
       var that=this;
-      //FIXME treeview someding missing domcument onloading events
-      if(!jQuery("#"+this.menuDomId).data("lte.treeview")){
-         jQuery.fn.Treeview.call(jQuery("#"+this.menuDomId),"init");
-      }
       jQuery("#"+this.menuDomId+" li a").click(function() {
         if(this.href=="javascript:void(0)"){
           jQuery(this).parent('li').siblings().each(function (i,li){
@@ -669,18 +665,22 @@
        var groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
        if(groupId) nav.displayGroupMenus(groupId);
        var menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
-       if(menuHref) {
-         jQuery('#main_siderbar a[href="'+menuHref+'"]').trigger("click");
-       }
+       if(menuHref) jQuery('#main_siderbar a[href="'+menuHref+'"]').trigger("click");
     }
   }
 
   function saveNavState(){
     if(sessionStorage){
-      sessionStorage.setItem("beangle.ems.nav_group_id",nav.currentGroupId);
-      if(nav.currentMenuHref){
-        sessionStorage.setItem("beangle.ems.nav_menu_href",nav.currentMenuHref);
-      }
+      if(nav.currentGroupId) sessionStorage.setItem("beangle.ems.nav_group_id",nav.currentGroupId);
+      if(nav.currentMenuHref) sessionStorage.setItem("beangle.ems.nav_menu_href",nav.currentMenuHref);
+    }
+  }
+
+  function clearNavState(){
+    if(sessionStorage){
+      nav.currentGroupId=0;nav.currentMenuHref=null;
+      sessionStorage.removeItem("beangle.ems.nav_group_id");
+      sessionStorage.removeItem("beangle.ems.nav_menu_href");
     }
   }
 
@@ -694,4 +694,6 @@
   exports.openMenu=openMenu;
   exports.changeNavSidebarTheme=changeNavSidebarTheme;
   exports.changeFontSize=changeFontSize;
+  exports.clearNavState=clearNavState;
+  exports.getNav=function(){return nav;}
 })));
