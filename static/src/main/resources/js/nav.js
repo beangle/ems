@@ -256,6 +256,13 @@
           jQuery(this).addClass('active');
         }
       });
+      var navMenuDomId =this.menuDomId;
+      setTimeout(function(){
+        //FIXME treeview sometimes missing domcument onloading events
+        if(!jQuery("#"+navMenuDomId).data("lte.treeview")){
+           jQuery.fn.Treeview.call(jQuery("#"+navMenuDomId),"init");
+        }
+      },1000);
     },
     openMenu : function(obj,target,iframe){
       if(target=="_blank") return true;
@@ -380,8 +387,8 @@
           }else{
             this.createMenus(jQuery('#'+this.menuDomId),groupMenu.appMenus,openMenuId);
           }
-          this.activate();
           this.currentGroupId=groupId;
+          this.activate();
           break;
         }
       }
