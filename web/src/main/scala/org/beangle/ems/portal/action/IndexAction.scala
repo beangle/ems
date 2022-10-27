@@ -47,34 +47,25 @@ class IndexAction extends ActionSupport with ServletSupport {
   }
 
   def noticePortalet(): View = {
-    val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    val noticeQuery = OqlBuilder.from(classOf[Notice], "notice")
-    noticeQuery.join("notice.userCategories", "uc")
-    noticeQuery.where("uc.id=:category", me.category.id)
-    noticeQuery.where("notice.archived=false and notice.status=:status", NoticeStatus.Passed)
-    noticeQuery.where("notice.app.domain=:domain", domainService.getDomain)
-    noticeQuery.limit(1, 10)
-    noticeQuery.orderBy("notice.publishedAt desc")
-    val notices = entityDao.search(noticeQuery)
-    put("notices", notices)
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("notices", topNotices(me.category.id))
     put("user", me)
     put("webappBase", Ems.portal)
     forward()
   }
 
   def docPortalet(): View = {
-    val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("docs", topDocs(me.category.id))
+    put("user", me)
+    put("webappBase", Ems.portal)
+    forward()
+  }
 
-    val docQuery = OqlBuilder.from(classOf[Doc], "doc")
-    docQuery.join("doc.userCategories", "uc")
-    docQuery.where("uc.id=:category", me.category.id)
-    docQuery.where("doc.archived=false")
-    docQuery.where("doc.app.domain=:domain", domainService.getDomain)
-    docQuery.limit(1, 10)
-    docQuery.orderBy("doc.updatedAt desc")
-    val docs = entityDao.search(docQuery)
-
-    put("docs", docs)
+  def appNotice(): View = {
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("docs", topDocs(me.category.id))
+    put("notices", topNotices(me.category.id))
     put("user", me)
     put("webappBase", Ems.portal)
     forward()
@@ -103,6 +94,33 @@ class IndexAction extends ActionSupport with ServletSupport {
     put("rowPortalets", rowPortalets)
     put("user", me)
     forward()
+  }
+
+  private def topNotices(categoryId: Int): Iterable[Notice] = {
+    val q = OqlBuilder.from(classOf[Notice], "notice")
+    get("app").foreach { app =>
+      q.where("notice.app.name=:appName", app)
+    }
+    q.join("notice.userCategories", "uc")
+    q.where("uc.id=:categoryId", categoryId)
+    q.where("notice.archived=false and notice.status=:status", NoticeStatus.Passed)
+    q.where("notice.app.domain=:domain", domainService.getDomain)
+    q.limit(1, 10)
+    q.orderBy("notice.publishedAt desc")
+    entityDao.topN(10, q)
+  }
+
+  private def topDocs(categoryId: Int): Iterable[Doc] = {
+    val q = OqlBuilder.from(classOf[Doc], "doc")
+    q.join("doc.userCategories", "uc")
+    get("app").foreach { app =>
+      q.where("doc.app.name=:appName", app)
+    }
+    q.where("uc.id=:categoryId", categoryId)
+    q.where("doc.archived=false")
+    q.where("doc.app.domain=:domain", domainService.getDomain)
+    q.orderBy("doc.updatedAt desc")
+    entityDao.topN(10, q)
   }
 
   private def split[T](list: List[T], count: Int): collection.Seq[collection.Seq[T]] = {

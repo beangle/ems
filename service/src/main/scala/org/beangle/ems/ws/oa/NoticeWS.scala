@@ -17,17 +17,22 @@
 
 package org.beangle.ems.ws.oa
 
-import java.time.LocalDate
-
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.data.jsonapi.JsonAPI
+import org.beangle.data.jsonapi.JsonAPI.Context
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
+import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.support.{ActionSupport, EntitySupport, JsonAPISupport}
+import org.beangle.web.servlet.url.UrlBuilder
+import org.beangle.webmvc.execution.MappingHandler
 
-class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[Notice] {
+import java.time.LocalDate
+
+class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[Notice] with JsonAPISupport {
 
   var domainService: DomainService = _
 
@@ -35,20 +40,17 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
 
   @mapping(value = "{app}/{category}")
   @response
-  def app(@param("app") app: String, @param("category") category: String): AnyRef = {
+  def list(@param("app") app: String, @param("category") category: String): JsonAPI.Json = {
     val query = buildQuery(category)
-    query.where("notice.app=:app", appService.getApp(app))
-    val notices = entityDao.search(query)
-    notices.map(convertTitle)
-  }
-
-  @mapping(value = "{category}")
-  @response
-  def domain(@param("category") category: String): AnyRef = {
-    val query = buildQuery(category)
-    query.where("notice.app.domain=:domain", domainService.getDomain)
-    val notices = entityDao.search(query)
-    notices.map(convertTitle)
+    app match {
+      case "all" => query.where("notice.app.domain=:domain", domainService.getDomain)
+      case _ =>
+        appService.getApp(app) match {
+          case Some(pp) => query.where("notice.app=:app", pp)
+          case None => query.where("1=0")
+        }
+    }
+    convert(entityDao.search(query))
   }
 
   private def buildQuery(category: String): OqlBuilder[Notice] = {
@@ -58,6 +60,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
     query.where(":now between notice.beginOn and notice.endOn", LocalDate.now)
     query.where("notice.status=:status", NoticeStatus.Passed)
     query.orderBy("notice.sticky desc,notice.publishedAt desc")
+    query.cacheable(true)
     for (pi <- getInt("pageIndex"); ps <- getInt("pageSize")) {
       query.limit(pi, ps)
     }
@@ -65,6 +68,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
   }
 
   @mapping(value = "{id}")
+  @response
   def info(@param("id") id: String): AnyRef = {
     val query = OqlBuilder.from(classOf[Notice], "notice")
     query.where("notice.id=:id", id.toLong)
@@ -73,18 +77,19 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
     if (notices.nonEmpty) convert(notices.head) else null
   }
 
-  private def convertTitle(notice: Notice): Properties = {
-    new Properties(notice, "id", "title", "title", "createdAt", "popup", "sticky")
+  private def convert(notices: Iterable[Notice]): JsonAPI.Json = {
+    given context: Context = JsonAPI.context(ActionContext.current.params)
+
+    context.filters.include(classOf[Notice], "id", "title", "createdAt", "popup", "sticky", "docs")
+    context.filters.include(classOf[Doc], "id", "name", "url")
+    val resources = notices.map { g => JsonAPI.create(g, "").linkSelf(url("!info?id=" + g.id)) }
+    JsonAPI.newJson(resources)
   }
 
   private def convert(notice: Notice): Properties = {
-    val not = new Properties(notice, "id", "title", "title", "createdAt", "popup", "sticky", "contents")
+    val not = new Properties(notice, "id", "title", "createdAt", "popup", "sticky", "contents")
     val docs = notice.docs map { doc =>
-      val d = new Properties(doc, "id", "name")
-      EmsApp.getBlobRepository().path(doc.filePath) foreach { url =>
-        d.put("url", url)
-      }
-      d
+      new Properties(doc, "id", "name", "url")
     }
     not.put("docs", docs)
     not

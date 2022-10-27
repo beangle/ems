@@ -20,6 +20,7 @@ package org.beangle.ems.core.oa.model
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.{User, UserCategory}
 
@@ -40,4 +41,6 @@ class Doc extends LongId with Updated {
   var userCategories: mutable.Set[UserCategory] = Collections.newSet
 
   var archived: Boolean = _
+
+  def url: String = EmsApp.getBlobRepository().path(this.filePath).get
 }

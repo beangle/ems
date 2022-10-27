@@ -39,8 +39,9 @@ class NoticeAction extends ActionSupport {
     forward()
   }
 
-  @mapping("pannel/{category}")
-  def pannel(@param("category") category: String): View = {
+  @mapping("panel/{category}")
+  @deprecated("duplicated with portal/index/docPortalet")
+  def panel(@param("category") category: String): View = {
     val query = getOqlBuilder(category.toInt)
     put("notices", entityDao.search(query.limit(1, 10)))
     forward()

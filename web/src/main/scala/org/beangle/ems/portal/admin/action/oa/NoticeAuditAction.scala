@@ -17,8 +17,9 @@
 
 package org.beangle.ems.portal.admin.action.oa
 
-import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
+import org.beangle.data.dao.EntityDao
 import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
@@ -33,6 +34,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   var userService: UserService = _
   var domainService: DomainService = _
   var appService: AppService = _
+  var entityDao: EntityDao = _
 
   def index(): View = {
     put("userCategories", userService.getCategories())

@@ -21,10 +21,9 @@ import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cdi.bind.BindModule
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.impl.MemTokenRepository
-import org.beangle.ems.ws.oa.NoticeWS
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
-import org.beangle.ems.ws.{config, log, oauth}
+import org.beangle.ems.ws.{config, log, oa, oauth}
 import org.beangle.web.action.execution.CacheResult
 import org.beangle.webmvc.execution.DefaultResponseCache
 
@@ -34,7 +33,7 @@ class DefaultModule extends BindModule {
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
     bind(classOf[oauth.TokenWS], classOf[config.DomainWS])
 
-    bind(classOf[NoticeWS])
+    bind(classOf[oa.NoticeWS], classOf[oa.DocWS])
 
     bind(classOf[func.MenuWS])
     bind(classOf[func.ResourceWS], classOf[func.PermissionWS])
@@ -43,7 +42,7 @@ class DefaultModule extends BindModule {
     bind(classOf[log.PushWS], classOf[log.ListWS])
 
     bind(classOf[AccountWS], classOf[AppWS], classOf[DimensionWS], classOf[AvatarWS])
-    bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS],classOf[UserWS])
+    bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS], classOf[UserWS])
 
     val cm = new CaffeineCacheManager(true)
     val tokensCache = cm.getCache("tokens", classOf[String], classOf[AccessToken])

@@ -465,7 +465,7 @@
   }
 
   /**
-   * 添加app导航,是app内部菜单之外的所有app的展示pannel
+   * 添加app导航,是app内部菜单之外的所有app的展示panel
    */
   function prependApps(jqueryElem,nav,apps,autohide){
     var appDropNav='<ul class="nav navbar-nav"><li class="nav-item dropdown">' +
@@ -594,6 +594,7 @@
 
   function setup(params) {
     jQuery("body").addClass("sidebar-mini layout-fixed text-sm");
+    document.documentElement.style.setProperty("scrollbar-width","thin");
     fetchMessages(params);
     var stickyHeader = getLocal("beangle.ems.nav_sticky_header","1")
     if(stickyHeader=="1") {
