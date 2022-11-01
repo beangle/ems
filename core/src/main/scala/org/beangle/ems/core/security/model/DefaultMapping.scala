@@ -71,7 +71,16 @@ object DefaultMapping extends MappingModule {
       e.restrictions is length(500)
     }
 
-    all.cacheAll()
+    bind[SessionConfig].declare { e =>
+      index("idx_session_config", true, e.domain, e.category)
+    }
+
+    bind[SessionEvent].declare { e =>
+      e.principal & e.username & e.name are length(100)
+      e.detail is length(1000)
+    }
+
+    all.except(classOf[SessionEvent]).cacheAll()
   }
 
 }

@@ -19,7 +19,7 @@ package org.beangle.ems.portal.admin.action.config
 
 import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.UserCategory
+import org.beangle.ems.core.user.model.Category
 import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.{EntityAction, RestfulAction}
@@ -27,15 +27,15 @@ import org.beangle.webmvc.support.action.{EntityAction, RestfulAction}
 class PortaletAction extends RestfulAction[Portalet] {
 
   override def indexSetting(): Unit = {
-    put("categories", entityDao.getAll(classOf[UserCategory]))
+    put("categories", entityDao.getAll(classOf[Category]))
   }
 
   override protected def editSetting(entity: Portalet): Unit = {
-    put("categories", entityDao.getAll(classOf[UserCategory]))
+    put("categories", entityDao.getAll(classOf[Category]))
   }
 
   override protected def saveAndRedirect(p: Portalet): View = {
-    val categories = entityDao.find(classOf[UserCategory], intIds("category"))
+    val categories = entityDao.find(classOf[Category], intIds("category"))
     p.categories.clear()
     p.categories.addAll(categories)
     if (!p.url.startsWith("http") && !p.url.startsWith("/")) p.url = "http://" + p.url

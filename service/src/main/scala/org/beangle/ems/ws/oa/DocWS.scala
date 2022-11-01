@@ -55,7 +55,7 @@ class DocWS(entityDao: EntityDao) extends ActionSupport, EntitySupport[Doc], Ser
 
   private def buildQuery(category: String): OqlBuilder[Doc] = {
     val query = OqlBuilder.from(classOf[Doc], "doc")
-    query.join("doc.userCategories", "uc")
+    query.join("doc.categories", "uc")
     query.where("uc.id=:categoryId", category.toInt)
     query.where("doc.archived=false")
     query.orderBy("doc.updatedAt desc")

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<db engine="PostgreSQL" version="4.5.0">
+<db engine="PostgreSQL" version="4.6.0">
   <schemas>
-    <schema name="blb">
+    <schema name="ems">
       <tables>
-        <table name="blob_metas" comment="文件信息">
+        <table name="blb_blob_metas" comment="文件信息">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
@@ -16,15 +16,15 @@
             <column name="sha" type="varchar(255)" nullable="false" comment="Sha"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
           </columns>
-          <primary-key name="pk_712d2we8hkudp42k529irbs85" columns="id"/>
+          <primary-key name="pk_b8cqbowbec39t4blmd3n8n074" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_gxe52nejhqtcu5pd6251b1h2n" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_d3yxkna364mf4mkit1c43alo3" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
-            <foreign-key name="fk_8fkx493rrdnako4p08rxfg43t" column="profile_id" referenced-table="blb.profiles"
+            <foreign-key name="fk_fwsivfrcv3dueipw2679kvikl" column="profile_id" referenced-table="ems.blb_profiles"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="profiles" comment="文件配置">
+        <table name="blb_profiles" comment="文件配置">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="base" type="varchar(100)" nullable="false" comment="基础路径"/>
@@ -34,46 +34,43 @@
             <column name="public_download" type="boolean" nullable="false" comment="公开下载"/>
             <column name="users" type="varchar(200)" comment="用户名"/>
           </columns>
-          <primary-key name="pk_paulq8mh13e9yu5bvo8g6kgft" columns="id"/>
+          <primary-key name="pk_4xq2aas8pre2k4gnyha4rrdc6" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_ih66qficg64ttll08smvkarfs" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_e60r4lcpbwolub0gn2xetoolo" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-      </tables>
-    </schema>
-    <schema name="cfg">
-      <tables>
-        <table name="app_groups" comment="应用分组">
+        <table name="cfg_app_groups" comment="应用分组">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
             <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
             <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="short_title" type="varchar(255)" nullable="false" comment="简称"/>
             <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
           </columns>
-          <primary-key name="pk_kya1tu2eyjl7ubus7ik809f1o" columns="id"/>
+          <primary-key name="pk_j2j2ecvy0xos5dyc5bpvukvoo" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_5c9jbnh85ji00cht0cmdwudsh" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_is79tynyqwd3tjp6imw4waxa2" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_app_group" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="app_types" comment="应用类型">
+        <table name="cfg_app_types" comment="应用类型">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
             <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
           </columns>
-          <primary-key name="pk_8tlkrjx3okd543sof65hv26ww" columns="id"/>
+          <primary-key name="pk_tlb9nukbd5nakxiqdrb4lrrkg" columns="id"/>
           <unique-keys>
-            <unique-key name="uk_fiof2g9fn0dk5dghxnctssvf0" columns="name"/>
+            <unique-key name="uk_5qmq81gd1xna4xeynxkdueqgu" columns="name"/>
           </unique-keys>
         </table>
-        <table name="apps" comment="应用">
+        <table name="cfg_apps" comment="应用">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="app_type_id" type="integer" nullable="false" comment="应用类型ID"/>
@@ -91,20 +88,20 @@
             <column name="title" type="varchar(100)" nullable="false" comment="标题"/>
             <column name="url" type="varchar(200)" nullable="false" comment="应用地址"/>
           </columns>
-          <primary-key name="pk_hy5ovfd6iqkwwmeqkoyovyc0f" columns="id"/>
+          <primary-key name="pk_n9cedywnexu7mm5vrohyngxhi" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_qtajfheyo7x55emd3ncn9x381" column="app_type_id" referenced-table="cfg.app_types"
+            <foreign-key name="fk_oyclhhl4b5hmp6irr0gcs9xbx" column="app_type_id" referenced-table="ems.cfg_app_types"
                          referenced-column="id"/>
-            <foreign-key name="fk_geo6c41jugjgf7h5tv3yr2bnh" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_63b8qir7o0ra6nvjgbdxom1xp" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
-            <foreign-key name="fk_4i8kkj6mapjvd5mt1ppksc0m" column="group_id" referenced-table="cfg.app_groups"
+            <foreign-key name="fk_e9dlk79vqcr6h7s4j94xd3ur2" column="group_id" referenced-table="ems.cfg_app_groups"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_app" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="credentials" comment="凭证">
+        <table name="cfg_credentials" comment="凭证">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
@@ -114,16 +111,16 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="username" type="varchar(100)" nullable="false" comment="用户名"/>
           </columns>
-          <primary-key name="pk_onen3x0wxu60l38jaqwd1230k" columns="id"/>
+          <primary-key name="pk_jqt3pjl6myepf89yf4vpl69lv" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_gb1bx13e52f3bhix17r4tajdl" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_83dcjrkal5a4f5caten4qsov0" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_credential" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="data_sources" comment="数据源">
+        <table name="cfg_data_sources" comment="数据源">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
@@ -133,23 +130,23 @@
             <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
             <column name="remark" type="varchar(200)" comment="备注"/>
           </columns>
-          <primary-key name="pk_86ttadu3n7pn6c82rdtxh1d1m" columns="id"/>
+          <primary-key name="pk_hbg82rakrkc2sifjhhimm05p2" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_oesr23l6pnil7g8wf7vkmk6py" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_rncmj0cj4iyxjolva8oviqk4w" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_cq3geb9r9atwmq6ngtjhutls6" column="credential_id" referenced-table="cfg.credentials"
-                         referenced-column="id"/>
-            <foreign-key name="fk_11csy9i36qa7xbd0dyhbpf41g" column="db_id" referenced-table="cfg.dbs"
+            <foreign-key name="fk_lkns1b89bk1r1gtftfflnl1r5" column="credential_id"
+                         referenced-table="ems.cfg_credentials" referenced-column="id"/>
+            <foreign-key name="fk_bdy20umf8o7qawut9sttmynfj" column="db_id" referenced-table="ems.cfg_dbs"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_datasource" columns="app_id,name"/>
           </unique-keys>
           <indexes>
-            <index name="idx_ct67xxnq5fxipiwi6w5up3p6c" columns="app_id"/>
+            <index name="idx_hoy2tgjrxebjvagxqmx2si8ni" columns="app_id"/>
           </indexes>
         </table>
-        <table name="dbs" comment="数据库">
+        <table name="cfg_dbs" comment="数据库">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="database_name" type="varchar(100)" nullable="false" comment="数据库名"/>
@@ -161,31 +158,31 @@
             <column name="server_name" type="varchar(100)" nullable="false" comment="服务器地址"/>
             <column name="url" type="varchar(200)" comment="Java数据库连接字符串"/>
           </columns>
-          <primary-key name="pk_fjmvnbma8ydciv9wa0rocjmw1" columns="id"/>
+          <primary-key name="pk_60bu45dxjo2fv64icid8g60dr" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_4u0tvc3ehr9sv7vhndvoycp7j" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_tcq34ws060gnkcrmxw5ik8y19" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_db" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="dbs_properties" comment="数据源属性">
+        <table name="cfg_dbs_properties" comment="数据源属性">
           <columns>
             <column name="db_id" type="integer" nullable="false" comment="数据库ID"/>
             <column name="name" type="varchar(255)" nullable="false" comment="name"/>
             <column name="value_" type="varchar(255)" nullable="false" comment="数据源属性"/>
           </columns>
-          <primary-key name="pk_bt0xt6wvgav0aqxwvw5hurxk2" columns="db_id,value_,name"/>
+          <primary-key name="pk_4hn9p4sx2tba0kn8c5m68bn5e" columns="db_id,value_,name"/>
           <foreign-keys>
-            <foreign-key name="fk_n3j3tf9w1smqshbhqtckhcu7x" column="db_id" referenced-table="cfg.dbs"
+            <foreign-key name="fk_2v5t7l6nx0rw0e4s5uqqs6nha" column="db_id" referenced-table="ems.cfg_dbs"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_21drxfdntplwf4jp4bp56xy24" columns="db_id"/>
+            <index name="idx_pgw44gaecxm9xuoof339kk0lk" columns="db_id"/>
           </indexes>
         </table>
-        <table name="domains" comment="业务系统">
+        <table name="cfg_domains" comment="业务系统">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
@@ -197,16 +194,16 @@
             <column name="sashub_profile" type="varchar(255)" comment="SasHub上注册的key"/>
             <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
           </columns>
-          <primary-key name="pk_qmiqopkrlr3yjian3tuafihea" columns="id"/>
+          <primary-key name="pk_endu524c1sjo6rfnwll8j7lgl" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_354ma4e4xdedfs3u3qx7swqrw" column="org_id" referenced-table="cfg.orgs"
+            <foreign-key name="fk_sv9p6l4dip3iufo95oq8moq7s" column="org_id" referenced-table="ems.cfg_orgs"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_domain" columns="org_id,hostname"/>
           </unique-keys>
         </table>
-        <table name="files" comment="项目文件">
+        <table name="cfg_files" comment="项目文件">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
@@ -216,13 +213,13 @@
             <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
           </columns>
-          <primary-key name="pk_8429obi968vjdc8arvkoqgqvw" columns="id"/>
+          <primary-key name="pk_mqdje4swyctoaf3fghs8nh2h0" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_9ujsh4siisy2452s0feta3qjk" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_dol7duk700r2xmhltnqw2yac4" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="orgs" comment="组织">
+        <table name="cfg_orgs" comment="组织">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="code" type="varchar(50)" nullable="false" unique="true" comment="代码"/>
@@ -232,23 +229,39 @@
             <column name="short_name" type="varchar(100)" nullable="false" comment="简称"/>
             <column name="www_url" type="varchar(200)" nullable="false" comment="网站地址"/>
           </columns>
-          <primary-key name="pk_a9p5unhabl77t6wiof0meuwok" columns="id"/>
+          <primary-key name="pk_p2falj90tsjnuf6cul4dtnwbr" columns="id"/>
         </table>
-        <table name="portalets" comment="Portalet?">
+        <table name="cfg_portalets" comment="页面小部件">
           <columns>
-            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="colspan" type="integer" nullable="false" comment="列数"/>
+            <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
+            <column name="idx" type="integer" nullable="false" comment="序号"/>
             <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
-            <column name="title" type="varchar(255)" nullable="false" comment="title?"/>
-            <column name="url" type="varchar(255)" nullable="false" comment="url?"/>
-            <column name="using_iframe" type="boolean" nullable="false" comment="usingIframe?"/>
+            <column name="row_index" type="integer" nullable="false" comment="行号"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+            <column name="url" type="varchar(255)" nullable="false" comment="地址"/>
+            <column name="using_iframe" type="boolean" nullable="false" comment="是否支持iframe"/>
           </columns>
-          <primary-key name="pk_d9aofqmhlpgu2yt4gvxmylsxv" columns="id"/>
+          <primary-key name="pk_lusy0ot4df8ad2ogi52ud31x0" columns="id"/>
         </table>
-      </tables>
-    </schema>
-    <schema name="log">
-      <tables>
-        <table name="business_logs" comment="业务日志">
+        <table name="cfg_portalets_categories" comment="面向用户">
+          <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="portalet_id" type="integer" nullable="false" comment="页面小部件ID"/>
+          </columns>
+          <primary-key name="pk_3y5ll75dv63sbfxrt5djc3vst" columns="portalet_id,category_id"/>
+          <foreign-keys>
+            <foreign-key name="fk_4vtds4chbhscr97qd4c8o3qo1" column="portalet_id" referenced-table="ems.cfg_portalets"
+                         referenced-column="id"/>
+            <foreign-key name="fk_1wyav9ml67vi1urrrm6ri1w9o" column="category_id" referenced-table="ems.usr_categories"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <indexes>
+            <index name="idx_opepxkjkhbladb0xpr1872yea" columns="portalet_id"/>
+          </indexes>
+        </table>
+        <table name="log_business_logs" comment="业务日志">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
             <column name="agent" type="varchar(100)" nullable="false" comment="操作客户端代理"/>
@@ -262,24 +275,24 @@
             <column name="resources" type="varchar(300)" nullable="false" comment="对应的资源"/>
             <column name="summary" type="varchar(1000)" nullable="false" comment="操作内容摘要"/>
           </columns>
-          <primary-key name="pk_e7nfc0kcwyw2dvnpa3ik7dryx" columns="id"/>
+          <primary-key name="pk_cq382d9fch1kobqqb4ejnngte" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_mmndjgdrq4yk8r6cfpn9v8bh6" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_rrpr22e7bp9a61fov2yqs107l" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_sjqwybis3f1lherr191kkp7w5" column="level_id" referenced-table="log.levels"
+            <foreign-key name="fk_62sjh37y9se42o14o2yuohkvx" column="level_id" referenced-table="ems.log_levels"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="levels" comment="日志级别">
+        <table name="log_levels" comment="日志级别">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
           </columns>
-          <primary-key name="pk_fagiox162rmboh86j3wvglkic" columns="id"/>
+          <primary-key name="pk_5faxde0amku4jsvd65k03ipil" columns="id"/>
         </table>
-        <table name="session_events" comment="会话日志">
+        <table name="log_session_events" comment="会话日志">
           <columns>
-            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="detail" type="varchar(1000)" nullable="false" comment="明细"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="event_type" type="integer" nullable="false" comment="时间类型"/>
@@ -289,17 +302,13 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="username" type="varchar(100)" nullable="false" comment="账户"/>
           </columns>
-          <primary-key name="pk_let8o6waxxtw4p6ae3tvfbgij" columns="id"/>
+          <primary-key name="pk_bfwebo3poax33vnkl9jdjfvnk" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_huk1kecp8pak9wspg9ny8n4x4" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_m0p65dq2hujn1as3ayowmg63d" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-      </tables>
-    </schema>
-    <schema name="oa">
-      <tables>
-        <table name="docs" comment="文档">
+        <table name="oa_docs" comment="文档">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
@@ -310,49 +319,49 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="upload_by_id" type="bigint" nullable="false" comment="上传人ID"/>
           </columns>
-          <primary-key name="pk_qif6gd1jn4vc7dj4oanl8dpur" columns="id"/>
+          <primary-key name="pk_fc7xgtw2ph01nxnly6xdjj2ck" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_60rugs17b4if2a0ewkk30088t" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_t2qoocyx1xwbyo7ex0ii8hlij" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_iid5l5vv6vmowbdrdu8ltikqk" column="upload_by_id" referenced-table="usr.users"
+            <foreign-key name="fk_90rt2b8ko9dtmfagl9j5jkdj5" column="upload_by_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="docs_user_categories" comment="适用用户类别">
+        <table name="oa_docs_categories" comment="适用用户类别">
           <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
             <column name="doc_id" type="bigint" nullable="false" comment="文档ID"/>
-            <column name="user_category_id" type="integer" nullable="false" comment="用户类别ID"/>
           </columns>
-          <primary-key name="pk_9dnkujcthlvg7fnq6mjwr2lv1" columns="doc_id,user_category_id"/>
+          <primary-key name="pk_t2xiuni4rx9kqxk3tl6ho27m0" columns="doc_id,category_id"/>
           <foreign-keys>
-            <foreign-key name="fk_dns25eb6sy76v277skxxmpcw4" column="doc_id" referenced-table="oa.docs"
+            <foreign-key name="fk_c6dgseyhj0qohbadwxf5utpqq" column="doc_id" referenced-table="ems.oa_docs"
                          referenced-column="id"/>
-            <foreign-key name="fk_ck98wqocenaef81draj19wc9n" column="user_category_id"
-                         referenced-table="usr.user_categories" referenced-column="id"/>
+            <foreign-key name="fk_5yuw0si9jf4m36tb23ngmbjuj" column="category_id" referenced-table="ems.usr_categories"
+                         referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_mnhsh23ojmojhneyf5676011v" columns="doc_id"/>
+            <index name="idx_e3q5c6y7hn6lgi1oyolmlrpk8" columns="doc_id"/>
           </indexes>
         </table>
-        <table name="messages" comment="Message?">
+        <table name="oa_messages" comment="消息">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
-            <column name="contents" type="varchar(255)" nullable="false" comment="contents?"/>
-            <column name="recipient_id" type="bigint" nullable="false" comment="用户ID"/>
-            <column name="sender_id" type="bigint" nullable="false" comment="用户ID"/>
-            <column name="sent_at" type="timestamp" nullable="false" comment="sentAt?"/>
-            <column name="status" type="integer" nullable="false" comment="status?"/>
-            <column name="title" type="varchar(255)" nullable="false" comment="title?"/>
+            <column name="contents" type="varchar(255)" nullable="false" comment="内容"/>
+            <column name="recipient_id" type="bigint" nullable="false" comment="接受人ID"/>
+            <column name="sender_id" type="bigint" nullable="false" comment="发送人ID"/>
+            <column name="sent_at" type="timestamp" nullable="false" comment="发送时间"/>
+            <column name="status" type="integer" nullable="false" comment="状态"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
           </columns>
-          <primary-key name="pk_pv8na0rpo5rbptb62nf4s4v8s" columns="id"/>
+          <primary-key name="pk_72sarmx45o88vbj3vxqpxxuic" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_4ui4nnwntodh6wjvck53dbk9m" column="sender_id" referenced-table="usr.users"
+            <foreign-key name="fk_nilhuywf0n9f5t8200g70rvn4" column="sender_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
-            <foreign-key name="fk_hdkwfnspwb3s60j27vpg0rpg6" column="recipient_id" referenced-table="usr.users"
+            <foreign-key name="fk_3u7wk80g0cui9ra3twa6scw36" column="recipient_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="news" comment="新闻">
+        <table name="oa_news" comment="新闻">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
             <column name="archived" type="boolean" nullable="false" comment="是否归档"/>
@@ -362,13 +371,13 @@
             <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
             <column name="url" type="varchar(255)" nullable="false" comment="链接地址"/>
           </columns>
-          <primary-key name="pk_9d5rnbtss6v14glhivuu8nnxh" columns="id"/>
+          <primary-key name="pk_eal2o84cuiediaeu3jpbj2rw8" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_tbxp4972blkn226emwojm94kh" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_sa7idffyughpqt5fso3n95y77" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="notices" comment="公告">
+        <table name="oa_notices" comment="公告">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
@@ -378,7 +387,7 @@
             <column name="contents" type="text" nullable="false" comment="内容"/>
             <column name="created_at" type="timestamp" nullable="false" comment="创建时间"/>
             <column name="end_on" type="date" nullable="false" comment="结束日期"/>
-            <column name="issuer" type="varchar(40)" nullable="false" comment="issuer?"/>
+            <column name="issuer" type="varchar(40)" nullable="false" comment="发布者"/>
             <column name="operator_id" type="bigint" nullable="false" comment="用户ID"/>
             <column name="popup" type="boolean" nullable="false" comment="是否弹窗"/>
             <column name="published_at" type="timestamp" comment="发布日期"/>
@@ -387,96 +396,92 @@
             <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
           </columns>
-          <primary-key name="pk_5002frr9faurpclvlj4rchxpk" columns="id"/>
+          <primary-key name="pk_fd9lrfm32gdx34wnf5tkegwri" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_mxlaetoi5frsytq7fjhgat2lc" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_9ynb83bqk81v1f63byns5varx" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_al9ivcee1cr0a5gkxsxce3rbv" column="auditor_id" referenced-table="usr.users"
+            <foreign-key name="fk_liq6cinvsbnvimuij51bi9cc9" column="auditor_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
-            <foreign-key name="fk_av5607wj4iactc7m2ew0bchah" column="operator_id" referenced-table="usr.users"
+            <foreign-key name="fk_en5a6ud40d1v0nd77y7vonh2p" column="operator_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="notices_docs" comment="公告附件">
+        <table name="oa_notices_categories" comment="适用用户类别">
+          <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="notice_id" type="bigint" nullable="false" comment="公告ID"/>
+          </columns>
+          <primary-key name="pk_ptniioqdxghbgxfb5nuxa8sok" columns="notice_id,category_id"/>
+          <foreign-keys>
+            <foreign-key name="fk_sw9cowmvwom37orfr3mbeu7nu" column="notice_id" referenced-table="ems.oa_notices"
+                         referenced-column="id"/>
+            <foreign-key name="fk_9w0mcwh7o7n8ic5ptskrlo7ui" column="category_id" referenced-table="ems.usr_categories"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <indexes>
+            <index name="idx_m9p3e4v2m389xtm186dgaomkp" columns="notice_id"/>
+          </indexes>
+        </table>
+        <table name="oa_notices_docs" comment="公告附件">
           <columns>
             <column name="doc_id" type="bigint" nullable="false" comment="文档ID"/>
             <column name="notice_id" type="bigint" nullable="false" comment="公告ID"/>
           </columns>
-          <primary-key name="pk_ppflm7s14y4f48ptl6ix8oqlm" columns="notice_id,doc_id"/>
+          <primary-key name="pk_g1q8sxttj2f38br6tshq0oyop" columns="notice_id,doc_id"/>
           <foreign-keys>
-            <foreign-key name="fk_savteekqtgnumi8p2kyh77h09" column="notice_id" referenced-table="oa.notices"
+            <foreign-key name="fk_51mr3j8mjh6edbuoa9ktvsl08" column="notice_id" referenced-table="ems.oa_notices"
                          referenced-column="id"/>
-            <foreign-key name="fk_ea713bax2e8obs9hwjvsvi13g" column="doc_id" referenced-table="oa.docs"
+            <foreign-key name="fk_1guanblq93x0s91s091w2wjb5" column="doc_id" referenced-table="ems.oa_docs"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_g9or9x8eeokwhlx25k7ooi0hn" columns="notice_id"/>
+            <index name="idx_70rqx45v5adl1w9nmbikff5i6" columns="notice_id"/>
           </indexes>
         </table>
-        <table name="notices_user_categories" comment="适用用户类别">
-          <columns>
-            <column name="notice_id" type="bigint" nullable="false" comment="公告ID"/>
-            <column name="user_category_id" type="integer" nullable="false" comment="用户类别ID"/>
-          </columns>
-          <primary-key name="pk_ji4mbg1919dby7ovm36ch9py7" columns="notice_id,user_category_id"/>
-          <foreign-keys>
-            <foreign-key name="fk_ptcor7fg6nrrvdfavbjqvgdfp" column="notice_id" referenced-table="oa.notices"
-                         referenced-column="id"/>
-            <foreign-key name="fk_g8cnlwsxpfi1xpedsoddjqgya" column="user_category_id"
-                         referenced-table="usr.user_categories" referenced-column="id"/>
-          </foreign-keys>
-          <indexes>
-            <index name="idx_6y5q7jvrndh8klm11yw5yc2ou" columns="notice_id"/>
-          </indexes>
-        </table>
-        <table name="notifications" comment="Notification?">
+        <table name="oa_notifications" comment="通知">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
-            <column name="contents" type="varchar(255)" nullable="false" comment="contents?"/>
-            <column name="importance" type="integer" nullable="false" comment="importance?"/>
-            <column name="recipient_id" type="bigint" nullable="false" comment="用户ID"/>
-            <column name="sent_at" type="timestamp" nullable="false" comment="sentAt?"/>
-            <column name="subject" type="varchar(255)" nullable="false" comment="subject?"/>
+            <column name="contents" type="varchar(255)" nullable="false" comment="内容"/>
+            <column name="importance" type="integer" nullable="false" comment="重要程度"/>
+            <column name="recipient_id" type="bigint" nullable="false" comment="接受人ID"/>
+            <column name="sent_at" type="timestamp" nullable="false" comment="发送时间"/>
+            <column name="subject" type="varchar(255)" nullable="false" comment="主题"/>
           </columns>
-          <primary-key name="pk_sbyeg0j0meutlfvf5squ2oma3" columns="id"/>
+          <primary-key name="pk_rfa7ie0w95cyfm42bqiq8h59d" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_qqnsjxlwleyjbxlmm213jaj3f" column="recipient_id" referenced-table="usr.users"
+            <foreign-key name="fk_gape9e9p6ep3pc4ausb5b11c5" column="recipient_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="sensitive_words" comment="敏感词汇">
+        <table name="oa_sensitive_words" comment="敏感词汇">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="contents" type="varchar(30)" nullable="false" comment="敏感词汇列表"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
           </columns>
-          <primary-key name="pk_93tcwxw8v9r64kdlt5ljsawak" columns="id"/>
+          <primary-key name="pk_pjoqu9l57q76r8j9m8ohsd7bv" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_eo7n6sehj4ju3q4q5tyk4bjie" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_bvusulink71q1pbjckap6cqaw" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="todoes" comment="Todo?">
+        <table name="oa_todoes" comment="待办">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
-            <column name="contents" type="varchar(255)" nullable="false" comment="contents?"/>
+            <column name="contents" type="varchar(255)" nullable="false" comment="内容"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_rsgwsrqg8o0qbyrac9hoe3ohb" columns="id"/>
+          <primary-key name="pk_9miwvbk7lnym5j8gloxvye2ov" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_n1a51poh6bhsg33dbjnookpas" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_a4r41j3r11fk2kdxhadlyp730" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
-            <foreign-key name="fk_8geny1gyg1nhtelam10fyaxps" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_bw0bv219t3rs9h4xgycxu1kb5" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-      </tables>
-    </schema>
-    <schema name="se">
-      <tables>
-        <table name="app_permissions" comment="应用权限">
+        <table name="se_app_permissions" comment="应用权限">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="actions" type="varchar(500)" comment="操作"/>
@@ -486,15 +491,15 @@
             <column name="resource_id" type="integer" nullable="false" comment="功能资源ID"/>
             <column name="restrictions" type="varchar(500)" comment="限制条件"/>
           </columns>
-          <primary-key name="pk_gak8t8oul1xrpq4t02593ihhk" columns="id"/>
+          <primary-key name="pk_d4wk578yt4vxs2wsxqw6wi44r" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_519oiykea6451ts2vmmetx9hv" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_5g13fgs1ppr4cwbs73uf27ny" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_lnm7svh5k8hc3drai0ym3m289" column="resource_id" referenced-table="se.func_resources"
-                         referenced-column="id"/>
+            <foreign-key name="fk_56n4sdkcac0n09w0qatuiryog" column="resource_id"
+                         referenced-table="ems.se_func_resources" referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="data_permissions" comment="数据权限">
+        <table name="se_data_permissions" comment="数据权限">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="actions" type="varchar(255)" comment="操作"/>
@@ -511,21 +516,21 @@
             <column name="restrictions" type="varchar(255)" comment="限制条件"/>
             <column name="role_id" type="integer" comment="角色ID"/>
           </columns>
-          <primary-key name="pk_8bdqy5re8q4ab6beh9gxm4qlg" columns="id"/>
+          <primary-key name="pk_n3ngio8x079e9p038kn9208we" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_b1c2me26jyv0m0rv4ebsw1xel" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_jssv5ly5wjo02pvfmfputfqg3" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_vf8chu885v91mxnost0x8ley" column="role_id" referenced-table="usr.roles"
+            <foreign-key name="fk_ftnaay414xukmne6di331jcy0" column="role_id" referenced-table="ems.usr_roles"
                          referenced-column="id"/>
-            <foreign-key name="fk_q9n4kf29p5wuj7pja83pdoak7" column="resource_id" referenced-table="se.data_resources"
-                         referenced-column="id"/>
-            <foreign-key name="fk_7m3urbe7j3v4yvrawll4bhaaj" column="func_resource_id"
-                         referenced-table="se.func_resources" referenced-column="id"/>
-            <foreign-key name="fk_toawthk1vaaykhwswsj4sv8ky" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_8m9d4petjo64ktvo773itnyg8" column="resource_id"
+                         referenced-table="ems.se_data_resources" referenced-column="id"/>
+            <foreign-key name="fk_9qysha56tkvqd1vxq7yabsnft" column="func_resource_id"
+                         referenced-table="ems.se_func_resources" referenced-column="id"/>
+            <foreign-key name="fk_3iigcb47b6u4lk7600qu9mped" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="data_resources" comment="数据资源">
+        <table name="se_data_resources" comment="数据资源">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="actions" type="varchar(200)" comment="操作"/>
@@ -536,13 +541,13 @@
             <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
             <column name="type_name" type="varchar(200)" nullable="false" comment="类型"/>
           </columns>
-          <primary-key name="pk_ccp9osc7grc5vtqdjdfr47f4w" columns="id"/>
+          <primary-key name="pk_m2lwng0xtvh944i0suv865sy" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_ian2ofbtu8g0cig65i51aaigc" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_dk50vpqsida5h1271dv47imk6" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="func_permissions" comment="功能权限">
+        <table name="se_func_permissions" comment="功能权限">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="actions" type="varchar(100)" comment="操作"/>
@@ -553,18 +558,18 @@
             <column name="restrictions" type="varchar(100)" comment="限制条件"/>
             <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
           </columns>
-          <primary-key name="pk_h94wbison19lr3y7yppgb5ak2" columns="id"/>
+          <primary-key name="pk_2oifsqty75lclhgfdusglmk4d" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_kx96j23wqp4uyc63swesg8hss" column="role_id" referenced-table="usr.roles"
+            <foreign-key name="fk_6f381rw1cmkb200ben5c76o" column="role_id" referenced-table="ems.usr_roles"
                          referenced-column="id"/>
-            <foreign-key name="fk_hi3rfwupdve6v17pr2i2mc1q" column="resource_id" referenced-table="se.func_resources"
-                         referenced-column="id"/>
+            <foreign-key name="fk_ao9ut2csq2k21nx7e8t2bjeuj" column="resource_id"
+                         referenced-table="ems.se_func_resources" referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_mddq35fo71y1835ssm1ia6hc0" columns="role_id"/>
+            <index name="idx_fy9icugi55g32afdp7dpya5tl" columns="role_id"/>
           </indexes>
         </table>
-        <table name="func_resources" comment="功能资源">
+        <table name="se_func_resources" comment="功能资源">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="actions" type="varchar(200)" comment="操作"/>
@@ -575,13 +580,13 @@
             <column name="scope_" type="integer" nullable="false" comment="范围"/>
             <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
           </columns>
-          <primary-key name="pk_4jufsum1ynbseshirn6fpwlw1" columns="id"/>
+          <primary-key name="pk_glt9bssuurgayvpnxjupcsfqm" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_njp90obvhc5bv5fvjt2xpb9yd" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_3ju8wtwtb6byhutjnfgej46ss" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="menus" comment="菜单">
+        <table name="se_menus" comment="菜单">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
@@ -595,44 +600,40 @@
             <column name="parent_id" type="integer" comment="菜单ID"/>
             <column name="remark" type="varchar(100)" comment="备注"/>
           </columns>
-          <primary-key name="pk_f3r7oef25midhmnnur5fthqah" columns="id"/>
+          <primary-key name="pk_c3931pkfbpf3uerudht53n8sj" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_fjno8g4lqu3b3k0d5flbb187s" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_m6o2fdnpl1ngm724sdy6gmptb" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_cctt24h6nix02cxipt9rbqtnc" column="parent_id" referenced-table="se.menus"
+            <foreign-key name="fk_sk5i2hu25xymere80g1rbn7uv" column="parent_id" referenced-table="ems.se_menus"
                          referenced-column="id"/>
-            <foreign-key name="fk_o56nmwkbc1xmimpr6obqoircx" column="entry_id" referenced-table="se.func_resources"
+            <foreign-key name="fk_9j0v9w5h4bij1ajoh8febi4wh" column="entry_id" referenced-table="ems.se_func_resources"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_hqas25gxaa8g8801lef4pb86k" columns="app_id"/>
-            <index name="idx_r0x0aev4ys0l4u39kob2d1wln" columns="entry_id"/>
-            <index name="idx_5yj0kieisiu9d391nen71trvo" columns="parent_id"/>
+            <index name="idx_fdatks2vdh1idedyu5f6fb55l" columns="app_id"/>
+            <index name="idx_chjpjbdcov744gg5lq2de7rx3" columns="entry_id"/>
+            <index name="idx_epksu8lgd3h8wadnbbot7b7rx" columns="parent_id"/>
           </indexes>
         </table>
-        <table name="menus_resources" comment="菜单关联资源">
+        <table name="se_menus_resources" comment="菜单关联资源">
           <columns>
             <column name="func_resource_id" type="integer" nullable="false" comment="功能资源ID"/>
             <column name="menu_id" type="integer" nullable="false" comment="菜单ID"/>
           </columns>
-          <primary-key name="pk_e7bj714s46w1fks68ay6vrhc9" columns="menu_id,func_resource_id"/>
+          <primary-key name="pk_gtyin0ge9irq6gy8qoupwbf3j" columns="menu_id,func_resource_id"/>
           <foreign-keys>
-            <foreign-key name="fk_85c54bayea1rq13muto8ut7jy" column="menu_id" referenced-table="se.menus"
+            <foreign-key name="fk_eyl6aveotnavrf99odfsnwt2b" column="menu_id" referenced-table="ems.se_menus"
                          referenced-column="id"/>
-            <foreign-key name="fk_ocur23bmgil049dkq6fyksnga" column="func_resource_id"
-                         referenced-table="se.func_resources" referenced-column="id"/>
+            <foreign-key name="fk_13cr2f0yryioqbo09judu50df" column="func_resource_id"
+                         referenced-table="ems.se_func_resources" referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_2pvn7v7jstqcnturxsja992rp" columns="menu_id"/>
+            <index name="idx_7e3okgphh4xg8fc1b4tja9y4c" columns="menu_id"/>
           </indexes>
         </table>
-      </tables>
-    </schema>
-    <schema name="ssn">
-      <tables>
-        <table name="session_configs" comment="会话配置">
+        <table name="se_session_configs" comment="会话配置">
           <columns>
-            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="capacity" type="integer" nullable="false" comment="最大容量"/>
             <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
             <column name="check_capacity" type="boolean" nullable="false" comment="是否检查容量"/>
@@ -641,22 +642,18 @@
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="tti_minutes" type="integer" nullable="false" comment="过期时间"/>
           </columns>
-          <primary-key name="pk_qd06y5urtnkq9yc35lfb79s7c" columns="id"/>
+          <primary-key name="pk_pp3vns65x9utg2vwtogp2cao8" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_8mc2lu8rgxtpbwf3uth0p6d0m" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_45ijj5mugsun1xt93tnqfsnh7" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
-            <foreign-key name="fk_9clhlrwfu3jvj1inq5phu458y" column="category_id" referenced-table="usr.user_categories"
+            <foreign-key name="fk_1lninitsqmbijgecrywhb88e6" column="category_id" referenced-table="ems.usr_categories"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_session_config" columns="domain_id,category_id"/>
           </unique-keys>
         </table>
-      </tables>
-    </schema>
-    <schema name="usr">
-      <tables>
-        <table name="accounts" comment="账户">
+        <table name="usr_accounts" comment="账户">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
@@ -669,21 +666,21 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_e9c7rnsff82leuiecb1tbk45a" columns="id"/>
+          <primary-key name="pk_ls2nv75xnj31l3xpjbinw1w5f" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_jigc9jvxh4i629qfxqgqo9tix" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_iybd37kqrrs1wcewrt87r6ecy" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
-            <foreign-key name="fk_njuop33mo69pd79ctplkck40n" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_hwy5rqywnccgsdkylphw79b5c" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_account" columns="user_id,domain_id"/>
           </unique-keys>
           <indexes>
-            <index name="idx_e4w4av1wrhanry7t6mxt42nou" columns="user_id"/>
+            <index name="idx_gmkv8u0xj7n6y30xyktoyrv4" columns="user_id"/>
           </indexes>
         </table>
-        <table name="avatars" comment="头像">
+        <table name="usr_avatars" comment="头像">
           <columns>
             <column name="id" type="varchar(50)" nullable="false" comment="非业务主键:assigned"/>
             <column name="file_name" type="varchar(50)" nullable="false" comment="文件名"/>
@@ -691,13 +688,34 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_kc3w67oufvtlendg1b4uvayqb" columns="id"/>
+          <primary-key name="pk_evhoecg5aoxqjlhw3emfuevip" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_dh0goytewcg1geffkf1clp4kh" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_b5t09f57obh37di4c60bq9oab" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="dimensions" comment="数据维度">
+        <table name="usr_categories" comment="用户类别">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
+            <column name="code" type="varchar(30)" nullable="false" unique="true" comment="代码"/>
+            <column name="en_name" type="varchar(255)" nullable="false" comment="英文名"/>
+            <column name="end_on" type="date" comment="失效日期"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
+          </columns>
+          <primary-key name="pk_j6l4jh94s3ga3ncv15fg7kjl4" columns="id"/>
+          <foreign-keys>
+            <foreign-key name="fk_942y0yyte37hk7g2rtbsmw9a7" column="org_id" referenced-table="ems.cfg_orgs"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <unique-keys>
+            <unique-key name="idx_user_category" columns="org_id,name"/>
+          </unique-keys>
+        </table>
+        <table name="usr_dimensions" comment="数据维度">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
@@ -710,16 +728,16 @@
             <column name="title" type="varchar(40)" nullable="false" comment="标题"/>
             <column name="value_type" type="boolean" nullable="false" comment="值类型"/>
           </columns>
-          <primary-key name="pk_sedg73ys3wkrqexgwrpb932cp" columns="id"/>
+          <primary-key name="pk_17npsfcux6ix6kjq7r73roe2i" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_3jp2g64hgucn75j73mqdvm9dw" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_n554u52g2602fpj6o4pskw8gs" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_dimension_name" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="group_members" comment="组成员">
+        <table name="usr_group_members" comment="组成员">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="group_id" type="integer" nullable="false" comment="组ID"/>
@@ -729,19 +747,62 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_1walq9hajwl1vn0km8pe1r967" columns="id"/>
+          <primary-key name="pk_9kgi9t31dhattii415hnqa8wp" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_nr9qg33qt2ovmv29g4vc3gtdx" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_ohao01ximhmcf5q77sladwu6u" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
-            <foreign-key name="fk_dak9rix2b3s3lmv7ftnooi346" column="group_id" referenced-table="usr.user_groups"
+            <foreign-key name="fk_6f8eyjnx907a0gl1abag7tn7w" column="group_id" referenced-table="ems.usr_groups"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_pi01d3030xd2sww1fag358x0x" columns="group_id"/>
-            <index name="idx_brufpe0hck79ix8k5q63xgk1b" columns="user_id"/>
+            <index name="idx_11e6s0dtw3vhdlw8deeqjyjmm" columns="user_id"/>
+            <index name="idx_p2ie3eruw2n208yac0nconf86" columns="group_id"/>
           </indexes>
         </table>
-        <table name="password_configs" comment="密码配置">
+        <table name="usr_groups" comment="组">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="creator_id" type="bigint" nullable="false" comment="用户ID"/>
+            <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
+            <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="parent_id" type="integer" comment="组ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
+          </columns>
+          <primary-key name="pk_qiobgfi5x9uer99bb4an2klr5" columns="id"/>
+          <foreign-keys>
+            <foreign-key name="fk_a21ym9fl383pw06xqh8g508qu" column="parent_id" referenced-table="ems.usr_groups"
+                         referenced-column="id"/>
+            <foreign-key name="fk_gvggc1045nj9bouvqmmu3aje2" column="creator_id" referenced-table="ems.usr_users"
+                         referenced-column="id"/>
+            <foreign-key name="fk_bjd8utlg5suh7lll0rhp7x9ku" column="org_id" referenced-table="ems.cfg_orgs"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <unique-keys>
+            <unique-key name="idx_group" columns="org_id,name"/>
+          </unique-keys>
+          <indexes>
+            <index name="idx_ipnyuvhd24x9n5xbrtpwocnol" columns="parent_id"/>
+          </indexes>
+        </table>
+        <table name="usr_groups_properties" comment="组属性">
+          <columns>
+            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
+            <column name="group_id" type="integer" nullable="false" comment="组ID"/>
+            <column name="value_" type="varchar(2000)" nullable="false" comment="组属性"/>
+          </columns>
+          <primary-key name="pk_ibxj802yxpljot7vm92k1y6th" columns="group_id,value_,dimension_id"/>
+          <foreign-keys>
+            <foreign-key name="fk_ss67lgormbaehgmqlga9rfuji" column="group_id" referenced-table="ems.usr_groups"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <indexes>
+            <index name="idx_i3prbvnl2ky3fs3w4o8jgq2ya" columns="group_id"/>
+          </indexes>
+        </table>
+        <table name="usr_password_configs" comment="密码配置">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="dcredit" type="integer" nullable="false" comment="密码中最少含有多少个数字"/>
@@ -758,16 +819,49 @@
             <column name="usercheck" type="boolean" nullable="false" comment="是否检查密码中含有用户名"/>
             <column name="warnage" type="integer" nullable="false" comment="用户密码到期前，提前收到警告信息的天数"/>
           </columns>
-          <primary-key name="pk_ktglwm779su3bvsmvdgpueox8" columns="id"/>
+          <primary-key name="pk_5qffiflvujhi6qpd4ww3doin5" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_ek1bn4r04tqr1xf5jujnlyngq" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_9oli46aiaibkpa2wftgsweqsb" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_password_config" columns="domain_id"/>
           </unique-keys>
         </table>
-        <table name="role_members" comment="角色成员">
+        <table name="usr_profiles" comment="用户配置">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <primary-key name="pk_l9sqo0uv1apeypxv0k3qchf8k" columns="id"/>
+          <foreign-keys>
+            <foreign-key name="fk_okkg9hdpvau3u2r7uanfl66y" column="domain_id" referenced-table="ems.cfg_domains"
+                         referenced-column="id"/>
+            <foreign-key name="fk_ipf6f03qoljh8ahtb6s1foudm" column="user_id" referenced-table="ems.usr_users"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <indexes>
+            <index name="idx_user_profile" columns="user_id,domain_id"/>
+          </indexes>
+        </table>
+        <table name="usr_profiles_properties" comment="用户配置-属性">
+          <columns>
+            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
+            <column name="profile_id" type="bigint" nullable="false" comment="用户配置ID"/>
+            <column name="value_" type="varchar(2000)" nullable="false" comment="用户配置-属性"/>
+          </columns>
+          <primary-key name="pk_8erccmnnign5i91qbu5tpffw9" columns="profile_id,value_,dimension_id"/>
+          <foreign-keys>
+            <foreign-key name="fk_hc3opa4vag30nnpi4itrq2fr8" column="profile_id" referenced-table="ems.usr_profiles"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <indexes>
+            <index name="idx_1jhdyxjnm417qgm96nwuinixt" columns="profile_id"/>
+          </indexes>
+        </table>
+        <table name="usr_role_members" comment="角色成员">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="is_granter" type="boolean" nullable="false" comment="可授权"/>
@@ -777,19 +871,19 @@
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_noisvuh3ixbcth7ln6r1cc9kc" columns="id"/>
+          <primary-key name="pk_1vq74b9ympc9qdgjvqcghk84e" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_lgrk3163r7ti5ctytr1gf48t9" column="role_id" referenced-table="usr.roles"
+            <foreign-key name="fk_bm1ix1rci332yc9xjselvkltl" column="role_id" referenced-table="ems.usr_roles"
                          referenced-column="id"/>
-            <foreign-key name="fk_82rdtgk493wmbawb8m3ryrnf2" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_4ginknwrhsxxncy15fwierbyq" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
             <index name="idx_role_member_user" columns="user_id"/>
-            <index name="idx_e2xre92atrnh4qo1cqjf7w4ti" columns="role_id"/>
+            <index name="idx_kkhkte6jpxqrhc34y496ujdeg" columns="role_id"/>
           </indexes>
         </table>
-        <table name="roles" comment="角色">
+        <table name="usr_roles" comment="角色">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="creator_id" type="bigint" nullable="false" comment="用户ID"/>
@@ -801,150 +895,53 @@
             <column name="remark" type="varchar(255)" comment="备注"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
           </columns>
-          <primary-key name="pk_7q9pjp2665ovxfk0i1bu7tsgs" columns="id"/>
+          <primary-key name="pk_237n7fw14i3w0u34cwhapigb0" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_c8p0cleevyq7r83sa85bn13gm" column="parent_id" referenced-table="usr.roles"
+            <foreign-key name="fk_48rf6jlralqywk4om6yw478kq" column="parent_id" referenced-table="ems.usr_roles"
                          referenced-column="id"/>
-            <foreign-key name="fk_9uu5b5x4s3hkh76v2t8sgne14" column="creator_id" referenced-table="usr.users"
+            <foreign-key name="fk_k72k7td9qiw0c42wj3cbqe1wt" column="creator_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
-            <foreign-key name="fk_rs9q0nibv5bhs9yetp863i4ci" column="domain_id" referenced-table="cfg.domains"
+            <foreign-key name="fk_s4bgp91kk8g9asdwmg60k2dwl" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_role_name" columns="domain_id,name"/>
           </unique-keys>
           <indexes>
-            <index name="idx_bnd5kxg6lrl0m10gti9q73a2c" columns="parent_id"/>
+            <index name="idx_ovw4p7sme2a30wkyoo7deyelo" columns="parent_id"/>
           </indexes>
         </table>
-        <table name="roles_properties" comment="角色属性">
+        <table name="usr_roles_properties" comment="角色属性">
           <columns>
             <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
             <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
             <column name="value_" type="varchar(2000)" nullable="false" comment="角色属性"/>
           </columns>
-          <primary-key name="pk_fqotio4169qkyqlanurbkca5v" columns="role_id,value_,dimension_id"/>
+          <primary-key name="pk_59m7apft4dpohfgp900cbkkip" columns="role_id,value_,dimension_id"/>
           <foreign-keys>
-            <foreign-key name="fk_3e3prv62njb0fnipmixpgwupi" column="role_id" referenced-table="usr.roles"
+            <foreign-key name="fk_f66m6ftj0kpr837j9dtewnop8" column="role_id" referenced-table="ems.usr_roles"
                          referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_sf3t9mor7k7vxm5am3n90tshg" columns="role_id"/>
+            <index name="idx_owjdmrm6x6pqepg35o33y7bti" columns="role_id"/>
           </indexes>
         </table>
-        <table name="roots" comment="根用户">
+        <table name="usr_roots" comment="根用户">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>
-          <primary-key name="pk_n1in0fo3cbi67rpcxyyopc54r" columns="id"/>
+          <primary-key name="pk_gpdqluxdt236rx6ft5wdoxiix" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_c6pi0pn5s4fm2mqvwkg8m3qum" column="app_id" referenced-table="cfg.apps"
+            <foreign-key name="fk_akxow8uv93shp0ukqwgnqjs99" column="app_id" referenced-table="ems.cfg_apps"
                          referenced-column="id"/>
-            <foreign-key name="fk_ndc40powte3st4r695eaowtda" column="user_id" referenced-table="usr.users"
+            <foreign-key name="fk_o5eita87yogy8ancda49b13f0" column="user_id" referenced-table="ems.usr_users"
                          referenced-column="id"/>
           </foreign-keys>
         </table>
-        <table name="user_categories" comment="用户类别">
-          <columns>
-            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
-            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
-            <column name="code" type="varchar(30)" nullable="false" unique="true" comment="代码"/>
-            <column name="en_name" type="varchar(255)" nullable="false" comment="英文名"/>
-            <column name="end_on" type="date" comment="失效日期"/>
-            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
-            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
-            <column name="remark" type="varchar(255)" comment="备注"/>
-            <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
-          </columns>
-          <primary-key name="pk_g22tbnb6clymkxmi560ll33em" columns="id"/>
-          <foreign-keys>
-            <foreign-key name="fk_kbidcn86m2b000w75vseeov0i" column="org_id" referenced-table="cfg.orgs"
-                         referenced-column="id"/>
-          </foreign-keys>
-          <unique-keys>
-            <unique-key name="idx_user_category" columns="org_id,name"/>
-          </unique-keys>
-        </table>
-        <table name="user_groups" comment="组">
-          <columns>
-            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
-            <column name="creator_id" type="bigint" nullable="false" comment="用户ID"/>
-            <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
-            <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
-            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
-            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
-            <column name="parent_id" type="integer" comment="组ID"/>
-            <column name="remark" type="varchar(255)" comment="备注"/>
-            <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
-          </columns>
-          <primary-key name="pk_it5g3etsarg9hkfu7e664rw1b" columns="id"/>
-          <foreign-keys>
-            <foreign-key name="fk_ps8lxr5y8ayileomp50g5p84v" column="parent_id" referenced-table="usr.user_groups"
-                         referenced-column="id"/>
-            <foreign-key name="fk_16wuvd24vlm8rte823a16vfiw" column="creator_id" referenced-table="usr.users"
-                         referenced-column="id"/>
-            <foreign-key name="fk_y4824001gey168ocswde90bf" column="org_id" referenced-table="cfg.orgs"
-                         referenced-column="id"/>
-          </foreign-keys>
-          <unique-keys>
-            <unique-key name="idx_group" columns="org_id,name"/>
-          </unique-keys>
-          <indexes>
-            <index name="idx_psg4y38f0pvgmc8v0axsp9ac0" columns="parent_id"/>
-          </indexes>
-        </table>
-        <table name="user_groups_properties" comment="组属性">
-          <columns>
-            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
-            <column name="user_group_id" type="integer" nullable="false" comment="组ID"/>
-            <column name="value_" type="varchar(2000)" nullable="false" comment="组属性"/>
-          </columns>
-          <primary-key name="pk_3otcvvifvwfy86b0x6tp32qcu" columns="user_group_id,value_,dimension_id"/>
-          <foreign-keys>
-            <foreign-key name="fk_280krt531eqi1dagl6cc5fqvs" column="user_group_id" referenced-table="usr.user_groups"
-                         referenced-column="id"/>
-          </foreign-keys>
-          <indexes>
-            <index name="idx_j3s18sobhsaqt4086folok5vf" columns="user_group_id"/>
-          </indexes>
-        </table>
-        <table name="user_profiles" comment="用户配置">
-          <columns>
-            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
-            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
-            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
-            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
-          </columns>
-          <primary-key name="pk_kcn0fy938doidu2npqnmi1jsx" columns="id"/>
-          <foreign-keys>
-            <foreign-key name="fk_129i05sxtrwpag2cd083gi8tu" column="domain_id" referenced-table="cfg.domains"
-                         referenced-column="id"/>
-            <foreign-key name="fk_jcad5nfve11khsnpwj1mv8frj" column="user_id" referenced-table="usr.users"
-                         referenced-column="id"/>
-          </foreign-keys>
-          <indexes>
-            <index name="idx_user_profile" columns="user_id,domain_id"/>
-          </indexes>
-        </table>
-        <table name="user_profiles_properties" comment="用户配置-属性">
-          <columns>
-            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
-            <column name="user_profile_id" type="bigint" nullable="false" comment="用户配置ID"/>
-            <column name="value_" type="varchar(2000)" nullable="false" comment="用户配置-属性"/>
-          </columns>
-          <primary-key name="pk_c456k2swg32okt7ycc69rqhko" columns="user_profile_id,value_,dimension_id"/>
-          <foreign-keys>
-            <foreign-key name="fk_ratfeo83em7bds0jslge8p0ay" column="user_profile_id"
-                         referenced-table="usr.user_profiles" referenced-column="id"/>
-          </foreign-keys>
-          <indexes>
-            <index name="idx_3rwr749apw4erxh08aj28xicp" columns="user_profile_id"/>
-          </indexes>
-        </table>
-        <table name="users" comment="用户">
+        <table name="usr_users" comment="用户">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="avatar_id" type="varchar(255)" comment="头像ID"/>
@@ -957,31 +954,16 @@
             <column name="remark" type="varchar(100)" comment="备注"/>
             <column name="updated_at" type="timestamp" nullable="false" comment="更新时间"/>
           </columns>
-          <primary-key name="pk_i4mlr3lp5ixml05sx2wuk8kp8" columns="id"/>
+          <primary-key name="pk_q9yqro8mq11gawulqm149lahf" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_10lmxofio0ftl5kt6v0ov97on" column="org_id" referenced-table="cfg.orgs"
+            <foreign-key name="fk_owno1cqcdeihlygy0qlwpw0qp" column="org_id" referenced-table="ems.cfg_orgs"
                          referenced-column="id"/>
-            <foreign-key name="fk_6a5j932mtf9sqiiythm0ey6a2" column="category_id" referenced-table="usr.user_categories"
+            <foreign-key name="fk_rvydc53ioy9f11rhg7pmts3rr" column="category_id" referenced-table="ems.usr_categories"
                          referenced-column="id"/>
           </foreign-keys>
           <unique-keys>
             <unique-key name="idx_user_code" columns="org_id,code"/>
           </unique-keys>
-        </table>
-        <table name="users_properties" comment="属性">
-          <columns>
-            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
-            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
-            <column name="value_" type="varchar(2000)" nullable="false" comment="属性"/>
-          </columns>
-          <primary-key name="pk_8qv4lprfwfg6vcxqxeusnv7j3" columns="user_id,value_,dimension_id"/>
-          <foreign-keys>
-            <foreign-key name="fk_8mpw5rvqa6bd98ft8wkcty5aj" column="user_id" referenced-table="usr.users"
-                         referenced-column="id"/>
-          </foreign-keys>
-          <indexes>
-            <index name="idx_q5ggsw41edruyxtv7dqbwc0td" columns="user_id"/>
-          </indexes>
         </table>
       </tables>
     </schema>

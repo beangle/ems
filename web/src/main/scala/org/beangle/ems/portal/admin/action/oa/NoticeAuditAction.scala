@@ -37,7 +37,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   var entityDao: EntityDao = _
 
   def index(): View = {
-    put("userCategories", userService.getCategories())
+    put("categories", userService.getCategories())
     put("apps", appService.getWebapps)
     forward()
   }
@@ -58,9 +58,9 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
     val builder = getQueryBuilder
     builder.where("notice.status != :status", NoticeStatus.Draft)
     builder.where("notice.app.domain=:domain", domainService.getDomain)
-    getInt("userCategory.id") foreach { categoryId =>
-      builder.join("notice.userCategories", "uc")
-      builder.where("uc.id=:userCategoryId", categoryId)
+    getInt("category.id") foreach { categoryId =>
+      builder.join("notice.categories", "uc")
+      builder.where("uc.id=:categoryId", categoryId)
     }
     getBoolean("active") foreach { active =>
       if (active) {

@@ -18,8 +18,8 @@ Account.password=密码
 Account.passwdExpiredOn=密码过期日期
 Account.passwdInactiveOn=密码不可用日期
 
-UserCategory=用户类别
-UserCategory.enName=英文名
+Category=用户类别
+Category.enName=英文名
 
 RoleMember=角色成员
 RoleMember.member=成员
@@ -30,8 +30,8 @@ Role=角色
 Role.properties=角色属性
 Role.users=成员
 
-UserGroup=组
-UserGroup.properties=组属性
+Group=组
+Group.properties=组属性
 
 GroupMember=组成员
 GroupMember.member=成员
@@ -58,26 +58,8 @@ Dimension.required=是否必须
 Dimension.valueType=值类型
 Dimension.properties=其他属性
 
-UserProfile=用户配置
-UserProfile.properties=用户配置-属性
-
-Message=消息
-Message.title=标题
-Message.contents=内容
-Message.sender=发送人
-Message.recipient=接受人
-Message.status=状态
-Message.sentAt=发送时间
-
-Notification=通知
-Notification.subject=主题
-Notification.contents=内容
-Notification.recipient=接受人
-Notification.importance=重要程度
-Notification.sentAt=发送时间
-
-Todo=待办
-Todo.contents=内容
+Profile=用户配置
+Profile.properties=用户配置-属性
 
 PasswordConfig=密码配置
 PasswordConfig.minlen=密码的最小长度

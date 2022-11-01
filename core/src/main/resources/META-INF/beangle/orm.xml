@@ -4,18 +4,18 @@
   <mapping class="org.beangle.ems.core.config.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.security.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.user.model.DefaultMapping"/>
-  <mapping class="org.beangle.ems.core.session.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.blob.model.DefaultMapping"/>
   <mapping class="org.beangle.ems.core.log.model.DefaultMapping"/>
   <naming>
-    <profile package = "org.beangle.ems.core.oa" pluralize="true" schema="oa"/>
-    <profile package = "org.beangle.ems.core.config" pluralize="true" schema="cfg"/>
-    <profile package = "org.beangle.ems.core.security" pluralize="true" schema="se"/>
-    <profile package = "org.beangle.ems.core.user" pluralize="true" schema="usr"/>
-    <profile package = "org.beangle.ems.core.session" pluralize="true" schema="ssn">
-      <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" schema="log"/>
+    <profile package = "org.beangle.ems.core" schema="ems" pluralize="true">
+      <profile package = "config" prefix="cfg_"/>
+      <profile package = "user" prefix="usr_"/>
+      <profile package = "oa" prefix="oa_"/>
+      <profile package = "security"  prefix="se_">
+        <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" prefix="log_"/>
+      </profile>
+      <profile package = "blob" prefix="blb_"/>
+      <profile package = "log" prefix="log_"/>
     </profile>
-    <profile package = "org.beangle.ems.core.blob" pluralize="true" schema="blb"/>
-    <profile package = "org.beangle.ems.core.log" pluralize="true" schema="log"/>
   </naming>
 </orm>

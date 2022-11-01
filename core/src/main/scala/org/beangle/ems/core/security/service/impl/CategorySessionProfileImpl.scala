@@ -18,9 +18,9 @@
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.core.security.model.SessionConfig
 import org.beangle.security.authc.Account
 import org.beangle.security.session.{SessionProfile, SessionProfileProvider}
-import org.beangle.ems.core.session.model.SessionConfig
 
 class CategorySessionProfileImpl extends SessionProfileProvider {
   var entityDao: EntityDao = _

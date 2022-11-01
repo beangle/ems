@@ -55,7 +55,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[No
 
   private def buildQuery(category: String): OqlBuilder[Notice] = {
     val query = OqlBuilder.from(classOf[Notice], "notice")
-    query.join("notice.userCategories", "uc")
+    query.join("notice.categories", "uc")
     query.where("uc.id=:categoryId", category.toInt)
     query.where(":now between notice.beginOn and notice.endOn", LocalDate.now)
     query.where("notice.status=:status", NoticeStatus.Passed)

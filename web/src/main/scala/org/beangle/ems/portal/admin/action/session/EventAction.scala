@@ -19,7 +19,7 @@ package org.beangle.ems.portal.admin.action.session
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.session.model.SessionEvent
+import org.beangle.ems.core.security.model.SessionEvent
 import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.webmvc.support.helper.QueryHelper
 

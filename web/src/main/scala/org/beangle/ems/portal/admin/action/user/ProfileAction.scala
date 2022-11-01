@@ -25,14 +25,14 @@ import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.portal.admin.helper.ProfileHelper
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.UserProfile
+import org.beangle.ems.core.user.model.Profile
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, UserService}
 
 /**
  * @author chaostone
  */
-class ProfileAction(profileService: ProfileService) extends RestfulAction[UserProfile] {
+class ProfileAction(profileService: ProfileService) extends RestfulAction[Profile] {
 
   var userService: UserService = _
   var dimensionService: DimensionService = _
@@ -42,7 +42,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[UserPr
   protected override def indexSetting(): Unit = {
     val userId = getLong("profile.user.id").get
     val helper = new ProfileHelper(entityDao, profileService, dimensionService)
-    val builder = OqlBuilder.from(classOf[UserProfile], "up")
+    val builder = OqlBuilder.from(classOf[Profile], "up")
       .where("up.user.id=:userId", userId)
       .where("up.domain=:domain", domainService.getDomain)
     val profiles = entityDao.search(builder)
@@ -59,7 +59,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[UserPr
   }
 
   @ignore
-  protected override def saveAndRedirect(profile: UserProfile): View = {
+  protected override def saveAndRedirect(profile: Profile): View = {
     val helper = new ProfileHelper(entityDao, profileService, dimensionService)
     helper.dataResolver = dataResolver
     //FIXME
@@ -77,7 +77,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[UserPr
   }
 
   @ignore
-  protected override def removeAndRedirect(entities: Seq[UserProfile]): View = {
+  protected override def removeAndRedirect(entities: Seq[Profile]): View = {
     val profile = entities.head
     try {
       entityDao.remove(entities)
@@ -89,7 +89,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[UserPr
     }
   }
 
-  protected override def editSetting(profile: UserProfile): Unit = {
+  protected override def editSetting(profile: Profile): Unit = {
     val helper = new ProfileHelper(entityDao, profileService, dimensionService)
     if (null == profile.user) profile.user = userService.get(Securities.user).get
     helper.fillEditInfo(profile, isAdmin = true)

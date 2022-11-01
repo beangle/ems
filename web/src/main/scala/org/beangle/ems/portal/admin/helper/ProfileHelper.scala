@@ -23,7 +23,7 @@ import org.beangle.data.dao.EntityDao
 import org.beangle.security.Securities
 import org.beangle.web.action.context.{ActionContext, Params}
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.{Dimension, Profile, UserProfile}
+import org.beangle.ems.core.user.model.{Dimension, IProfile, Profile}
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService}
 
@@ -33,7 +33,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
   /**
    * 查看限制资源界面
    */
-  def populateInfo(profiles: Seq[_ <: Profile]): Unit = {
+  def populateInfo(profiles: Seq[_ <: IProfile]): Unit = {
     val fieldMaps = new collection.mutable.HashMap[String, Map[String, AnyRef]]
     for (profile <- profiles) {
       val aoDimensions = new collection.mutable.HashMap[String, AnyRef]
@@ -55,12 +55,12 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
     ActionContext.current.attribute("fieldMaps", fieldMaps)
   }
 
-  def fillEditInfo(profile: Profile, isAdmin: Boolean): Unit = {
+  def fillEditInfo(profile: IProfile, isAdmin: Boolean): Unit = {
     //val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     val mngDimensions = new collection.mutable.HashMap[String, Object]
     val userDimensions = new collection.mutable.HashMap[String, Object]
 
-    val myProfiles = entityDao.findBy(classOf[UserProfile], "user.code", List(Securities.user))
+    val myProfiles = entityDao.findBy(classOf[Profile], "user.code", List(Securities.user))
     val ignores = getIgnoreDimensions(myProfiles)
     ActionContext.current.attribute("ignoreDimensions", ignores)
     val userIgnoreDimensions = new collection.mutable.HashSet[Dimension]
@@ -91,7 +91,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
     ActionContext.current.attribute("profile", profile)
   }
 
-  private def getMyProfileValues(profiles: Seq[Profile], field: Dimension): collection.Seq[AnyRef] = {
+  private def getMyProfileValues(profiles: Seq[IProfile], field: Dimension): collection.Seq[AnyRef] = {
     val values = new collection.mutable.ListBuffer[AnyRef]
     for (profile <- profiles) {
       profile.getProperty(field) foreach { _ =>
@@ -105,7 +105,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
     values
   }
 
-  private def getIgnoreDimensions(profiles: Seq[Profile]): collection.mutable.Set[Dimension] = {
+  private def getIgnoreDimensions(profiles: Seq[IProfile]): collection.mutable.Set[Dimension] = {
     val ignores = new collection.mutable.HashSet[Dimension]
     for (profile <- profiles) {
       for ((field, value) <- profile.properties) {
@@ -115,7 +115,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
     ignores
   }
 
-  private def getProperty(profile: Profile, field: Dimension): AnyRef = {
+  private def getProperty(profile: IProfile, field: Dimension): AnyRef = {
     profile.getProperty(field) match {
       case Some(p) =>
         if ("*" == p) {
@@ -136,7 +136,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
     }
   }
 
-  def populateSaveInfo(profile: Profile, isAdmin: Boolean): Unit = {
+  def populateSaveInfo(profile: IProfile, isAdmin: Boolean): Unit = {
     val myProfiles = profileService.getProfiles(Securities.user)
     val ignoreDimensions = getIgnoreDimensions(myProfiles)
     for (field <- dimensionService.getAll()) {

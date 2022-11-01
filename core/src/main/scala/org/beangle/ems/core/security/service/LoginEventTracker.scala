@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.service
-
-import java.time.Instant
+package org.beangle.ems.core.security.service
 
 import org.beangle.commons.event.{Event, EventListener}
 import org.beangle.data.dao.EntityDao
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.security.model.SessionEvent
 import org.beangle.security.authc.Account
 import org.beangle.security.session.{EventType, LoginEvent}
-import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.session.model.SessionEvent
+
+import java.time.Instant
 
 class LoginEventTracker extends EventListener[LoginEvent] {
   var entityDao: EntityDao = _

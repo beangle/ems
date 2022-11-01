@@ -5,6 +5,8 @@ alter table cfg.app_groups alter column short_title set not null;
 
 update se.func_resources set name = replace(name,'/bulletin/','/oa/');
 alter table usr.messages set schema oa;
+alter table usr.todoes set schema oa;
+alter table usr.notifications set schema oa;
 
 create table cfg.portalets (name varchar(255) not null, row_index integer not null, url varchar(255) not null,
                             enabled boolean not null, id integer not null, title varchar(255) not null,

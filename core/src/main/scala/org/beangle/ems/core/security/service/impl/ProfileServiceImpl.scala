@@ -25,19 +25,19 @@ import org.beangle.ems.app.util.JSON
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.FuncResource
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.{Dimension, Profile, User, UserProfile}
+import org.beangle.ems.core.user.model.{Dimension, IProfile, User, Profile}
 
 class ProfileServiceImpl extends ProfileService {
 
   var domainService: DomainService = _
   var entityDao: EntityDao = _
 
-  override def getProfiles(user: User, resource: FuncResource): collection.Seq[Profile] = {
+  override def getProfiles(user: User, resource: FuncResource): collection.Seq[IProfile] = {
     Seq.empty
   }
 
-  override def getProfiles(usercode: String): Seq[UserProfile] = {
-    val builder = OqlBuilder.from(classOf[UserProfile], "up")
+  override def getProfiles(usercode: String): Seq[Profile] = {
+    val builder = OqlBuilder.from(classOf[Profile], "up")
     builder.where("up.user.code=:code and up.user.org=:org and up.domain=:domain",
       usercode, domainService.getOrg, domainService.getDomain)
     entityDao.search(builder)
@@ -82,7 +82,7 @@ class ProfileServiceImpl extends ProfileService {
     null
   }
 
-  def get(id: java.lang.Long): Profile = {
+  def get(id: java.lang.Long): IProfile = {
     null
   }
 }

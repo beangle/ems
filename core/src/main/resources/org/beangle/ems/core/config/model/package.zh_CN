@@ -49,8 +49,20 @@ AppGroup=应用分组
 AppGroup.indexno=顺序号
 AppGroup.title=标题
 AppGroup.enTitle=英文标题
+AppGroup.shortTitle=简称
 
 File=项目文件
 File.mediaType=类型
 File.fileSize=文件大小
 File.filePath=路径
+
+Portalet=页面小部件
+Portalet.categories=面向用户
+Portalet.colspan=列数
+Portalet.rowIndex=行号
+Portalet.usingIframe=是否支持iframe
+Portalet.idx=序号
+Portalet.url=地址
+Portalet.title=标题
+
+

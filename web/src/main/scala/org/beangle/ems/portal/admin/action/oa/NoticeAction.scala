@@ -23,7 +23,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.oa.model._
 import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.user.model.{User, Category}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.ignore
@@ -40,12 +40,12 @@ class NoticeAction extends RestfulAction[Notice] {
   var appService: AppService = _
 
   override protected def indexSetting(): Unit = {
-    put("userCategories", userService.getCategories())
+    put("categories", userService.getCategories())
     put("apps", appService.getWebapps)
   }
 
   override protected def editSetting(entity: Notice): Unit = {
-    put("userCategories", userService.getCategories())
+    put("categories", userService.getCategories())
     put("apps", appService.getWebapps)
     if (null == entity.status) {
       entity.status = NoticeStatus.Draft
@@ -61,9 +61,9 @@ class NoticeAction extends RestfulAction[Notice] {
   override protected def getQueryBuilder: OqlBuilder[Notice] = {
     val builder = super.getQueryBuilder
     builder.where("notice.app.domain=:domain", domainService.getDomain)
-    getInt("userCategory.id") foreach { categoryId =>
-      builder.join("notice.userCategories", "uc")
-      builder.where("uc.id=:userCategoryId", categoryId)
+    getInt("category.id") foreach { categoryId =>
+      builder.join("notice.categories", "uc")
+      builder.where("uc.id=:categoryId", categoryId)
     }
     getBoolean("active") foreach { active =>
       if (active) {
@@ -88,15 +88,15 @@ class NoticeAction extends RestfulAction[Notice] {
       throw new RuntimeException("找到敏感词汇:" + results.mkString(","))
     }
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    notice.userCategories.clear()
-    notice.userCategories ++= entityDao.find(classOf[UserCategory], intIds("userCategory"))
+    notice.categories.clear()
+    notice.categories ++= entityDao.find(classOf[Category], intIds("category"))
     val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf")
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
       val doc = new Doc
       doc.app = notice.app
       doc.uploadBy = notice.operator
-      doc.userCategories ++= notice.userCategories
+      doc.categories ++= notice.categories
       doc.updatedAt = Instant.now
       if (allowExts.contains(Strings.substringAfterLast(docFile.getSubmittedFileName, "."))) {
         docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)

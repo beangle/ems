@@ -27,7 +27,7 @@ import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.UserCategory
+import org.beangle.ems.core.user.model.Category
 
 class IndexAction(ds: DataSource) extends ActionSupport {
   val jdbcExecutor = new JdbcExecutor(ds)
@@ -36,9 +36,9 @@ class IndexAction(ds: DataSource) extends ActionSupport {
 
   def index(): View = {
     var sql = "select id,name from usr.user_categories"
-    val categories = Collections.newMap[Int, UserCategory]
+    val categories = Collections.newMap[Int, Category]
     jdbcExecutor.query(sql) foreach { d =>
-      val category = new UserCategory
+      val category = new Category
       category.id = d(0).asInstanceOf[Number].intValue
       category.name = d(1).asInstanceOf[String]
       categories.put(category.id, category)
@@ -62,7 +62,7 @@ class IndexAction(ds: DataSource) extends ActionSupport {
       val categoryId = d(8).asInstanceOf[Number].intValue
       info.category = categories.get(categoryId) match {
         case None =>
-          val c = new UserCategory()
+          val c = new Category()
           c.id = categoryId
           c.name = categoryId.toString
           c

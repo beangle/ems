@@ -22,9 +22,9 @@ import java.time.{Instant, LocalDate, ZoneId}
 import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.{Account, PasswordConfig, RoleMember, User, UserProfile}
+import org.beangle.ems.core.user.model.{Account, PasswordConfig, RoleMember, User, Profile}
 import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
-import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile}
+import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile=> ProfileData}
 
 class AccountServiceImpl extends AccountService with Initializing {
 
@@ -76,7 +76,7 @@ class AccountServiceImpl extends AccountService with Initializing {
         val rs = entityDao.search(query)
         account.authorities = rs.map(_.toString).toArray
 
-        val upQuery = OqlBuilder.from(classOf[UserProfile], "up")
+        val upQuery = OqlBuilder.from(classOf[Profile], "up")
           .where("up.user=:user", user)
           .where("up.domain=:domain", domain)
         val ups = entityDao.search(upQuery)
@@ -85,7 +85,7 @@ class AccountServiceImpl extends AccountService with Initializing {
           account.profiles = Array.ofDim(ups.size)
           var i = 0
           ups foreach { up =>
-            account.profiles(i) = Profile(up.id, up.name, up.properties.map(x => (x._1.name, x._2)).toMap)
+            account.profiles(i) = ProfileData(up.id, up.name, up.properties.map(x => (x._1.name, x._2)).toMap)
             i += 1
           }
         }

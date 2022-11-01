@@ -22,7 +22,7 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.user.model.{User, Category}
 
 import scala.collection.mutable
 
@@ -38,7 +38,7 @@ class Doc extends LongId with Updated {
 
   var filePath: String = _
 
-  var userCategories: mutable.Set[UserCategory] = Collections.newSet
+  var categories: mutable.Set[Category] = Collections.newSet
 
   var archived: Boolean = _
 

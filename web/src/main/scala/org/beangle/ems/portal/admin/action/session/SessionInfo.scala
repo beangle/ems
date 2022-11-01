@@ -20,14 +20,14 @@ package org.beangle.ems.portal.admin.action.session
 import java.time.Instant
 
 import org.beangle.ems.core.config.model.Domain
-import org.beangle.ems.core.user.model.UserCategory
+import org.beangle.ems.core.user.model.Category
 
 class SessionInfo extends Serializable {
   var domain: Domain = _
   var id: String = _
   var principal: String = _
   var description: Option[String] = _
-  var category: UserCategory = _
+  var category: Category = _
   var ip: Option[String] = _
   var agent: Option[String] = _
   var os: Option[String] = _

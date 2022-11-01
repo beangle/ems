@@ -15,20 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.core.security.model
 
-import org.beangle.data.orm.MappingModule
+import org.beangle.data.model.LongId
+import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.Category
 
-object DefaultMapping extends MappingModule {
-
-  def binding(): Unit = {
-    bind[SessionConfig].declare { e =>
-      index("idx_session_config", true, e.domain, e.category)
-    }
-    bind[SessionEvent].declare { e =>
-      e.principal & e.username & e.name are length(100)
-      e.detail is length(1000)
-    }
-  }
-
+class SessionConfig extends LongId {
+  var category: Category = _
+  var domain:Domain=_
+  var ttiMinutes: Int = _
+  var concurrent: Int = _
+  var capacity:Int=_
+  var checkConcurrent: Boolean = _
+  var checkCapacity: Boolean = _
 }

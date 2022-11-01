@@ -9,7 +9,7 @@ Doc.filePath=路径
 Doc.fileSize=大小
 Doc.uploadBy=上传人
 Doc.archived=是否归档
-Doc.userCategories=适用用户类别
+Doc.categories=适用用户类别
 
 News=新闻
 News.title=标题
@@ -25,12 +25,32 @@ Notice.publishedAt=发布日期
 Notice.createdAt=创建时间
 Notice.updatedAt=更新时间
 Notice.auditor=审核人
+Notice.issuer=发布者
 Notice.status=状态
 Notice.sticky=是否置顶
 Notice.archived=是否归档
 Notice.popup=是否弹窗
 Notice.docs=公告附件
-Notice.userCategories=适用用户类别
+Notice.categories=适用用户类别
 
 SensitiveWord=敏感词汇
 SensitiveWord.contents=敏感词汇列表
+
+Message=消息
+Message.title=标题
+Message.contents=内容
+Message.sender=发送人
+Message.recipient=接受人
+Message.status=状态
+Message.sentAt=发送时间
+
+
+Notification=通知
+Notification.subject=主题
+Notification.contents=内容
+Notification.recipient=接受人
+Notification.importance=重要程度
+Notification.sentAt=发送时间
+
+Todo=待办
+Todo.contents=内容

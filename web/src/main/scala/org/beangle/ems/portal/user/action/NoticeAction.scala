@@ -51,7 +51,7 @@ class NoticeAction extends ActionSupport {
     val query = OqlBuilder.from(classOf[Notice], "notice")
     query.where("notice.archived=false")
     query.where("notice.status=:status", NoticeStatus.Passed)
-    query.join("notice.userCategories", "uc")
+    query.join("notice.categories", "uc")
     query.where("uc.id=:category", categoryId)
     query.orderBy("notice.publishedAt desc")
     query.cacheable(true)

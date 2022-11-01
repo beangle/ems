@@ -23,7 +23,7 @@ import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.UserProfile
+import org.beangle.ems.core.user.model.Profile
 import org.beangle.ems.core.user.service.UserService
 
 /**
@@ -42,13 +42,12 @@ class ProfileWS(entityDao: EntityDao) extends ActionSupport {
   def index(@param("userCode") userCode: String): Any = {
     userService.get(userCode) match {
       case Some(user) =>
-        val userProfileQuery = OqlBuilder.from(classOf[UserProfile], "up")
+        val userProfileQuery = OqlBuilder.from(classOf[Profile], "up")
           .where("up.user =:user", user)
           .where("up.domain=:domain", domainService.getDomain)
           .cacheable()
 
-        val appProfiles = entityDao.search(userProfileQuery)
-        val profiles = if (user.properties.isEmpty) appProfiles else List(user) ++ appProfiles
+        val profiles = entityDao.search(userProfileQuery)
 
         val resolved = getBoolean("resolved", defaultValue = false)
         profiles map { profile =>

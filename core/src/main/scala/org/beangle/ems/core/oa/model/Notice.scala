@@ -21,7 +21,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.DateRange
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.user.model.{User, Category}
 
 import java.time.Instant
 import scala.collection.mutable
@@ -38,7 +38,7 @@ class Notice extends LongId with DateRange {
 
   var contents: String = _
 
-  var userCategories: mutable.Set[UserCategory] = Collections.newSet
+  var categories: mutable.Set[Category] = Collections.newSet
 
   var sticky: Boolean = _
 

@@ -17,44 +17,18 @@
 
 package org.beangle.ems.core.user.model
 
-import org.beangle.commons.lang.Strings
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.Named
+import org.beangle.ems.core.config.model.Domain
 
-object Property {
-  val All = "*"
-}
+import scala.collection.mutable
 
 /**
- * @author chaostone
+ * 用户在某个App上的配置
  */
-trait Profile {
-
-  def name: String
-
-  def properties: collection.mutable.Map[Dimension, String]
-
-  def setProperty(field: Dimension, value: String): Unit = {
-    if (Strings.isNotBlank(value))
-      properties.put(field, value)
-    else properties -= field
-  }
-
-  def getProperty(field: Dimension): Option[String] = {
-    properties.get(field)
-  }
-
-  def getProperty(name: String): Option[String] = {
-    properties.keys.find(k => k.name == name) match {
-      case Some(p) => properties.get(p)
-      case None => None
-    }
-  }
-
-  def matches(other: Profile): Boolean = {
-    if (other.properties.isEmpty) return true
-    other.properties exists {
-      case (field, target) =>
-        val source = getProperty(field).getOrElse("")
-        (source != Property.All) && ((target == Property.All) || (Strings.split(target, ",").toSet -- Strings.split(source, ",")).isEmpty)
-    }
-  }
+class Profile extends LongId with IProfile with Named {
+  var user: User = _
+  var domain: Domain = _
+  var properties: mutable.Map[Dimension, String] = Collections.newMap[Dimension, String]
 }

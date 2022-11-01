@@ -17,18 +17,35 @@
 
 package org.beangle.ems.core.user.model
 
+import java.security.Principal
+
+import org.beangle.commons.lang.{Numbers, Strings}
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{Coded, Named, Remark, TemporalOn, Updated}
+import org.beangle.data.model.pojo._
 import org.beangle.ems.core.config.model.Org
 
 /**
- * 用户分类
  * @author chaostone
  */
-class UserCategory extends IntId with Coded with TemporalOn with Named with Updated with Remark {
-  var enName: String = _
+class Group extends IntId with Named with Updated with Enabled with Hierarchical[Group] with IProfile with Principal with Remark {
+  var properties: collection.mutable.Map[Dimension, String] = new collection.mutable.HashMap[Dimension, String]
+  var creator: User = _
+  var members: collection.mutable.Seq[GroupMember] = new collection.mutable.ListBuffer[GroupMember]
   var org: Org = _
-  override def toString = {
+
+  override def getName: String = {
     name
+  }
+
+  def index: Int = {
+    if (Strings.isEmpty(indexno)) return 1;
+    val lastPart = Strings.substringAfterLast(indexno, ".")
+    if (lastPart.isEmpty) Numbers.toInt(indexno) else Numbers.toInt(lastPart)
+  }
+
+  def this(id: Int, name: String) = {
+    this()
+    this.id = id
+    this.name = name
   }
 }

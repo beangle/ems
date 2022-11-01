@@ -22,7 +22,7 @@ import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.session.model.SessionConfig
+import org.beangle.ems.core.security.model.SessionConfig
 import org.beangle.ems.core.user.service.UserService
 
 class ConfigAction extends RestfulAction[SessionConfig] {

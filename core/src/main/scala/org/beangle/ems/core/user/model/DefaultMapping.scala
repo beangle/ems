@@ -57,7 +57,6 @@ object DefaultMapping extends MappingModule {
       e.roles is depends("user")
       e.groups is depends("user")
       e.acounts is depends("user")
-      e.properties is eleLength(2000)
       index("idx_user_code", true, e.org, e.code)
     }
 
@@ -70,13 +69,13 @@ object DefaultMapping extends MappingModule {
       index("idx_password_config", true, e.domain)
     }
 
-    bind[UserCategory].declare { e =>
+    bind[Category].declare { e =>
       e.code.is(length(30), unique)
       e.name is length(100)
       index("idx_user_category", true, e.org, e.name)
     }
 
-    bind[UserProfile].declare { e =>
+    bind[Profile].declare { e =>
       e.properties is eleLength(2000)
       index("idx_user_profile", false, e.user, e.domain)
     }
@@ -87,7 +86,7 @@ object DefaultMapping extends MappingModule {
       e.manager is column("is_manager")
     }
 
-    bind[UserGroup].declare { e =>
+    bind[Group].declare { e =>
       e.getName is length(100)
       e.children is depends("parent")
       e.members is depends("group")

@@ -46,7 +46,7 @@ class DocAction extends ActionSupport with ServletSupport {
 
   def getOqlBuilder(categoryId: Int): OqlBuilder[Doc] = {
     val builder = OqlBuilder.from(classOf[Doc], "doc")
-    builder.join("doc.userCategories", "uc")
+    builder.join("doc.categories", "uc")
     builder.where("uc.id=:categoryId", categoryId)
     val orderBy = get("orderBy").getOrElse("doc.updatedAt desc")
     builder.orderBy(orderBy)

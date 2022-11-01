@@ -20,7 +20,7 @@ package org.beangle.ems.core.config.model
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Enabled, Named}
-import org.beangle.ems.core.user.model.UserCategory
+import org.beangle.ems.core.user.model.Category
 
 import scala.collection.mutable
 
@@ -41,6 +41,6 @@ class Portalet extends IntId with Named with Enabled {
 
   var colspan: Int = _
 
-  var categories: mutable.Set[UserCategory] = Collections.newSet[UserCategory]
+  var categories: mutable.Set[Category] = Collections.newSet[Category]
 
 }

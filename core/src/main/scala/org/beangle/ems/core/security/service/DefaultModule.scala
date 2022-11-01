@@ -27,5 +27,8 @@ class DefaultModule extends BindModule {
     bind(classOf[MenuServiceImpl])
     bind(classOf[ProfileServiceImpl])
     bind(classOf[CategorySessionProfileImpl])
+
+    bind(classOf[LoginEventTracker])
+    bind(classOf[LogoutEventTracker])
   }
 }

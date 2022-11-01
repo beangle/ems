@@ -23,7 +23,7 @@
     [/@]
     [@b.col width="10%" property="app.title" title="应用"/]
     [@b.col width="17%" title="用户类别"]
-      <span style="font-size:0.8em">[#list doc.userCategories as uc]${uc.name}[#if uc_has_next]&nbsp;[/#if][/#list]</span>
+      <span style="font-size:0.8em">[#list doc.categories as uc]${uc.name}[#if uc_has_next]&nbsp;[/#if][/#list]</span>
     [/@]
     [@b.col width="10%" property="uploadBy" title="上传人"]${doc.uploadBy.name}[/@]
     [@b.col width="10%" property="updatedAt" title="上传时间"]${doc.updatedAt?string("yy-MM-dd HH:mm")}[/@]

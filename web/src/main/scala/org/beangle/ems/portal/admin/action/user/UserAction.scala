@@ -43,7 +43,7 @@ class UserAction extends RestfulAction[User] {
   var domainService: DomainService = _
 
   override def indexSetting(): Unit = {
-    put("categories", entityDao.getAll(classOf[UserCategory]))
+    put("categories", entityDao.getAll(classOf[Category]))
   }
 
   override def info(id: String): View = {

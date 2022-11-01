@@ -15,18 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.core.security.model
 
 import org.beangle.data.model.LongId
+import org.beangle.data.model.annotation.log
+import org.beangle.data.model.pojo.{Named, Updated}
 import org.beangle.ems.core.config.model.Domain
-import org.beangle.ems.core.user.model.UserCategory
+import org.beangle.security.session.EventType
 
-class SessionConfig extends LongId {
-  var category: UserCategory = _
+@log
+class SessionEvent extends LongId with Updated with Named {
+
   var domain:Domain=_
-  var ttiMinutes: Int = _
-  var concurrent: Int = _
-  var capacity:Int=_
-  var checkConcurrent: Boolean = _
-  var checkCapacity: Boolean = _
+
+  var eventType: EventType = _
+
+  var principal: String = _
+
+  var username: String = _
+
+  var detail: String = _
+
+  var ip: String = _
 }

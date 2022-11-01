@@ -21,7 +21,7 @@
     [/@]
     [@b.col width="12%" property="app.title" title="应用"/]
     [@b.col width="14%" title="用户类别"]
-      <span style="font-size:0.8em">[#list notice.userCategories?sort_by('code') as uc]${uc.name}[#if uc_has_next]&nbsp;[/#if][/#list]</span>
+      <span style="font-size:0.8em">[#list notice.categories?sort_by('code') as uc]${uc.name}[#if uc_has_next]&nbsp;[/#if][/#list]</span>
     [/@]
     [@b.col width="15%" property="createdAt" title="起草日期"]${notice.operator.name} ${notice.createdAt?string("yy-MM-dd")}[/@]
     [@b.col width="10%" title="有效期"]${notice.beginOn?string("MM-dd")}~${notice.endOn?string("MM-dd")}[/@]

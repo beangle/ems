@@ -23,7 +23,7 @@ import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.{User, UserCategory}
+import org.beangle.ems.core.user.model.{User, Category}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{ignore, param}
@@ -42,21 +42,21 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
   var appService: AppService = _
 
   override protected def indexSetting(): Unit = {
-    put("userCategories", userService.getCategories())
+    put("categories", userService.getCategories())
   }
 
   override protected def getQueryBuilder: OqlBuilder[Doc] = {
     val builder = super.getQueryBuilder
     builder.where("doc.app.domain=:domain", domainService.getDomain)
-    getInt("userCategory.id") foreach { categoryId =>
-      builder.join("doc.userCategories", "uc")
-      builder.where("uc.id=:userCategoryId", categoryId)
+    getInt("category.id") foreach { categoryId =>
+      builder.join("doc.categories", "uc")
+      builder.where("uc.id=:categoryId", categoryId)
     }
     builder
   }
 
   override protected def editSetting(entity: Doc): Unit = {
-    put("userCategories", entityDao.getAll(classOf[UserCategory]))
+    put("categories", entityDao.getAll(classOf[Category]))
     put("apps", appService.getWebapps)
   }
 
@@ -90,8 +90,8 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
   override protected def saveAndRedirect(doc: Doc): View = {
     doc.updatedAt = Instant.now
     doc.uploadBy = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    doc.userCategories.clear()
-    doc.userCategories ++= entityDao.find(classOf[UserCategory], intIds("userCategory"))
+    doc.categories.clear()
+    doc.categories ++= entityDao.find(classOf[Category], intIds("category"))
     getAll("docfile", classOf[Part]) foreach { docFile =>
       docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
     }

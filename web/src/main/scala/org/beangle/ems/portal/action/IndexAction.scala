@@ -98,7 +98,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     get("app").foreach { app =>
       q.where("notice.app.name=:appName", app)
     }
-    q.join("notice.userCategories", "uc")
+    q.join("notice.categories", "uc")
     q.where("uc.id=:categoryId", categoryId)
     q.where("notice.archived=false and notice.status=:status", NoticeStatus.Passed)
     q.where("notice.app.domain=:domain", domainService.getDomain)
@@ -109,7 +109,7 @@ class IndexAction extends ActionSupport with ServletSupport {
 
   private def topDocs(categoryId: Int): Iterable[Doc] = {
     val q = OqlBuilder.from(classOf[Doc], "doc")
-    q.join("doc.userCategories", "uc")
+    q.join("doc.categories", "uc")
     get("app").foreach { app =>
       q.where("doc.app.name=:appName", app)
     }

@@ -78,13 +78,13 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
     if (isManagedBy(manager, user)) {
       val removed = Collections.newBuffer[Entity[_]]
       removed ++= entityDao.findBy(classOf[Account], "user", List(user))
-      removed ++= entityDao.findBy(classOf[UserProfile], "user", List(user))
+      removed ++= entityDao.findBy(classOf[Profile], "user", List(user))
       entityDao.remove(removed, user)
     }
   }
 
-  override def getCategories(): Seq[UserCategory] = {
-    val query = OqlBuilder.from(classOf[UserCategory], "uc")
+  override def getCategories(): Seq[Category] = {
+    val query = OqlBuilder.from(classOf[Category], "uc")
     query.where("uc.org=:org", domainService.getOrg).cacheable()
     entityDao.search(query)
   }

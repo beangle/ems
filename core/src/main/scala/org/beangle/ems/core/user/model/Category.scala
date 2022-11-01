@@ -15,26 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.session.model
+package org.beangle.ems.core.user.model
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.security.session.EventType
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.data.model.IntId
+import org.beangle.data.model.pojo.{Coded, Named, Remark, TemporalOn, Updated}
+import org.beangle.ems.core.config.model.Org
 
-@log
-class SessionEvent extends LongId with Updated with Named {
-
-  var domain:Domain=_
-
-  var eventType: EventType = _
-
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
-  var ip: String = _
+/**
+ * 用户分类
+ * @author chaostone
+ */
+class Category extends IntId with Coded with TemporalOn with Named with Updated with Remark {
+  var enName: String = _
+  var org: Org = _
+  override def toString = {
+    name
+  }
 }
