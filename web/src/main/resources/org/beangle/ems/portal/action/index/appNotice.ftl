@@ -20,7 +20,7 @@
   [@b.card class="card-info card-primary card-outline"]
     [#assign title]<i class="far fa-bell"></i> 通知公告[/#assign]
     [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
-    <a href="${webappBase}/user/notice?notice.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
+    <a href="${b.base}/user/notice?notice.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
     [/@]
     [@b.card_body class="p-0"]
       <div class="table-responsive">
@@ -28,7 +28,7 @@
           <tbody>
           [#list notices as notice]
           <tr>
-            <td><a href="${webappBase}/user/notice/${notice.id}" target="_blank"> ${notice.title}</a></td>
+            <td><a href="${b.base}/user/notice/${notice.id}" target="_blank"> ${notice.title}</a></td>
             <td><span class="text-muted">${notice.updatedAt?string('MM-dd')}</span></td>
           </tr>
           [/#list]
@@ -43,7 +43,7 @@
       [@b.card class="card-info card-primary card-outline"]
         [#assign title]<i class="fas fa-file-pdf"></i> 文档下载[/#assign]
         [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
-        <a href="${webappBase}/user/doc?doc.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
+        <a href="${b.base}/user/doc?doc.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
         [/@]
         [@b.card_body class="p-0"]
           <div class="table-responsive">
@@ -54,7 +54,7 @@
               <tr>
                 <td>
                   <image src="${b.static_url("ems","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
-                  <a href="${webappBase}/user/doc/${doc.id}" target="_blank">${doc.name}</a>
+                  <a href="${b.base}/user/doc/${doc.id}" target="_blank">${doc.name}</a>
                 </td>
                 <td><span class="text-muted">${doc.updatedAt?string('MM-dd')}</span></td>
               </tr>

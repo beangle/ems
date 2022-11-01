@@ -50,7 +50,6 @@ class IndexAction extends ActionSupport with ServletSupport {
     val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     put("notices", topNotices(me.category.id))
     put("user", me)
-    put("webappBase", Ems.portal)
     forward()
   }
 
@@ -58,7 +57,6 @@ class IndexAction extends ActionSupport with ServletSupport {
     val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     put("docs", topDocs(me.category.id))
     put("user", me)
-    put("webappBase", Ems.portal)
     forward()
   }
 
@@ -67,7 +65,6 @@ class IndexAction extends ActionSupport with ServletSupport {
     put("docs", topDocs(me.category.id))
     put("notices", topNotices(me.category.id))
     put("user", me)
-    put("webappBase", Ems.portal)
     forward()
   }
 
