@@ -39,7 +39,7 @@ class SessionModule extends BindModule {
     bind("Serializer.protobuf", protobuf)
     bind("security.SessionRegistry.db", classOf[DBSessionRegistry])
       .constructor(ref("domainProvider"), ?, ref("cache.Caffeine"), protobuf)
-      .property("sessionTable", "ssn.session_infoes")
+      .property("sessionTable", "ems.se_session_infoes")
       .wiredEagerly(false)
 
     bind("security.SessionIdPolicy.ems", classOf[DefaultEmsSessionIdPolicy])

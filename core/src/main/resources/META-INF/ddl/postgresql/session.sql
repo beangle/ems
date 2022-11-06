@@ -1,4 +1,4 @@
-CREATE TABLE ssn.session_infoes
+CREATE TABLE ems.se_session_infoes
 (
     id character varying(200) NOT NULL,
     principal character varying(200),

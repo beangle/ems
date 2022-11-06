@@ -55,7 +55,7 @@ class FileWS extends ActionSupport {
     val exist = apps.head
 
     val query = OqlBuilder.from(classOf[File], "tt")
-    query.where("tt.app=:app and tt.name=:name", exist, name).cacheable()
+    query.where("tt.app=:app and tt.name=:name", exist, name)
     entityDao.search(query).headOption
   }
 

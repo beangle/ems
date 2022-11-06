@@ -84,7 +84,9 @@ object DefaultMapping extends MappingModule {
 
     bind[Portalet]
 
-    bind[File]
+    bind[File].declare { e =>
+      index("", true, e.app, e.name)
+    }
     all.cacheAll()
   }
 
