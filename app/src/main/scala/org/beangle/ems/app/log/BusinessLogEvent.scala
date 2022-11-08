@@ -18,7 +18,6 @@
 package org.beangle.ems.app.log
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
 
 import java.time.Instant
 

@@ -117,7 +117,6 @@ drop schema cfg;
 drop schema log;
 drop schema oa;
 drop schema se;
-drop schema oa;
 drop schema usr;
 drop schema ssn cascade;
 drop schema blb;

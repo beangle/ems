@@ -18,10 +18,12 @@
 package org.beangle.ems.core.log.model
 
 import org.beangle.data.model.LongId
+import org.beangle.data.model.annotation.log
 import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
 
+@log
 class BusinessLog extends LongId {
 
   var app: App = _
