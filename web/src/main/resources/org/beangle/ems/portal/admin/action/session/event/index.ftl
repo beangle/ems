@@ -12,7 +12,7 @@
     [/@]
  </div>
  <div class="search-list">
-   [@b.div id="configlist" href="!search?orderBy=sessionEvent.updatedAt desc"/]
+   [@b.div id="configlist" href="!search?orderBy=sessionEvent.updatedAt desc&beginOn="+beginOn+"&endOn="+endOn/]
  </div>
 </div>
 [@b.foot/]
