@@ -8,8 +8,8 @@ object EmsDepends {
   val webVer = "0.3.5"
   val serializerVer = "0.1.2"
   val cacheVer = "0.1.2"
-  val templateVer = "0.1.2"
-  val webmvcVer = "0.7.0"
+  val templateVer = "0.1.3"
+  val webmvcVer = "0.7.2"
   val securityVer = "4.3.3"
   val idsVer = "0.3.4"
 

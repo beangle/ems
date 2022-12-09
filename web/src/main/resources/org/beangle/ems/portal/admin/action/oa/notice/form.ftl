@@ -10,7 +10,7 @@
   [@b.textfield name="notice.title" label="标题" value=notice.title! required="true" maxlength="100"/]
   [@b.textfield name="notice.issuer" label="发布部门" value=notice.issuer! required="true" maxlength="40"/]
   [@b.select name="notice.app.id" label="应用" value=notice.app option="id,title" required="true" items=apps?sort_by('title')/]
-  [@b.checkboxes name="usecategoryrCategory.id" label="面向用户" value=notice.categories required="true" items=categories/]
+  [@b.checkboxes name="category.id" label="面向用户" value=notice.categories required="true" items=categories/]
   [@b.radios name="notice.sticky" label="是否置顶" value=notice.sticky required="true" /]
   [@b.radios name="notice.popup" label="是否弹窗" value=notice.popup required="true" /]
   [@b.startend label="有效期限" name="notice.beginOn,notice.endOn" required="true,true" start=notice.beginOn end=notice.endOn format="date"/]

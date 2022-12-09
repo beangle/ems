@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+[@b.messages slash="3"/]
 [#assign statusMap={'1':'未读','2':'已读','3':'删除'}/]
 <div class="card card-primary card-outline">
    [@b.form  name="messageListForm" id="messageListForm" action="!sentList"]

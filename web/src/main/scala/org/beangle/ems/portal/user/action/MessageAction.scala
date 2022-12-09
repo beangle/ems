@@ -78,7 +78,7 @@ class MessageAction extends RestfulAction[Message] {
 
   override protected def getQueryBuilder: OqlBuilder[Message] = {
     val builder = super.getQueryBuilder
-    builder.where("message.recipient.code=:me", Securities.user)
+    builder.where("message.recipient.code = :me", Securities.user)
     builder
   }
 
@@ -99,7 +99,8 @@ class MessageAction extends RestfulAction[Message] {
       msg.sentAt = Instant.now
     }
     msg.status = Message.Newly
-    super.saveAndRedirect(msg)
+    saveOrUpdate(msg)
+    redirect("sentList", "info.save.success")
   }
 
   def moveToTrash(): View = {

@@ -54,7 +54,8 @@ lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(commonsCore, idsWeb, webmvcSupport,  webmvcView, dataOrm)
+    libraryDependencies ++= Seq(commonsCore, idsWeb, webmvcSupport, webmvcView),
+    libraryDependencies ++= Seq(dataOrm, dataTransfer)
   ).dependsOn(core, app)
 
 lazy val cas = (project in file("cas"))
@@ -85,7 +86,7 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= appDepends
+    libraryDependencies ++= appDepends,
   ).dependsOn(web, app, core)
 
 lazy val index = (project in file("index"))
