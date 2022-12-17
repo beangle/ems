@@ -1,8 +1,5 @@
 [#ftl]
 [@b.head/]
-<script type="text/javascript">
-  beangle.load(["bui-tabletree"]);
-</script>
 [#assign labInfo][#if user.persisted]${b.text("action.modify")}[#else]${b.text("action.new")}[/#if] ${b.text("entity.user")}[/#assign]
 [@b.toolbar title="修改用户角色"]bar.addBack("${b.text("action.back")}");[/@]
 [@b.messages/]

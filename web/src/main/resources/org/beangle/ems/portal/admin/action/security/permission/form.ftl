@@ -2,9 +2,6 @@
 [@b.head/]
 [#include "../status.ftl"/]
 <script type="text/javascript">
-  beangle.load(["bui-tabletree"]);
-</script>
-<script type="text/javascript">
   function getIds(){
     return(getCheckBoxValue(document.getElementsByName("menuId")));
   }
@@ -33,8 +30,8 @@
 <td valign="top">
 [@b.toolbar]
   bar.setTitle('角色-->菜单和资源权限');
-  bar.addItem("${b.text("action.spread")}","bg.tabletree.displayAllRowsFor('meunPermissionTable',1);",'tree-folder');
-  bar.addItem("${b.text("action.collapse")}","bg.tabletree.collapseAllRowsFor('meunPermissionTable',1);",'tree-folder-open');
+  bar.addItem("${b.text("action.spread")}","bui.tabletree.displayAllRowsFor('meunPermissionTable',1);",'tree-folder');
+  bar.addItem("${b.text("action.collapse")}","bui.tabletree.collapseAllRowsFor('meunPermissionTable',1);",'tree-folder-open');
   bar.addItem("${b.text("action.save")}",save,'save.png');
   function switchRole(form,roleId){
     form.action="${b.base}/admin/security/permission/{roleId}/edit".replace("{roleId}",roleId)
@@ -65,7 +62,7 @@
 <table width="100%" class="gridtable"  id="meunPermissionTable" style="border:solid 1px">
   <tbody>
   <tr class="gridhead">
-  <th width="6%" class="gridselect"><input type="checkbox" onclick="bg.tabletree.selectAll(this,checkResource)"/></th>
+  <th width="6%" class="gridselect"><input type="checkbox" onclick="bui.tabletree.selectAll(this,checkResource)"/></th>
   <th width="28%">${b.text("common.name")}</th>
   <th width="50%">可用资源</th>
   <th width="6%">${b.text("common.status")}</th>
@@ -74,14 +71,14 @@
 
   <tr class="grayStyle [#if !menu.enabled]ui-disabled[/#if]" id="${menu.indexno}">
     <td  class="gridselect">
-      <input type="checkbox" id="checkbox_${menu_index}" onclick="bg.tabletree.select(this,checkResource)"  name="menuId" [#if parentMenus?seq_contains(menu)]checked="checked" disabled="disabled"[#else][#if (roleMenus?seq_contains(menu))]checked="checked"[/#if][/#if] value="${menu.id}">
+      <input type="checkbox" id="checkbox_${menu_index}" onclick="bui.tabletree.select(this,checkResource)"  name="menuId" [#if parentMenus?seq_contains(menu)]checked="checked" disabled="disabled"[#else][#if (roleMenus?seq_contains(menu))]checked="checked"[/#if][/#if] value="${menu.id}">
     </td>
     <td>
     <div class="tree-tier${menu.depth}">
       [#if menu.children?size==0]
       <a href="#" class="tree-item"></a>[#rt]
       [#else]
-      <a href="#" class="tree-folder-open" id="${menu.indexno}_folder" onclick="bg.tabletree.toggle(this);"></a>[#rt]
+      <a href="#" class="tree-folder-open" id="${menu.indexno}_folder" onclick="bui.tabletree.toggle(this);"></a>[#rt]
       [/#if]
       &nbsp;${menu.indexno} ${menu.name}
     </div>

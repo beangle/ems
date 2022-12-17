@@ -1,8 +1,5 @@
 [#ftl]
 [@b.head/]
-<script type="text/javascript">
-  beangle.load(["bui-tabletree"]);
-</script>
 [#include "../status.ftl"/]
 [@b.grid  items=menus var="menu" sortable="false"]
 [@b.gridbar title="菜单列表"]

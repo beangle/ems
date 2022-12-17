@@ -1,9 +1,6 @@
 [#ftl]
 [@b.head/]
 [@b.toolbar title="修改用户"]bar.addBack("${b.text("action.back")}");[/@]
-<script type="text/javascript">
-  beangle.load(["bui-tabletree"]);
-</script>
 [@b.messages/]
 [@b.tabs id="userinfotabs"]
   [@b.tab label="账户信息"]
