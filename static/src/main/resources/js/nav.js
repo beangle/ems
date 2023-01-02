@@ -616,7 +616,7 @@
     changeNavSidebarTheme(getLocal("beangle.ems.nav_sidebar_theme","--"));
     changeFontSize(getLocal("beangle.ems.root_font_size","--"));
     jQuery("#page_size_selector").on("change",function(event){
-       beangle.createCookie("pageSize",this.value,100);
+      beangle.cookie.set("pageSize",this.value,"/",100);
     });
     jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
     jQuery(document).ready(restoreNav);
