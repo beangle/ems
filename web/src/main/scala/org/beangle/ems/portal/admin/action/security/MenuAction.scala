@@ -49,7 +49,7 @@ class MenuAction extends RestfulAction[Menu] {
     val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
     val domain = domainService.getDomain
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
-      put("remoteMenuURL", url + s"/api/${profile}/menus/${app.name}.xml")
+      put("remoteMenuURL", url + s"/api/${profile}/ems/menus/${app.name}.xml")
     }
     super.search()
     forward()
@@ -188,7 +188,7 @@ class MenuAction extends RestfulAction[Menu] {
     val domain = domainService.getDomain
     val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
-      val remoteUrl = url + s"/api/${profile}/menus/${app.name}.xml"
+      val remoteUrl = url + s"/api/${profile}/ems/menus/${app.name}.xml"
       put("remoteMenuURL", remoteUrl)
       val res = HttpUtils.getText(remoteUrl)
       put("remoteContent", res.getText)
@@ -202,7 +202,7 @@ class MenuAction extends RestfulAction[Menu] {
     val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
     var remoteUrl: Option[String] = None
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
-      remoteUrl = Some(url + s"/api/${profile}/menus/${app.name}.xml")
+      remoteUrl = Some(url + s"/api/${profile}/ems/menus/${app.name}.xml")
     }
     remoteUrl foreach { rl =>
       menuService.importFrom(app, scala.xml.XML.load(new URL(rl).openConnection().getInputStream))
