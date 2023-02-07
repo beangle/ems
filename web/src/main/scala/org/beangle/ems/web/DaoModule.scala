@@ -31,7 +31,6 @@ object DaoModule extends BindModule {
     wiredEagerly(false)
     bind("DataSource.default", classOf[AppDataSourceFactory])
 
-
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("devMode",devEnabled)
       .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
