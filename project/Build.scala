@@ -2,16 +2,16 @@ import org.beangle.parent.Dependencies._
 import sbt._
 
 object EmsDepends {
-  val commonsVer = "5.4.2"
-  val dataVer = "5.5.6"
-  val cdiVer = "0.4.2"
-  val webVer = "0.3.5"
-  val serializerVer = "0.1.2"
-  val cacheVer = "0.1.2"
-  val templateVer = "0.1.3"
-  val webmvcVer = "0.8.1"
-  val securityVer = "4.3.3"
-  val idsVer = "0.3.4"
+  val commonsVer = "5.5.0"
+  val dataVer = "5.6.0"
+  val cdiVer = "0.5.0"
+  val webVer = "0.3.6"
+  val serializerVer = "0.1.3"
+  val cacheVer = "0.1.3"
+  val templateVer = "0.1.4"
+  val webmvcVer = "0.8.2"
+  val securityVer = "4.3.4"
+  val idsVer = "0.3.5"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -37,7 +37,7 @@ object EmsDepends {
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
 
-  val caffeine_jcache = "com.github.ben-manes.caffeine" % "jcache" % "3.1.1" exclude("org.osgi", "org.osgi.service.component.annotations") exclude("javax.inject", "javax.inject")
+  val caffeine_jcache = "com.github.ben-manes.caffeine" % "jcache" % "3.1.2" exclude("org.osgi", "org.osgi.service.component.annotations") exclude("javax.inject", "javax.inject")
 
   val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securityCas, templateApi) ++

@@ -20,7 +20,7 @@ package org.beangle.ems.ws.log
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.logging.Logging
 import org.beangle.data.dao.EntityDao
-import org.beangle.data.orm.hibernate.spring.SessionUtils
+import org.beangle.data.orm.hibernate.SessionHelper
 import org.beangle.ems.app.log.BusinessLogProto.BusinessLogEvent
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.AppService
@@ -66,7 +66,7 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
   }
 
   private def persist(events: ju.ArrayList[BusinessLogEvent]): Unit = {
-    SessionUtils.enableBinding(sf)
+    SessionHelper.openSession(sf)
     try {
       val logs = new mutable.ArrayBuffer[BusinessLog]
       val iter = events.iterator()
@@ -86,8 +86,7 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
       }
       entityDao.saveOrUpdate(logs)
     } finally {
-      SessionUtils.disableBinding(sf)
-      SessionUtils.closeSession(sf)
+      SessionHelper.closeSession(sf)
     }
   }
 

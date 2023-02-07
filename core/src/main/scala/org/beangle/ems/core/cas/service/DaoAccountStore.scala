@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.cas.service
 
-import org.beangle.data.orm.hibernate.spring.SessionUtils
+import org.beangle.data.orm.hibernate.SessionHelper
 import org.beangle.ems.core.user.service.AccountService
 import org.beangle.security.authc.{Account, AccountStore}
 import org.hibernate.SessionFactory
@@ -25,12 +25,11 @@ import org.hibernate.SessionFactory
 class DaoAccountStore(accountService: AccountService, sf: SessionFactory) extends AccountStore {
 
   def load(principal: Any): Option[Account] = {
-    SessionUtils.enableBinding(sf)
+    SessionHelper.openSession(sf)
     try {
       accountService.getAuthAccount(principal.toString)
     } finally {
-      SessionUtils.disableBinding(sf)
-      SessionUtils.closeSession(sf)
+      SessionHelper.closeSession(sf)
     }
   }
 }
