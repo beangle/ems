@@ -102,7 +102,7 @@ object DefaultMapping extends MappingModule {
 
     bind[Root]
 
-    all.except(classOf[RoleMember], classOf[GroupMember], classOf[User]).cacheAll()
+    all.except(classOf[RoleMember], classOf[GroupMember], classOf[User], classOf[Profile]).cacheAll()
   }
 
 }
