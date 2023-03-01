@@ -7,10 +7,16 @@
       <interceptor name="web.Interceptor.hibernate"/>
     </interceptors>
   </profile>
-  <profile name="beangle.cas" package="org.beangle.ids.cas.web.action">
+  <profile name="beangle.ids.action" package="org.beangle.ids.cas.web.action">
     <url path="/" suffix="" style="seo" />
     <interceptors>
       <interceptor name="web.Interceptor.security" />
+      <interceptor name="web.Interceptor.hibernate" />
+    </interceptors>
+  </profile>
+  <profile name="beangle.ids.ws" package="org.beangle.ids.cas.web.ws">
+    <url path="/" suffix="" style="seo" />
+    <interceptors>
       <interceptor name="web.Interceptor.hibernate" />
     </interceptors>
   </profile>

@@ -20,7 +20,8 @@ package org.beangle.ems.cas
 import org.beangle.cdi.bind.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ems.cas.action.EditAction
-import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction, ServiceValidateAction, SessionAction}
+import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction}
+import org.beangle.ids.cas.web.ws.{ServiceValidateAction, SessionAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper
 
 class DefaultModule extends BindModule {
