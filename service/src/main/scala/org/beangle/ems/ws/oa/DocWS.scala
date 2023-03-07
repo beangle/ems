@@ -26,13 +26,13 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice}
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, EntitySupport, ServletSupport}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Status, Stream, View}
 
 import java.io.File
 import java.time.LocalDate
 
-class DocWS(entityDao: EntityDao) extends ActionSupport, EntitySupport[Doc], ServletSupport {
+class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   var domainService: DomainService = _
 
@@ -81,7 +81,7 @@ class DocWS(entityDao: EntityDao) extends ActionSupport, EntitySupport[Doc], Ser
   private def convert(docs: Iterable[Doc]): JsonAPI.Json = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
-    context.filters.include(classOf[Doc], "id", "name", "updatedAt","url")
+    context.filters.include(classOf[Doc], "id", "name", "updatedAt", "url")
     val resources = docs.map { g => JsonAPI.create(g, "") }
     JsonAPI.newJson(resources)
   }

@@ -43,7 +43,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   }
 
   def archive(): View = {
-    val notices = entityDao.find(classOf[Notice], longIds("notice"))
+    val notices = entityDao.find(classOf[Notice], getLongIds("notice"))
     val archived = getBoolean("archived", true)
     notices foreach { notice =>
       if (notice.status == NoticeStatus.Passed) {
@@ -78,7 +78,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   }
 
   def audit(): View = {
-    val notices = entityDao.find(classOf[Notice], longIds("notice"))
+    val notices = entityDao.find(classOf[Notice], getLongIds("notice"))
     val passed = getBoolean("passed", defaultValue = false)
     val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notices foreach { notice =>

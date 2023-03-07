@@ -25,12 +25,12 @@ import org.beangle.ems.core.security.model.FuncPermission
 import org.beangle.ems.core.user.model.{Root, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
+import org.beangle.web.action.support.ActionSupport
 
 /**
  * @author chaostone
  */
-class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSupport with EntitySupport[User] {
+class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
   var domainService: DomainService = _

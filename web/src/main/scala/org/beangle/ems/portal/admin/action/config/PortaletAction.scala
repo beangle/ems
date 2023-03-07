@@ -35,7 +35,7 @@ class PortaletAction extends RestfulAction[Portalet] {
   }
 
   override protected def saveAndRedirect(p: Portalet): View = {
-    val categories = entityDao.find(classOf[Category], intIds("category"))
+    val categories = entityDao.find(classOf[Category], getIntIds("category"))
     p.categories.clear()
     p.categories.addAll(categories)
     if (!p.url.startsWith("http") && !p.url.startsWith("/")) p.url = "http://" + p.url

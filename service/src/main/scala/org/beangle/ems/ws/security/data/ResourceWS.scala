@@ -19,12 +19,12 @@ package org.beangle.ems.ws.security.data
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{param, response}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.DataResource
+import org.beangle.web.action.annotation.{param, response}
+import org.beangle.web.action.support.ActionSupport
 
-class ResourceWS extends ActionSupport with EntitySupport[DataResource] {
+class ResourceWS extends ActionSupport {
 
   var entityDao: EntityDao = _
 

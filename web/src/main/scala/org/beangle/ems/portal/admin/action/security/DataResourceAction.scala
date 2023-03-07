@@ -37,7 +37,7 @@ class DataResourceAction extends RestfulAction[DataResource] {
    * 禁用或激活一个或多个模块
    */
   def activate(): View = {
-    val resourceIds = intIds("resource")
+    val resourceIds = getIntIds("resource")
     val enabled = getBoolean("enabled", defaultValue = false)
     dataSourceManager.activate(resourceIds, enabled.booleanValue())
     redirect("search", "info.save.success")

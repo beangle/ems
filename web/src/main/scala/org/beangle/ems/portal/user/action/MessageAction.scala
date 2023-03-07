@@ -104,7 +104,7 @@ class MessageAction extends RestfulAction[Message] {
   }
 
   def moveToTrash(): View = {
-    val ids = longIds("message")
+    val ids = getLongIds("message")
     val msgs = entityDao.find(classOf[Message], ids)
     val me = Securities.user
     msgs foreach { msg =>

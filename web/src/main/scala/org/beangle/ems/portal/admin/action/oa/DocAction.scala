@@ -91,7 +91,7 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
     doc.updatedAt = Instant.now
     doc.uploadBy = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     doc.categories.clear()
-    doc.categories ++= entityDao.find(classOf[Category], intIds("category"))
+    doc.categories ++= entityDao.find(classOf[Category], getIntId("category"))
     getAll("docfile", classOf[Part]) foreach { docFile =>
       docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
     }

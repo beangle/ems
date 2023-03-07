@@ -46,7 +46,7 @@ class ProfileAction extends RestfulAction[Profile] {
   }
 
   override def saveAndRedirect(entity: Profile): View = {
-    val ids = intIds("app")
+    val ids = getIntIds("app")
     if (ids.isEmpty) {
       entity.users = None
     } else {

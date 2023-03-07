@@ -23,14 +23,14 @@ import org.beangle.ems.app.log.BusinessLogProto
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.support.{ActionSupport, EntitySupport, ServletSupport}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Status, View}
 import org.hibernate.SessionFactory
 
 import java.io.InputStream
 import java.time.Instant
 
-class PushWS extends ActionSupport with EntitySupport[BusinessLog] with ServletSupport with Initializing with Disposable {
+class PushWS extends ActionSupport with ServletSupport with Initializing with Disposable {
 
   var appService: AppService = _
 

@@ -18,15 +18,15 @@
 package org.beangle.ems.ws.user
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{param, response}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Root, User}
+import org.beangle.web.action.annotation.{param, response}
+import org.beangle.web.action.support.ActionSupport
 
 /**
  * @author chaostone
  */
-class RootWS(domainService: DomainService, entityDao: EntityDao) extends ActionSupport with EntitySupport[User] {
+class RootWS(domainService: DomainService, entityDao: EntityDao) extends ActionSupport {
 
   @response
   def index(@param("app") app: String): Seq[String] = {

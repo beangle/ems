@@ -22,7 +22,7 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.web.action.annotation.{action, mapping, param}
-import org.beangle.web.action.support.{ActionSupport, EntitySupport, ServletSupport}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Status, View}
 
 @action("list/{appName}")
@@ -39,7 +39,7 @@ class ListWS extends ActionSupport {
         query.where("log.app=:app", app)
         query.where("log.resources=:resourceId", resourceId)
         val logs = entityDao.search(query)
-        val sorted=logs.sortBy(_.operateAt).reverse
+        val sorted = logs.sortBy(_.operateAt).reverse
         sorted.map(log => new Properties(log, "id", "operator", "operateAt", "summary", "agent", "ip"))
     }
   }

@@ -45,7 +45,7 @@ class DbAction extends RestfulAction[Db] {
 
   def testSetting(): View = {
     val entityType = entityDao.domain.getEntity(entityClass).get
-    val entities = getModels[Db](entityType, ids(simpleEntityName, entityType.id.clazz))
+    val entities = getModels[Db](entityType, getIds(simpleEntityName, entityType.id.clazz))
     put("credentials", entityDao.getAll(classOf[Credential]))
     put("datasource", entities.head)
     forward()
@@ -75,13 +75,13 @@ class DbAction extends RestfulAction[Db] {
     var password = get("password", "")
     put("credentials", credentialService.getAll())
     val entityType = entityDao.domain.getEntity(entityClass).get
-    val entities = getModels[Db](entityType, ids(simpleEntityName, entityType.id.clazz))
+    val entities = getModels[Db](entityType, getIds(simpleEntityName, entityType.id.clazz))
     val cfg = entities.head
 
     val useCredential = getBoolean("use_credential", false)
     try {
       if (useCredential) {
-        val credential = entityDao.get(classOf[Credential], intId("credential"))
+        val credential = entityDao.get(classOf[Credential], getIntId("credential"))
         val key = get("key").orNull
         username = credential.username
         password = new AesEncryptor(key).decrypt(credential.password)

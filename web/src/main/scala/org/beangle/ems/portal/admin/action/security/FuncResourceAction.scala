@@ -43,7 +43,7 @@ class FuncResourceAction extends RestfulAction[FuncResource] {
    * 禁用或激活一个或多个模块
    */
   def activate(): View = {
-    val resourceIds = intIds("resource")
+    val resourceIds = getIntIds("resource")
     val enabled = getBoolean("enabled", defaultValue = false)
     funcPermissionService.activate(resourceIds, enabled)
     redirect("search", "info.save.success")

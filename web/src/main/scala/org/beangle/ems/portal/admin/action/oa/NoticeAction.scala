@@ -89,7 +89,7 @@ class NoticeAction extends RestfulAction[Notice] {
     }
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notice.categories.clear()
-    notice.categories ++= entityDao.find(classOf[Category], intIds("category"))
+    notice.categories ++= entityDao.find(classOf[Category], getIntIds("category"))
     val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf")
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>

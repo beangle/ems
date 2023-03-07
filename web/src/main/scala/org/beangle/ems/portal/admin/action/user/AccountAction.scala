@@ -57,7 +57,7 @@ class AccountAction extends RestfulAction[Account]  {
   }
 
   def saveRole(): View = {
-    val user = entityDao.get(classOf[User], longId("user"))
+    val user = entityDao.get(classOf[User], getLongId("user"))
     val userMembers = user.roles
     val memberMap = new collection.mutable.HashMap[Role, RoleMember]
     for (gm <- userMembers) {
@@ -115,7 +115,7 @@ class AccountAction extends RestfulAction[Account]  {
    * 删除一个或多个用户
    */
   override def remove(): View = {
-    val accountIds = longIds("account")
+    val accountIds = getLongIds("account")
     val creator = loginUser
     val toBeRemoved = entityDao.find(classOf[Account], accountIds)
     val sb = new StringBuilder()
@@ -155,7 +155,7 @@ class AccountAction extends RestfulAction[Account]  {
    * 禁用或激活一个或多个用户
    */
   def activate(): View = {
-    val accountIds = longIds("account")
+    val accountIds = getLongIds("account")
     val isActivate = get("isActivate", "true")
     var successCnt: Int = 0
     val manager = loginUser

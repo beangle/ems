@@ -138,9 +138,9 @@ class PermissionAction extends RestfulAction[FuncPermission] {
    * 保存模块级权限
    */
   override def save(): View = {
-    val role = entityDao.get(classOf[Role], intId("role"))
-    val app = entityDao.get(classOf[App], intId("app"))
-    val newResources = entityDao.findBy(classOf[FuncResource], "id", intIds("resource")).toSet
+    val role = entityDao.get(classOf[Role], getIntId("role"))
+    val app = entityDao.get(classOf[App], getIntId("app"))
+    val newResources = entityDao.findBy(classOf[FuncResource], "id", getIntIds("resource")).toSet
 
     // 管理员拥有的菜单权限和系统资源
     val manager = entityDao.findBy(classOf[User], "code", List(Securities.user)).head

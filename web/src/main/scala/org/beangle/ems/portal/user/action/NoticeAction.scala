@@ -19,7 +19,7 @@ package org.beangle.ems.portal.user.action
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.security.Securities
-import org.beangle.web.action.support.{ActionSupport, EntitySupport, ParamSupport}
+import org.beangle.web.action.support.{ActionSupport, ParamSupport}
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.context.Params
 import org.beangle.web.action.view.View

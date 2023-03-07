@@ -24,9 +24,9 @@ import org.beangle.ems.core.config.model.DataSource
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
+import org.beangle.web.action.support.ActionSupport
 
-class DatasourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[DataSource] {
+class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
 

@@ -26,13 +26,14 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, EntitySupport, JsonAPISupport}
+import org.beangle.web.action.support.{ActionSupport, JsonAPISupport}
 import org.beangle.web.servlet.url.UrlBuilder
+import org.beangle.webmvc.action.EntitySupport
 import org.beangle.webmvc.execution.MappingHandler
 
 import java.time.LocalDate
 
-class NoticeWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[Notice] with JsonAPISupport {
+class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
 
   var domainService: DomainService = _
 

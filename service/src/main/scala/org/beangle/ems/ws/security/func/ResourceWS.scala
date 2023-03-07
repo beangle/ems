@@ -19,23 +19,23 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.security.authz.Scope
-import org.beangle.web.action.support.{ActionSupport, EntitySupport}
-import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
+import org.beangle.security.authz.Scope
+import org.beangle.web.action.annotation.{mapping, param, response}
+import org.beangle.web.action.support.ActionSupport
 
 /**
  * 系统功能资源web服务
  */
-class ResourceWS(entityDao: EntityDao) extends ActionSupport with EntitySupport[FuncResource] {
+class ResourceWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
 
   @response
   def index(@param("app") appName: String): Seq[Any] = {
     val appResult = appService.getApp(appName)
-    if(appResult.isEmpty){
+    if (appResult.isEmpty) {
       return List.empty
     }
     val app = appResult.head
