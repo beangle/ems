@@ -29,7 +29,7 @@ import org.beangle.ems.core.user.service.{DataResolver, DimensionService, RoleSe
 import org.beangle.ems.portal.admin.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.time.Instant
 
@@ -38,7 +38,7 @@ import java.time.Instant
  *
  * @author chaostone 2005-9-29
  */
-class RoleAction(val roleService: RoleService, val userService: UserService) extends RestfulAction[Role] {
+class RoleAction(val roleService: RoleService, val userService: UserService) extends RestfulAction[Role], ExportSupport[Role] {
 
   var dataResolver: DataResolver = CsvDataResolver
   var domainService: DomainService = _
@@ -92,7 +92,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
         return redirect("search", "不能修改该组,你没有" + role.parent.map(p => p.name).orNull + "的管理权限")
       }
     }
-    if  entityDao.duplicate(classOf[Role], role.id, Map("name" -> role.getName)) then return redirect("edit", "error.notUnique")
+    if entityDao.duplicate(classOf[Role], role.id, Map("name" -> role.getName)) then return redirect("edit", "error.notUnique")
     if (!role.persisted) {
       role.indexno = "tmp"
       roleService.create(me, role)

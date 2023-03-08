@@ -28,7 +28,6 @@ import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, JsonAPISupport}
 import org.beangle.web.servlet.url.UrlBuilder
-import org.beangle.webmvc.action.EntitySupport
 import org.beangle.webmvc.execution.MappingHandler
 
 import java.time.LocalDate
