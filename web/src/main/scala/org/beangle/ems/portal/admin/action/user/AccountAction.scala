@@ -31,7 +31,7 @@ import org.beangle.security.codec.DefaultPasswordEncoder
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.view.View
 import org.beangle.web.servlet.util.RequestUtils
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.time.Instant
 
@@ -40,7 +40,7 @@ import java.time.Instant
  *
  * @author chaostone 2005-9-29
  */
-class AccountAction extends RestfulAction[Account]  {
+class AccountAction extends RestfulAction[Account], ExportSupport[Account] {
 
   var userService: UserService = _
 

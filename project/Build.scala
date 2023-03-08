@@ -5,11 +5,11 @@ object EmsDepends {
   val commonsVer = "5.5.0"
   val dataVer = "5.6.5"
   val cdiVer = "0.5.2"
-  val webVer = "0.4.0"
+  val webVer = "0.4.1"
   val serializerVer = "0.1.3"
   val cacheVer = "0.1.3"
   val templateVer = "0.1.4"
-  val webmvcVer = "0.9.0"
+  val webmvcVer = "0.9.1"
   val securityVer = "4.3.6"
   val idsVer = "0.3.8"
 

@@ -28,9 +28,9 @@ import org.beangle.security.Securities
 import org.beangle.web.action.annotation.mapping
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
-class FileAction extends RestfulAction[File] {
+class FileAction extends RestfulAction[File], ExportSupport[File] {
 
   var domainService: DomainService = _
   var appService: AppService = _

@@ -26,14 +26,14 @@ import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.security.authz.Scope
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 /**
  * 系统模块管理响应类
  *
  * @author chaostone 2005-10-9
  */
-class FuncResourceAction extends RestfulAction[FuncResource] {
+class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource] {
 
   var funcPermissionService: FuncPermissionService = _
   var appService: AppService = _

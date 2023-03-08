@@ -18,13 +18,13 @@
 package org.beangle.ems.portal.admin.action.log
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.{BusinessLog, Level}
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.ems.core.oa.model.Doc
+import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.support.helper.QueryHelper
 
-class BusinessAction extends RestfulAction[BusinessLog] {
+class BusinessAction extends RestfulAction[BusinessLog], ExportSupport[BusinessLog] {
 
   var appService: AppService = _
 
