@@ -29,7 +29,8 @@ import org.beangle.security.Securities
 import org.beangle.web.action.annotation.mapping
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.View
+import org.beangle.web.action.view.{Status, View}
+import org.beangle.web.servlet.url.UrlBuilder
 
 import scala.collection.mutable
 
@@ -134,5 +135,21 @@ class IndexAction extends ActionSupport with ServletSupport {
 
   def logout(): View = {
     redirect(to(Ems.cas + "/logout"), null)
+  }
+
+  def redirect(): View = {
+    get("url") match
+      case Some(url) =>
+        get("target") match
+          case Some(target) =>
+            put("url", url)
+            put("target", target)
+            forward()
+          case _ =>
+            val builder = UrlBuilder(ActionContext.current.request)
+            builder.setRequestURI(url)
+            builder.setContextPath("").setPathInfo(null).setQueryString(null)
+            redirect(to(builder.buildUrl()), "")
+      case None => Status.NotFound
   }
 }

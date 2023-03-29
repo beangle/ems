@@ -7,6 +7,7 @@
     [@b.textfield name="appGroup.name" label="名称" value=appGroup.name! required="true" maxlength="200"/]
     [@b.textfield name="appGroup.title" label="标题" value=appGroup.title! required="true" maxlength="200"/]
     [@b.textfield name="appGroup.enTitle" label="英文标题" value=appGroup.enTitle! required="true" maxlength="200"/]
+    [@b.textfield name="appGroup.shortTitle" label="简称" value=appGroup.shortTitle! required="true" maxlength="50"/]
     [@b.formfoot]
       [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
     [/@]
