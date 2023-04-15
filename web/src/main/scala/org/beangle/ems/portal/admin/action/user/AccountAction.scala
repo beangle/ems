@@ -192,6 +192,9 @@ class AccountAction extends RestfulAction[Account], ExportSupport[Account] {
       roleCondition.params(params)
       accQuery.where(roleCondition)
     }
+    getBoolean("hasAvatar") foreach { hasAvatar =>
+      accQuery.where((if (hasAvatar) "" else " not ") + s"exists(from ${classOf[Avatar].getName} avatar where avatar.user=account.user)")
+    }
     populateConditions(accQuery)
     accQuery.tailOrder("account.id")
     accQuery.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)

@@ -17,22 +17,21 @@
 
 package org.beangle.ems.portal.admin.action.user
 
-import java.io._
-
 import jakarta.servlet.http.Part
 import org.apache.commons.compress.archivers.zip.ZipFile
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.{Strings, SystemInfo, Throwables}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.view.{Status, View}
-import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.AvatarService
+import org.beangle.web.action.annotation.{mapping, param}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
+import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.support.helper.QueryHelper
 
+import java.io.*
 import scala.jdk.javaapi.CollectionConverters.asScala
 
 class AvatarAction extends ActionSupport with ServletSupport {
@@ -48,7 +47,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
       query.where("user.code like :u or user.name like :u", "%" + u + "%")
     }
     query.where("user.avatarId is not null")
-    query.limit(QueryHelper.pageLimit)
+    query.limit(QueryHelper.pageIndex, 50)
     query.orderBy("user.code")
     put("users", entityDao.search(query))
     forward()
@@ -137,11 +136,12 @@ class AvatarAction extends ActionSupport with ServletSupport {
             logger.warn(photoname + " format is error")
           } else {
             val usercode = Strings.substringBeforeLast(photoname, ".")
-            val users = entityDao.findBy(classOf[User], "code", List(usercode))
+            val query = OqlBuilder.from(classOf[User], "u")
+            query.where("lower(u.code)=:code", usercode.toLowerCase)
+            val users = entityDao.search(query)
             if (users.isEmpty) {
               logger.warn("Cannot find user info of " + usercode)
             } else {
-              val user = users.head
               avatarService.save(users.head, photoname, file.getInputStream(ze))
             }
           }
