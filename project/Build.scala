@@ -1,10 +1,10 @@
-import org.beangle.parent.Dependencies._
-import sbt._
+import org.beangle.parent.Dependencies.*
+import sbt.*
 
 object EmsDepends {
   val commonsVer = "5.5.0"
-  val dataVer = "5.6.10"
-  val cdiVer = "0.5.2"
+  val dataVer = "5.6.11"
+  val cdiVer = "0.5.3"
   val webVer = "0.4.1"
   val serializerVer = "0.1.3"
   val cacheVer = "0.1.3"
@@ -37,9 +37,9 @@ object EmsDepends {
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
 
-  val caffeine_jcache = "com.github.ben-manes.caffeine" % "jcache" % "3.1.2" exclude("org.osgi", "org.osgi.service.component.annotations") exclude("javax.inject", "javax.inject")
+  val caffeine_jcache = "com.github.ben-manes.caffeine" % "jcache" % "3.1.6" exclude("org.osgi", "org.osgi.service.component.annotations") exclude("javax.inject", "javax.inject")
 
-  val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, gson, HikariCP) ++
+  val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, cdiSpring, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securityCas, templateApi) ++
     Seq(postgresql, caffeine_jcache, hibernate_jcache)
 }
