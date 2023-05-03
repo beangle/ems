@@ -2,14 +2,14 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.5.0"
-  val dataVer = "5.6.11"
+  val commonsVer = "5.5.1"
+  val dataVer = "5.6.12"
   val cdiVer = "0.5.3"
   val webVer = "0.4.1"
   val serializerVer = "0.1.3"
   val cacheVer = "0.1.3"
   val templateVer = "0.1.4"
-  val webmvcVer = "0.9.1"
+  val webmvcVer = "0.9.2"
   val securityVer = "4.3.6"
   val idsVer = "0.3.8"
 
@@ -36,8 +36,6 @@ object EmsDepends {
   val securityCas = "org.beangle.security" %% "beangle-security-cas" % securityVer
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
-
-  val caffeine_jcache = "com.github.ben-manes.caffeine" % "jcache" % "3.1.6" exclude("org.osgi", "org.osgi.service.component.annotations") exclude("javax.inject", "javax.inject")
 
   val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, cdiSpring, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securityCas, templateApi) ++
