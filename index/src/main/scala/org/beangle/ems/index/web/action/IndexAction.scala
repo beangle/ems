@@ -18,14 +18,14 @@
 package org.beangle.ems.index.web.action
 
 import org.beangle.ems.app.Ems
-import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.annotation.mapping
+import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.view.View
 
 class IndexAction extends ActionSupport {
 
   @mapping("")
   def index(): View = {
-    redirect(to(Ems.portal), "")
+    redirect(to(Ems.index), "")
   }
 }

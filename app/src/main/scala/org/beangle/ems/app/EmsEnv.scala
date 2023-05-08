@@ -60,6 +60,8 @@ final class EmsEnv(val home: String, val properties: Map[String, String]) extend
 
   val portal = readBase("portal", "{base}/portal")
 
+  val index = readBase("index", "{base}/portal")
+
   val api = readBase("api", "{base}/api")
 
   var blob = readBase("blob", "{base}/blob")

@@ -67,13 +67,11 @@ object Ems extends Logging {
     cas.endsWith(contextPath) || (api + "/platform").endsWith(contextPath) || portal.endsWith(contextPath)
   }
 
-  def cas: String = {
-    env.cas
-  }
+  def cas: String = env.cas
 
-  def portal: String = {
-    env.portal
-  }
+  def portal: String = env.portal
+
+  def index: String = env.index
 
   def api: String = {
     env.api
