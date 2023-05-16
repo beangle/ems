@@ -20,7 +20,7 @@ package org.beangle.ems.portal.admin.action.config
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.{Strings, Throwables}
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.jdbc.engine.Drivers
+import org.beangle.data.jdbc.engine.{Drivers, UrlFormat}
 import org.beangle.ems.app.util.AesEncryptor
 import org.beangle.ems.core.config.model.{Credential, Db}
 import org.beangle.ems.core.config.service.{CredentialService, DomainService}
@@ -94,16 +94,20 @@ class DbAction extends RestfulAction[Db] {
               val driverInfo = Drivers.get(cfg.driver).get
               Class.forName(driverInfo.className)
               var format = driverInfo.urlformats.head
-              format = Strings.replace(format, "<host>", cfg.serverName)
-              format = Strings.replace(format, "<port>", cfg.portNumber.toString)
-              format = Strings.replace(format, "<database_name>", cfg.databaseName)
-              "jdbc:" + cfg.driver + ":" + format
+              format = "//<host>:<port>;databaseName=<database_name>;encrypt=false;"
+              val params =
+                Map("host" -> cfg.serverName, "port" -> cfg.portNumber.toString, "database_name" -> cfg.databaseName,
+                  "server_name" -> cfg.serverName) ++ cfg.properties
+              "jdbc:" + cfg.driver + ":" + new UrlFormat(format).fill(params)
             case Some(u) => u
           }
         val conn = DriverManager.getConnection(url, username, password)
         val msg = new StringBuilder
-        msg.append("DatabaseProductName:").append(conn.getMetaData.getDatabaseProductName)
-        msg.append("<br>DatabaseProductVersion:").append(conn.getMetaData.getDatabaseProductVersion)
+        val meta = conn.getMetaData
+        msg.append("DatabaseProductName:").append(meta.getDatabaseProductName)
+        msg.append("<br>DatabaseProductVersion:").append(meta.getDatabaseProductVersion)
+        msg.append("<br>DatabaseVersion:").append(meta.getDatabaseMajorVersion + "." + meta.getDatabaseMinorVersion)
+
         put("msg", msg.toString)
         conn.close()
         put("passed", true)
@@ -119,7 +123,7 @@ class DbAction extends RestfulAction[Db] {
 
   protected override def editSetting(entity: Db): Unit = {
     val drivers = Map("postgresql" -> "PostgreSQL", "oracle" -> "Oracle", "mysql" -> "MySQL",
-      "db2" -> "DB2", "sqlserver" -> "Microsoft SQL Server", "jtds" -> "Jtds(SQL Server)")
+      "db2" -> "DB2", "sqlserver" -> "Microsoft SQL Server")
     put("drivers", drivers)
   }
 
