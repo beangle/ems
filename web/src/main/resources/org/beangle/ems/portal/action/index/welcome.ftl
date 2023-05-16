@@ -17,11 +17,12 @@
 </div>
 
 [#list rowPortalets?keys?sort as rowIndex]
-  [#assign sections = rowPortalets.get(rowIndex)]
+  [#assign colPortaletsList = rowPortalets.get(rowIndex)]
   <div class="row content" style="margin:0px">
-    [#list sections as section]
-      <section class="col-lg-${section?first.colspan}">
-        [#list section as portalet]
+    [#list colPortaletsList as colPortalets]
+      [#if colPortalets?size>0]
+      <section class="col-lg-${colPortalets?first.colspan}">
+        [#list colPortalets as portalet]
           [#if portalet.usingIframe]
           <iframe scrolling="auto" src="${portalet.url} id="portalet_${portalet.id}" width="100%" height="100%" frameborder="0"></iframe>
           [#else]
@@ -30,6 +31,7 @@
           [/#if]
         [/#list]
       </section>
+      [/#if]
     [/#list]
   </div>
 [/#list]
