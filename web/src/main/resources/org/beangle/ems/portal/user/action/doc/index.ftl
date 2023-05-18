@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-[@b.grid items=docs var="doc"]
+[@b.grid items=docs var="doc" sortable="false"]
   [@b.row]
     [@b.col width="5%" title="序号"]${doc_index+1}[/@]
     [@b.col width="48%" property="name" title="标题"][@b.a target="_blank" href="!info?id=${doc.id}"]${doc.name!}[/@][/@]

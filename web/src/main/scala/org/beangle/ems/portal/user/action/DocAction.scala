@@ -48,18 +48,11 @@ class DocAction extends ActionSupport with ServletSupport {
     val builder = OqlBuilder.from(classOf[Doc], "doc")
     builder.join("doc.categories", "uc")
     builder.where("uc.id=:categoryId", categoryId)
+    builder.where("doc.archived=false")
     val orderBy = get("orderBy").getOrElse("doc.updatedAt desc")
     builder.orderBy(orderBy)
     builder.cacheable(true)
     builder
-  }
-
-  @mapping("panel/{category}")
-  @deprecated("duplicated with portal/index/docPortalet")
-  def panel(@param("category") category: String): View = {
-    val query = getOqlBuilder(category.toInt)
-    put("docs", entityDao.search(query.limit(1, 10)))
-    forward()
   }
 
   private def decideContentType(fileName: String): String = {
