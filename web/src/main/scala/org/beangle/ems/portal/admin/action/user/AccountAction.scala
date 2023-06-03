@@ -20,11 +20,13 @@ package org.beangle.ems.portal.admin.action.user
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
+import org.beangle.data.transfer.exporter.ExportContext
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.web.WebBusinessLogger
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.{AccountService, PasswordConfigService, UserService}
+import org.beangle.ems.portal.admin.helper.AccountPropertyExtractor
 import org.beangle.security.Securities
 import org.beangle.security.authc.DBCredentialStore
 import org.beangle.security.codec.DefaultPasswordEncoder
@@ -288,5 +290,10 @@ class AccountAction extends RestfulAction[Account], ExportSupport[Account] {
     }
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)
+  }
+
+  override protected def configExport(context: ExportContext): Unit = {
+    context.extractor = new AccountPropertyExtractor()
+    super.configExport(context)
   }
 }
