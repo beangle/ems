@@ -25,6 +25,7 @@ import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ids.cas.CasSetting
 import org.beangle.security.authz.PublicAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
+import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
 import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
 
@@ -39,6 +40,8 @@ class DefaultModule extends BindModule with PropertySource {
 
   private var remoteCasServer: Option[String] = None
 
+  private var remoteLtpa: Option[LtpaConfig] = None
+
   override def binding(): Unit = {
     if (remoteCasServer.isDefined) {
       bind(classOf[CasConfig]).constructor($("remote.cas.server"))
@@ -47,10 +50,19 @@ class DefaultModule extends BindModule with PropertySource {
       bind("security.Filter.Preauth", classOf[CasPreauthFilter])
       bind(classOf[DefaultTicketValidator])
       bind(classOf[CasEntryPoint]).property("allowSessionIdAsParameter", false).shortName()
+    } else if (remoteLtpa.isDefined) {
+      remoteLtpa foreach { config =>
+        bind("ltpaConfig", config)
+        bind("ltpaTokenGenerator", classOf[LtpaTokenGenerator]).constructor(config.key, config.usernameDns)
+        bind("security.Filter.Preauth", classOf[LtpaPreauthFilter])
+        // entry point
+        bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primary()
+      }
     } else {
       // entry point
       bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primary()
     }
+
     //interceptor
     bind("security.AccessDeniedHandler.default", classOf[DefaultAccessDeniedHandler])
       .constructor($("security.access.errorPage", "/403.html"))
@@ -58,7 +70,7 @@ class DefaultModule extends BindModule with PropertySource {
 
     val interceptor = bind("web.Interceptor.security", classOf[SecurityInterceptor])
     var filters = List(ref("security.Filter.authorization"))
-    if (remoteCasServer.isDefined) {
+    if (remoteCasServer.isDefined || remoteLtpa.isDefined) {
       filters = List(ref("security.Filter.Preauth"), ref("security.Filter.authorization"))
     }
     interceptor.property("filters", filters)
@@ -82,6 +94,10 @@ class DefaultModule extends BindModule with PropertySource {
       val remoteCasServer = new CasConfig(casServer)
       setting.property("remoteLoginUrl", remoteCasServer.loginUrl)
       setting.property("remoteLogoutUrl", remoteCasServer.logoutUrl)
+    }
+    remoteLtpa foreach { config =>
+      setting.property("remoteLoginUrl", config.loginUrl)
+      setting.property("remoteLogoutUrl", config.logoutUrl)
     }
   }
 
@@ -130,6 +146,14 @@ class DefaultModule extends BindModule with PropertySource {
           datas += ("remote.cas.gateway" -> gateway)
           remoteCasServer = Some(casServer)
         }
+        (r \ "ltpa") foreach { e =>
+          val server = getAttribute(e, "server", null)
+          val key = getAttribute(e, "key", null)
+          val cookieName = getAttribute(e, "cookieName", null)
+          val usernameDns = getAttribute(e, "usernameDns", null)
+          val config = LtpaConfig(server, key, cookieName, usernameDns)
+          if null != server && null != key then remoteLtpa = Some(config)
+        }
       }
       is.close()
     }
@@ -138,19 +162,11 @@ class DefaultModule extends BindModule with PropertySource {
 
   private def getAttribute(e: scala.xml.Node, name: String): Option[String] = {
     val v = (e \ ("@" + name)).text.trim
-    if (Strings.isEmpty(v)) {
-      None
-    } else {
-      Some(v)
-    }
+    if Strings.isEmpty(v) then None else Some(v)
   }
 
   private def getAttribute(e: scala.xml.Node, name: String, defaultValue: String): String = {
     val v = (e \ ("@" + name)).text.trim
-    if (Strings.isEmpty(v)) {
-      defaultValue
-    } else {
-      v
-    }
+    if Strings.isEmpty(v) then defaultValue else v
   }
 }

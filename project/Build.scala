@@ -3,15 +3,15 @@ import sbt.*
 
 object EmsDepends {
   val commonsVer = "5.5.3"
-  val dataVer = "5.6.17"
+  val dataVer = "5.6.19"
   val cdiVer = "0.5.4"
   val webVer = "0.4.2"
   val serializerVer = "0.1.4"
   val cacheVer = "0.1.4"
-  val templateVer = "0.1.5"
+  val templateVer = "0.1.6"
   val webmvcVer = "0.9.3"
-  val securityVer = "4.3.7"
-  val idsVer = "0.3.9"
+  val securityVer = "4.3.8-SNAPSHOT"
+  val idsVer = "0.3.10-SNAPSHOT"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -33,11 +33,11 @@ object EmsDepends {
   val securityCore = "org.beangle.security" %% "beangle-security-core" % securityVer
   val securityWeb = "org.beangle.security" %% "beangle-security-web" % securityVer
   val securitySession = "org.beangle.security" %% "beangle-security-session" % securityVer
-  val securityCas = "org.beangle.security" %% "beangle-security-cas" % securityVer
+  val securitySso = "org.beangle.security" %% "beangle-security-sso" % securityVer
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
 
   val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, cdiSpring, gson, HikariCP) ++
-    Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securityCas, templateApi) ++
+    Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++
     Seq(postgresql, caffeine_jcache, hibernate_jcache)
 }
