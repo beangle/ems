@@ -310,6 +310,7 @@
       emsnav.createProfileNav();
       [/#if]
       emsnav.setup(params);
+      setTimeout(function(){jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");}, 800);
       emsnav.enableSearch('menu_searcher');
       window.emsnav=emsnav;
     });

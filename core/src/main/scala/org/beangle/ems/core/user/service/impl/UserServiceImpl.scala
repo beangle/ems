@@ -17,16 +17,15 @@
 
 package org.beangle.ems.core.user.service.impl
 
-import java.time.Instant
-
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.MemberShip
+import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
-import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.UserService
+
+import java.time.Instant
 
 class UserServiceImpl(val entityDao: EntityDao) extends UserService {
 
