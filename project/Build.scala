@@ -18,7 +18,7 @@ object EmsDepends {
   val dataJdbc = "org.beangle.data" %% "beangle-data-jdbc" % dataVer
   val dataOrm = "org.beangle.data" %% "beangle-data-orm" % dataVer
   val dataTransfer = "org.beangle.data" %% "beangle-data-transfer" % dataVer
-  val cdiApi = "org.beangle.cdi" %% "beaengle-cdi-api" % cdiVer
+  val cdiApi = "org.beangle.cdi" %% "beangle-cdi-api" % cdiVer
   val cdiSpring = "org.beangle.cdi" %% "beangle-cdi-spring" % cdiVer
   val cacheApi = "org.beangle.cache" %% "beangle-cache-api" % cacheVer
   val cacheCaffeine = "org.beangle.cache" %% "beangle-cache-caffeine" % cacheVer
