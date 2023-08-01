@@ -2,7 +2,7 @@ import EmsDepends._
 import org.beangle.parent.Settings._
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.6.21-SNAPSHOT"
+ThisBuild / version := "4.6.21"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -85,7 +85,7 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= appDepends,
+    libraryDependencies ++= appDepends
   ).dependsOn(web, app, core)
 
 lazy val index = (project in file("index"))
