@@ -277,7 +277,8 @@
       </div>
       <div class="tab-pane" id="control-sidebar-home-tab" style="padding: 10px 15px;">
         <h6 class="control-sidebar-heading">近期活动</h6>
-        <ul class="control-sidebar-menu">
+        <ul class="control-sidebar-menu" style="padding-left: 20px;">
+          <li>时间 <div id="clock" style="display:inline"></div></li>
         </ul>
       </div>
     </div>
@@ -313,6 +314,25 @@
       window.emsnav=emsnav;
     });
   });
+
+  var clockOffset=0;
+  $.get("${nav.ems.api}/tools/sys/time/now",function(data,status){
+     clockOffset = parseInt(data)-(new Date()).getTime();
+     setInterval(showTime, 1000);
+  });
+
+  function showTime() {
+      let time = new Date();
+      time.setTime(time.getTime()+clockOffset);
+      let hour = time.getHours();
+      let min = time.getMinutes();
+      let sec = time.getSeconds();
+      hour = hour < 10 ? "0" + hour : hour;
+      min = min < 10 ? "0" + min : min;
+      sec = sec < 10 ? "0" + sec : sec;
+
+      document.getElementById("clock").innerHTML = (hour + ":" + min + ":" + sec);
+  }
 </script>
 [/#macro]
 
