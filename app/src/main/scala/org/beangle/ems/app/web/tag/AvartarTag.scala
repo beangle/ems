@@ -17,25 +17,21 @@
 
 package org.beangle.ems.app.web.tag
 
-import org.beangle.commons.security.DefaultRequest
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.ems.app.Ems
-import org.beangle.security.authz.Authorizer
-import org.beangle.security.context.SecurityContext
-import org.beangle.template.api.{AbstractModels, ComponentContext, Tag}
+import org.beangle.template.api.{ComponentContext, UIBean}
 
-class EmsModels(context: ComponentContext, authorizer: Authorizer) extends AbstractModels(context) {
-  def api(url: String): String = {
-    Ems.api + url
+class AvartarTag(context: ComponentContext) extends UIBean(context) {
+
+  var href: String = _
+  var username: String = _
+
+  override def evaluateParams(): Unit = {
+    if (null == this.href) {
+      href = Ems.api + s"/platform/user/avatars/${Digests.md5Hex(username)}.jpg"
+    }
+    if (null == this.cssClass && !parameters.contains("style")) {
+      parameters.put("style", "border-radius: 50%;")
+    }
   }
-
-  def webapp: String = {
-    Ems.webapp
-  }
-
-  def avatar: Tag = get(classOf[AvartarTag])
-
-  def permitted(res: String): Boolean = {
-    authorizer.isPermitted(SecurityContext.get, new DefaultRequest(res, null))
-  }
-
 }
