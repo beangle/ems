@@ -1,5 +1,5 @@
-import EmsDepends._
-import org.beangle.parent.Settings._
+import EmsDepends.*
+import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
 ThisBuild / version := "4.6.24-SNAPSHOT"
@@ -74,7 +74,7 @@ lazy val service = (project in file("service"))
   ).dependsOn(core, app)
 
 lazy val ws = (project in file("ws"))
-  .enablePlugins(WarPlugin, TomcatPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,

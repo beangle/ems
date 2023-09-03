@@ -40,9 +40,9 @@ class CredentialWS extends ActionSupport {
   }
 
   @response
-  def comment: String = {
+  def comment(): String = {
     val config = getConfig
-    var cmt = new StringBuilder(s"长度${config.minlen}~${config.maxlen}之间")
+    val cmt = new StringBuilder(s"长度${config.minlen}~${config.maxlen}之间")
     var clazz = 0
     if (config.dcredit > 0 || config.lcredit > 0 || config.ucredit > 0 || config.ocredit > 0) {
       cmt ++= "，至少包含"

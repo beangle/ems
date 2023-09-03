@@ -22,7 +22,7 @@
       [#list members?sort_by(['role','indexno']) as m][#if m.member]${m.role.name}&nbsp;[/#if][/#list]
     [/@]
     [@b.col property="beginOn" title="有效期" width="15%"]${account.beginOn}~${(account.endOn)!}[/@]
-    [@b.col property="beginOn" title="密码过期" width="15%"]${account.passwdExpiredOn)!}[/@]
+    [@b.col property="passwdExpiredOn" title="密码过期" width="15%"]${(account.passwdExpiredOn)!}[/@]
     [@b.col property="enabled" width="8%" title="是否可用"][@enableInfo account.enabled/][/@]
   [/@]
 [/@]
