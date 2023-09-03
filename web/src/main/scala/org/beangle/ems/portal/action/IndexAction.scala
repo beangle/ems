@@ -32,6 +32,7 @@ import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Status, View}
 import org.beangle.web.servlet.url.UrlBuilder
 
+import java.time.LocalDate
 import scala.collection.mutable
 
 class IndexAction extends ActionSupport with ServletSupport {
@@ -101,6 +102,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     }
     q.join("notice.categories", "uc")
     q.where("uc.id=:categoryId", categoryId)
+    q.where("notice.endOn >= :now", LocalDate.now)
     q.where("notice.archived=false and notice.status=:status", NoticeStatus.Passed)
     q.where("notice.app.domain=:domain", domainService.getDomain)
     q.limit(1, 10)
