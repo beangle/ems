@@ -82,7 +82,7 @@
     this.portalTemplate='<li class="nav-item"><a href="{app.url}" class="nav-link" target="_self">{app.title}</a></li>';
     this.dropdownGroupNavTemplate='<a href="javascript:void(0)"  class="dropdown-item {active_class}" id="group_{group.id}">{group.title}</a>'
     if(!this.app.navStyle){
-     this.app.navStyle="unkown";
+     this.app.navStyle="unknown";
     }
     this.collectApps();
     this.processMenus();

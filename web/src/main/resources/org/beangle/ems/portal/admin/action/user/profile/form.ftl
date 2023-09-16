@@ -6,7 +6,7 @@
   bar.addBack();
 [/@]
 [@b.form name="profileForm" action="!save" theme="list"]
-  [@b.textfield label="名称" value=profile.name! name="profile.name" required="true" /]
+  [@b.textfield label="名称" value=profile.name!'默认' name="profile.name" required="true"/]
   [@b.field label="数据项目"]
   [#if fields?size==0]该系统没有增加涉及到的数据维度[/#if]
   <div class="container">
