@@ -91,7 +91,6 @@ class DefaultModule extends BindModule with PropertySource {
       .property("enableSmsLogin", $("login.enableSmsLogin"))
       .property("clients", List("http://localhost", Ems.base) ++ clients)
 
-
     remoteCasServer foreach { casServer =>
       val remoteCasServer = new CasConfig(casServer)
       setting.property("remoteLoginUrl", remoteCasServer.loginUrl)
