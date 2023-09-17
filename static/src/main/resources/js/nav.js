@@ -615,8 +615,11 @@
 
     changeNavSidebarTheme(getLocal("beangle.ems.nav_sidebar_theme","--"));
     changeFontSize(getLocal("beangle.ems.root_font_size","--"));
+
+    var pageSize = beangle.cookie.get("pageSize");
+    if(pageSize) jQuery("#page_size_selector").val(pageSize);
     jQuery("#page_size_selector").on("change",function(event){
-      beangle.cookie.set("pageSize",this.value,"/",100);
+      beangle.cookie.set("pageSize",this.value,"/",10*365);
     });
     jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
     jQuery(document).ready(restoreNav);
