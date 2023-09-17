@@ -57,6 +57,7 @@ object DefaultMapping extends MappingModule {
       e.roles is depends("user")
       e.groups is depends("user")
       e.acounts is depends("user")
+      e.mobile is length(15)
       index("idx_user_code", true, e.org, e.code)
     }
 

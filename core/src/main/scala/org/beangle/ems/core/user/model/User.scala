@@ -17,18 +17,16 @@
 
 package org.beangle.ems.core.user.model
 
-import java.security.Principal
-import java.time.LocalDate
-import java.{util => ju}
-
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Enabled, Named, Remark, TemporalOn, Updated}
+import org.beangle.data.model.pojo.{Coded, Named, Remark, TemporalOn, Updated}
 import org.beangle.ems.core.config.model.Org
 
+import java.security.Principal
+
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 
 class User extends LongId with Coded with Named with Updated with TemporalOn with Principal with Remark {
   var org: Org = _
@@ -37,6 +35,7 @@ class User extends LongId with Coded with Named with Updated with TemporalOn wit
   var acounts = Collections.newBuffer[Account]
   var category: Category = _
   var avatarId: Option[String] = None
+  var mobile: Option[String] = None
 
   override def getName: String = {
     name

@@ -40,7 +40,7 @@ class DimensionAction extends RestfulAction[Dimension] {
   protected override def saveAndRedirect(dimension: Dimension): View = {
     dimension.domain = domainService.getDomain
     if (dimension.source.contains("\r")) {
-      dimension.source = dimension.source.replace("\r", "");
+      dimension.source = dimension.source.replace("\r", "")
     }
     entityDao.saveOrUpdate(dimension)
     redirect("search", "info.save.success")

@@ -53,7 +53,7 @@ lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(commonsCore, idsWeb, webmvcSupport, webmvcView),
+    libraryDependencies ++= Seq(commonsCore, idsWeb, idsSms, webmvcSupport, webmvcView),
     libraryDependencies ++= Seq(dataOrm, dataTransfer)
   ).dependsOn(core, app)
 

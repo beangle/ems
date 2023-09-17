@@ -32,8 +32,8 @@ import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
 import java.io.FileInputStream
 
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 class DefaultModule extends BindModule with PropertySource {
 
   private val clients = Collections.newBuffer[String]
@@ -88,7 +88,9 @@ class DefaultModule extends BindModule with PropertySource {
       .property("origin", $("login.origin"))
       .property("checkPasswordStrength", $("login.checkPasswordStrength"))
       .property("passwordReadOnly", $("login.passwordReadOnly"))
+      .property("enableSmsLogin", $("login.enableSmsLogin"))
       .property("clients", List("http://localhost", Ems.base) ++ clients)
+
 
     remoteCasServer foreach { casServer =>
       val remoteCasServer = new CasConfig(casServer)
@@ -124,6 +126,7 @@ class DefaultModule extends BindModule with PropertySource {
         datas += ("login.key" -> getAttribute(e, "key", Ems.base))
         datas += ("login.origin" -> getAttribute(e, "origin", Ems.base))
         datas += ("login.checkPasswordStrength" -> getAttribute(e, "checkPasswordStrength", "true"))
+        datas += ("login.enableSmsLogin" -> getAttribute(e, "enableSmsLogin", "false"))
         getAttribute(e, "passwordReadOnly") match {
           case Some(pronly) => datas += ("login.passwordReadOnly" -> pronly)
           case None => datas.getOrElseUpdate("login.passwordReadOnly", "false")

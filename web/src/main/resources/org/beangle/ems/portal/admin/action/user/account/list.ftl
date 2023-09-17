@@ -21,8 +21,15 @@
       [#list account.user.roles?sort_by(['role','indexno']) as m][#if m.role.domain=domain] [#assign members=members+[m]][/#if][/#list]
       [#list members?sort_by(['role','indexno']) as m][#if m.member]${m.role.name}&nbsp;[/#if][/#list]
     [/@]
-    [@b.col property="beginOn" title="有效期" width="15%"]${account.beginOn}~${(account.endOn)!}[/@]
-    [@b.col property="passwdExpiredOn" title="密码过期" width="15%"]${(account.passwdExpiredOn)!}[/@]
+    [@b.col property="user.mobile" title="手机号码" width="9%"]
+      [#if account.user.mobile??]
+        <span title="${account.user.mobile}">${(account.user.mobile[0..2])!}****${(account.user.mobile[7..10])!}</span>
+      [#else]
+      --
+      [/#if]
+    [/@]
+    [@b.col property="beginOn" title="有效期" width="12%"]${account.beginOn}~${(account.endOn)!}[/@]
+    [@b.col property="passwdExpiredOn" title="密码过期" width="10%"]${(account.passwdExpiredOn)!}[/@]
     [@b.col property="enabled" width="8%" title="是否可用"][@enableInfo account.enabled/][/@]
   [/@]
 [/@]

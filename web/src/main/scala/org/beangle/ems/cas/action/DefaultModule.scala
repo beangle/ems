@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.cas
+package org.beangle.ems.cas.action
 
 import org.beangle.cdi.bind.BindModule
 import org.beangle.ems.app.Ems
-import org.beangle.ems.cas.action.EditAction
 import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction}
-import org.beangle.ids.cas.web.ws.{ServiceValidateAction, SessionAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper
+import org.beangle.ids.cas.web.ws.{ServiceValidateAction, SessionAction}
 
 class DefaultModule extends BindModule {
   override def binding(): Unit = {
@@ -31,6 +30,6 @@ class DefaultModule extends BindModule {
     bind(classOf[LogoutAction])
     bind(classOf[SessionAction])
     bind(classOf[EditAction])
-    bind(classOf[CaptchaHelper]).constructor(Ems.api+"/tools")
+    bind(classOf[CaptchaHelper]).constructor(Ems.api + "/tools")
   }
 }

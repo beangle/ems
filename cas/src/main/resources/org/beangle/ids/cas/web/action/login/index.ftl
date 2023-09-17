@@ -65,7 +65,11 @@
             [/#if]
             <div class="col-auto">
               <div class="input-group mb-1">
-                    <div style="padding-top: 5px;margin-right: 50px;"><a href="safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
+                    [#if setting.enableSmsLogin]
+                    <div style="padding-top: 5px;margin-right: 40px;"><a href="javascript:void(0)" onclick="toSmsLogin()" style="font-size:0.8em;color:#515151;">短信登录</a></div>
+                    [#else]
+                    <div style="padding-top: 5px;margin-right: 40px;"><a href="safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
+                    [/#if]
                     <input type="submit" name="submitBtn" tabindex="6" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
               </div>
             </div>
@@ -146,6 +150,10 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
     }
     function displayError(msg){
         document.getElementById("error_msg").innerHTML=msg;
+    }
+    function toSmsLogin(){
+      form.action="${b.base}/sms-login"
+      form.submit();
     }
 </script>
 </body>

@@ -11,7 +11,7 @@ object EmsDepends {
   val templateVer = "0.1.7"
   val webmvcVer = "0.9.9"
   val securityVer = "4.3.11"
-  val idsVer = "0.3.11"
+  val idsVer = "0.3.12"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -36,6 +36,7 @@ object EmsDepends {
   val securitySso = "org.beangle.security" %% "beangle-security-sso" % securityVer
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
+  val idsSms = "org.beangle.ids" %% "beangle-ids-sms" % idsVer
 
   val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, cdiSpring, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++

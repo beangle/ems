@@ -70,9 +70,10 @@ class FileAction extends RestfulAction[File], ExportSupport[File] {
       repo.remove(f.filePath)
     }
     val app = entityDao.get(classOf[App], f.app.id)
-    var storeFileName = f.name
-    storeFileName = Strings.replace(storeFileName.substring(1), "/", "_")
-    val meta = repo.upload(s"/file/${app.name}", is, storeFileName, user.code + " " + user.name)
+    var fname = f.name
+    if (fname.charAt(0) == '/') fname = fname.substring(1)
+    fname = Strings.replace(fname, "/", "_")
+    val meta = repo.upload(s"/file/${app.name}", is, fname, user.code + " " + user.name)
     f.updatedAt = meta.updatedAt
     f.filePath = meta.filePath
     f.fileSize = meta.fileSize

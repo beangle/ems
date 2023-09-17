@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <cdi>
   <container>
-    <module class="org.beangle.ems.cas.DefaultModule"/>
+    <module class="org.beangle.ems.cas.action.DefaultModule"/>
+    <module class="org.beangle.ems.cas.action.SmsModule"/>
 
     <module class="org.beangle.ems.core.cas.DefaultModule"/>
     <module class="org.beangle.ems.core.cas.TicketModule"/>
     <module class="org.beangle.ems.core.cas.SessionModule"/>
     <module class="org.beangle.ems.core.cas.DaoRealmModule"/>
-    <module class="org.beangle.ems.web.DaoModule"/>
     <module class="org.beangle.ems.core.cas.CredentialModule"/>
+    <module class="org.beangle.ems.web.DaoModule"/>
 
     <module class="org.beangle.ems.app.web.DefaultModule"/>
     <module class="org.beangle.ems.app.log.DefaultModule"/>
