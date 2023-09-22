@@ -10,6 +10,8 @@ User.category.name=身份
 User.beginOn-endOn=有效期
 User.avatarId=头像ID
 User.properties=属性
+User.mobile=手机号码
+User.email=电子邮件
 
 Account=账户
 Account.enabled=是否启用

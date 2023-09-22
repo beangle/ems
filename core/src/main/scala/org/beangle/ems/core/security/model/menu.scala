@@ -39,4 +39,8 @@ class Menu extends IntId with Named with Enabled with Hierarchical[Menu] with Re
     val appCompareRs = app.compare(m.app)
     if appCompareRs == 0 then indexno.compareTo(m.indexno) else appCompareRs
   }
+
+  override def toString: String = {
+    s"id:${id},name=${name}"
+  }
 }

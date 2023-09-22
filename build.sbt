@@ -58,7 +58,7 @@ lazy val web = (project in file("web"))
   ).dependsOn(core, app)
 
 lazy val cas = (project in file("cas"))
-  .enablePlugins(WarPlugin, TomcatPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,

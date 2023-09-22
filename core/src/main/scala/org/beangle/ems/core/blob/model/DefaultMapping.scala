@@ -17,12 +17,16 @@
 
 package org.beangle.ems.core.blob.model
 
+import org.beangle.commons.io.Dirs
+import org.beangle.commons.lang.Strings
 import org.beangle.data.orm.{IdGenerator, MappingModule}
+
+import java.io.File
 
 object DefaultMapping extends MappingModule {
 
   def binding(): Unit = {
-    defaultIdGenerator(classOf[Long],IdGenerator.DateTime)
+    defaultIdGenerator(classOf[Long], IdGenerator.DateTime)
     defaultCache("ems.security", "read-write")
 
     bind[Profile].declare { e =>
@@ -33,11 +37,12 @@ object DefaultMapping extends MappingModule {
     bind[BlobMeta].declare { e =>
       e.owner is length(100)
       e.name is length(300)
-      e.mediaType is length(60)
+      e.mediaType is length(80)
       e.filePath is length(400)
+
+      index("", true, e.profile, e.filePath)
     }
 
     all.except(classOf[BlobMeta]).cacheAll()
   }
-
 }

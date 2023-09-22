@@ -25,10 +25,8 @@ import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.ActionSupport
 
-import java.util.Locale
 import scala.collection.mutable
 
 class MenuWS extends ActionSupport {

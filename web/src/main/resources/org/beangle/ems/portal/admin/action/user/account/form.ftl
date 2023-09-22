@@ -10,6 +10,7 @@
         [@b.textfield name="user.name" label="姓名" value=user.name  style="width:200px;" required="true" maxlength="30"/]
         [@b.select name="user.category.id" label="身份" value=user.category! items=categories required="true"/]
         [@b.cellphone name="user.mobile" label="手机号码" value=user.mobile! /]
+        [@b.email name="user.email" label="电子邮件" value=user.email! /]
         [@b.radios name="account.enabled" value=account.enabled items="1:action.activate,0:action.freeze"/]
         [@b.radios name="account.locked" value=account.locked items="1:锁定,0:解锁"/]
         [@b.password label="account.password" name="password" value="" maxlength="20" showStrength="true"/]

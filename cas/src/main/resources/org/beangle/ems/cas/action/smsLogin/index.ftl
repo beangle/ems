@@ -45,7 +45,7 @@
                   </div>
             <div class="col-auto">
               <div class="input-group mb-1">
-                    <div style="padding-top: 5px;margin-right: 50px;"><a href="login" target="_blank" style="font-size:0.8em;color:#515151;">密码登录</a></div>
+                    <div style="padding-top: 5px;margin-right: 50px;"><a href="${b.base}/login?local=1" style="font-size:0.8em;color:#515151;">密码登录</a></div>
                     <input type="submit" name="submitBtn" tabindex="4" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
               </div>
             </div>
