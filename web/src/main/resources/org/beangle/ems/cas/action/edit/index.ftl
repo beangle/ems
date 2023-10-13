@@ -9,6 +9,8 @@
     bar.addClose();
   [/@]
   <div class="container">
+  ${b.script("cryptojs","rollups/aes.js")}
+  ${b.script("cryptojs","components/mode-ecb.js")}
    [@b.form name="accountForm" action="!save" theme="list" title="修改账户密码" ]
      [@b.field label="账户"]${principal.name} ${principal.description}[/@]
      [#if principal.remoteToken??]
@@ -37,6 +39,17 @@
          alert("新密码和重复密码不一致");
          return false;
        }
+       var key= location.hostname;
+       if(key.length>=16) key= key.substring(0,16);
+       else  key= (key+'0'.repeat(16-key.length));
+       key=CryptoJS.enc.Utf8.parse(key);
+
+       try{
+         var encryptedData = CryptoJS.AES.encrypt(form['password'].value, key, {mode: CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});
+         form['password2'].disabled=true;
+         form['password'].value=("?"+encryptedData.ciphertext);
+       }catch(e){alert(e);return false;}
+
        return true;
      }
 

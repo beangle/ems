@@ -17,22 +17,22 @@
 
 package org.beangle.ems.app.blob
 
-import java.io._
+import com.google.gson.{JsonDeserializationContext, JsonDeserializer}
+import org.beangle.commons.codec.digest.Digests
+import org.beangle.commons.conversion.Converter
+import org.beangle.commons.io.{Files, IOs}
+import org.beangle.commons.lang.Strings
+import org.beangle.commons.lang.Strings.isEmpty
+import org.beangle.commons.logging.Logging
+import org.beangle.commons.net.http.{HttpMethods, Https}
+
+import java.io.*
 import java.lang.reflect.Type
 import java.net.{HttpURLConnection, URL}
 import java.nio.charset.StandardCharsets
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
 import java.util.Base64
-
-import com.google.gson.{JsonDeserializationContext, JsonDeserializer}
-import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.conversion.Converter
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.Strings.isEmpty
-import org.beangle.commons.logging.Logging
-import org.beangle.commons.net.http.{HttpMethods, Https}
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
 
@@ -107,7 +107,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
 
     val strBuf = new StringBuilder
     strBuf.append(twoHyphens).append(boundary).append(end)
-    strBuf.append(s"""Content-Disposition: form-data; name="file"; filename="${fileName}"""")
+    strBuf.append(s"""Content-Disposition: form-data; name="file"; filename="${Files.purify(fileName)}"""")
     strBuf.append(end).append(end)
     ds.write(strBuf.toString().getBytes())
     IOs.copy(is, ds)
@@ -123,13 +123,15 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
         val gson = new GsonBuilder().registerTypeAdapter(classOf[Instant], new InstantAdapter).create
         gson.fromJson(response, classOf[BlobMeta])
       } else {
-        val e = new RuntimeException("Upload Failed,Response code is " + conn.getResponseCode)
-        logger.error(IOs.readString(conn.getInputStream), e)
-        throw e
+        var msg: String = ""
+        try msg = IOs.readString(conn.getInputStream)
+        catch case e: Throwable => {} //ignore
+
+        throw new RuntimeException("Upload failed,response code is " + conn.getResponseCode + " and response body:" + msg)
       }
     } catch {
       case e: Throwable =>
-        logger.warn("Upload failure:url:" + url.toString + " fileName:" + fileName + " params:" + params + " basicAuth:" + basicAuth.orNull)
+        logger.warn("Upload failure:url:" + url.toString + " fileName:" + fileName + " params:" + params)
         throw e
     }
   }

@@ -17,6 +17,8 @@
 
 package org.beangle.ems.cas.action
 
+import org.beangle.commons.codec.binary.Aes
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.WebBusinessLogger
@@ -30,7 +32,6 @@ import org.beangle.security.session.Session
 import org.beangle.security.web.WebSecurityManager
 import org.beangle.security.web.session.CookieSessionIdPolicy
 import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.View
 
@@ -51,12 +52,16 @@ class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegi
   }
 
   def save(): View = {
-    get("password") foreach { p =>
+    get("password") foreach { pd =>
+      var passwd = pd
+      if (passwd.startsWith("?")) {
+        passwd = Aes.ECB.decodeHex(loginKey, passwd.substring(1))
+      }
       val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
       if (users.size == 1) {
-        credentialStore.updatePassword(Securities.user, DefaultPasswordEncoder.generate(p, null, "sha"))
+        credentialStore.updatePassword(Securities.user, DefaultPasswordEncoder.generate(passwd, null, "sha"))
       }
-      businessLogger.info(Securities.user + "修改了自己的密码", users.head.id, "密码长度" + p.length)
+      businessLogger.info(Securities.user + "修改了自己的密码", users.head.id, "密码长度" + passwd.length)
     }
     get("service") match {
       case None =>
@@ -84,6 +89,15 @@ class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegi
         val ticket = ticketRegistry.generate(session, service)
         redirect(to(service + (if (service.contains("?")) "&" else "?") + "ticket=" + ticket), null)
       }
+    }
+  }
+
+  private def loginKey: String = {
+    val serverName = request.getServerName
+    if (serverName.length >= 16) {
+      serverName.substring(0, 16)
+    } else {
+      Strings.rightPad(serverName, 16, '0')
     }
   }
 }
