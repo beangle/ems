@@ -21,11 +21,11 @@
   [@b.row]
     <tr [#if menu??] title="入口及备注:${(menu.entry.name)!} ${(menu.remark?html)!}" id="${menu.indexno}"[/#if]>
     [@b.boxcol/]
-    [@b.treecol title="common.name" width="30%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.fonticon??] <i class="${menu.fonticon}"></i> [/#if]${menu.name}[/@][/@]
+    [@b.treecol title="common.name" width="20%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.fonticon??] <i class="${menu.fonticon}"></i> [/#if]${menu.name}[/@][/@]
     [@b.col property="enName" title="英文名称" width="15%"/]
     [@b.col property="params" title="参数"/]
-    [@b.col title="使用资源"][#list menu.resources as re]${re.title?html}[#if re_has_next],[/#if][/#list][/@]
-    [@b.col property="enabled" width="10%" title="common.status"][@enableInfo menu.enabled/][/@]
+    [@b.col title="使用资源" width="35%"][#list menu.resources as re]${re.title?html}[#if re_has_next],[/#if][/#list][/@]
+    [@b.col property="enabled" width="8%" title="common.status"][@enableInfo menu.enabled/][/@]
     </tr>
   [/@]
 [/@]

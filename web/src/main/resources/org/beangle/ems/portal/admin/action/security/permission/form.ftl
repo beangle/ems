@@ -59,18 +59,19 @@
     <td><input name="displayFreezen" [#if displayFreezen='1'|| displayFreezen='on'|| displayFreezen='yes']checked="checked"[/#if] onclick="this.form.submit();" id="displayFreezen" type="checkbox"><label for="displayFreezen">显示冻结菜单</label></td>
   </tr>
 </table>
-<table width="100%" class="gridtable"  id="meunPermissionTable" style="border:solid 1px">
+<table width="100%" class="grid-table"  id="meunPermissionTable">
+  <thead>
+    <tr class="grid-head">
+      <th class="grid-select" width="30px"><input type="checkbox" onclick="bui.tabletree.selectAll(this,checkResource)"/></th>
+      <th width="28%">${b.text("common.name")}</th>
+      <th>可用资源</th>
+      <th width="6%">${b.text("common.status")}</th>
+    </tr>
+  </thead>
   <tbody>
-  <tr class="gridhead">
-  <th width="6%" class="gridselect"><input type="checkbox" onclick="bui.tabletree.selectAll(this,checkResource)"/></th>
-  <th width="28%">${b.text("common.name")}</th>
-  <th width="50%">可用资源</th>
-  <th width="6%">${b.text("common.status")}</th>
-  </tr>
   [#list mngMenus?sort_by("indexno") as menu]
-
   <tr class="grayStyle [#if !menu.enabled]ui-disabled[/#if]" id="${menu.indexno}">
-    <td  class="gridselect">
+    <td  class="grid-select">
       <input type="checkbox" id="checkbox_${menu_index}" onclick="bui.tabletree.select(this,checkResource)"  name="menuId" [#if parentMenus?seq_contains(menu)]checked="checked" disabled="disabled"[#else][#if (roleMenus?seq_contains(menu))]checked="checked"[/#if][/#if] value="${menu.id}">
     </td>
     <td>
@@ -88,7 +89,6 @@
         [#if mngResources?seq_contains(resource)]
         <input type="checkbox" name="resource.id" id="checkbox_${menu_index}_${resource_index}"[#if roleResources?seq_contains(resource)]checked="checked"[/#if] value="${resource.id}">[#rt]
         ${resource.title}
-        [#if resource_index%3==1 && resource_has_next]<br/>[/#if]
         [/#if]
       [/#list]
     </td>

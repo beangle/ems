@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+[#assign extMap={"xls":'xls.gif',"xlsx":'xls.gif',"docx":"doc.gif","doc":"doc.gif","pdf":"pdf.gif","zip":"zip.gif","":"generic.gif"}]
 [@b.grid items=files var="file" sortable="true"]
   [@b.gridbar]
    bar.addItem("${b.text("action.new")}",action.add());
@@ -18,7 +19,9 @@
     [@b.col  width="5%" property="fileSize" title="大小"]
        ${(file.fileSize/1024.0)?string(".##")}K
     [/@]
-    [@b.col  width="15%" property="mediaType" title="类型"/]
+    [@b.col  width="10%" property="mediaType" title="类型"]
+      <image src="${b.static_url("ems","images/file/"+extMap[file.filePath?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
+    [/@]
     [@b.col  width="10%" property="updatedAt" title="更新时间"]
       ${file.updatedAt?string("yy-MM-dd HH:mm")}
     [/@]

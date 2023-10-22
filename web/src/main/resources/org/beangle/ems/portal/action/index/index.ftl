@@ -224,11 +224,7 @@
     </div>
   </aside>
   <div class="content-wrapper" id="main_wrapper">
-    [#if mainHref?? && mainHref?length>0 ]
-    [@b.div id="main"  href="${mainHref}"/]
-    [#else]
     [@b.div id="main"/]
-    [/#if]
   </div>
 
   <aside id="control_sidebar" class="control-sidebar control-sidebar-light control-sidebar-open" style="display: block;">
@@ -307,6 +303,9 @@
       emsnav.createNav(app,app,${nav.menusJson},params,true);
       [#if nav.profiles??]
       emsnav.createProfileNav();
+      [/#if]
+      [#if mainHref?? && mainHref?length>0 ]
+      emsnav.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
       emsnav.setup(params);
       setTimeout(function(){jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");}, 1500);

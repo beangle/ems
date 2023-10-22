@@ -14,7 +14,7 @@
         [@b.radios name="account.enabled" value=account.enabled items="1:action.activate,0:action.freeze"/]
         [@b.radios name="account.locked" value=account.locked items="1:锁定,0:解锁"/]
         [@b.password label="account.password" name="password" value="" maxlength="20" showStrength="true"/]
-        [@b.startend label="有效期" name="account.beginOn,account.endOn" required="true,false" start=account.beginOn end=account.endOn format="date"/]
+        [@b.startend label="有效期" name="account.beginOn,account.endOn" required="true,false" start=account.beginOn end=account.endOn format="date" comment="过期后不能登录"/]
         [@b.date name="account.passwdExpiredOn" value=account.passwdExpiredOn format="date"  required="true" comment="过期后，仍可登录，但需要及时更新密码。"/]
         [@b.textarea cols="50" rows="1" name="user.remark" label="备注" value=user.remark! maxlength="50"/]
         [@b.formfoot]

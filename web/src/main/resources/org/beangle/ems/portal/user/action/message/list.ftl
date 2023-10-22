@@ -69,10 +69,10 @@
           var ele=jQuery(this);
           if(!ele.is(":checked")){
             ele.prop("checked",true);
-            jQuery(this).parent("tr").addClass("griddata-selected");
+            jQuery(this).parent("tr").addClass("grid-data-selected");
           }else{
               ele.prop("checked",false);
-              jQuery(this).parent("tr").removeClass("griddata-selected");
+              jQuery(this).parent("tr").removeClass("grid-data-selected");
           }
         });
       }

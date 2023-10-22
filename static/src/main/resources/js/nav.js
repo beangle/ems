@@ -29,6 +29,7 @@
     this.sysName=null;
     this.params={};
     this.maxTopItem=9;
+    this.welcomeUrl=null;
     if(params){
       for(var name in params){
         var pv=params[name];
@@ -93,6 +94,9 @@
   }
 
   Nav.prototype={
+    setWelcomeUrl:function(url){
+      this.welcomeUrl=url;
+    },
     processUrl : function(url){
       if(url.indexOf('{') == -1) return url;
       for(var name in this.params){
@@ -171,7 +175,31 @@
       }
       if(path.length>0) path.pop();
     },
-
+    locateMenu : function(url){
+      for(var p=0;p < this.groupMenus.length;p++){
+        var appMenus=this.groupMenus[p].appMenus;
+        for(var i=0;i<appMenus.length;i++){
+          var m = this.locateMenuByHref(appMenus[i].menus,url);
+          if(m) return {"group":this.groupMenus[p].group,"app":appMenus[i],"menu":m};
+        }
+      }
+      return null;
+    },
+    locateMenuByHref : function(menus,url){
+      var menu=null;
+      for(var j=0;j < menus.length;j++){
+        menu=menus[j];
+        if(menu.entry && url.startsWith(menu.entry)){
+          return menu;
+        }else{
+          if(menu.children && menu.children.length>0) {
+             menu = this.locateMenuByHref(menu.children,url);
+             if(menu) return menu;
+          }
+        }
+      }
+      return null;
+    },
     processMenus : function(){ // 修改和构架menu的入口和target
       for(var p=0;p < this.groupMenus.length;p++){
         var childrenAppMenus=this.groupMenus[p].appMenus;
@@ -239,13 +267,13 @@
       var that=this;
       jQuery("#"+this.menuDomId+" li a").click(function() {
         if(this.href=="javascript:void(0)"){
-          jQuery(this).parent('li').siblings().each(function (i,li){
+          var jThis=jQuery(this);
+          jThis.parent('li').siblings().each(function (i,li){
               jQuery(li).removeClass('menu-open menu-is-opening');
               jQuery(li).children('ul').hide();
               jQuery(li).children('a').removeClass('active');
             }
           );
-          var jThis=jQuery(this);
           if(jThis.hasClass("active")){
             jThis.removeClass("active");
           }else{
@@ -368,7 +396,7 @@
       this.displayGroupMenus(groupId,appId)
     },
     /**显示指定group的menu*/
-    displayGroupMenus : function (groupId,appId){
+    displayGroupMenus : function (groupId,appId,menuObj){
       this.currentGroupId = groupId;
       switchNavActive("#group_"+groupId);
       for(var i=0;i < this.groupMenus.length; i++){
@@ -392,6 +420,18 @@
           break;
         }
       }
+      if(menuObj && menuObj.entry){
+        var menu = jQuery('#main_siderbar a[href="'+menuObj.entry+'"]')
+        menu.parents('li').each(function (i,li){
+          jQuery(li).addClass('menu-open');
+          jQuery(li).siblings().each(function (i,sli){
+              jQuery(sli).removeClass('menu-open menu-is-opening');
+              jQuery(sli).children('ul').hide();
+            }
+          );
+        });
+        menu.trigger("click");
+     }
     },
     /** 菜单查找*/
     search:function(name,limit){
@@ -672,11 +712,33 @@
   }
 
   function restoreNav(){
-    if(sessionStorage){
-       var groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
-       if(groupId) nav.displayGroupMenus(groupId);
-       var menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
-       if(menuHref) jQuery('#main_siderbar a[href="'+menuHref+'"]').trigger("click");
+    var menuHref = null;
+    var groupId = null;
+    var menuLoc = null;
+    if( document.location.hash && document.location.hash.startsWith("#/")){
+      menuHref = document.location.origin + document.location.hash.substring(1);
+    }
+
+    if(menuHref){
+      var menuLoc = nav.locateMenu(menuHref);
+      if(menuLoc){
+        nav.displayGroupMenus(menuLoc.group.id,menuLoc.app.id,menuLoc.menu);
+      }
+    }
+    if(!menuLoc && sessionStorage){
+      groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
+      menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
+      if(menuHref) {
+        menuLoc = nav.locateMenu(menuHref);
+        if(menuLoc){
+          nav.displayGroupMenus(menuLoc.group.id,menuLoc.app.id,menuLoc.menu);
+        }
+      }else if(groupId){
+        nav.displayGroupMenus(groupId);
+      }
+    }
+    if(!menuLoc && nav.welcomeUrl){
+      bg.Go(nav.welcomeUrl,'main');
     }
   }
 
@@ -706,5 +768,6 @@
   exports.changeNavSidebarTheme=changeNavSidebarTheme;
   exports.changeFontSize=changeFontSize;
   exports.clearNavState=clearNavState;
+  exports.setWelcomeUrl=function(url){return nav.setWelcomeUrl(url);}
   exports.getNav=function(){return nav;}
 })));

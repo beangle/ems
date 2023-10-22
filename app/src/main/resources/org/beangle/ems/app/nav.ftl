@@ -223,11 +223,7 @@
     </div>
   </aside>
   <div class="content-wrapper" id="main_wrapper">
-    [#if mainHref?? && mainHref?length>0 ]
-    [@b.div id="main"  href="${mainHref}"/]
-    [#else]
     [@b.div id="main"/]
-    [/#if]
   </div>
 
   <aside id="control_sidebar" class="control-sidebar control-sidebar-light control-sidebar-open" style="display: block;">
@@ -242,10 +238,10 @@
           <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2">
             导航风格:
-            <input name="nav_siderbar_theme" value="dark" checked="checked" id="nav_siderbar_theme_dark" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
-              <label for="nav_siderbar_theme_dark">暗黑</label>
-            <input name="nav_siderbar_theme" value="light" id="nav_siderbar_theme_light" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_light">浅白</label>
+            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
+              <label for="nav_siderbar_theme_dark">暗黑</label>
           </div>
           <div class="mb-2">
             界面语言:
@@ -276,7 +272,8 @@
       </div>
       <div class="tab-pane" id="control-sidebar-home-tab" style="padding: 10px 15px;">
         <h6 class="control-sidebar-heading">近期活动</h6>
-        <ul class="control-sidebar-menu">
+        <ul class="control-sidebar-menu" style="padding-left: 20px;">
+          <li>时间 <div id="clock" style="display:inline"></div></li>
         </ul>
       </div>
     </div>
@@ -309,11 +306,33 @@
       [#if nav.profiles??]
       emsnav.createProfileNav();
       [/#if]
+      [#if mainHref?? && mainHref?length>0 ]
+      emsnav.setWelcomeUrl('${b.url(mainHref)}');
+      [/#if]
       emsnav.setup(params);
       setTimeout(function(){jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");}, 1500);
       emsnav.enableSearch('menu_searcher');
       window.emsnav=emsnav;
     });
   });
+
+  var clockOffset=0;
+  $.get("${nav.ems.api}/tools/sys/time/now",function(data,status){
+     clockOffset = parseInt(data)-(new Date()).getTime();
+     setInterval(showTime, 1000);
+  });
+
+  function showTime() {
+      let time = new Date();
+      time.setTime(time.getTime()+clockOffset);
+      let hour = time.getHours();
+      let min = time.getMinutes();
+      let sec = time.getSeconds();
+      hour = hour < 10 ? "0" + hour : hour;
+      min = min < 10 ? "0" + min : min;
+      sec = sec < 10 ? "0" + sec : sec;
+
+      document.getElementById("clock").innerHTML = (hour + ":" + min + ":" + sec);
+  }
 </script>
 [/#macro]

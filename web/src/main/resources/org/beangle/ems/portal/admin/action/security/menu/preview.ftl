@@ -12,7 +12,7 @@
 [@b.div id="menuxml" href="!xml"/]
 </div>
 
-<table class="gridtable" align="center" style="width:80%">
+<table class="grid-table" align="center" style="width:80%">
   <tr class="thead">
    <td colspan="${depth}" width="40%">模块标题</td>
    <td  width="30%">${b.text("common.name")}</td>

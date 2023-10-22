@@ -3,7 +3,7 @@
 <div class="search-container">
  <div class="search-panel">
     [@b.form name="funcForm" action="!search" target="file_list" title="ui.searchForm" theme="search"]
-      [@b.select name="file.app.id" label="应用" items=apps empty="..." option="id,name" style="width:100px"/]
+      [@b.select name="file.app.id" label="应用" items=apps empty="..." option="id,fullTitle" style="width:100px"/]
       [@b.textfields names="file.name;文件路径"/]
     [/@]
  </div>
