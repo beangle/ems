@@ -33,7 +33,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
-                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="用户名" type="text" value="${Parameters['username']!}">
+                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="工号或学号" type="text" value="${Parameters['username']!}">
                     </div>
                   </div>
                   <div class="col-auto">
@@ -45,7 +45,7 @@
                   </div>
             <div class="col-auto">
               <div class="input-group mb-1">
-                    <div style="padding-top: 5px;margin-right: 50px;"><a href="${b.base}/login?local=1" style="font-size:0.8em;color:#515151;">密码登录</a></div>
+                    <div style="padding-top: 5px;margin-right: 50px;"><a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;">密码登录</a></div>
                     <input type="submit" name="submitBtn" tabindex="4" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
               </div>
             </div>
@@ -56,7 +56,6 @@
                 <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px"></td>
             </tr>
         </table>
-
    </div>
 </div>
 <script type="text/javascript">
@@ -89,7 +88,12 @@
       form.appendChild(input);
     }
     function displayError(msg){
-        document.getElementById("error_msg").innerHTML=msg;
+      document.getElementById("error_msg").innerHTML=msg;
+    }
+    function changeLogin(){
+      form.action="${b.base}/login";
+      addHidden(form,"local","1");
+      form.submit();
     }
 </script>
 </body>

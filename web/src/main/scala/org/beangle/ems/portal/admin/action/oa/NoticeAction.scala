@@ -20,10 +20,10 @@ package org.beangle.ems.portal.admin.action.oa
 import jakarta.servlet.http.Part
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.ems.core.oa.model._
-import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.{User, Category}
+import org.beangle.ems.core.oa.model.*
+import org.beangle.ems.core.oa.service.DocService
+import org.beangle.ems.core.user.model.{Category, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.ignore
@@ -90,7 +90,7 @@ class NoticeAction extends RestfulAction[Notice] {
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notice.categories.clear()
     notice.categories ++= entityDao.find(classOf[Category], getIntIds("category"))
-    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf")
+    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar","jpg","png")
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
       val doc = new Doc
@@ -106,8 +106,8 @@ class NoticeAction extends RestfulAction[Notice] {
       }
     }
     if (disallowed) {
-      addFlashMessage("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf后缀的文件")
-      throw new RuntimeException("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf后缀的文件")
+      addFlashMessage("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf,zip,jpg,png后缀的文件")
+      throw new RuntimeException("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf,zip,jpg,png后缀的文件")
     } else {
       notice.status = NoticeStatus.Submited
       super.saveAndRedirect(notice)

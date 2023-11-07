@@ -17,12 +17,14 @@
 
 package org.beangle.ems.core.oa.model
 
+import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{User, Category}
+import org.beangle.ems.core.user.model.{Category, User}
 
 import scala.collection.mutable
 
@@ -41,6 +43,12 @@ class Doc extends LongId with Updated {
   var categories: mutable.Set[Category] = Collections.newSet
 
   var archived: Boolean = _
+
+  def image: Boolean = {
+    MediaTypes.get(Strings.substringAfterLast(filePath, ".")) match
+      case None => false
+      case Some(mt) => mt.primaryType == "image"
+  }
 
   def url: String = EmsApp.getBlobRepository().path(this.filePath).get
 }

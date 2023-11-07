@@ -22,10 +22,10 @@
       [#list members?sort_by(['role','indexno']) as m][#if m.member]${m.role.name}&nbsp;[/#if][/#list]
     [/@]
     [@b.col property="user.mobile" title="手机号码" width="9%"]
-      [#if account.user.mobile??]
+      [#if account.user.mobile?? && account.user.mobile?length>10]
         <span title="${account.user.mobile}">${(account.user.mobile[0..2])!}****${(account.user.mobile[7..10])!}</span>
       [#else]
-      --
+        ${(account.user.mobile)!"--"}
       [/#if]
     [/@]
     [@b.col property="beginOn" title="有效期" width="12%"]${account.beginOn}~${(account.endOn)!}[/@]

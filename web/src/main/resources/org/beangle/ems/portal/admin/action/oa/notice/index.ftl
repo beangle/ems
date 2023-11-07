@@ -9,11 +9,11 @@
       [@b.select label="状态" name="notice.status" items={"0":"草稿","1":"提交","2":"审核不通过","3":"审核通过"}  empty="..."/]
       [@b.textfield label="起草人" name="notice.operator.name" /]
       [@b.select label="是否归档" name="notice.archived" items={"1":"是","0":"否"} empty="..."/]
-      <input type="hidden" name="orderBy" value="notice.publishedAt desc"/>
+      <input type="hidden" name="orderBy" value="notice.updatedAt desc"/>
     [/@]
  </div>
  <div class="search-list">
-   [@b.div id="noticelist" href="!search?orderBy=notice.publishedAt desc"/]
+   [@b.div id="noticelist" href="!search?orderBy=notice.updatedAt desc"/]
  </div>
 </div>
 [@b.foot/]

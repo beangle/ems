@@ -42,7 +42,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
-                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="用户名" type="text" value="">
+                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="工号或学号" type="text" value="">
                     </div>
                   </div>
                   <div class="col-auto">
@@ -66,7 +66,7 @@
             <div class="col-auto">
               <div class="input-group mb-1">
                     [#if setting.enableSmsLogin]
-                    <div style="padding-top: 5px;margin-right: 40px;"><a href="javascript:void(0)" onclick="toSmsLogin()" style="font-size:0.8em;color:#515151;">短信登录</a></div>
+                    <div style="padding-top: 5px;margin-right: 40px;"><a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;">短信登录</a></div>
                     [#else]
                     <div style="padding-top: 5px;margin-right: 40px;"><a href="safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
                     [/#if]
@@ -80,7 +80,6 @@
                 <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px"></td>
             </tr>
         </table>
-
    </div>
 </div>
 ${b.script("cryptojs","rollups/aes.js")}
@@ -142,17 +141,22 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
       }
     }
     function addHidden(form,name,value){
-      var input = document.createElement('input');
-      input.setAttribute("name",name);
-      input.setAttribute("value",value);
-      input.setAttribute("type","hidden");
-      form.appendChild(input);
+      if(!form[name]){
+        var input = document.createElement('input');
+        input.setAttribute("name",name);
+        input.setAttribute("value",value);
+        input.setAttribute("type","hidden");
+        form.appendChild(input);
+      }else{
+        form[name].value=value;
+      }
     }
     function displayError(msg){
         document.getElementById("error_msg").innerHTML=msg;
     }
-    function toSmsLogin(){
-      form.action="${b.base}/sms-login"
+    function changeLogin(){
+      form.action="${b.base}/sms-login";
+      addHidden(form,"local","1");
       form.submit();
     }
 </script>

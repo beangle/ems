@@ -184,7 +184,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     (xml \ "menu") foreach { m =>
       val indexno = (m \ "@indexno").text.trim
       val name = (m \ "@name").text.trim
-      val menu = findMenu(app, indexno, name).getOrElse(new Menu)
+      val menu = findMenu(app, parent, name).getOrElse(new Menu)
       menu.name = name
       menu.indexno = indexno
       menu.app = app
@@ -224,9 +224,11 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     }
   }
 
-  private def findMenu(app: App, indexno: String, name: String): Option[Menu] = {
+  private def findMenu(app: App, parent: Option[Menu], name: String): Option[Menu] = {
     val builder = OqlBuilder.from(classOf[Menu], "m").where("m.app=:app", app)
-    builder.where("m.indexno=:indexno and m.name=:name", indexno, name)
+    parent match
+      case None => builder.where("m.name=:name and m.parent is null", name)
+      case Some(p) => builder.where("m.name=:name and m.parent=:p", name, p)
     entityDao.search(builder).headOption
   }
 

@@ -16,8 +16,12 @@
   [@b.startend label="有效期限" name="notice.beginOn,notice.endOn" required="true,true" start=notice.beginOn end=notice.endOn format="date"/]
   [@b.editor name="notice.contents" id="notice_content" label="内容" rows="20" cols="80" value=notice.contents maxlength="30000" required="true"/]
 
+  [#list notice.docs as d]
+  [@b.field label="附件"]${d.name}[/@]
+  [/#list]
+
   [#list 1..(3-notice.docs?size) as i]
-  [@b.file label="附件"+i name="notice_doc" maxSize="5MB" extensions="doc,docx,pdf,xls,xlsx"/]
+  [@b.file label="附件"+i name="notice_doc" maxSize="20MB" extensions="doc,docx,pdf,xls,xlsx,zip,rar,png,jpg"/]
   [/#list]
   [@b.formfoot]
    [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
