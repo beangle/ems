@@ -621,7 +621,11 @@
 
   function setLocal(name,value){
     if(localStorage){
-      localStorage.setItem(name,value);
+      if(value){
+        localStorage.setItem(name,value);
+      }else{
+        localStorage.removeItem(name);
+      }
     }
   }
   function getLocal(name,defaultValue){
@@ -632,7 +636,8 @@
     }
   }
 
-  function setup(params) {
+  function setup(theme,params) {
+    nav.theme = theme;
     jQuery("body").addClass("sidebar-mini layout-fixed text-sm");
     document.documentElement.style.setProperty("scrollbar-width","thin");
     fetchMessages(params);
@@ -655,6 +660,7 @@
 
     changeNavSidebarTheme(getLocal("beangle.ems.nav_sidebar_theme","--"));
     changeFontSize(getLocal("beangle.ems.root_font_size","--"));
+    applyTheme(getLocal("beangle.ems.theme",theme))
 
     var pageSize = beangle.cookie.get("pageSize");
     if(pageSize) jQuery("#page_size_selector").val(pageSize);
@@ -704,13 +710,42 @@
   }
 
   function changeFontSize(font_size){
-    if(font_size =="--") return;
+    if(font_size == "--") return;
     jQuery("#control_sidebar input[name=root_font_size]").each(function(i,a){ if(jQuery(a).val()==font_size) jQuery(a).prop("checked",true)})
     if(localStorage) localStorage.setItem("beangle.ems.root_font_size",font_size);
     document.documentElement.style.setProperty("font-size",font_size);
     jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");//对齐brand
   }
 
+  function changeTheme(theme){
+    if(theme){
+      if(typeof theme == "string"){
+        theme = JSON.parse(theme)
+      }
+      applyTheme(theme)
+      setLocal("beangle.ems.theme",JSON.stringify(theme))
+    }else{
+      applyTheme(nav.theme)
+      setLocal("beangle.ems.theme",null)
+    }
+  }
+
+  function applyTheme(theme){
+    if(typeof theme =="string"){
+      theme = JSON.parse(theme)
+    }
+    var r = document.querySelector(':root');
+    r.style.setProperty("--primary-color",theme.primaryColor)
+    r.style.setProperty("--navbar-bg-color",theme.navbarBgColor)
+    r.style.setProperty("--search-bg-color",theme.searchBgColor)
+    r.style.setProperty("--gridbar-bg-color",theme.gridbarBgColor)
+    r.style.setProperty("--grid-border-color",theme.gridBorderColor)
+    jQuery("#theme_primaryColor").val(theme.primaryColor)
+    jQuery("#theme_navbarBgColor").val(theme.navbarBgColor)
+    jQuery("#theme_searchBgColor").val(theme.searchBgColor)
+    jQuery("#theme_gridbarBgColor").val(theme.gridbarBgColor)
+    jQuery("#theme_gridBorderColor").val(theme.gridBorderColor)
+  }
   function restoreNav(){
     var menuHref = null;
     var groupId = null;
@@ -768,6 +803,7 @@
   exports.changeNavSidebarTheme=changeNavSidebarTheme;
   exports.changeFontSize=changeFontSize;
   exports.clearNavState=clearNavState;
-  exports.setWelcomeUrl=function(url){return nav.setWelcomeUrl(url);}
+  exports.setWelcomeUrl=function(url){nav.setWelcomeUrl(url);}
   exports.getNav=function(){return nav;}
+  exports.changeTheme=changeTheme;
 })));

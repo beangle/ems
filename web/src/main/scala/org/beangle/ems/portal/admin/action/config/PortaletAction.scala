@@ -20,11 +20,12 @@ package org.beangle.ems.portal.admin.action.config
 import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.Category
-import org.beangle.web.action.support.ActionSupport
 import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.{EntityAction, RestfulAction}
+import org.beangle.webmvc.support.action.RestfulAction
 
 class PortaletAction extends RestfulAction[Portalet] {
+
+  var domainService: DomainService = _
 
   override def indexSetting(): Unit = {
     put("categories", entityDao.getAll(classOf[Category]))
@@ -35,6 +36,7 @@ class PortaletAction extends RestfulAction[Portalet] {
   }
 
   override protected def saveAndRedirect(p: Portalet): View = {
+    p.domain = domainService.getDomain
     val categories = entityDao.find(classOf[Category], getIntIds("category"))
     p.categories.clear()
     p.categories.addAll(categories)

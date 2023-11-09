@@ -65,4 +65,8 @@ Portalet.idx=序号
 Portalet.url=地址
 Portalet.title=标题
 
-
+Theme=主题
+Theme.navbarBgColor=导航栏背景颜色
+Theme.gridbarBgColor=表格工具栏背景颜色
+Theme.searchBgColor=查询框背景颜色
+Theme.gridBorderColor=表格边框颜色

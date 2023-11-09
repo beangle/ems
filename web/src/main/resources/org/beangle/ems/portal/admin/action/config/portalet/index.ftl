@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+[#include "../nav_theme.ftl"/]
 <div class="search-container">
  <div class="search-panel">
     [@b.form name="portaletSearchForm" action="!search" target="portaletlist" title="ui.searchForm" theme="search"]

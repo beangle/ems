@@ -17,32 +17,35 @@
 
 package org.beangle.ems.core.config.model
 
-import org.beangle.commons.collection.Collections
-import org.beangle.data.model.IntId
+import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Enabled, Named}
-import org.beangle.ems.core.user.model.Category
 
-import scala.collection.mutable
+object Theme {
+  val Default = new Theme()
+  Default.primaryColor = "#007bff"
+  Default.navbarBgColor = "#3c8dbc"
+  Default.searchBgColor = "#e1ecff"
+  Default.gridbarBgColor = "#c7dbff"
+  Default.gridBorderColor = "#006cb2"
+}
 
-/**
-  * 小部件
-  */
-class Portalet extends IntId with Named with Enabled {
-
+/** 主题 */
+class Theme extends LongId, Named, Enabled {
+  /** 域 */
   var domain: Domain = _
 
-  var idx: Int = _
+  var primaryColor: String = _
 
-  var title: String = _
+  /** 导航栏背景颜色 */
+  var navbarBgColor: String = _
 
-  var url: String = _
+  /** 查询框背景颜色 */
+  var searchBgColor: String = _
 
-  var usingIframe: Boolean = _
+  /** 表格工具栏背景颜色 */
+  var gridbarBgColor: String = _
 
-  var rowIndex: Int = _
-
-  var colspan: Int = _
-
-  var categories: mutable.Set[Category] = Collections.newSet[Category]
+  /** 表格边框颜色 */
+  var gridBorderColor: String = _
 
 }

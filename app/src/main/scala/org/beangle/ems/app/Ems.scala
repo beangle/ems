@@ -93,6 +93,7 @@ object Ems extends Logging {
     var logoUrl: String = _
     var org: Org = _
   }
+  case class Theme(primaryColor:String,navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridBorderColor: String)
 
   case class Sid(name: String, prefix: String)
 

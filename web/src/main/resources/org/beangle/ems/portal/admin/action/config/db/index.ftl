@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-[#include "../nav.ftl"/]
+[#include "../nav_db.ftl"/]
 <div class="search-container">
  <div class="search-panel">
     [@b.form name="dbSearchForm" action="!search" target="dblist" title="ui.searchForm" theme="search"]

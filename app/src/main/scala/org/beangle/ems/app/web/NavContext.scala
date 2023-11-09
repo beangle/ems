@@ -70,6 +70,7 @@ object NavContext {
       }
       ctx.profiles = Some("[" + sb.mkString(",") + "]")
     }
+    ctx.theme = RemoteService.getTheme
     ctx
   }
 }
@@ -84,6 +85,7 @@ class NavContext {
   var username = Securities.user
   var profiles: Option[String] = None
   var cookie: Option[String] = None
+  var theme: Ems.Theme = _
 
   def ems = Ems
 

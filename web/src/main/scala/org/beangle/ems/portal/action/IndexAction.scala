@@ -74,6 +74,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     val query = OqlBuilder.from(classOf[Portalet], "p")
     query.where(":category in elements(p.categories)", me.category)
+    query.where("p.domain=:domain",domainService.getDomain)
     query.orderBy("p.idx")
     query.cacheable()
     val portalets = entityDao.search(query)

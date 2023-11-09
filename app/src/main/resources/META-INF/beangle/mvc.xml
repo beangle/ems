@@ -2,12 +2,9 @@
 <mvc>
   <static>
     <bundle name="local" version="default"/>
-    <bundle name="ems" version="4.7.5">
+    <bundle name="ems" version="4.8.0">
       <module name="ems" js="js/ems.js"/>
       <module name="ems-nav" js="js/nav.js" css="css/nav.css" depends="adminlte,ems" />
-    </bundle>
-    <bundle name="kalendae" version="1.0.2">
-      <module name="kalendae" js="js/kalendae.standalone.js" css="css/kalendae.css"/>
     </bundle>
   </static>
 </mvc>

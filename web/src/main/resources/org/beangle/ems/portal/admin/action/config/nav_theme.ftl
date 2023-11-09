@@ -1,0 +1,5 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="portalet"]首页[/@]
+    [@b.navitem href="theme"]主题颜色[/@]
+  [/@]

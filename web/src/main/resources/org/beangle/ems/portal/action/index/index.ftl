@@ -113,9 +113,39 @@
   .control-sidebar, .control-sidebar::before {
     width:13rem;
   }
+  [#--override bootstrap--]
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  a {
+    color: var(--primary-color);
+  }
+  .btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  .sidebar.nav-legacy > .nav-item > .nav-link.active {
+    border-color: var(--primary-color);
+  }
+  .sidebar-dark-lightblue .nav-sidebar.nav-legacy > .nav-item > .nav-link.active, .sidebar-light-lightblue .nav-sidebar.nav-legacy > .nav-item > .nav-link.active {
+    border-color: var(--primary-color);
+  }
+  .card-primary.card-outline {
+    border-top: 3px solid var(--primary-color);
+  }
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: var(--primary-color);
+  }
 </style>
 <div class="wrapper">
-    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark navbar-lightblue border-bottom-0">
+    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--navbar-bg-color)">
       <ul class="nav navbar-nav">
          <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu"  title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -201,7 +231,7 @@
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="${b.base}" class="brand-link navbar-lightblue" title="${nav.org.name} ${nav.domain.title}" style="border:0px;" onclick="emsnav.clearNavState();return true;">
+    <a href="${b.base}" class="brand-link title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsnav.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
@@ -269,6 +299,17 @@
               [/#list]
             </select>
           </div>
+          <hr/>
+          <div class="mb-2">
+            <ul style="padding-left: 0px;list-style-type: none;">
+              <li class="mb-2">主要字体颜色：<input type="color" id="theme_primaryColor" onchange="changeTheme()" style="height: 20px;padding: 0px;" value=""/></li>
+              <li class="mb-2">导航区背景：<input type="color" id="theme_navbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;" value=""/></li>
+              <li class="mb-2">查询区背景：<input type="color" id="theme_searchBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
+              <li class="mb-2">工具栏背景：<input type="color" id="theme_gridbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
+              <li class="mb-2">表格边框颜色：<input type="color" id="theme_gridBorderColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
+              <li><button class="btn btn-outline-primary btn-sm" onclick="emsnav.changeTheme(null,true)">恢复默认值</button>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="tab-pane" id="control-sidebar-home-tab" style="padding: 10px 15px;">
@@ -299,6 +340,7 @@
       params['maxTopItem']=8;
     }
     [/#if]
+
     jQuery(document).ready(function(){
       emsnav.createNav(app,app,${nav.menusJson},params,true);
       [#if nav.profiles??]
@@ -307,7 +349,8 @@
       [#if mainHref?? && mainHref?length>0 ]
       emsnav.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
-      emsnav.setup(params);
+      var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
+      emsnav.setup(theme,params);
       setTimeout(function(){jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");}, 1500);
       emsnav.enableSearch('menu_searcher');
       window.emsnav=emsnav;
@@ -331,6 +374,17 @@
       sec = sec < 10 ? "0" + sec : sec;
 
       document.getElementById("clock").innerHTML = (hour + ":" + min + ":" + sec);
+  }
+
+  function changeTheme(i){
+    if(!i) i=20;
+    var theme={}
+    theme.primaryColor=jQuery("#theme_primaryColor").val();
+    theme.navbarBgColor=jQuery("#theme_navbarBgColor").val();
+    theme.searchBgColor=jQuery("#theme_searchBgColor").val();
+    theme.gridbarBgColor=jQuery("#theme_gridbarBgColor").val();
+    theme.gridBorderColor=jQuery("#theme_gridBorderColor").val();
+    emsnav.changeTheme(theme)
   }
 </script>
 [/#macro]

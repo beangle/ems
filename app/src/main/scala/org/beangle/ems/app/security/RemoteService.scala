@@ -27,8 +27,8 @@ import org.beangle.security.authz.Authority
 import java.util.Locale
 
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 object RemoteService {
 
   def roots: Option[Set[String]] = {
@@ -107,5 +107,22 @@ object RemoteService {
       data.get("logoUrl") foreach (e => org.logoUrl = e.toString)
       data.get("wwwUrl") foreach (e => org.wwwUrl = e.toString)
     org
+  }
+
+  def getTheme: Ems.Theme = {
+    val json = getText(Ems.api + "/platform/config/themes.json").getOrElse(null)
+    val data = JSON.parseObj(json)
+    var primaryColor: String = null
+    var navbarBgColor: String = null
+    var searchBgColor: String = null
+    var gridbarBgColor: String = null
+    var gridBorderColor: String = null
+
+    data.get("primaryColor") foreach (e => primaryColor = e.toString)
+    data.get("navbarBgColor") foreach (e => navbarBgColor = e.toString)
+    data.get("searchBgColor") foreach (e => searchBgColor = e.toString)
+    data.get("gridbarBgColor") foreach (e => gridbarBgColor = e.toString)
+    data.get("gridBorderColor") foreach (e => gridBorderColor = e.toString)
+    Ems.Theme(primaryColor, navbarBgColor, searchBgColor, gridbarBgColor, gridBorderColor)
   }
 }

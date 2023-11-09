@@ -87,6 +87,11 @@ object DefaultMapping extends MappingModule {
     bind[File].declare { e =>
       index("", true, e.app, e.name)
     }
+
+    bind[Theme].declare { e =>
+      e.gridBorderColor & e.gridbarBgColor & e.navbarBgColor & e.searchBgColor are length(15)
+    }
+
     all.cacheAll()
   }
 

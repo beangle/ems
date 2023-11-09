@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-[#include "../nav.ftl"/]
+[#include "../nav_db.ftl"/]
 <div class="search-container">
  <div class="search-panel">
     [@b.form name="credentialSearchForm" action="!search" target="credentiallist" title="ui.searchForm" theme="search"]
