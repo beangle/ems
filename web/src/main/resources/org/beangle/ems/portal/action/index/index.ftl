@@ -143,6 +143,13 @@
     color: #fff;
     background-color: var(--primary-color);
   }
+  .btn-primary:focus, .btn-primary.focus {
+    background-color: var(--primary-color);
+  }
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
 </style>
 <div class="wrapper">
     <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--navbar-bg-color)">

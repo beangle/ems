@@ -12,7 +12,9 @@
     [@b.col width="8%" property="app.title" title="应用"/]
     [@b.col property="name" title="common.name"/]
     [@b.col width="5%" property="locale" title="语言"/]
-    [@b.col width="60%" property="texts" title="词条"/]
+    [@b.col width="30%" property="texts" title="词条"]
+      ${bundle.texts?split("\n")?size}
+    [/@]
   [/@]
 [/@]
 [@b.foot/]

@@ -33,7 +33,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
-                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="工号或学号" type="text" value="${Parameters['username']!}">
+                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="${b.text('ui.login.username.tip')}" type="text" value="${Parameters['username']!}">
                     </div>
                   </div>
                   <div class="col-auto">
