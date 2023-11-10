@@ -30,5 +30,6 @@ class ConfigModule extends BindModule {
 
     bind(classOf[PortaletAction])
     bind(classOf[ThemeAction])
+    bind(classOf[TextBundleAction])
   }
 }

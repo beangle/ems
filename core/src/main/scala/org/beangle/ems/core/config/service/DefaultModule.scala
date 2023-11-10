@@ -18,7 +18,7 @@
 package org.beangle.ems.core.config.service
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.core.config.service.impl._
+import org.beangle.ems.core.config.service.impl.*
 
 class DefaultModule extends BindModule {
 
@@ -28,6 +28,8 @@ class DefaultModule extends BindModule {
     bind(classOf[CredentialServiceImpl])
     bind(classOf[AppServiceImpl])
     bind(classOf[DomainServiceImpl])
-
+    bind("mvc.TextBundleRegistry.db", classOf[DbTextBundleRegistry])
+      .property("reloadable", devEnabled)
+      .primary()
   }
 }

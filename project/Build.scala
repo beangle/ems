@@ -2,7 +2,7 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.4"
+  val commonsVer = "5.6.5"
   val dataVer = "5.7.6"
   val cdiVer = "0.5.5"
   val webVer = "0.4.6"
@@ -15,6 +15,7 @@ object EmsDepends {
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
+  val commonsText = "org.beangle.commons" %% "beangle-commons-text" % commonsVer
   val dataJdbc = "org.beangle.data" %% "beangle-data-jdbc" % dataVer
   val dataOrm = "org.beangle.data" %% "beangle-data-orm" % dataVer
   val dataTransfer = "org.beangle.data" %% "beangle-data-transfer" % dataVer
@@ -38,7 +39,8 @@ object EmsDepends {
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
   val idsSms = "org.beangle.ids" %% "beangle-ids-sms" % idsVer
 
-  val appDepends = Seq(commonsCore, commonsFile, logback_classic, logback_core, scalatest, webAction, cdiApi, cdiSpring, gson, HikariCP) ++
+  val appDepends = Seq(commonsCore, commonsFile, commonsText, logback_classic, logback_core, scalatest, webAction) ++
+    Seq(cdiApi, cdiSpring, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++
     Seq(postgresql, caffeine_jcache, hibernate_jcache)
 }

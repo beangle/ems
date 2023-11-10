@@ -92,6 +92,10 @@ object DefaultMapping extends MappingModule {
       e.gridBorderColor & e.gridbarBgColor & e.navbarBgColor & e.searchBgColor are length(15)
     }
 
+    bind[TextBundle] declare { e =>
+      e.texts is lob
+    }
+
     all.cacheAll()
   }
 
