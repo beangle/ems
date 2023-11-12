@@ -31,6 +31,7 @@ class DefaultModule extends BindModule {
   protected override def binding(): Unit = {
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
     bind(classOf[oauth.TokenWS], classOf[config.DomainWS], classOf[config.ThemeWS])
+    bind(classOf[config.TextBundleWS])
 
     bind(classOf[oa.NoticeWS], classOf[oa.DocWS])
 
