@@ -23,7 +23,7 @@ import org.beangle.ems.app.web.tag.EmsTagLibrary
 class DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
-    bind("mvc.Taglibrary.ems", classOf[EmsTagLibrary])
+    bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary])
     bind(classOf[WebBusinessLogger])
   }
 }
