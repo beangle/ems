@@ -27,8 +27,6 @@ class DefaultModule extends BindModule {
     val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
     bind(classOf[AsyncBusinessLogger])
       .property("appenders",
-        List(
-          new ConsoleAppender(layout),
-          new RemoteAppender(Ems.api + s"/platform/log/push")))
+        List(new RemoteAppender(Ems.api + s"/platform/log/push")))
   }
 }

@@ -287,6 +287,7 @@ class AccountAction extends RestfulAction[Account], ExportSupport[Account] {
           memberMap.put(gm.role, gm)
         }
       }
+      put("user",account.user)
     }
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)

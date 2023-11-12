@@ -66,7 +66,6 @@ ui.dataPermission.info=数据权限策略
 user.manage=用户管理
 account.newPassword=新密码
 account.oldPassword=旧密码
-account.passwdExpiredOn=密码过期时间
 account.password.sendmail.body=登录名{0};密码{1}
 account.password.sendmail.title=密码找回
 account.password=密码

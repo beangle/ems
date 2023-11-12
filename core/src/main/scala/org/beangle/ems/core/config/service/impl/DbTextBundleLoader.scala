@@ -20,7 +20,7 @@ package org.beangle.ems.core.config.service.impl
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Charsets
-import org.beangle.commons.text.i18n.DefaultTextBundleRegistry
+import org.beangle.commons.text.i18n.DefaultTextBundleLoader
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.TextBundle
@@ -29,7 +29,7 @@ import org.beangle.ems.core.config.service.DomainService
 import java.io.{ByteArrayInputStream, InputStream}
 import java.util.Locale
 
-class DbTextBundleRegistry extends DefaultTextBundleRegistry, Initializing {
+class DbTextBundleLoader extends DefaultTextBundleLoader, Initializing {
 
   var entityDao: EntityDao = _
 
@@ -46,12 +46,11 @@ class DbTextBundleRegistry extends DefaultTextBundleRegistry, Initializing {
     }
   }
 
-  override protected def loadExtra(locale: Locale, bundleName: String): collection.Seq[(String, InputStream)] = {
+  override protected def findExtra(locale: Locale, bundleName: String): collection.Seq[(String, InputStream)] = {
     bundles.get(s"${bundleName}@${locale.toString}") match {
       case None => List.empty
       case Some(id) =>
         val b = entityDao.get(classOf[TextBundle], id)
-        if reloadable then entityDao.refresh(b)
         List((b.name + "@db", new ByteArrayInputStream(b.texts.getBytes(Charsets.UTF_8))))
     }
   }
