@@ -47,11 +47,12 @@ class DbTextBundleLoader extends DefaultTextBundleLoader, Initializing {
   }
 
   override protected def findExtra(locale: Locale, bundleName: String): collection.Seq[(String, InputStream)] = {
-    bundles.get(s"${bundleName}@${locale.toString}") match {
+    val bundleKey = s"${bundleName}@${locale.toString}"
+    bundles.get(bundleKey) match {
       case None => List.empty
       case Some(id) =>
         val b = entityDao.get(classOf[TextBundle], id)
-        List((b.name + "@db", new ByteArrayInputStream(b.texts.getBytes(Charsets.UTF_8))))
+        List((bundleKey, new ByteArrayInputStream(b.texts.getBytes(Charsets.UTF_8))))
     }
   }
 
