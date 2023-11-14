@@ -17,11 +17,13 @@
 
 package org.beangle.ems.core.user.service
 
-import org.beangle.ems.core.user.model.{MemberShip, RoleMember, User, Category}
+import org.beangle.ems.core.user.model.{Category, MemberShip, RoleMember, User}
 
 trait UserService {
 
   def get(code: String): Option[User]
+
+  def getIgnoreCase(code: String): Option[User]
 
   def get(id: Long): User
 
@@ -37,5 +39,5 @@ trait UserService {
 
   def isRoot(user: User, appName: String): Boolean
 
-  def getCategories():Seq[Category]
+  def getCategories(): Seq[Category]
 }

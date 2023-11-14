@@ -19,13 +19,13 @@ package org.beangle.ems.portal.admin.action.user
 
 import jakarta.servlet.http.Part
 import org.apache.commons.compress.archivers.zip.ZipFile
-import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.{Strings, SystemInfo, Throwables}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
+import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Avatar, User}
-import org.beangle.ems.core.user.service.AvatarService
+import org.beangle.ems.core.user.service.{AvatarService, UserService}
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Status, View}
@@ -40,8 +40,13 @@ class AvatarAction extends ActionSupport with ServletSupport {
 
   var avatarService: AvatarService = _
 
+  var domainService: DomainService = _
+
+  var userService: UserService = _
+
   def index(): View = {
     val query = OqlBuilder.from(classOf[User], "user")
+    query.where("user.org=:org", domainService.getOrg)
     QueryHelper.populate(query)
     get("user") foreach { u =>
       query.where("user.code like :u or user.name like :u", "%" + u + "%")
@@ -110,7 +115,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
         logger.info(name + " is dir,skipped")
       } else {
         val usercode = Strings.substringBeforeLast(name, ".")
-        val users = entityDao.findBy(classOf[User], "code", List(usercode))
+        val users = userService.getIgnoreCase(usercode)
         if (users.isEmpty) {
           logger.warn("Cannot find user info of " + usercode)
         } else {
@@ -136,9 +141,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
             logger.warn(photoname + " format is error")
           } else {
             val usercode = Strings.substringBeforeLast(photoname, ".")
-            val query = OqlBuilder.from(classOf[User], "u")
-            query.where("lower(u.code)=:code", usercode.toLowerCase)
-            val users = entityDao.search(query)
+            val users = userService.getIgnoreCase(usercode)
             if (users.isEmpty) {
               logger.warn("Cannot find user info of " + usercode)
             } else {

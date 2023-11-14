@@ -38,6 +38,13 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
     entityDao.search(query).headOption
   }
 
+  def getIgnoreCase(code: String): Option[User] = {
+    val query = OqlBuilder.from(classOf[User], "u")
+    query.where("u.org=:org", domainService.getOrg)
+    query.where("lower(u.code)=:code", code.toLowerCase)
+    entityDao.search(query).headOption
+  }
+
   def get(id: Long): User = {
     entityDao.get(classOf[User], id)
   }
