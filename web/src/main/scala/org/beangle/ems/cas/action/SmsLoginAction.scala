@@ -83,8 +83,11 @@ class SmsLoginAction(securityManager: WebSecurityManager, ticketRegistry: Ticket
       case Some(account) =>
         account.user.mobile match
           case None => "发送失败，该用户未绑定手机。"
-          case Some(mobile) => smsCodeService.send(Receiver(mobile, account.user.name))
-
+          case Some(mobile) =>
+            if smsCodeService.validate(mobile) then
+              smsCodeService.send(Receiver(mobile, account.user.name))
+            else
+              s"手机号码${mobile}不正确"
     response.setCharacterEncoding("utf-8")
     response.getWriter.print(result)
     null
