@@ -2,15 +2,15 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.5"
+  val commonsVer = "5.6.6"
   val dataVer = "5.7.7"
-  val cdiVer = "0.5.5"
+  val cdiVer = "0.6.0"
   val webVer = "0.4.7"
-  val serializerVer = "0.1.5"
+  val serializerVer = "0.1.6"
   val cacheVer = "0.1.5"
   val templateVer = "0.1.8"
-  val webmvcVer = "0.9.17"
-  val securityVer = "4.3.13"
+  val webmvcVer = "0.9.18"
+  val securityVer = "4.3.14"
   val idsVer = "0.3.13"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer

@@ -18,12 +18,25 @@
 package org.beangle.ems.app.web
 
 import org.beangle.cdi.bind.ReconfigModule
+import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.web.action.view.Static
 
 class WebReconfigModule extends ReconfigModule {
   override protected def config(): Unit = {
+    //1.模板个性化
     //support load remote freemarker template files
     update("mvc.FreemarkerConfigurer.default")
       .set("templatePath", s"${Ems.api}/platform/config/files/${EmsApp.name}/{path},class://")
+
+    //2.国际化词条个性化
+    //using http text bundle loader
+    update("mvc.TextBundleLoader.http").primaryOf(classOf[TextBundleLoader])
+
+    //3.spring配置个性化
+    this.configUrl = s"${Ems.api}/platform/config/files/${EmsApp.name}/spring-config.xml"
+
+    //4. 静态文件配置
+    Static.Default.base = Ems.static
   }
 }

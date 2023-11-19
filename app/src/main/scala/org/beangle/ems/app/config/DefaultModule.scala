@@ -17,21 +17,14 @@
 
 package org.beangle.ems.app.config
 
-import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.text.i18n.HttpTextBundleLoader
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.Ems
-import org.beangle.ems.app.security.RemoteAuthorizer
-import org.beangle.security.authc.{DefaultAccount, RealmAuthenticator}
-import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint}
-import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, SessionSerializer}
-import org.beangle.security.session.{DefaultSession, Session}
-import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
-import org.beangle.security.web.session.CookieSessionIdReader
-import org.beangle.serializer.protobuf.ProtobufSerializer
-
 class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
-    bind("mvc.TextBundleLoader.http", classOf[HttpTextBundleLoader]).primary()
+    bind("mvc.TextBundleLoader.http", classOf[HttpTextBundleLoader])
+      .constructor(s"${Ems.api}/platform/config/text-bundles/${EmsApp.name}/{path}", true)
   }
 }

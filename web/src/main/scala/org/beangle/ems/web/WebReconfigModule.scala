@@ -18,17 +18,38 @@
 package org.beangle.ems.web
 
 import org.beangle.cdi.bind.ReconfigModule
+import org.beangle.commons.io.{Dirs, Files}
+import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.web.action.view.Static
 
 import java.io.File
 
 class WebReconfigModule extends ReconfigModule {
   override protected def config(): Unit = {
-    val file = new File(Ems.home + EmsApp.path + "/pages")
+    val file = new File(Ems.home + EmsApp.path)
+
+    //1.模板个性化 当本地项目文件存在，并且包含模板文件时才启用本地加载
     if (file.exists()) {
-      //support load local freemarker template files
-      update("mvc.FreemarkerConfigurer.default")
-        .set("templatePath", s"file://${Ems.home + EmsApp.path}/pages/,class://")
+      var templateCount = 0
+      Files.travel(file, f => {
+        if (f.getName.endsWith(".ftl")) templateCount += 1
+      })
+      if (templateCount > 0) {
+        //support load local freemarker template files
+        update("mvc.FreemarkerConfigurer.default")
+          .set("templatePath", s"file://${Ems.home + EmsApp.path}/,class://")
+      }
     }
+
+    //2.国际化词条个性化
+    update("mvc.TextBundleLoader.db").primaryOf(classOf[TextBundleLoader])
+
+    //3.spring配置个性化
+    this.configUrl = s"file://${Ems.home + EmsApp.path}/spring-config.xml"
+
+    //4. 静态文件配置
+    Static.Default.base = Ems.static
   }
+
 }
