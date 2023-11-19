@@ -4,6 +4,8 @@ create table ems.cfg_text_bundles (name varchar(255) not null, texts text not nu
 alter table ems.cfg_themes add constraint pk_8cgpd1jxx29su0g416k4uqq7h primary key (id);
 alter table ems.cfg_text_bundles add constraint pk_7ckmfs80yl3vy0rb4h5kw0wy7 primary key (id);
 
+alter table ems.usr_users add mobile varchar(15);
+alter table ems.usr_users add email varchar(100);
 alter table ems.cfg_portalets add domain_id integer;
 --careful for multiple domain
 update ems.cfg_portalets set domain_id = (select id from ems.cfg_domains);
