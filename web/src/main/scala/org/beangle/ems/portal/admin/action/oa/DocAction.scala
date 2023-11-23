@@ -20,10 +20,10 @@ package org.beangle.ems.portal.admin.action.oa
 import jakarta.servlet.http.Part
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
+import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.oa.service.DocService
-import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.user.model.{User, Category}
+import org.beangle.ems.core.user.model.{Category, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{ignore, param}

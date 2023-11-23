@@ -37,7 +37,7 @@ object DefaultMapping extends MappingModule {
     bind[BlobMeta].declare { e =>
       e.owner is length(100)
       e.name is length(300)
-      e.mediaType is length(80)
+      e.mediaType is length(100)
       e.filePath is length(400)
 
       index("", true, e.profile, e.filePath)

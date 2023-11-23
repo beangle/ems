@@ -11,8 +11,8 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col width="15%" property="owner" title="所有者"]
-       <span style="font-size:0.9em">${blobMeta.owner}</span>
+    [@b.col width="12%" property="owner" title="所有者"]
+       <span style="font-size:0.8em">${blobMeta.owner}</span>
     [/@]
     [@b.col property="name" title="common.name"]
       <span [#if blobMeta.name?length>20]style="font-size:0.8em"[/#if]>
