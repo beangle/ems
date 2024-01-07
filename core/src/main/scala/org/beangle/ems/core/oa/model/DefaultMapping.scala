@@ -22,7 +22,7 @@ import org.beangle.data.orm.{IdGenerator, MappingModule}
 object DefaultMapping extends MappingModule {
 
   override def binding(): Unit = {
-    defaultIdGenerator(classOf[Long],IdGenerator.DateTime)
+    defaultIdGenerator(classOf[Long], IdGenerator.DateTime)
     defaultCache("ems.security", "read-write")
 
     bind[Doc]
@@ -40,7 +40,12 @@ object DefaultMapping extends MappingModule {
       e.contents is length(30)
     }
 
-    bind[Message]
+    bind[Message].declare { e =>
+      e.contents is length(1000)
+      index("", false, e.sender)
+      index("", false, e.recipient)
+    }
+
     bind[Notification]
     bind[Todo]
   }
