@@ -1,7 +1,7 @@
 alter schema blob rename to blb;
 alter schema session rename to ssn;
 alter table blb.blob_metas rename column size to file_size;
-alter table blb.blob_metas rename column path to file_path ;
+alter table blb.blob_metas rename column path to file_path;
 alter table blb.blob_metas add constraint fk_8fkx493rrdnako4p08rxfg43t foreign key (profile_id) references blb.profiles (id);
 alter table blb.profiles rename column path to base;
 alter table blb.profiles drop public_list cascade;
