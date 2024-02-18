@@ -54,7 +54,7 @@ lazy val web = (project in file("web"))
     name := "beangle-ems-web",
     common,
     libraryDependencies ++= Seq(commonsCore, idsWeb, idsSms, webmvcSupport, webmvcView),
-    libraryDependencies ++= Seq(dataOrm, dataTransfer)
+    libraryDependencies ++= Seq(dataOrm, dataTransfer, eventBus)
   ).dependsOn(core, app)
 
 lazy val cas = (project in file("cas"))
@@ -69,7 +69,7 @@ lazy val service = (project in file("service"))
   .settings(
     name := "beangle-ems-service",
     common,
-    libraryDependencies ++= Seq(webmvcSupport, serializerText),
+    libraryDependencies ++= Seq(webmvcSupport, serializerText, eventBus),
     libraryDependencies ++= appDepends
   ).dependsOn(core, app)
 

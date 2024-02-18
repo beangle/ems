@@ -3,7 +3,7 @@ import sbt.*
 
 object EmsDepends {
   val commonsVer = "5.6.10"
-  val dataVer = "5.8.0"
+  val dataVer = "5.8.3-SNAPSHOT"
   val cdiVer = "0.6.2"
   val webVer = "0.4.10"
   val serializerVer = "0.1.8"
@@ -12,6 +12,7 @@ object EmsDepends {
   val webmvcVer = "0.9.23"
   val securityVer = "4.3.16"
   val idsVer = "0.3.15"
+  val eventVer = "0.0.1-SNAPSHOT"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -38,9 +39,11 @@ object EmsDepends {
   val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
   val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
   val idsSms = "org.beangle.ids" %% "beangle-ids-sms" % idsVer
+  val eventCore = "org.beangle.event" %% "beangle-event-core" % eventVer
+  val eventBus = "org.beangle.event" %% "beangle-event-bus" % eventVer
 
   val appDepends = Seq(commonsCore, commonsFile, commonsText, logback_classic, logback_core, scalatest, webAction) ++
     Seq(cdiApi, cdiSpring, gson, HikariCP) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++
-    Seq(postgresql, caffeine_jcache, hibernate_jcache)
+    Seq(postgresql, caffeine_jcache, hibernate_jcache, eventBus)
 }

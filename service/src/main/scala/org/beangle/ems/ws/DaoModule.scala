@@ -20,6 +20,7 @@ package org.beangle.ems.ws
 import org.beangle.cdi.bind.BindModule
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
 import org.beangle.ems.app.datasource.AppDataSourceFactory
+import org.beangle.ems.app.event.CacheEvictorRegister
 import org.beangle.webmvc.hibernate.CloseSessionInterceptor
 import org.springframework.beans.factory.config.PropertiesFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
@@ -49,6 +50,8 @@ object DaoModule extends BindModule {
 
     bind("web.Interceptor.hibernate", classOf[CloseSessionInterceptor])
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
+
+    bind(classOf[CacheEvictorRegister]).lazyInit(false)
   }
 
 }
