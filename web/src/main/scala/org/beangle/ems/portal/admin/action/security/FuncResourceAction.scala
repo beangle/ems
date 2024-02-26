@@ -18,30 +18,31 @@
 package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.event.bus.DataEventBus
 import org.beangle.security.authz.Scope
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 /**
- * 系统模块管理响应类
- *
- * @author chaostone 2005-10-9
- */
+  * 系统模块管理响应类
+  *
+  * @author chaostone 2005-10-9
+  */
 class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource] {
 
   var funcPermissionService: FuncPermissionService = _
   var appService: AppService = _
   var domainService: DomainService = _
+  var databus: DataEventBus = _
 
   /**
-   * 禁用或激活一个或多个模块
-   */
+    * 禁用或激活一个或多个模块
+    */
   def activate(): View = {
     val resourceIds = getIntIds("resource")
     val enabled = getBoolean("enabled", defaultValue = false)
@@ -58,6 +59,7 @@ class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[Func
       }
     }
     entityDao.saveOrUpdate(resource)
+    databus.publishUpdate(classOf[FuncResource], "*")
     redirect("search", "info.save.success")
   }
 

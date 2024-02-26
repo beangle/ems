@@ -3,8 +3,8 @@ import sbt.*
 
 object EmsDepends {
   val commonsVer = "5.6.10"
-  val dataVer = "5.8.3-SNAPSHOT"
-  val cdiVer = "0.6.2"
+  val dataVer = "5.8.3"
+  val cdiVer = "0.6.3"
   val webVer = "0.4.10"
   val serializerVer = "0.1.8"
   val cacheVer = "0.1.7"
@@ -12,7 +12,7 @@ object EmsDepends {
   val webmvcVer = "0.9.23"
   val securityVer = "4.3.16"
   val idsVer = "0.3.15"
-  val eventVer = "0.0.1-SNAPSHOT"
+  val eventVer = "0.0.1"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer

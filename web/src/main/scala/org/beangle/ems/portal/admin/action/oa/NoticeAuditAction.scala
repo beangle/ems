@@ -22,6 +22,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.event.bus.DataEventBus
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.support.ActionSupport
@@ -35,7 +36,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
   var domainService: DomainService = _
   var appService: AppService = _
   var entityDao: EntityDao = _
-
+  var databus: DataEventBus = _
   def index(): View = {
     put("categories", userService.getCategories())
     put("apps", appService.getWebapps)
@@ -95,6 +96,7 @@ class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
       }
     }
     entityDao.saveOrUpdate(notices)
+    databus.publishUpdate(classOf[Notice], "*")
     redirect("search", "info.save.success")
   }
 

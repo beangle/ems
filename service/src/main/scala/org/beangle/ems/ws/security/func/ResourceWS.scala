@@ -41,6 +41,7 @@ class ResourceWS(entityDao: EntityDao) extends ActionSupport {
     val app = appResult.head
     val query = OqlBuilder.from(classOf[FuncResource], "fr")
       .where("fr.app=:app", app)
+      .cacheable()
 
     get("scope") foreach { s =>
       query.where("fr.scope = :scope", Scope.valueOf(s))

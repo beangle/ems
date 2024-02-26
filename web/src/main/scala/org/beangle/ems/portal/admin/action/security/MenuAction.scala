@@ -28,6 +28,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.event.bus.DataEventBus
 import org.beangle.web.action.annotation.{ignore, param}
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
@@ -38,7 +39,7 @@ class MenuAction extends RestfulAction[Menu] {
   var menuService: MenuService = _
   var appService: AppService = _
   var domainService: DomainService = _
-
+  var databus: DataEventBus = _
   protected override def indexSetting(): Unit = {
     val apps = appService.getWebapps
     AppHelper.putApps(apps, "menu.app.id", entityDao)
@@ -107,6 +108,7 @@ class MenuAction extends RestfulAction[Menu] {
     val step2 = entities.toBuffer
     step2 --= step1
     remove(step2)
+    databus.publishUpdate(classOf[Menu], "*")
     redirect("search", "info.remove.success")
   }
 
@@ -138,6 +140,7 @@ class MenuAction extends RestfulAction[Menu] {
     menuService.getMenus(menu.app) foreach { m =>
       entityDao.refresh(m)
     }
+    databus.publishUpdate(classOf[Menu], "*")
     redirect("search", "info.save.success")
   }
 
@@ -155,6 +158,7 @@ class MenuAction extends RestfulAction[Menu] {
     }
     for (menu <- updated) menu.enabled = enabled
     entityDao.saveOrUpdate(updated)
+    databus.publishUpdate(classOf[Menu], "*")
     redirect("search", "info.save.success")
   }
 

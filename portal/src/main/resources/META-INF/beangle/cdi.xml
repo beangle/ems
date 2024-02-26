@@ -11,6 +11,7 @@
 
     <module class="org.beangle.ems.app.cas.DefaultModule"/>
     <module class="org.beangle.ems.app.log.DefaultModule"/>
+    <module class="org.beangle.ems.app.event.EventModule"/>
     <module class="org.beangle.ems.app.web.DefaultModule"/>
     <module class="org.beangle.ems.web.DaoModule"/>
     <module class="org.beangle.ems.web.WebReconfigModule"/>

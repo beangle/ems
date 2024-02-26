@@ -19,24 +19,26 @@ package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.commons.lang.Numbers
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.security.Securities
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.view.View
-import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.portal.admin.helper.AppHelper
+import org.beangle.event.bus.DataEventBus
+import org.beangle.security.Securities
+import org.beangle.web.action.annotation.{mapping, param}
+import org.beangle.web.action.context.ActionContext
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
 
 /**
- * 权限分配与管理响应类
- * @author chaostone 2005-10-9
- */
+  * 权限分配与管理响应类
+  *
+  * @author chaostone 2005-10-9
+  */
 class PermissionAction extends RestfulAction[FuncPermission] {
 
   var menuService: MenuService = _
@@ -44,10 +46,11 @@ class PermissionAction extends RestfulAction[FuncPermission] {
   var userService: UserService = _
   var appService: AppService = _
   var domainService: DomainService = _
+  var databus: DataEventBus = _
 
   /**
-   * 根据菜单配置来分配权限
-   */
+    * 根据菜单配置来分配权限
+    */
   @mapping(value = "{role.id}/edit")
   override def edit(@param("role.id") id: String): View = {
     val roleId = Numbers.toInt(id)
@@ -128,15 +131,15 @@ class PermissionAction extends RestfulAction[FuncPermission] {
   }
 
   /**
-   * 显示权限操作提示界面
-   */
+    * 显示权限操作提示界面
+    */
   def prompt(): View = {
     forward()
   }
 
   /**
-   * 保存模块级权限
-   */
+    * 保存模块级权限
+    */
   override def save(): View = {
     val role = entityDao.get(classOf[Role], getIntId("role"))
     val app = entityDao.get(classOf[App], getIntId("app"))
@@ -162,7 +165,7 @@ class PermissionAction extends RestfulAction[FuncPermission] {
     where.param("role.id", role.id).param("app.id", app.id)
     val displayFreezen = get("displayFreezen")
     if (null != displayFreezen) where.param("displayFreezen", displayFreezen)
-
+    databus.publishUpdate(classOf[FuncPermission], "*")
     redirect(where, "info.save.success")
   }
 

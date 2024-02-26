@@ -17,18 +17,19 @@
 
 package org.beangle.ems.app.event
 
-import org.beangle.commons.bean.Initializing
-import org.beangle.data.dao.EntityDao
-import org.beangle.event.bus.DataEvent
-import org.beangle.event.mq.ChannelQueue
-import org.hibernate.SessionFactory
+import org.beangle.cdi.bind.BindModule
+import org.beangle.ems.app.event.CacheEvictorRegister
+import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
+import org.beangle.event.mq.impl.PostgresChannelQueue
 
-class CacheEvictorRegister extends Initializing {
-  var queue: ChannelQueue[DataEvent] = _
-  var entityDao: EntityDao = _
-  var sessionFactory: SessionFactory = _
+class EventModule extends BindModule {
 
-  override def init(): Unit = {
-    queue.subscribe(new CacheEvictor(entityDao, sessionFactory))
+  protected override def binding(): Unit = {
+    wiredEagerly(true)
+    bind(classOf[PostgresChannelQueue[DataEvent]]).constructor("data", ?, new DataEventSerializer)
+    bind(classOf[CacheEvictorRegister])
+
+    bind(classOf[DefaultDataEventBus]).constructor("data", ?)
   }
+
 }

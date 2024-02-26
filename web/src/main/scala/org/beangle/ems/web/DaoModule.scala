@@ -22,10 +22,6 @@ import org.beangle.webmvc.hibernate.CloseSessionInterceptor
 import org.beangle.data.orm.hibernate.{HibernateTransactionManager, LocalSessionFactoryBean}
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao}
 import org.beangle.ems.app.datasource.AppDataSourceFactory
-import org.beangle.ems.app.event.{CacheEvictor, CacheEvictorRegister}
-import org.beangle.event.bus.{DataEvent, DataEventSerializer}
-import org.beangle.event.mq.impl.PostgresChannelQueue
-import org.springframework.beans.factory.config.PropertiesFactoryBean
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 object DaoModule extends BindModule {
@@ -35,7 +31,7 @@ object DaoModule extends BindModule {
     bind("DataSource.default", classOf[AppDataSourceFactory])
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
-      .property("devMode",devEnabled)
+      .property("devMode", devEnabled)
       .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
       .primary()
 
@@ -54,8 +50,6 @@ object DaoModule extends BindModule {
     bind("web.Interceptor.hibernate", classOf[CloseSessionInterceptor])
 
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
-
-    bind(classOf[CacheEvictorRegister]).lazyInit(false)
   }
 
 }
