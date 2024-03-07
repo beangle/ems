@@ -15,19 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.cas
+package org.beangle.ems.app
 
-import org.beangle.cache.redis.JedisPoolFactory
-import org.beangle.cdi.bind.BindModule
-import org.beangle.ids.cas.id.impl.DefaultServiceTicketIdGenerator
-import org.beangle.ids.cas.service.CasServiceImpl
-import org.beangle.ids.cas.ticket.{DefaultTicketCacheService, DefaultTicketRegistry}
+object EmsApi {
 
-class TicketModule extends BindModule {
-  override def binding(): Unit = {
-    bind(classOf[DefaultTicketCacheService]).constructor(ref("jedis.Factory"))
-    bind(classOf[DefaultTicketRegistry])
-    bind(classOf[CasServiceImpl])
-    bind(classOf[DefaultServiceTicketIdGenerator])
+  def getDatasourceUrl(resourceKey: String): String = {
+    Ems.api + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
+  }
+
+  def getRedisUrl: String = {
+    Ems.api + "/platform/config/rediss/" + EmsApp.name + ".xml?secret=" + EmsApp.secret
   }
 }

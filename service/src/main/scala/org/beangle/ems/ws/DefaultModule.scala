@@ -31,7 +31,7 @@ class DefaultModule extends BindModule {
   protected override def binding(): Unit = {
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
     bind(classOf[oauth.TokenWS], classOf[config.DomainWS], classOf[config.ThemeWS])
-    bind(classOf[config.TextBundleWS])
+    bind(classOf[config.TextBundleWS],classOf[config.RedisWS])
 
     bind(classOf[oa.NoticeWS], classOf[oa.DocWS])
 
@@ -48,8 +48,9 @@ class DefaultModule extends BindModule {
     val tokensCache = cm.getCache("tokens", classOf[String], classOf[AccessToken])
     bind(classOf[MemTokenRepository]).constructor(tokensCache)
 
-    cm.ttl = 5 * 60
-    cm.tti = 5 * 60
+    // response cache is only 3 minutes
+    cm.ttl = 3 * 60
+    cm.tti = 3 * 60
     val responseCache = cm.getCache("mvc.response", classOf[String], classOf[CacheResult])
     bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(responseCache)
   }

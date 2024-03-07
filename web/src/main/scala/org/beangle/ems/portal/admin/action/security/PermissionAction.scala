@@ -17,6 +17,7 @@
 
 package org.beangle.ems.portal.admin.action.security
 
+import org.beangle.commons.concurrent.Timers
 import org.beangle.commons.lang.Numbers
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
@@ -27,8 +28,10 @@ import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.event.bus.DataEventBus
+import org.beangle.event.bus.{DataEvent, DataEventBus}
+import org.beangle.event.mq.ChannelQueue
 import org.beangle.security.Securities
+import org.beangle.security.authz.{Authority, Authorizer}
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.view.View
@@ -47,6 +50,8 @@ class PermissionAction extends RestfulAction[FuncPermission] {
   var appService: AppService = _
   var domainService: DomainService = _
   var databus: DataEventBus = _
+  var appChannel: ChannelQueue[DataEvent] = _
+  var authorizer: Authorizer = _
 
   /**
     * 根据菜单配置来分配权限
@@ -165,7 +170,13 @@ class PermissionAction extends RestfulAction[FuncPermission] {
     where.param("role.id", role.id).param("app.id", app.id)
     val displayFreezen = get("displayFreezen")
     if (null != displayFreezen) where.param("displayFreezen", displayFreezen)
-    databus.publishUpdate(classOf[FuncPermission], "*")
+    databus.publishUpdate(classOf[FuncPermission], Map("resource.app.name" -> app.name))
+    // authority rest service need time to clean cache.
+    // notify app or refresh itself
+    Timers.setTimeout(5, () => {
+      if app.name == EmsApp.name then authorizer.refresh()
+      else appChannel.publish(DataEvent.update(classOf[Authority], Map("app.name" -> app.getName)))
+    })
     redirect(where, "info.save.success")
   }
 

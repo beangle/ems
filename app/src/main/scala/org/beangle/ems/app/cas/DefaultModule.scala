@@ -45,7 +45,6 @@ class DefaultModule extends BindModule {
     bind("security.Authenticator", classOf[RealmAuthenticator])
 
     bind("security.SessionIdReader.ems", classOf[CookieSessionIdReader]).constructor(Ems.sid.name)
-    bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)
 
     val protobuf = new ProtobufSerializer
     protobuf.register(classOf[DefaultSession], SessionSerializer)

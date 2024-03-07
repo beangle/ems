@@ -12,8 +12,9 @@
 
     <module class="org.beangle.ems.app.web.DefaultModule"/>
     <module class="org.beangle.ems.app.log.DefaultModule"/>
-    <module class="org.beangle.ems.web.DaoModule"/>
+    <module class="org.beangle.ems.app.cache.DefaultModule"/>
     <module class="org.beangle.ems.web.WebReconfigModule"/>
+    <module class="org.beangle.ems.core.DaoModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>

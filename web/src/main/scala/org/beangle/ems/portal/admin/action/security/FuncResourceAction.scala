@@ -22,7 +22,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.event.bus.DataEventBus
+import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.security.authz.Scope
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
@@ -59,7 +59,7 @@ class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[Func
       }
     }
     entityDao.saveOrUpdate(resource)
-    databus.publishUpdate(classOf[FuncResource], "*")
+    databus.publish(DataEvent.update(resource))
     redirect("search", "info.save.success")
   }
 

@@ -17,16 +17,16 @@
 
 package org.beangle.ems.portal.admin.helper
 
-import org.beangle.data.transfer.exporter.DefaultPropertyExtractor
+import org.beangle.commons.bean.DefaultPropertyExtractor
 import org.beangle.ems.core.user.model.Account
 
 class AccountPropertyExtractor extends DefaultPropertyExtractor {
-  override def getPropertyValue(target: Object, property: String): Any = {
+  override def get(target: Object, property: String): Any = {
     if (property == "roleNames") {
       val account = target.asInstanceOf[Account]
       account.user.roles.filter(x => x.role.domain == account.domain && x.member).map(_.role.name).mkString(",")
     } else {
-      super.getPropertyValue(target, property)
+      super.get(target, property)
     }
   }
 

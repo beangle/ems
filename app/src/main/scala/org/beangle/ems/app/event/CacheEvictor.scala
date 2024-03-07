@@ -29,19 +29,13 @@ class CacheEvictor(entityDao: EntityDao, sessionFactory: SessionFactory) extends
   override def process(event: DataEvent): Unit = {
     val domain = entityDao.domain
     val entityName = event.entityName
-    println(domain.getEntity(entityName))
     domain.getEntity(entityName) foreach { et =>
       if et.cacheable then
-        event.eventType match {
-          case Update | Deletion =>
-            val h = SessionHelper.openSession(sessionFactory)
-            try {
-              println(s"evict ${entityName}")
-              entityDao.evict(et.clazz.asInstanceOf[Class[_ <: Entity[_]]])
-            } finally {
-              SessionHelper.closeSession(h.session)
-            }
-          case _ => //ignore
+        val h = SessionHelper.openSession(sessionFactory)
+        try {
+          entityDao.evict(et.clazz.asInstanceOf[Class[_ <: Entity[_]]])
+        } finally {
+          SessionHelper.closeSession(h.session)
         }
     }
   }

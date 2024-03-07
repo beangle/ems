@@ -15,19 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.cas
+package org.beangle.ems.app.event
 
-import org.beangle.cache.redis.JedisPoolFactory
-import org.beangle.cdi.bind.BindModule
-import org.beangle.ids.cas.id.impl.DefaultServiceTicketIdGenerator
-import org.beangle.ids.cas.service.CasServiceImpl
-import org.beangle.ids.cas.ticket.{DefaultTicketCacheService, DefaultTicketRegistry}
+import org.beangle.commons.bean.Initializing
+import org.beangle.ems.app.EmsApp
+import org.beangle.event.bus.{DataEvent, DataEventBus}
+import org.beangle.event.mq.EventSubscriber
+import org.beangle.security.authz.Authorizer
 
-class TicketModule extends BindModule {
-  override def binding(): Unit = {
-    bind(classOf[DefaultTicketCacheService]).constructor(ref("jedis.Factory"))
-    bind(classOf[DefaultTicketRegistry])
-    bind(classOf[CasServiceImpl])
-    bind(classOf[DefaultServiceTicketIdGenerator])
+class RemoteAuthorizerRefresher(authorizer: Authorizer, databus: DataEventBus)
+  extends EventSubscriber[DataEvent], Initializing {
+
+  override def init(): Unit = {
+    databus.subscribe("org.beangle.security.authz", this)
+  }
+
+  override def process(event: DataEvent): Unit = {
+    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
+      authorizer.refresh()
   }
 }

@@ -28,7 +28,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.event.bus.DataEventBus
+import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.web.action.annotation.{ignore, param}
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
@@ -40,6 +40,7 @@ class MenuAction extends RestfulAction[Menu] {
   var appService: AppService = _
   var domainService: DomainService = _
   var databus: DataEventBus = _
+
   protected override def indexSetting(): Unit = {
     val apps = appService.getWebapps
     AppHelper.putApps(apps, "menu.app.id", entityDao)
@@ -94,10 +95,10 @@ class MenuAction extends RestfulAction[Menu] {
   }
 
   @ignore
-  protected override def removeAndRedirect(entities: Seq[Menu]): View = {
+  protected override def removeAndRedirect(menus: Seq[Menu]): View = {
     val parents = Collections.newBuffer[Menu]
     val step1 = Collections.newSet[Menu]
-    for (menu <- entities) {
+    for (menu <- menus) {
       menu.parent foreach { p =>
         p.children -= menu
         step1 += menu
@@ -105,10 +106,10 @@ class MenuAction extends RestfulAction[Menu] {
       }
     }
     entityDao.saveOrUpdate(parents)
-    val step2 = entities.toBuffer
+    val step2 = menus.toBuffer
     step2 --= step1
     remove(step2)
-    databus.publishUpdate(classOf[Menu], "*")
+    databus.publish(DataEvent.remove(menus))
     redirect("search", "info.remove.success")
   }
 
@@ -140,13 +141,13 @@ class MenuAction extends RestfulAction[Menu] {
     menuService.getMenus(menu.app) foreach { m =>
       entityDao.refresh(m)
     }
-    databus.publishUpdate(classOf[Menu], "*")
+    databus.publish(DataEvent.update(menu))
     redirect("search", "info.save.success")
   }
 
   /**
-   * 禁用或激活一个或多个模块
-   */
+    * 禁用或激活一个或多个模块
+    */
   def activate(): View = {
     val menuIds = getIntIds("menu")
     val enabled = getBoolean("isActivate", defaultValue = true)
@@ -158,7 +159,7 @@ class MenuAction extends RestfulAction[Menu] {
     }
     for (menu <- updated) menu.enabled = enabled
     entityDao.saveOrUpdate(updated)
-    databus.publishUpdate(classOf[Menu], "*")
+    databus.publish(DataEvent.update(menus))
     redirect("search", "info.save.success")
   }
 

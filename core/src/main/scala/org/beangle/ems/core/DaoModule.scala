@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.ws
+package org.beangle.ems.core
 
 import org.beangle.cdi.bind.BindModule
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
@@ -30,7 +30,7 @@ object DaoModule extends BindModule {
     bind("DataSource.default", classOf[AppDataSourceFactory])
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
-      .property("devMode",devEnabled)
+      .property("devMode", devEnabled)
       .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
       .primary()
 
@@ -47,6 +47,7 @@ object DaoModule extends BindModule {
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
 
     bind("web.Interceptor.hibernate", classOf[CloseSessionInterceptor])
+
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
   }
 

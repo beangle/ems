@@ -28,7 +28,6 @@ import org.beangle.ems.core.cas.service.{DefaultDomainProvider, DefaultEmsSessio
 
 class SessionModule extends BindModule {
   override def binding(): Unit = {
-    bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)
     val protobuf = new ProtobufSerializer
     protobuf.register(classOf[DefaultSession], SessionSerializer)
     protobuf.register(classOf[DefaultAccount], AccountSerializer)

@@ -38,6 +38,7 @@
     form.submit();
   }
 [/@]
+[@b.messages slash="3"/]
 [@b.form name="permissionForm" action="!edit"]
 <table width="100%" class="searchTable" id="meunAuthorityTable">
   <tr>

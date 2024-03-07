@@ -57,6 +57,8 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
         ds.put("portNumber", rs.db.portNumber)
       }
       ds.put("maximumPoolSize", rs.maximumPoolSize)
+      ds.put("maxLifetime", 600000) //10 minutes
+      ds.put("minimumIdle", Math.min(5, rs.maximumPoolSize))
       rs.db.properties foreach { case (k, v) =>
         ds.put(k, v)
       }

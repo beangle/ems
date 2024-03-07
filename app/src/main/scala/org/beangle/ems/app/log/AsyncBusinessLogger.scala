@@ -18,57 +18,23 @@
 package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
-import org.beangle.commons.logging.Logging
-import org.beangle.ems.app.log.AsyncBusinessLogger.Worker
-
-import java.util as ju
-import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
-
-object AsyncBusinessLogger {
-  class Worker(store: AsyncBusinessLogger) extends Thread {
-    var stopped: Boolean = false
-
-    override def run(): Unit = {
-      while (store.started && !stopped) {
-        try {
-          val elements = new ju.ArrayList[BusinessLogEvent]
-          val e0 = store.queue.take()
-          elements.add(e0)
-          store.queue.drainTo(elements)
-          val iter = elements.iterator()
-          while (iter.hasNext) {
-            val e = iter.next()
-            store.appenders foreach (ap => ap.append(e))
-          }
-        } catch {
-          case _: InterruptedException => stopped = true
-        }
-      }
-    }
-  }
-}
+import org.beangle.commons.concurrent.Sidecar
 
 class AsyncBusinessLogger extends BusinessLogger with Initializing with Disposable {
   var appenders: List[Appender] = _
-  var queueSize: Int = 512
-  private var queue: BlockingQueue[BusinessLogEvent] = _
-  private var started: Boolean = _
-  private var worker: Worker = _
+  var sidecar: Sidecar[BusinessLogEvent] = _
 
   override def publish(entry: BusinessLogEvent): Unit = {
-    queue.offer(entry)
+    sidecar.offer(entry)
   }
 
   override def init(): Unit = {
-    queue = new ArrayBlockingQueue[BusinessLogEvent](queueSize)
-    started = true
-    worker = new Worker(this)
-    worker.setDaemon(true)
-    worker.setName("Beangle async business logstore worker")
-    worker.start()
+    sidecar = new Sidecar[BusinessLogEvent]("Beangle Ems Async Logger", e => {
+      appenders foreach (ap => ap.append(e))
+    })
   }
 
   override def destroy(): Unit = {
-    worker.interrupt()
+    sidecar.destroy()
   }
 }

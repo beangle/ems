@@ -17,12 +17,12 @@
 
 package org.beangle.ems.app.datasource
 
-import java.io.FileInputStream
-
 import org.beangle.commons.io.IOs
 import org.beangle.data.jdbc.ds.DataSourceFactory
-import org.beangle.ems.app.{ Ems, EmsApp }
 import org.beangle.ems.app.util.AesEncryptor
+import org.beangle.ems.app.{Ems, EmsApi, EmsApp}
+
+import java.io.FileInputStream
 
 class AppDataSourceFactory extends DataSourceFactory {
 
@@ -31,7 +31,7 @@ class AppDataSourceFactory extends DataSourceFactory {
     if (EmsApp.getAppFile exists (file => IOs.readString(new FileInputStream(file)).contains("</datasource>"))) {
       this.url = EmsApp.getAppFile.get.getCanonicalPath
     } else {
-      this.url = getDatasourceUrl(name)
+      this.url = EmsApi.getDatasourceUrl(name)
     }
     super.init()
   }
@@ -42,7 +42,4 @@ class AppDataSourceFactory extends DataSourceFactory {
     }
   }
 
-  private def getDatasourceUrl(resourceKey: String): String = {
-    Ems.api + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
-  }
 }

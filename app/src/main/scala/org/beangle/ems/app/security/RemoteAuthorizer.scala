@@ -20,9 +20,10 @@ package org.beangle.ems.app.security
 import org.beangle.security.authz.{AbstractRoleBasedAuthorizer, AuthorityDomain}
 
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 class RemoteAuthorizer extends AbstractRoleBasedAuthorizer {
+
   override def fetchDomain(): AuthorityDomain = {
     val roots = RemoteService.roots
     val resources = RemoteService.getAuthorities

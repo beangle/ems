@@ -2,17 +2,17 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.10"
-  val dataVer = "5.8.3"
-  val cdiVer = "0.6.3"
+  val commonsVer = "5.6.14"
+  val dataVer = "5.8.7"
+  val cdiVer = "0.6.4"
   val webVer = "0.4.10"
   val serializerVer = "0.1.8"
   val cacheVer = "0.1.7"
-  val templateVer = "0.1.10"
+  val templateVer = "0.1.11"
   val webmvcVer = "0.9.23"
-  val securityVer = "4.3.16"
+  val securityVer = "4.3.17"
   val idsVer = "0.3.15"
-  val eventVer = "0.0.1"
+  val eventVer = "0.0.3"
 
   val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
   val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
@@ -24,6 +24,7 @@ object EmsDepends {
   val cdiSpring = "org.beangle.cdi" %% "beangle-cdi-spring" % cdiVer
   val cacheApi = "org.beangle.cache" %% "beangle-cache-api" % cacheVer
   val cacheCaffeine = "org.beangle.cache" %% "beangle-cache-caffeine" % cacheVer
+  val cacheRedis = "org.beangle.cache" %% "beangle-cache-redis" % cacheVer
   val templateApi = "org.beangle.template" %% "beangle-template-api" % templateVer
   val templateFreemarker = "org.beangle.template" %% "beangle-template-freemarker" % templateVer
   val webAction = "org.beangle.web" %% "beangle-web-action" % webVer
@@ -43,7 +44,7 @@ object EmsDepends {
   val eventBus = "org.beangle.event" %% "beangle-event-bus" % eventVer
 
   val appDepends = Seq(commonsCore, commonsFile, commonsText, logback_classic, logback_core, scalatest, webAction) ++
-    Seq(cdiApi, cdiSpring, gson, HikariCP) ++
+    Seq(cdiApi, cdiSpring, gson, HikariCP, webmvcSupport, cacheRedis) ++
     Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++
     Seq(postgresql, caffeine_jcache, hibernate_jcache, eventBus)
 }

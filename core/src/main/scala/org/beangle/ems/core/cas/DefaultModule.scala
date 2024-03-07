@@ -114,10 +114,6 @@ class DefaultModule extends BindModule with PropertySource {
         datas += ("ldap.base" -> (e \\ "base").text.trim)
         datas += ("login.passwordReadOnly" -> "true") //本系统使用DB，一般使用LDAP即为外部密码库,禁止修改
       }
-      (app \\ "redis") foreach { e =>
-        datas += ("redis.host" -> (e \\ "host").text.trim)
-        datas += ("redis.port" -> (e \\ "port").text.trim)
-      }
       (app \\ "config" \\ "login") foreach { n =>
         val e = n.asInstanceOf[scala.xml.Elem]
         datas += ("login.enableCaptcha" -> getAttribute(e, "enableCaptcha", "false"))

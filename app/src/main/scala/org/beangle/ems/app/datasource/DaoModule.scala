@@ -15,13 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.web
+package org.beangle.ems.app.datasource
 
 import org.beangle.cdi.bind.BindModule
+import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
 import org.beangle.webmvc.hibernate.CloseSessionInterceptor
-import org.beangle.data.orm.hibernate.{HibernateTransactionManager, LocalSessionFactoryBean}
-import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao}
-import org.beangle.ems.app.datasource.AppDataSourceFactory
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 object DaoModule extends BindModule {
@@ -32,8 +30,7 @@ object DaoModule extends BindModule {
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("devMode", devEnabled)
-      .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
-      .primary()
+      .property("ormLocations", "classpath*:META-INF/beangle/orm.xml").primary()
 
     bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary()
 
@@ -44,12 +41,12 @@ object DaoModule extends BindModule {
         "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED",
         "*=PROPAGATION_REQUIRED,readOnly")).primary()
 
-    bind("EntityDao.default", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
+    bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
+
+    bind("EntityDao.hibernate", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
 
     bind("web.Interceptor.hibernate", classOf[CloseSessionInterceptor])
-
-    bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
   }
 
 }

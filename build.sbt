@@ -2,7 +2,7 @@ import EmsDepends.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.8.9-SNAPSHOT"
+ThisBuild / version := "4.8.9"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -53,7 +53,7 @@ lazy val web = (project in file("web"))
   .settings(
     name := "beangle-ems-web",
     common,
-    libraryDependencies ++= Seq(commonsCore, idsWeb, idsSms, webmvcSupport, webmvcView),
+    libraryDependencies ++= Seq(commonsCore, idsWeb, idsSms, webmvcView),
     libraryDependencies ++= Seq(dataOrm, dataTransfer, eventBus)
   ).dependsOn(core, app)
 
@@ -69,7 +69,7 @@ lazy val service = (project in file("service"))
   .settings(
     name := "beangle-ems-service",
     common,
-    libraryDependencies ++= Seq(webmvcSupport, serializerText, eventBus),
+    libraryDependencies ++= Seq(serializerText, eventBus),
     libraryDependencies ++= appDepends
   ).dependsOn(core, app)
 

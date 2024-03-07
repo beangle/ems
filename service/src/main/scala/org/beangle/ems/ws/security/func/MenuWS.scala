@@ -51,7 +51,7 @@ class MenuWS extends ActionSupport {
     menus map (m => convert(m, isEnName))
   }
 
-  @response(cacheable = true)
+  @response()
   @mapping("user/{user}")
   def user(@param("app") appName: String, @param("user") username: String): Any = {
     val user = userService.get(username)

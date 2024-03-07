@@ -19,12 +19,12 @@ package org.beangle.ems.app.event
 
 import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.EntityDao
+import org.beangle.ems.app.event.CacheEvictor
 import org.beangle.event.bus.DataEvent
 import org.beangle.event.mq.ChannelQueue
 import org.hibernate.SessionFactory
 
-class CacheEvictorRegister extends Initializing {
-  var queue: ChannelQueue[DataEvent] = _
+class CacheEvictorRegister(queue: ChannelQueue[DataEvent]) extends Initializing {
   var entityDao: EntityDao = _
   var sessionFactory: SessionFactory = _
 
