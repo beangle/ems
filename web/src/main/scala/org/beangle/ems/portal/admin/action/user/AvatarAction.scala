@@ -128,8 +128,10 @@ class AvatarAction extends ActionSupport with ServletSupport {
   }
 
   def processZip(zipfile: File, encoding: String): Int = {
-    val file: ZipFile = if (null == encoding) new ZipFile(zipfile)
-    else new ZipFile(zipfile, encoding)
+    val zipBuilder = ZipFile.builder().setFile(zipfile)
+    if (null != encoding) zipBuilder.setCharset(encoding)
+
+    val file = zipBuilder.get()
     var i = 0
     try {
       val en = file.getEntries()

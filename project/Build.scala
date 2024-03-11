@@ -10,7 +10,7 @@ object EmsDepends {
   val cacheVer = "0.1.7"
   val templateVer = "0.1.11"
   val webmvcVer = "0.9.23"
-  val securityVer = "4.3.17"
+  val securityVer = "4.3.18"
   val idsVer = "0.3.15"
   val eventVer = "0.0.3"
 
