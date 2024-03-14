@@ -2,7 +2,7 @@ import EmsDepends.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.8.11-SNAPSHOT"
+ThisBuild / version := "4.8.11"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
