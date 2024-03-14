@@ -27,6 +27,7 @@ import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.event.mq.ChannelQueue
@@ -42,15 +43,12 @@ import org.beangle.webmvc.support.action.RestfulAction
   *
   * @author chaostone 2005-10-9
   */
-class PermissionAction extends RestfulAction[FuncPermission] {
+class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
 
   var menuService: MenuService = _
   var funcPermissionService: FuncPermissionService = _
   var userService: UserService = _
-  var appService: AppService = _
-  var domainService: DomainService = _
-  var databus: DataEventBus = _
-  var appChannel: ChannelQueue[DataEvent] = _
+  var publicChannel: ChannelQueue[DataEvent] = _
   var authorizer: Authorizer = _
 
   /**
@@ -175,7 +173,7 @@ class PermissionAction extends RestfulAction[FuncPermission] {
     // notify app or refresh itself
     Timers.setTimeout(5, () => {
       if app.name == EmsApp.name then authorizer.refresh()
-      else appChannel.publish(DataEvent.update(classOf[Authority], Map("app.name" -> app.getName)))
+      else publicChannel.publish(DataEvent.update(classOf[Authority], Map("app.name" -> app.getName)))
     })
     redirect(where, "info.save.success")
   }

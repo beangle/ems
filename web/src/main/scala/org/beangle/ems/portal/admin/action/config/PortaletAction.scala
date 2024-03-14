@@ -17,15 +17,14 @@
 
 package org.beangle.ems.portal.admin.action.config
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.Portalet
-import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.Category
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
-class PortaletAction extends RestfulAction[Portalet] {
-
-  var domainService: DomainService = _
+class PortaletAction extends RestfulAction[Portalet], DomainSupport {
 
   override def indexSetting(): Unit = {
     put("categories", entityDao.getAll(classOf[Category]))
@@ -35,12 +34,20 @@ class PortaletAction extends RestfulAction[Portalet] {
     put("categories", entityDao.getAll(classOf[Category]))
   }
 
+  override protected def getQueryBuilder: OqlBuilder[Portalet] = {
+    val builder = super.getQueryBuilder
+    builder.where("portalet.domain=:domain", domainService.getDomain)
+    builder
+  }
+
   override protected def saveAndRedirect(p: Portalet): View = {
     p.domain = domainService.getDomain
     val categories = entityDao.find(classOf[Category], getIntIds("category"))
     p.categories.clear()
     p.categories.addAll(categories)
     if (!p.url.startsWith("http") && !p.url.startsWith("/")) p.url = "http://" + p.url
+    saveOrUpdate(p)
+    publishUpdate(p)
     super.saveAndRedirect(p)
   }
 

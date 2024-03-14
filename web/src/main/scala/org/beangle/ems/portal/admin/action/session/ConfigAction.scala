@@ -18,16 +18,14 @@
 package org.beangle.ems.portal.admin.action.session
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.core.security.model.SessionConfig
+import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.security.model.SessionConfig
-import org.beangle.ems.core.user.service.UserService
 
-class ConfigAction extends RestfulAction[SessionConfig] {
-
-  var domainService: DomainService = _
+class ConfigAction extends RestfulAction[SessionConfig], DomainSupport {
 
   var userService: UserService = _
 
@@ -38,6 +36,8 @@ class ConfigAction extends RestfulAction[SessionConfig] {
   @ignore
   override protected def saveAndRedirect(config: SessionConfig): View = {
     config.domain = domainService.getDomain
+    saveOrUpdate(config)
+    publishUpdate(config)
     super.saveAndRedirect(config)
   }
 

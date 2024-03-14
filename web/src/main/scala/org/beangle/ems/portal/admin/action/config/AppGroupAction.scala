@@ -18,23 +18,24 @@
 package org.beangle.ems.portal.admin.action.config
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.core.config.model.AppGroup
+import org.beangle.ems.portal.admin.action.DomainSupport
+import org.beangle.event.bus.DataEvent
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.config.model.AppGroup
-import org.beangle.ems.core.config.service.DomainService
 
-class AppGroupAction extends RestfulAction[AppGroup] {
-
-  var domainService: DomainService = _
+class AppGroupAction extends RestfulAction[AppGroup], DomainSupport {
 
   @ignore
   override protected def saveAndRedirect(group: AppGroup): View = {
     group.domain = domainService.getDomain
+    saveOrUpdate(group)
+    publishUpdate(group)
     super.saveAndRedirect(group)
   }
 
   override protected def getQueryBuilder: OqlBuilder[AppGroup] = {
-      super.getQueryBuilder.where("appGroup.domain=:domain", domainService.getDomain)
+    super.getQueryBuilder.where("appGroup.domain=:domain", domainService.getDomain)
   }
 }

@@ -21,15 +21,14 @@ import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.TextBundle
 import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.portal.admin.action.DomainSupport
+import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.util.Locale
 
-class TextBundleAction extends RestfulAction[TextBundle], ExportSupport[TextBundle] {
-
-  var domainService: DomainService = _
-  var appService: AppService = _
+class TextBundleAction extends RestfulAction[TextBundle], ExportSupport[TextBundle],DomainSupport {
 
   override protected def indexSetting(): Unit = {
     put("apps", appService.getWebapps)
@@ -47,9 +46,11 @@ class TextBundleAction extends RestfulAction[TextBundle], ExportSupport[TextBund
     super.editSetting(entity)
   }
 
-  override protected def saveAndRedirect(entity: TextBundle): View = {
-    entity.texts = Strings.replace(entity.texts, "\r", "")
-    super.saveAndRedirect(entity)
+  override protected def saveAndRedirect(bundle: TextBundle): View = {
+    bundle.texts = Strings.replace(bundle.texts, "\r", "")
+    saveOrUpdate(bundle)
+    publishUpdate(bundle)
+    super.saveAndRedirect(bundle)
   }
 
   override protected def simpleEntityName: String = "bundle"

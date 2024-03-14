@@ -17,25 +17,25 @@
 
 package org.beangle.ems.portal.admin.action.security
 
-import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.config.service.DataSourceManager
 import org.beangle.ems.core.security.model.DataResource
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 /**
- * 系统模块管理响应类
- *
- * @author chaostone 2005-10-9
- */
-class DataResourceAction extends RestfulAction[DataResource] {
+  * 系统模块管理响应类
+  *
+  * @author chaostone 2005-10-9
+  */
+class DataResourceAction extends RestfulAction[DataResource], DomainSupport {
 
   var dataSourceManager: DataSourceManager = _
 
   /**
-   * 禁用或激活一个或多个模块
-   */
+    * 禁用或激活一个或多个模块
+    */
   def activate(): View = {
     val resourceIds = getIntIds("resource")
     val enabled = getBoolean("enabled", defaultValue = false)
@@ -54,6 +54,7 @@ class DataResourceAction extends RestfulAction[DataResource] {
       }
     }
     entityDao.saveOrUpdate(resource)
+    publishUpdate(resource)
     redirect("search", "info.save.success")
   }
 

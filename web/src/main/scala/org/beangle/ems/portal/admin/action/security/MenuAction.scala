@@ -27,6 +27,7 @@ import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.ems.portal.admin.helper.AppHelper
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.web.action.annotation.{ignore, param}
@@ -35,11 +36,8 @@ import org.beangle.webmvc.support.action.RestfulAction
 
 import java.net.{URL, URLConnection}
 
-class MenuAction extends RestfulAction[Menu] {
+class MenuAction extends RestfulAction[Menu],DomainSupport {
   var menuService: MenuService = _
-  var appService: AppService = _
-  var domainService: DomainService = _
-  var databus: DataEventBus = _
 
   protected override def indexSetting(): Unit = {
     val apps = appService.getWebapps

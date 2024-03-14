@@ -34,8 +34,8 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
 
   var appService: AppService = _
 
-  private var host: String = _
-  private var port: Int = _
+  private var host: String = "127.0.0.1"
+  private var port: Int = 6379
 
   private val ips: Set[String] = getLocalIPs()
 

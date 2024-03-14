@@ -23,17 +23,16 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.jdbc.engine.{Drivers, Engines, UrlFormat}
 import org.beangle.ems.app.util.AesEncryptor
 import org.beangle.ems.core.config.model.{Credential, Db}
-import org.beangle.ems.core.config.service.{CredentialService, DomainService}
+import org.beangle.ems.core.config.service.CredentialService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 import java.sql.DriverManager
 
-class DbAction extends RestfulAction[Db] {
+class DbAction extends RestfulAction[Db], DomainSupport {
 
   override def simpleEntityName = "db"
-
-  var domainService: DomainService = _
 
   var credentialService: CredentialService = _
 
@@ -67,6 +66,8 @@ class DbAction extends RestfulAction[Db] {
     val removedKey = db.properties.keys.toSet -- keys
     db.properties.subtractAll(removedKey)
     db.domain = domainService.getDomain
+    saveOrUpdate(db)
+    publishUpdate(db)
     super.saveAndRedirect(db)
   }
 

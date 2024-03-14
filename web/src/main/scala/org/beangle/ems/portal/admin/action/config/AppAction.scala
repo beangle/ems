@@ -18,18 +18,16 @@
 package org.beangle.ems.portal.admin.action.config
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.core.config.model.*
+import org.beangle.ems.core.config.service.DbService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.config.model._
-import org.beangle.ems.core.config.service.{AppService, DbService, DomainService}
 
-class AppAction(dbService: DbService) extends RestfulAction[App] {
+class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport {
 
   override protected def simpleEntityName = "app"
-
-  var domainService: DomainService = _
-  var appService: AppService = _
 
   def datasource(): View = {
     put("dataSources", dbService.getAll())
@@ -42,8 +40,8 @@ class AppAction(dbService: DbService) extends RestfulAction[App] {
   }
 
   protected override def editSetting(entity: App): Unit = {
-    if(!entity.persisted){
-      entity.enabled=true
+    if (!entity.persisted) {
+      entity.enabled = true
     }
     put("groups", appService.getGroups())
     put("appTypes", entityDao.getAll(classOf[AppType]))
@@ -80,6 +78,9 @@ class AppAction(dbService: DbService) extends RestfulAction[App] {
       }
 
       saveOrUpdate(app)
+
+      publishUpdate(classOf[DataSource], Map("app.name" -> app.name))
+      publishUpdate(app)
       redirect("search", "info.save.success")
     } catch {
       case e: Exception =>

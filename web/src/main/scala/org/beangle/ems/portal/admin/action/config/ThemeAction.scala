@@ -18,16 +18,17 @@
 package org.beangle.ems.portal.admin.action.config
 
 import org.beangle.ems.core.config.model.Theme
-import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.portal.admin.action.DomainSupport
+import org.beangle.event.bus.DataEvent
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
-class ThemeAction extends RestfulAction[Theme] {
-
-  var domainService: DomainService = _
+class ThemeAction extends RestfulAction[Theme], DomainSupport {
 
   override protected def saveAndRedirect(p: Theme): View = {
     p.domain = domainService.getDomain
+    saveOrUpdate(p)
+    publishUpdate(p)
     super.saveAndRedirect(p)
   }
 

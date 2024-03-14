@@ -18,11 +18,10 @@
 package org.beangle.ems.portal.admin.action.security
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.FuncPermissionService
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.ems.portal.admin.helper.AppHelper
-import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.security.authz.Scope
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
@@ -33,12 +32,9 @@ import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
   *
   * @author chaostone 2005-10-9
   */
-class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource] {
+class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource], DomainSupport {
 
   var funcPermissionService: FuncPermissionService = _
-  var appService: AppService = _
-  var domainService: DomainService = _
-  var databus: DataEventBus = _
 
   /**
     * 禁用或激活一个或多个模块
@@ -59,7 +55,7 @@ class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[Func
       }
     }
     entityDao.saveOrUpdate(resource)
-    databus.publish(DataEvent.update(resource))
+    publishUpdate(resource)
     redirect("search", "info.save.success")
   }
 

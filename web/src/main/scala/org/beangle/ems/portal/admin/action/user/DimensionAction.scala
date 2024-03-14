@@ -18,18 +18,17 @@
 package org.beangle.ems.portal.admin.action.user
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.core.user.model.Dimension
+import org.beangle.ems.portal.admin.action.DomainSupport
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.model.Dimension
 
 /**
- * 数据限制域元信息配置类
- * @author chaostone
- */
-class DimensionAction extends RestfulAction[Dimension] {
-
-  var domainService: DomainService = _
+  * 数据限制域元信息配置类
+  *
+  * @author chaostone
+  */
+class DimensionAction extends RestfulAction[Dimension], DomainSupport {
 
   override protected def getQueryBuilder: OqlBuilder[Dimension] = {
     val builder = super.getQueryBuilder
@@ -43,6 +42,7 @@ class DimensionAction extends RestfulAction[Dimension] {
       dimension.source = dimension.source.replace("\r", "")
     }
     entityDao.saveOrUpdate(dimension)
+    publishUpdate(dimension)
     redirect("search", "info.save.success")
   }
 }

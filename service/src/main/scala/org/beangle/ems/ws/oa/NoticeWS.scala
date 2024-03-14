@@ -21,14 +21,11 @@ import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.jsonapi.JsonAPI
 import org.beangle.data.jsonapi.JsonAPI.Context
-import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, JsonAPISupport}
-import org.beangle.web.servlet.url.UrlBuilder
-import org.beangle.webmvc.execution.MappingHandler
 
 import java.time.LocalDate
 
