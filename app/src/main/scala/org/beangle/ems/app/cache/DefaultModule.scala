@@ -21,32 +21,15 @@ import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cache.redis.JedisPoolFactory
 import org.beangle.cdi.bind.BindModule
 import org.beangle.commons.logging.Logging
-import org.beangle.commons.net.http.HttpUtils
-import org.beangle.ems.app.{EmsApi, EmsApp}
-
-import java.io.FileInputStream
-import scala.xml.Node
 
 class DefaultModule extends BindModule, Logging {
 
   protected override def binding(): Unit = {
     bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)
 
-    var elem: Node = null
-    EmsApp.getAppFile foreach { file =>
-      val is = new FileInputStream(file)
-      (scala.xml.XML.load(is) \\ "redis") foreach { e => elem = e }
-    }
-    if (null == elem) {
-      val res = HttpUtils.getText(EmsApi.getRedisUrl)
-      if (res.isOk) {
-        (scala.xml.XML.loadString(res.getText) \\ "redis") foreach { e => elem = e }
-      }
-    }
-    if (null != elem) {
-      val host = (elem \ "host").text.trim
-      val port = (elem \ "port").text.trim
-      bind("jedis.Factory", classOf[JedisPoolFactory]).constructor(Map("host" -> host, "port" -> port))
+    val redis = Redis.conf
+    if (redis.nonEmpty) {
+      bind("jedis.Factory", classOf[JedisPoolFactory]).constructor(redis)
     }
   }
 }

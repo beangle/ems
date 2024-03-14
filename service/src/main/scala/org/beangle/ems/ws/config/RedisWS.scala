@@ -21,14 +21,13 @@ import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.commons.lang.Strings
-import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.cache.Redis
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.servlet.util.RequestUtils
 
-import java.io.FileInputStream
 import java.net.{Inet4Address, NetworkInterface}
 
 class RedisWS extends ActionSupport, ServletSupport, Initializing {
@@ -41,14 +40,10 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
   private val ips: Set[String] = getLocalIPs()
 
   override def init(): Unit = {
-    EmsApp.getAppFile foreach { file =>
-      val is = new FileInputStream(file)
-      val app = scala.xml.XML.load(is)
-      (app \\ "redis") foreach { e =>
-        this.host = (e \\ "host").text.trim
-        this.port = (e \\ "port").text.trim.toInt
-      }
-    }
+    val conf = Redis.conf
+    if conf.nonEmpty then
+      this.host = conf("host")
+      this.port = conf("port").toInt
   }
 
   @mapping(value = "{app}")

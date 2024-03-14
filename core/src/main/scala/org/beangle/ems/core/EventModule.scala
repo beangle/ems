@@ -28,8 +28,8 @@ class EventModule extends BindModule {
     wiredEagerly(true)
     //using redis as pubsub
     bind("channelQueue", classOf[RedisChannelQueue[DataEvent]])
-      .constructor("beangle_ems_data", ref("jedis.Factory"), new DataEventSerializer).primary()
-    //bind("channelQueue", classOf[PostgresChannelQueue[DataEvent]]).constructor("beangle_ems_data", ?, new DataEventSerializer).primary()
+      .constructor("ems_platform", ref("jedis.Factory"), new DataEventSerializer).primary()
+    //bind("channelQueue", classOf[PostgresChannelQueue[DataEvent]]).constructor("ems_platform", ?, new DataEventSerializer).primary()
     bind(classOf[CacheEvictorRegister]).constructor(ref("channelQueue"))
     bind("databus", classOf[DefaultDataEventBus]).constructor(ref("channelQueue"))
   }

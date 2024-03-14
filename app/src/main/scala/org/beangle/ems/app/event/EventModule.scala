@@ -19,8 +19,7 @@ package org.beangle.ems.app.event
 
 import org.beangle.cdi.bind.BindModule
 import org.beangle.commons.logging.Logging
-import org.beangle.commons.net.http.HttpUtils
-import org.beangle.ems.app.EmsApi
+import org.beangle.ems.app.cache.Redis
 import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
@@ -29,16 +28,12 @@ class EventModule extends BindModule, Logging {
   protected override def binding(): Unit = {
     wiredEagerly(true)
 
-    val res = HttpUtils.getText(EmsApi.getRedisUrl)
-    if (res.isOk) {
-      val root = scala.xml.XML.loadString(res.getText)
-      if (root \\ "redis").nonEmpty then
-        bind("appChannel", classOf[RedisChannelQueue[DataEvent]]).constructor("app_data", ?, new DataEventSerializer)
-        bind(classOf[CacheEvictorRegister])
-        bind(classOf[DefaultDataEventBus]).constructor(ref("appChannel"))
-        bind(classOf[RemoteAuthorizerRefresher])
-      else
-        logger.error(s"Cannot parse app redis config")
+    val redis = Redis.conf
+    if (redis.nonEmpty) {
+      bind("appChannel", classOf[RedisChannelQueue[DataEvent]]).constructor("ems_public", ?, new DataEventSerializer)
+      bind(classOf[CacheEvictorRegister])
+      bind(classOf[DefaultDataEventBus]).constructor(ref("appChannel"))
+      bind(classOf[RemoteAuthorizerRefresher])
     } else {
       bind("appChannel", NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
@@ -52,16 +47,11 @@ class EventModule extends BindModule, Logging {
 class EventPublishModule extends BindModule, Logging {
   protected override def binding(): Unit = {
     wiredEagerly(true)
-    val res = HttpUtils.getText(EmsApi.getRedisUrl)
-    if (res.isOk) {
-      val root = scala.xml.XML.loadString(res.getText)
-      if (root \\ "redis").nonEmpty then
-        bind("appChannel", classOf[RedisChannelQueue[DataEvent]]).constructor("app_data", ?, new DataEventSerializer)
-          .property("publishOnly", true)
-      else
-        logger.error(s"Cannot parse app redis config")
+    val redis = Redis.conf
+    if (redis.nonEmpty) {
+      bind("appChannel", classOf[RedisChannelQueue[DataEvent]]).constructor("ems_public", ?, new DataEventSerializer)
+        .property("publishOnly", true)
     } else {
-      logger.error(s"Cannot fetch redis config from ems service")
       bind("appChannel", NullChannelQueue)
     }
   }
