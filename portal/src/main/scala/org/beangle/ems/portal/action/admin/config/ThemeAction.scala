@@ -15,27 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.event
+package org.beangle.ems.portal.action.admin.config
 
-import org.beangle.commons.bean.Initializing
-import org.beangle.ems.app.EmsApp
-import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.event.mq.EventSubscriber
-import org.beangle.security.authz.Authorizer
+import org.beangle.ems.core.config.model.Theme
+import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.event.bus.DataEvent
+import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.action.RestfulAction
 
-class RemoteAuthorizerRefresher(databus: DataEventBus)
-  extends EventSubscriber[DataEvent], Initializing {
+class ThemeAction extends RestfulAction[Theme], DomainSupport {
 
-  var authorizer: Option[Authorizer] = None
-
-  override def init(): Unit = {
-    authorizer foreach { a =>
-      databus.subscribe("org.beangle.security.authz", this)
-    }
+  override protected def saveAndRedirect(p: Theme): View = {
+    p.domain = domainService.getDomain
+    saveOrUpdate(p)
+    publishUpdate(p)
+    super.saveAndRedirect(p)
   }
 
-  override def process(event: DataEvent): Unit = {
-    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
-      authorizer.get.refresh()
-  }
 }

@@ -1,20 +1,21 @@
 <?xml version="1.0"?>
 <cdi>
   <container>
-    <module class="org.beangle.ems.portal.admin.ConfigModule"/>
-    <module class="org.beangle.ems.portal.admin.SecurityModule"/>
-    <module class="org.beangle.ems.portal.admin.BlobModule"/>
-    <module class="org.beangle.ems.portal.admin.OAModule"/>
-    <module class="org.beangle.ems.portal.admin.LogModule"/>
-    <module class="org.beangle.ems.portal.user.DefaultModule"/>
-    <module class="org.beangle.ems.portal.DefaultModule"/>
+    <module class="org.beangle.ems.portal.action.admin.ConfigModule"/>
+    <module class="org.beangle.ems.portal.action.admin.SecurityModule"/>
+    <module class="org.beangle.ems.portal.action.admin.BlobModule"/>
+    <module class="org.beangle.ems.portal.action.admin.OAModule"/>
+    <module class="org.beangle.ems.portal.action.admin.LogModule"/>
+    <module class="org.beangle.ems.portal.action.user.DefaultModule"/>
+    <module class="org.beangle.ems.portal.action.DefaultModule"/>
 
     <module class="org.beangle.ems.app.cas.DefaultModule"/>
     <module class="org.beangle.ems.app.log.DefaultModule"/>
     <module class="org.beangle.ems.app.web.DefaultModule"/>
     <module class="org.beangle.ems.app.cache.DefaultModule"/>
     <module class="org.beangle.ems.app.event.EventPublishModule"/>
-    <module class="org.beangle.ems.web.WebReconfigModule"/>
+
+    <module class="org.beangle.ems.core.WebReconfigModule"/>
     <module class="org.beangle.ems.core.EventModule"/>
     <module class="org.beangle.ems.core.DaoModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>

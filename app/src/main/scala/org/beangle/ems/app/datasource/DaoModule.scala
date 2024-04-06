@@ -19,7 +19,7 @@ package org.beangle.ems.app.datasource
 
 import org.beangle.cdi.bind.BindModule
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
-import org.beangle.webmvc.hibernate.CloseSessionInterceptor
+import org.beangle.webmvc.support.hibernate.CloseSessionInterceptor
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 object DaoModule extends BindModule {

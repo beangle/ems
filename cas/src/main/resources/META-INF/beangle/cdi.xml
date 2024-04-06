@@ -4,16 +4,17 @@
     <module class="org.beangle.ems.cas.action.DefaultModule"/>
     <module class="org.beangle.ems.cas.action.SmsModule"/>
 
+    <module class="org.beangle.ems.app.web.DefaultModule"/>
+    <module class="org.beangle.ems.app.log.DefaultModule"/>
+    <module class="org.beangle.ems.app.cache.DefaultModule"/>
+
     <module class="org.beangle.ems.core.cas.DefaultModule"/>
     <module class="org.beangle.ems.core.cas.TicketModule"/>
     <module class="org.beangle.ems.core.cas.SessionModule"/>
     <module class="org.beangle.ems.core.cas.DaoRealmModule"/>
     <module class="org.beangle.ems.core.cas.CredentialModule"/>
 
-    <module class="org.beangle.ems.app.web.DefaultModule"/>
-    <module class="org.beangle.ems.app.log.DefaultModule"/>
-    <module class="org.beangle.ems.app.cache.DefaultModule"/>
-    <module class="org.beangle.ems.web.WebReconfigModule"/>
+    <module class="org.beangle.ems.core.WebReconfigModule"/>
     <module class="org.beangle.ems.core.DaoModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>

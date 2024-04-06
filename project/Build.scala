@@ -2,49 +2,36 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.14"
-  val dataVer = "5.8.7"
-  val cdiVer = "0.6.4"
-  val webVer = "0.4.10"
-  val serializerVer = "0.1.8"
-  val cacheVer = "0.1.7"
-  val templateVer = "0.1.11"
-  val webmvcVer = "0.9.23"
-  val securityVer = "4.3.18"
-  val idsVer = "0.3.15"
-  val eventVer = "0.0.3"
+  val commonsVer = "5.6.15"
+  val jdbcVer = "1.0.0"
+  val dataVer = "5.8.9"
+  val cdiVer = "0.6.5"
+  val webVer = "0.4.11"
+  val serializerVer = "0.1.9"
+  val cacheVer = "0.1.8"
+  val templateVer = "0.1.12"
+  val webmvcVer = "0.9.24"
+  val securityVer = "4.3.19"
+  val idsVer = "0.3.16"
+  val eventVer = "0.0.4"
+  val docVer = "0.3.3"
 
-  val commonsCore = "org.beangle.commons" %% "beangle-commons-core" % commonsVer
-  val commonsFile = "org.beangle.commons" %% "beangle-commons-file" % commonsVer
-  val commonsText = "org.beangle.commons" %% "beangle-commons-text" % commonsVer
-  val dataJdbc = "org.beangle.data" %% "beangle-data-jdbc" % dataVer
-  val dataOrm = "org.beangle.data" %% "beangle-data-orm" % dataVer
-  val dataTransfer = "org.beangle.data" %% "beangle-data-transfer" % dataVer
-  val cdiApi = "org.beangle.cdi" %% "beangle-cdi-api" % cdiVer
-  val cdiSpring = "org.beangle.cdi" %% "beangle-cdi-spring" % cdiVer
-  val cacheApi = "org.beangle.cache" %% "beangle-cache-api" % cacheVer
-  val cacheCaffeine = "org.beangle.cache" %% "beangle-cache-caffeine" % cacheVer
-  val cacheRedis = "org.beangle.cache" %% "beangle-cache-redis" % cacheVer
-  val templateApi = "org.beangle.template" %% "beangle-template-api" % templateVer
-  val templateFreemarker = "org.beangle.template" %% "beangle-template-freemarker" % templateVer
-  val webAction = "org.beangle.web" %% "beangle-web-action" % webVer
-  val webServlet = "org.beangle.web" %% "beangle-web-servlet" % webVer
-  val webmvcCore = "org.beangle.webmvc" %% "beangle-webmvc-core" % webmvcVer
-  val webmvcView = "org.beangle.webmvc" %% "beangle-webmvc-view" % webmvcVer
-  val webmvcSupport = "org.beangle.webmvc" %% "beangle-webmvc-support" % webmvcVer
-  val serializerText = "org.beangle.serializer" %% "beangle-serializer-text" % serializerVer
-  val securityCore = "org.beangle.security" %% "beangle-security-core" % securityVer
-  val securityWeb = "org.beangle.security" %% "beangle-security-web" % securityVer
-  val securitySession = "org.beangle.security" %% "beangle-security-session" % securityVer
-  val securitySso = "org.beangle.security" %% "beangle-security-sso" % securityVer
-  val idsCas = "org.beangle.ids" %% "beangle-ids-cas" % idsVer
-  val idsWeb = "org.beangle.ids" %% "beangle-ids-web" % idsVer
-  val idsSms = "org.beangle.ids" %% "beangle-ids-sms" % idsVer
-  val eventCore = "org.beangle.event" %% "beangle-event-core" % eventVer
-  val eventBus = "org.beangle.event" %% "beangle-event-bus" % eventVer
+  val b_commons = "org.beangle.commons" % "beangle-commons" % commonsVer
+  val b_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % jdbcVer
+  val b_model = "org.beangle.data" % "beangle-model" % dataVer
+  val b_cdi = "org.beangle.cdi" % "beangle-cdi" % cdiVer
+  val b_cache = "org.beangle.cache" % "beangle-cache" % cacheVer
+  val b_template = "org.beangle.template" % "beangle-template" % templateVer
+  val b_web = "org.beangle.web" % "beangle-web" % webVer
+  val b_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % webmvcVer
+  val b_serializer = "org.beangle.serializer" % "beangle-serializer" % serializerVer
+  val b_security = "org.beangle.security" % "beangle-security" % securityVer
+  val b_ids = "org.beangle.ids" % "beangle-ids" % idsVer
+  val b_event = "org.beangle.event" % "beangle-event" % eventVer
+  val b_doc_transfer = "org.beangle.doc" % "beangle-doc-transfer" % docVer
 
-  val appDepends = Seq(commonsCore, commonsFile, commonsText, logback_classic, logback_core, scalatest, webAction) ++
-    Seq(cdiApi, cdiSpring, gson, HikariCP, webmvcSupport, cacheRedis) ++
-    Seq(dataOrm, hibernate_core, dataJdbc, cacheApi, cacheCaffeine, securitySession, securitySso, templateApi) ++
-    Seq(postgresql, caffeine_jcache, hibernate_jcache, eventBus)
+  val appDepends = Seq(b_commons, logback_classic, scalatest, b_web) ++
+    Seq(b_cdi, spring_beans, spring_context, spring_tx, spring_jdbc, gson, HikariCP, b_webmvc, jedis) ++
+    Seq(b_model, hibernate_core, b_jdbc, b_cache, b_security, b_template) ++
+    Seq(postgresql, caffeine_jcache, hibernate_jcache, b_event)
 }

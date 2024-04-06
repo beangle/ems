@@ -15,27 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.event
+package org.beangle.ems.portal.action.admin.session
 
-import org.beangle.commons.bean.Initializing
-import org.beangle.ems.app.EmsApp
-import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.event.mq.EventSubscriber
-import org.beangle.security.authz.Authorizer
+import java.time.Instant
 
-class RemoteAuthorizerRefresher(databus: DataEventBus)
-  extends EventSubscriber[DataEvent], Initializing {
+import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.Category
 
-  var authorizer: Option[Authorizer] = None
-
-  override def init(): Unit = {
-    authorizer foreach { a =>
-      databus.subscribe("org.beangle.security.authz", this)
-    }
-  }
-
-  override def process(event: DataEvent): Unit = {
-    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
-      authorizer.get.refresh()
-  }
+class SessionInfo extends Serializable {
+  var domain: Domain = _
+  var id: String = _
+  var principal: String = _
+  var description: Option[String] = _
+  var category: Category = _
+  var ip: Option[String] = _
+  var agent: Option[String] = _
+  var os: Option[String] = _
+  var loginAt: Instant = _
+  var lastAccessAt: Instant = _
 }

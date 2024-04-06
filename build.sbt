@@ -1,8 +1,9 @@
 import EmsDepends.*
+import org.beangle.parent.Dependencies.apache_commons_compress
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.8.12-SNAPSHOT"
+ThisBuild / version := "4.8.12"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -20,13 +21,13 @@ ThisBuild / developers := List(
   )
 )
 
-ThisBuild / description := "The Beangle EMS Library"
+ThisBuild / description := "The Beangle EMS Application"
 ThisBuild / homepage := Some(url("http://beangle.github.io/ems/index.html"))
 ThisBuild / resolvers += Resolver.mavenLocal
 
 lazy val root = (project in file("."))
   .settings()
-  .aggregate(static, app, core, web, cas, service, portal, index, ws)
+  .aggregate(static, app, core, cas, portal, index, ws)
 
 lazy val static = (project in file("static"))
   .settings(
@@ -46,54 +47,42 @@ lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(commonsCore, idsCas, dataOrm)
+    libraryDependencies ++= Seq(b_commons, b_ids, b_model, apache_commons_compress)
   ).dependsOn(app)
-
-lazy val web = (project in file("web"))
-  .settings(
-    name := "beangle-ems-web",
-    common,
-    libraryDependencies ++= Seq(commonsCore, idsWeb, idsSms, webmvcView),
-    libraryDependencies ++= Seq(dataOrm, dataTransfer, eventBus)
-  ).dependsOn(core, app)
 
 lazy val cas = (project in file("cas"))
   .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,
-    libraryDependencies ++= appDepends
-  ).dependsOn(web, app, core)
-
-lazy val service = (project in file("service"))
-  .settings(
-    name := "beangle-ems-service",
-    common,
-    libraryDependencies ++= Seq(serializerText, eventBus),
-    libraryDependencies ++= appDepends
-  ).dependsOn(core, app)
+    libraryDependencies ++= appDepends,
+    libraryDependencies ++= Seq(b_webmvc)
+  ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
   .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,
-  ).dependsOn(service)
+    libraryDependencies ++= Seq(b_serializer, b_event),
+    libraryDependencies ++= appDepends
+  ).dependsOn(core)
 
 lazy val portal = (project in file("portal"))
   .enablePlugins(WarPlugin, TomcatPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
+    libraryDependencies ++= Seq(b_webmvc, b_doc_transfer, b_event),
     libraryDependencies ++= appDepends
-  ).dependsOn(web, app, core)
+  ).dependsOn(core)
 
 lazy val index = (project in file("index"))
   .enablePlugins(WarPlugin)
   .settings(
     name := "beangle-ems-index",
     common,
-    libraryDependencies ++= Seq(webmvcSupport)
-  ).dependsOn(core, app)
+    libraryDependencies ++= Seq(b_webmvc)
+  ).dependsOn(core)
 
 publish / skip := true

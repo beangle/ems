@@ -15,27 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.event
+package org.beangle.ems.portal.action.admin
 
-import org.beangle.commons.bean.Initializing
-import org.beangle.ems.app.EmsApp
-import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.event.mq.EventSubscriber
-import org.beangle.security.authz.Authorizer
+import org.beangle.cdi.bind.BindModule
 
-class RemoteAuthorizerRefresher(databus: DataEventBus)
-  extends EventSubscriber[DataEvent], Initializing {
+class ConfigModule extends BindModule {
 
-  var authorizer: Option[Authorizer] = None
+  protected override def binding(): Unit = {
+    bind(classOf[config.AppAction], classOf[config.AppGroupAction])
+    bind(classOf[config.DbAction])
+    bind(classOf[config.CredentialAction])
+    bind(classOf[config.FileAction])
 
-  override def init(): Unit = {
-    authorizer foreach { a =>
-      databus.subscribe("org.beangle.security.authz", this)
-    }
-  }
-
-  override def process(event: DataEvent): Unit = {
-    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
-      authorizer.get.refresh()
+    bind(classOf[config.PortaletAction])
+    bind(classOf[config.ThemeAction])
+    bind(classOf[config.TextBundleAction])
   }
 }

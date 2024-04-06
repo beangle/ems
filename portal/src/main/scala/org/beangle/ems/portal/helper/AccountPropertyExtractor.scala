@@ -15,27 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.event
+package org.beangle.ems.portal.helper
 
-import org.beangle.commons.bean.Initializing
-import org.beangle.ems.app.EmsApp
-import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.event.mq.EventSubscriber
-import org.beangle.security.authz.Authorizer
+import org.beangle.commons.bean.DefaultPropertyExtractor
+import org.beangle.ems.core.user.model.Account
 
-class RemoteAuthorizerRefresher(databus: DataEventBus)
-  extends EventSubscriber[DataEvent], Initializing {
-
-  var authorizer: Option[Authorizer] = None
-
-  override def init(): Unit = {
-    authorizer foreach { a =>
-      databus.subscribe("org.beangle.security.authz", this)
+class AccountPropertyExtractor extends DefaultPropertyExtractor {
+  override def get(target: Object, property: String): Any = {
+    if (property == "roleNames") {
+      val account = target.asInstanceOf[Account]
+      account.user.roles.filter(x => x.role.domain == account.domain && x.member).map(_.role.name).mkString(",")
+    } else {
+      super.get(target, property)
     }
   }
 
-  override def process(event: DataEvent): Unit = {
-    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
-      authorizer.get.refresh()
-  }
 }

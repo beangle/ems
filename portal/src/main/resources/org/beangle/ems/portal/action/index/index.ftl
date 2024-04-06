@@ -1,3 +1,4 @@
+[@b.head title="首页"/]
 [#macro displayFrame mainHref=""]
 <style>
 [#--这一段定制的css，在app模块中的nav.ftl也有一份--]
@@ -331,10 +332,8 @@
 <script type="text/javascript">
   beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
     ems.config.api='${nav.ems.api}';
-    var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'adminlte'}
-    var portal={"name":'platform-portal','url':'${nav.ems.portal}','title':'首页'}
+    var app = {'name':'${nav.app.name}',"title":'${nav.domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'adminlte'}
     var params={}
-    params['sysName']='${nav.domain.title}';
     [#list nav.params as k,v]
     params['${k}']='${v}';
     [/#list]
@@ -350,8 +349,7 @@
     [/#if]
 
     jQuery(document).ready(function(){
-      var navMenu = emsnav.createNav(app,portal,${nav.menusJson},params,false);
-      navMenu.displayAppMenus('${nav.app.name}');
+      emsnav.createNav(app,app,${nav.menusJson},params,true);
       [#if nav.profiles??]
       emsnav.createProfileNav();
       [/#if]
@@ -397,3 +395,6 @@
   }
 </script>
 [/#macro]
+
+[@displayFrame "!welcome"/]
+[@b.foot/]
