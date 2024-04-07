@@ -18,11 +18,11 @@
 package org.beangle.ems.portal.action.admin.oa
 
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.UserService
-import org.beangle.event.bus.{DataEvent, DataEventBus}
+import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.support.ActionSupport
@@ -31,12 +31,9 @@ import org.beangle.webmvc.support.action.EntityAction
 
 import java.time.{Instant, LocalDate}
 
-class NoticeAuditAction extends ActionSupport with EntityAction[Notice] {
+class NoticeAuditAction extends ActionSupport, EntityAction[Notice], DomainSupport {
   var userService: UserService = _
-  var domainService: DomainService = _
-  var appService: AppService = _
   var entityDao: EntityDao = _
-  var databus: DataEventBus = _
 
   def index(): View = {
     put("categories", userService.getCategories())

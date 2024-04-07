@@ -20,11 +20,12 @@ package org.beangle.ems.portal.action.admin.oa
 import jakarta.servlet.http.Part
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.user.model.{Category, User}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.{ignore, param}
 import org.beangle.web.action.support.ServletSupport
@@ -34,12 +35,10 @@ import org.beangle.webmvc.support.action.RestfulAction
 import java.io.File
 import java.time.Instant
 
-class DocAction extends RestfulAction[Doc] with ServletSupport {
+class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
 
   var docService: DocService = _
   var userService: UserService = _
-  var domainService: DomainService = _
-  var appService: AppService = _
 
   override protected def indexSetting(): Unit = {
     put("categories", userService.getCategories())
@@ -78,6 +77,7 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
       entities.foreach { doc =>
         docService.remove(doc)
       }
+      databus.publish(DataEvent.update(entities))
       redirect("search", "info.remove.success")
     } catch {
       case e: Exception =>
@@ -95,6 +95,8 @@ class DocAction extends RestfulAction[Doc] with ServletSupport {
     getAll("docfile", classOf[Part]) foreach { docFile =>
       docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
     }
+    entityDao.saveOrUpdate(doc)
+    databus.publish(DataEvent.update(doc))
     super.saveAndRedirect(doc)
   }
 }

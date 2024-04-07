@@ -25,16 +25,16 @@ object DefaultMapping extends MappingModule {
     defaultIdGenerator(classOf[Long], IdGenerator.DateTime)
     defaultCache("ems.security", "read-write")
 
-    bind[Doc]
+    bind[Doc].cacheable()
 
-    bind[News] declare { e =>
+    bind[News].declare { e =>
       e.contents is lob
-    }
+    }.cacheable()
 
     bind[Notice].declare { e =>
       e.contents is lob
       e.issuer is length(40)
-    }
+    }.cacheable()
 
     bind[SensitiveWord].declare { e =>
       e.contents is length(30)

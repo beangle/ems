@@ -20,11 +20,12 @@ package org.beangle.ems.portal.action.admin.oa
 import jakarta.servlet.http.Part
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.user.model.{Category, User}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.web.action.annotation.ignore
 import org.beangle.web.action.view.View
@@ -32,12 +33,10 @@ import org.beangle.webmvc.support.action.RestfulAction
 
 import java.time.{Instant, LocalDate}
 
-class NoticeAction extends RestfulAction[Notice] {
+class NoticeAction extends RestfulAction[Notice], DomainSupport {
 
   var docService: DocService = _
   var userService: UserService = _
-  var domainService: DomainService = _
-  var appService: AppService = _
 
   override protected def indexSetting(): Unit = {
     put("categories", userService.getCategories())
@@ -55,6 +54,8 @@ class NoticeAction extends RestfulAction[Notice] {
   override protected def removeAndRedirect(notices: Seq[Notice]): View = {
     val docs = notices.flatMap(_.docs)
     entityDao.remove(notices, docs)
+    databus.publish(DataEvent.remove(notices))
+    if (docs.nonEmpty) databus.publish(DataEvent.remove(docs))
     redirect("search", "info.remove.success")
   }
 
@@ -90,7 +91,7 @@ class NoticeAction extends RestfulAction[Notice] {
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notice.categories.clear()
     notice.categories ++= entityDao.find(classOf[Category], getIntIds("category"))
-    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar","jpg","png")
+    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar", "jpg", "png")
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
       val doc = new Doc
@@ -110,6 +111,8 @@ class NoticeAction extends RestfulAction[Notice] {
       throw new RuntimeException("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf,zip,jpg,png后缀的文件")
     } else {
       notice.status = NoticeStatus.Submited
+      entityDao.saveOrUpdate(notice)
+      databus.publish(DataEvent.update(notice))
       super.saveAndRedirect(notice)
     }
   }
