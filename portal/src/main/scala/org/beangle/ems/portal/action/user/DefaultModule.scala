@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.user
+package org.beangle.ems.portal.action.user
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.portal.user.action.{AvatarAction, DocAction, MessageAction, NoticeAction, NotificationAction, TodoAction}
+import org.beangle.ems.portal.action.user.{AvatarAction, DocAction, MessageAction, NoticeAction, NotificationAction, TodoAction}
 
 class DefaultModule extends BindModule {
 

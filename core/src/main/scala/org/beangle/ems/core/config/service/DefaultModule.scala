@@ -28,6 +28,6 @@ class DefaultModule extends BindModule {
     bind(classOf[CredentialServiceImpl])
     bind(classOf[AppServiceImpl])
     bind(classOf[DomainServiceImpl])
-    bind("mvc.TextBundleLoader.db", classOf[DbTextBundleLoader])
+    bind("mvc.TextBundleLoader.db", classOf[DbTextBundleLoader]).primary()
   }
 }

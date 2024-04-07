@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.user.action
+package org.beangle.ems.portal.action.user
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests

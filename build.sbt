@@ -1,5 +1,5 @@
 import EmsDepends.*
-import org.beangle.parent.Dependencies.apache_commons_compress
+import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
@@ -56,7 +56,7 @@ lazy val cas = (project in file("cas"))
     name := "beangle-ems-cas",
     common,
     libraryDependencies ++= appDepends,
-    libraryDependencies ++= Seq(b_webmvc)
+    libraryDependencies ++= Seq(b_webmvc, freemarker)
   ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
@@ -73,7 +73,8 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(b_webmvc, b_doc_transfer, b_event),
+    libraryDependencies ++= Seq(b_webmvc, freemarker),
+    libraryDependencies ++= Seq(b_doc_transfer, b_event),
     libraryDependencies ++= appDepends
   ).dependsOn(core)
 
