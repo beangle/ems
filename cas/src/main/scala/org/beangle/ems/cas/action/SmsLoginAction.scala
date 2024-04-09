@@ -19,8 +19,7 @@ package org.beangle.ems.cas.action
 
 import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.lang.Strings
-import org.beangle.ems.core.user.model.Account
-import org.beangle.ems.core.user.service.AccountService
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.ids.cas.service.CasService
 import org.beangle.ids.cas.ticket.TicketRegistry
 import org.beangle.ids.cas.web.helper.LoginHelper
@@ -41,7 +40,7 @@ class SmsLoginAction(securityManager: WebSecurityManager, ticketRegistry: Ticket
 
   var casService: CasService = _
 
-  var accountService: AccountService = _
+  var userService: UserService = _
 
   var smsCodeService: SmsCodeService = _
 
@@ -57,11 +56,11 @@ class SmsLoginAction(securityManager: WebSecurityManager, ticketRegistry: Ticket
         if (userName == "--" || smsCode == "--") {
           toLogin(null)
         } else {
-          accountService.get(userName) match
+          userService.get(userName) match
             case None =>
               toLogin("登录失败，用户名不存在。")
-            case Some(account) =>
-              account.user.mobile match
+            case Some(user) =>
+              user.mobile match
                 case None => toLogin("该用户未绑定手机。")
                 case Some(mobile) =>
                   if (smsCodeService.verify(mobile, smsCode)) {
@@ -78,14 +77,14 @@ class SmsLoginAction(securityManager: WebSecurityManager, ticketRegistry: Ticket
 
   def send(): View = {
     val userName = get("username", "")
-    val result = accountService.get(userName) match
+    val result = userService.get(userName) match
       case None => "发送失败，用户名不存在。"
-      case Some(account) =>
-        account.user.mobile match
+      case Some(user) =>
+        user.mobile match
           case None => "发送失败，该用户未绑定手机。"
           case Some(mobile) =>
             if smsCodeService.validate(mobile) then
-              smsCodeService.send(Receiver(mobile, account.user.name))
+              smsCodeService.send(Receiver(mobile, user.name))
             else
               s"手机号码${mobile}不正确"
     response.setCharacterEncoding("utf-8")

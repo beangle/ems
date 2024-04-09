@@ -18,25 +18,25 @@
 package org.beangle.ems.core.user.service.impl
 
 import org.beangle.data.dao.EntityDao
-import org.beangle.security.authc.{CredentialAge, DBCredentialStore, Principals}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.user.service.AccountService
+import org.beangle.ems.core.user.service.UserService
+import org.beangle.security.authc.{CredentialAge, DBCredentialStore, Principals}
 
 class DefaultCredentialStore extends DBCredentialStore {
 
   var entityDao: EntityDao = _
   var domainService: DomainService = _
-  var accountService: AccountService = _
+  var userService: UserService = _
 
   override def getPassword(principal: Any): Option[String] = {
-    accountService.getActivePassword(Principals.getName(principal))
+    userService.getActivePassword(Principals.getName(principal))
   }
 
   override def updatePassword(principal: Any, rawPassword: String): Unit = {
-    accountService.updatePassword(Principals.getName(principal), rawPassword)
+    userService.updatePassword(Principals.getName(principal), rawPassword)
   }
 
   override def getAge(principal: Any): Option[CredentialAge] = {
-    accountService.getPasswordAge(Principals.getName(principal))
+    userService.getPasswordAge(Principals.getName(principal))
   }
 }

@@ -24,7 +24,6 @@ class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
     bind(classOf[UserServiceImpl])
-    bind(classOf[AccountServiceImpl])
     bind(classOf[RoleServiceImpl])
     bind(classOf[PasswordConfigServiceImpl])
     bind(classOf[DimensionServiceImpl])

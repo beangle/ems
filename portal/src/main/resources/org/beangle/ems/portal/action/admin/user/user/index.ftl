@@ -3,14 +3,15 @@
 [#include "../user-nav.ftl"/]
 <div class="search-container">
  <div class="search-panel">
-  [@b.form name="userSearchForm" action="!search" title="ui.searchForm" target="userlist" theme="search"]
-    [@b.textfields names="user.code,user.name,roleName;user.roles"/]
-    [@b.select items=categories label="user.category.name" name="user.category.id" empty="..."/]
+  [@b.form name="userSearchForm" action="!search" title="ui.searchForm" target="accountlist" theme="search"]
+    [@b.textfields names="user.code;账户,user.name;姓名,roleName;角色"/]
+    [@b.select items=categories label="身份" name="user.category.id" empty="..."/]
     [@b.select name="user.enabled" label="common.status" value="1" empty="..." items={'1':'${b.text("action.activate")}','0':'${b.text("action.freeze")}'}/]
+    [@b.select label="用户照片" name="hasAvatar" items={"1":"已上传","0":"无"} empty="..."/]
   [/@]
  </div>
  <div class="search-list">
-  [@b.div id="userlist" href="!search?user.enabled=1" /]
+  [@b.div id="accountlist" href="!search?user.enabled=1" /]
  </div>
 </div>
 [@b.foot/]

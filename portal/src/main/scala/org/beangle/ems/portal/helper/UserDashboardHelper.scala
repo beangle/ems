@@ -19,7 +19,7 @@ package org.beangle.ems.portal.helper
 
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService}
-import org.beangle.ems.core.user.model.{Account, Profile, User}
+import org.beangle.ems.core.user.model.{Profile, User}
 import org.beangle.ems.core.user.service.DimensionService
 import org.beangle.security.session.SessionRegistry
 import org.beangle.web.action.context.ActionContext
@@ -43,9 +43,7 @@ class UserDashboardHelper {
 
   def buildDashboard(user: User): Unit = {
     ActionContext.current.attribute("user", user)
-    entityDao.findBy(classOf[Account], "user", List(user)) foreach { c =>
-      ActionContext.current.attribute("credential", c)
-    }
+    ActionContext.current.attribute("credential", user)
     val myProfiles = entityDao.findBy(classOf[Profile], "user", List(user))
     new ProfileHelper(entityDao, profileService, dimensionService).populateInfo(myProfiles)
   }

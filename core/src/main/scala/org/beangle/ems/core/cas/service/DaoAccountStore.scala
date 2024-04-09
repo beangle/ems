@@ -18,16 +18,16 @@
 package org.beangle.ems.core.cas.service
 
 import org.beangle.data.orm.hibernate.SessionHelper
-import org.beangle.ems.core.user.service.AccountService
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.authc.{Account, AccountStore}
 import org.hibernate.SessionFactory
 
-class DaoAccountStore(accountService: AccountService, sf: SessionFactory) extends AccountStore {
+class DaoAccountStore(userService: UserService, sf: SessionFactory) extends AccountStore {
 
   def load(principal: Any): Option[Account] = {
     SessionHelper.openSession(sf)
     try {
-      accountService.getAuthAccount(principal.toString)
+      userService.getAccount(principal.toString)
     } finally {
       SessionHelper.closeSession(sf)
     }

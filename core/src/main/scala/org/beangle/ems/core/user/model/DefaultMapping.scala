@@ -56,14 +56,8 @@ object DefaultMapping extends MappingModule {
       e.remark is length(100)
       e.roles is depends("user")
       e.groups is depends("user")
-      e.acounts is depends("user")
       e.mobile is length(15)
       index("idx_user_code", true, e.org, e.code)
-    }
-
-    bind[Account].declare { e =>
-      e.password is length(200)
-      index("idx_account", true, e.user, e.domain)
     }
 
     bind[PasswordConfig].declare { e =>

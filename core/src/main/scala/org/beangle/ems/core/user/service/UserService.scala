@@ -18,6 +18,7 @@
 package org.beangle.ems.core.user.service
 
 import org.beangle.ems.core.user.model.{Category, MemberShip, RoleMember, User}
+import org.beangle.security.authc.{CredentialAge, DefaultAccount}
 
 trait UserService {
 
@@ -26,8 +27,6 @@ trait UserService {
   def getIgnoreCase(code: String): Option[User]
 
   def get(id: Long): User
-
-  def getUsers(id: Long*): collection.Seq[User]
 
   def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember]
 
@@ -40,4 +39,14 @@ trait UserService {
   def isRoot(user: User, appName: String): Boolean
 
   def getCategories(): Seq[Category]
+
+  def getAccount(code: String): Option[DefaultAccount]
+
+  def enable(manager: User, accountIds: Iterable[Long], enabled: Boolean): Int
+
+  def getActivePassword(code: String): Option[String]
+
+  def getPasswordAge(code: String): Option[CredentialAge]
+
+  def updatePassword(code: String, rawPassword: String): Unit
 }

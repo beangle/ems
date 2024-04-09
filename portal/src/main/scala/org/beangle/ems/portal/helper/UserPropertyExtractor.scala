@@ -15,24 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.service
+package org.beangle.ems.portal.helper
 
-import org.beangle.security.authc.{CredentialAge, DefaultAccount}
-import org.beangle.ems.core.user.model.{Account, User}
+import org.beangle.commons.bean.DefaultPropertyExtractor
+import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.User
 
-trait AccountService {
+class UserPropertyExtractor(domain: Domain) extends DefaultPropertyExtractor {
+  override def get(target: Object, property: String): Any = {
+    if (property == "roleNames") {
+      val user = target.asInstanceOf[User]
+      user.roles.filter(x => x.role.domain == domain && x.member).map(_.role.name).mkString(",")
+    } else {
+      super.get(target, property)
+    }
+  }
 
-  def get(code: String): Option[Account]
-
-  def getAuthAccount(code: String): Option[DefaultAccount]
-
-  def enable(manager: User, accountIds: Iterable[Long], enabled: Boolean): Int
-
-  def getActivePassword(code: String): Option[String]
-
-  def getPasswordAge(code: String): Option[CredentialAge]
-
-  def updatePassword(code: String, rawPassword: String): Unit
-
-  def createAccount(user: User, account: Account): Unit
 }

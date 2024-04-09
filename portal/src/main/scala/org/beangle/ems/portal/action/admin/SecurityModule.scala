@@ -23,8 +23,8 @@ import org.beangle.ems.portal.helper.UserDashboardHelper
 class SecurityModule extends BindModule {
 
   protected override def binding(): Unit = {
-    bind(classOf[user.AccountAction], classOf[user.AvatarAction])
-    bind(classOf[user.PasswordConfigAction], classOf[user.UserAction])
+    bind(classOf[user.UserAction], classOf[user.AvatarAction])
+    bind(classOf[user.PasswordConfigAction])
     bind(classOf[user.DimensionAction], classOf[user.RoleAction], classOf[user.ProfileAction])
 
     bind(classOf[security.FuncResourceAction], classOf[security.MenuAction])

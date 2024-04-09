@@ -17,19 +17,28 @@
 
 package org.beangle.ems.core.user.service.impl
 
+import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
-import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.core.user.service.{PasswordConfigService, UserService}
+import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile as ProfileData}
 
-import java.time.Instant
+import java.time.{Instant, LocalDate, ZoneId}
 
-class UserServiceImpl(val entityDao: EntityDao) extends UserService {
+class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializing {
 
   var domainService: DomainService = _
+  var passwordConfigService: PasswordConfigService = _
+
+  private var config: PasswordConfig = _
+
+  override def init(): Unit = {
+    config = passwordConfigService.get()
+  }
 
   def get(code: String): Option[User] = {
     val query = OqlBuilder.from(classOf[User], "u")
@@ -47,10 +56,6 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
 
   def get(id: Long): User = {
     entityDao.get(classOf[User], id)
-  }
-
-  def getUsers(ids: Long*): collection.Seq[User] = {
-    entityDao.find(classOf[User], ids.toList)
   }
 
   def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember] = {
@@ -77,13 +82,16 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
   def create(creator: User, user: User): Unit = {
     user.updatedAt = Instant.now
     user.org = domainService.getOrg
+
+    val config = passwordConfigService.get()
+    val maxdays = if (config.mindays > 10000) 10000 else config.maxdays
+    user.passwdExpiredOn = LocalDate.ofInstant(user.updatedAt, ZoneId.systemDefault()).plusDays(maxdays)
     entityDao.saveOrUpdate(user)
   }
 
   def remove(manager: User, user: User): Unit = {
     if (isManagedBy(manager, user)) {
       val removed = Collections.newBuffer[Entity[_]]
-      removed ++= entityDao.findBy(classOf[Account], "user", List(user))
       removed ++= entityDao.findBy(classOf[Profile], "user", List(user))
       entityDao.remove(removed, user)
     }
@@ -93,5 +101,74 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService {
     val query = OqlBuilder.from(classOf[Category], "uc")
     query.where("uc.org=:org", domainService.getOrg).cacheable()
     entityDao.search(query)
+  }
+
+  override def getAccount(code: String): Option[DefaultAccount] = {
+    val domain = domainService.getDomain
+    get(code) match {
+      case Some(user) =>
+        val account = new DefaultAccount(user.code, user.name)
+        account.accountExpired = user.accountExpired
+        account.accountLocked = user.locked
+        account.credentialExpired = user.passwdInactive(config.idledays)
+        account.disabled = !user.enabled
+        account.categoryId = user.category.id
+
+        val query = OqlBuilder.from[Int](classOf[RoleMember].getName, "rm")
+          .where("rm.user=:user and rm.member=true", user)
+          .where("rm.role.domain=:domain", domain)
+          .select("rm.role.id")
+        val rs = entityDao.search(query)
+        account.authorities = rs.map(_.toString).toArray
+
+        val upQuery = OqlBuilder.from(classOf[Profile], "up")
+          .where("up.user=:user", user)
+          .where("up.domain=:domain", domain)
+        val ups = entityDao.search(upQuery)
+
+        if (ups.nonEmpty) {
+          account.profiles = Array.ofDim(ups.size)
+          var i = 0
+          ups foreach { up =>
+            account.profiles(i) = ProfileData(up.id, up.name, up.properties.map(x => (x._1.name, x._2)).toMap)
+            i += 1
+          }
+        }
+        Some(account)
+      case None => None
+    }
+  }
+
+  override def enable(manager: User, userIds: Iterable[Long], enabled: Boolean): Int = {
+    val users = entityDao.find(classOf[User], userIds)
+    val updated = users.filter(a => isManagedBy(manager, a))
+    updated.foreach { u => u.enabled = enabled }
+    entityDao.saveOrUpdate(updated)
+    updated.size
+  }
+
+  override def getActivePassword(code: String): Option[String] = {
+    val builder = OqlBuilder.from[String](classOf[User].getName, "u")
+    builder.where("u.code=:code", code)
+    builder.where("u.org=:org", domainService.getOrg)
+    builder.where("c.domain=:domain", domainService.getDomain)
+    builder.where("c.passwdExpiredOn >= :now", LocalDate.now.minusDays(config.idledays))
+    builder.select("c.password")
+    entityDao.search(builder).headOption
+  }
+
+  override def getPasswordAge(code: String): Option[CredentialAge] = {
+    get(code) map { c => CredentialAge(c.updatedAt, c.passwdExpiredOn, c.passwdExpiredOn.plusDays(config.idledays)) }
+  }
+
+  override def updatePassword(code: String, rawPassword: String): Unit = {
+    get(code) foreach { u =>
+      val config = passwordConfigService.get()
+      u.password = rawPassword
+      u.updatedAt = Instant.now
+      val maxdays = if (config.mindays > 10000) 10000 else config.maxdays
+      u.passwdExpiredOn = LocalDate.ofInstant(u.updatedAt, ZoneId.systemDefault()).plusDays(maxdays)
+      entityDao.saveOrUpdate(u)
+    }
   }
 }

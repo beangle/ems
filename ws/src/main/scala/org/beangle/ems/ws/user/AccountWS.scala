@@ -18,19 +18,19 @@
 package org.beangle.ems.ws.user
 
 import org.beangle.commons.collection.Properties
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.ems.core.user.service.AccountService
+import org.beangle.web.action.support.ActionSupport
 
 /**
  * @author chaostone
  */
-class AccountWS(accountService: AccountService) extends ActionSupport {
+class AccountWS(userService: UserService) extends ActionSupport {
 
   @response
   @mapping("{userCode}")
   def index(@param("userCode") userCode: String): Properties = {
-    accountService.getAuthAccount(userCode) match {
+    userService.getAccount(userCode) match {
       case Some(acc) =>
         val properties = new Properties()
         properties += ("name" -> acc.name)

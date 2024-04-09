@@ -23,20 +23,48 @@ import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
 
 import java.security.Principal
+import java.time.LocalDate
 
 /**
  * @author chaostone
  */
 
-class User extends LongId with Coded with Named with Updated with TemporalOn with Principal with Remark {
+class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark, Enabled {
+  /** 组织 */
   var org: Org = _
+  /** 角色 */
   var roles = Collections.newBuffer[RoleMember]
+  /** 用户组 */
   var groups = Collections.newBuffer[GroupMember]
-  var acounts = Collections.newBuffer[Account]
+  /** 身份 */
   var category: Category = _
+  /** 照片ID */
   var avatarId: Option[String] = None
+  /** 是否锁定 */
+  var locked: Boolean = _
+  /** 密码 */
+  var password: String = _
+  /** 密码过期日期 */
+  var passwdExpiredOn: LocalDate = _
+  /** 移动电话 */
   var mobile: Option[String] = None
+  /** 电子邮件 */
   var email: Option[String] = None
+
+  def accountExpired: Boolean = {
+    endOn match {
+      case Some(e) => LocalDate.now.isAfter(e)
+      case None => false
+    }
+  }
+
+  def passwdExpired: Boolean = {
+    LocalDate.now.isAfter(passwdExpiredOn)
+  }
+
+  def passwdInactive(idleDays: Int): Boolean = {
+    LocalDate.now.isAfter(passwdExpiredOn.plusDays(idleDays))
+  }
 
   override def getName: String = {
     name
