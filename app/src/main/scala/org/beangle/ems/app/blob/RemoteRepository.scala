@@ -24,6 +24,7 @@ import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.Strings.isEmpty
 import org.beangle.commons.logging.Logging
+import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpMethods, Https}
 
 import java.io.*
@@ -41,7 +42,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
 
   override def remove(path: String): Boolean = {
     require(path.startsWith("/"))
-    val url = new URL(s"$base$dir${path}")
+    val url = Networks.url(s"$base$dir${path}")
     val conn = url.openConnection.asInstanceOf[HttpURLConnection]
     Https.noverify(conn)
     conn.setDoOutput(true)
@@ -64,13 +65,13 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     require(path.startsWith("/"))
     val now = LocalDateTime.now.format(formatter)
     val token = Digests.sha1Hex(s"$dir${path}$user$key$now")
-    Some(new URL(s"$base$dir${path}?token=$token&u=$user&t=$now"))
+    Some(Networks.url(s"$base$dir${path}?token=$token&u=$user&t=$now"))
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val folderUrl = if (folder.endsWith("/")) folder else folder + "/"
-    val target = new URL(s"$base$dir$folderUrl")
+    val target = Networks.url(s"$base$dir$folderUrl")
     val params = Map("owner" -> owner)
     doUpload(target, is, fileName, params, Some(s"$user:$key"))
   }

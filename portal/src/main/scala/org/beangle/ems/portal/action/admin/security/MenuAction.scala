@@ -19,24 +19,21 @@ package org.beangle.ems.portal.action.admin.security
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
-import org.beangle.event.bus.{DataEvent, DataEventBus}
+import org.beangle.event.bus.DataEvent
 import org.beangle.web.action.annotation.{ignore, param}
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
-import java.net.{URL, URLConnection}
-
-class MenuAction extends RestfulAction[Menu],DomainSupport {
+class MenuAction extends RestfulAction[Menu], DomainSupport {
   var menuService: MenuService = _
 
   protected override def indexSetting(): Unit = {
@@ -144,8 +141,8 @@ class MenuAction extends RestfulAction[Menu],DomainSupport {
   }
 
   /**
-    * 禁用或激活一个或多个模块
-    */
+   * 禁用或激活一个或多个模块
+   */
   def activate(): View = {
     val menuIds = getIntIds("menu")
     val enabled = getBoolean("isActivate", defaultValue = true)
@@ -208,7 +205,7 @@ class MenuAction extends RestfulAction[Menu],DomainSupport {
       remoteUrl = Some(url + s"/api/${profile}/ems/menus/${app.name}.xml")
     }
     remoteUrl foreach { rl =>
-      menuService.importFrom(app, scala.xml.XML.load(new URL(rl).openConnection().getInputStream))
+      menuService.importFrom(app, scala.xml.XML.load(Networks.openURL(rl).getInputStream))
     }
     redirect("search", "info.save.success")
   }

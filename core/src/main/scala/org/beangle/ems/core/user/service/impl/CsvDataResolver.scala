@@ -40,7 +40,7 @@ object CsvDataResolver extends DataResolver {
       for (obj <- items) {
         for (prop <- properties) {
           try {
-            val value: Any = Properties.get(obj, prop)
+            val value = Properties.get[Any](obj, prop)
             sb.append(String.valueOf(value)).append(';')
           } catch {
             case e: Exception => e.printStackTrace()

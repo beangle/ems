@@ -20,6 +20,7 @@ package org.beangle.ems.app.log
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.{Charsets, Strings}
+import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpMethods, Https, Response}
 
 import java.io.*
@@ -71,7 +72,7 @@ class RemoteAppender(val url: String) extends Appender {
     builder.setAppName(event.appName)
     val os = new ByteArrayOutputStream()
     builder.build().writeTo(os)
-    val upload = new URL(url.replace("{level}", Strings.uncapitalize(event.level.toString)))
+    val upload = Networks.url(url.replace("{level}", Strings.uncapitalize(event.level.toString)))
     invoke(upload, os.toByteArray, "application/x-protobuf", None)
   }
 

@@ -2,19 +2,19 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.15"
-  val jdbcVer = "1.0.0"
-  val dataVer = "5.8.9"
-  val cdiVer = "0.6.5"
-  val webVer = "0.4.11"
-  val serializerVer = "0.1.9"
-  val cacheVer = "0.1.8"
-  val templateVer = "0.1.14"
-  val webmvcVer = "0.9.26"
-  val securityVer = "4.3.19"
-  val idsVer = "0.3.16"
-  val eventVer = "0.0.4"
-  val docVer = "0.3.3"
+  val commonsVer = "5.6.16"
+  val jdbcVer = "1.0.1"
+  val dataVer = "5.8.10"
+  val cdiVer = "0.6.6"
+  val webVer = "0.4.12"
+  val serializerVer = "0.1.10"
+  val cacheVer = "0.1.9"
+  val templateVer = "0.1.15"
+  val webmvcVer = "0.9.27"
+  val securityVer = "4.3.20"
+  val idsVer = "0.3.17"
+  val eventVer = "0.0.5"
+  val docVer = "0.3.4"
 
   val b_commons = "org.beangle.commons" % "beangle-commons" % commonsVer
   val b_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % jdbcVer
