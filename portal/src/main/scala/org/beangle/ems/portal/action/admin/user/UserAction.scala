@@ -21,8 +21,8 @@ import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
 import org.beangle.doc.transfer.exporter.ExportContext
-import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.web.WebBusinessLogger
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.UserService
@@ -30,18 +30,19 @@ import org.beangle.ems.portal.helper.{UserDashboardHelper, UserPropertyExtractor
 import org.beangle.security.Securities
 import org.beangle.security.authc.DBCredentialStore
 import org.beangle.security.codec.DefaultPasswordEncoder
+import org.beangle.security.context.SecurityContext
 import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.context.{ActionContext, Params}
+import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.time.Instant
 
 /**
- * 用户管理响应处理类
- *
- * @author chaostone 2005-9-29
- */
+  * 用户管理响应处理类
+  *
+  * @author chaostone 2005-9-29
+  */
 class UserAction extends RestfulAction[User], ExportSupport[User] {
 
   var userService: UserService = _
@@ -56,6 +57,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
+    put("isRoot", SecurityContext.get.root)
   }
 
   def saveRole(): View = {
@@ -114,8 +116,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-   * 删除一个或多个用户
-   */
+    * 删除一个或多个用户
+    */
   override def remove(): View = {
     val userIds = getLongIds("user")
     val creator = loginUser
@@ -148,8 +150,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-   * 禁用或激活一个或多个用户
-   */
+    * 禁用或激活一个或多个用户
+    */
   def activate(): View = {
     val userIds = getLongIds("user")
     val isActivate = get("isActivate", "true")
@@ -196,8 +198,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-   * 保存用户信息
-   */
+    * 保存用户信息
+    */
   protected override def saveAndRedirect(user: User): View = {
     val user =
       if (getLong("user.id").isEmpty) {
@@ -275,20 +277,18 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     super.configExport(context)
   }
 
+  def dashboard(): View = {
+    val managed = entityDao.get(classOf[User], getLongId("user"))
+    userDashboardHelper.buildDashboard(managed)
+    put("isRoot", SecurityContext.get.root && managed.code != Securities.user)
+    put("portal_url", Ems.portal)
+    forward()
+  }
+
   @mapping(value = "{id}")
   override def info(@param("id") id: String): View = {
-    val managed = entityDao.get(classOf[User], id.toLong)
-    val me = loginUser
-    if (null != managed) {
-      if (me.equals(managed) || userService.isManagedBy(me, managed)) {
-        userDashboardHelper.buildDashboard(managed)
-        return forward()
-      } else {
-        throw new RuntimeException("not belong to u")
-      }
-    } else {
-      userDashboardHelper.buildDashboard(me)
-    }
+    val user = entityDao.get(classOf[User], id.toLong)
+    put("user", user)
     forward()
   }
 

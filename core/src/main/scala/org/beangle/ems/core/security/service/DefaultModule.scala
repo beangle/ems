@@ -18,7 +18,7 @@
 package org.beangle.ems.core.security.service
 
 import org.beangle.cdi.bind.BindModule
-import org.beangle.ems.core.security.service.impl.{CategorySessionProfileImpl, FuncPermissionServiceImpl, MenuServiceImpl, ProfileServiceImpl}
+import org.beangle.ems.core.security.service.impl.{CategorySessionProfileImpl, FuncPermissionServiceImpl, MenuServiceImpl, ProfileServiceImpl, SessionInfoServiceImpl}
 
 class DefaultModule extends BindModule {
 
@@ -26,6 +26,7 @@ class DefaultModule extends BindModule {
     bind(classOf[FuncPermissionServiceImpl])
     bind(classOf[MenuServiceImpl])
     bind(classOf[ProfileServiceImpl])
+    bind(classOf[SessionInfoServiceImpl])
     bind(classOf[CategorySessionProfileImpl])
 
     bind(classOf[LoginEventTracker])

@@ -17,10 +17,10 @@
 
 package org.beangle.ems.core.security.service
 
+import org.beangle.commons.collection.Properties
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.security.model.Menu
-import org.beangle.ems.core.user.model.{ Role, User }
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.{Role, User}
 
 trait MenuService {
 
@@ -42,4 +42,14 @@ trait MenuService {
 
   def importFrom(app: App, xml: scala.xml.Node): Unit
 
+  def convert(one: Menu, isEnName: Boolean): Properties
+
+  def getDomainMenus(user:User,isEnName:Boolean):DomainMenus
+
 }
+
+case class AppMenus(app: Properties, menus: Iterable[Properties])
+
+case class GroupMenus(group: Properties, appMenus: Iterable[AppMenus])
+
+case class DomainMenus(domain: Properties, groups: Iterable[GroupMenus]);

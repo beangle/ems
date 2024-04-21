@@ -1,5 +1,6 @@
 [#ftl]
   [@b.nav class="nav-tabs nav-tabs-compact"]
-    [@b.navitem href="account"]账户管理[/@]
+    [@b.navitem href="user"]账户管理[/@]
     [@b.navitem href="role"]角色管理[/@]
+    [#if isRoot!false][@b.navitem href="root"]超级用户[/@][/#if]
   [/@]

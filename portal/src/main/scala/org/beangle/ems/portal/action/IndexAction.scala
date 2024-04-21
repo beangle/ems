@@ -24,9 +24,8 @@ import org.beangle.ems.app.web.NavContext
 import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
-import org.beangle.ems.core.user.model.{Category, User}
+import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
-import org.beangle.security.authc.DefaultAccount
 import org.beangle.web.action.annotation.mapping
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
@@ -50,31 +49,29 @@ class IndexAction extends ActionSupport with ServletSupport {
   }
 
   def noticePortalet(): View = {
-    val categoryId = Securities.session.get.principal.asInstanceOf[DefaultAccount].categoryId
-    put("notices", topNotices(categoryId))
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("notices", topNotices(me.category.id))
     forward()
   }
 
   def docPortalet(): View = {
-    val categoryId = Securities.session.get.principal.asInstanceOf[DefaultAccount].categoryId
-    put("docs", topDocs(categoryId))
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("docs", topDocs(me.category.id))
     forward()
   }
 
   def appNotice(): View = {
-    val principal = Securities.session.get.principal.asInstanceOf[DefaultAccount]
-    val categoryId = principal.categoryId
-    put("docs", topDocs(categoryId))
-    put("notices", topNotices(categoryId))
-    put("user", principal)
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    put("docs", topDocs(me.category.id))
+    put("notices", topNotices(me.category.id))
+    put("user", me)
     forward()
   }
 
   def welcome(): View = {
-    val principal = Securities.session.get.principal.asInstanceOf[DefaultAccount]
-    val categoryId = principal.categoryId
+    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     val query = OqlBuilder.from(classOf[Portalet], "p")
-    query.where(":category in elements(p.categories)", new Category(categoryId))
+    query.where(":category in elements(p.categories)", me.category)
     query.where("p.domain=:domain", domainService.getDomain)
     query.orderBy("p.idx")
     query.cacheable()
@@ -93,7 +90,7 @@ class IndexAction extends ActionSupport with ServletSupport {
       }
     }
     put("rowPortalets", rowPortalets)
-    put("user", principal)
+    put("user", me)
     forward()
   }
 

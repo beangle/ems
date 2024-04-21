@@ -33,11 +33,7 @@
   </tr>
   <tr>
     <td class="title" >密码有效期:</td>
-    <td class="content">
-      [#if credential??]
-        ${credential.updatedAt?string("yyyy-MM-dd HH:mm:ss")}～${credential.expiredOn}
-      [/#if]
-    </td>
+    <td class="content">${user.passwdExpiredOn!}</td>
     [@info 'updatedAt','common.updatedAt' /]
   </tr>
   <tr>

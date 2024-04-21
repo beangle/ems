@@ -151,14 +151,13 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     val builder = OqlBuilder.from[String](classOf[User].getName, "u")
     builder.where("u.code=:code", code)
     builder.where("u.org=:org", domainService.getOrg)
-    builder.where("c.domain=:domain", domainService.getDomain)
-    builder.where("c.passwdExpiredOn >= :now", LocalDate.now.minusDays(config.idledays))
-    builder.select("c.password")
+    builder.where("u.passwdExpiredOn >= :now", LocalDate.now.minusDays(config.idledays))
+    builder.select("u.password")
     entityDao.search(builder).headOption
   }
 
   override def getPasswordAge(code: String): Option[CredentialAge] = {
-    get(code) map { c => CredentialAge(c.updatedAt, c.passwdExpiredOn, c.passwdExpiredOn.plusDays(config.idledays)) }
+    get(code) map { u => CredentialAge(u.updatedAt, u.passwdExpiredOn, u.passwdExpiredOn.plusDays(config.idledays)) }
   }
 
   override def updatePassword(code: String, rawPassword: String): Unit = {

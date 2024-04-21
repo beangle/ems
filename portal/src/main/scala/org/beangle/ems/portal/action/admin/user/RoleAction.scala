@@ -28,6 +28,7 @@ import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, RoleService, UserService}
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
+import org.beangle.security.context.SecurityContext
 import org.beangle.web.action.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
@@ -45,6 +46,9 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
   var dimensionService: DimensionService = _
   var profileService: ProfileService = _
 
+  override protected def indexSetting(): Unit = {
+    put("isRoot", SecurityContext.get.root)
+  }
   /**
    * 对组可管理意为<br>
    * 1 建立下级组

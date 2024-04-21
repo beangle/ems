@@ -13,12 +13,10 @@ User.properties=属性
 User.mobile=手机号码
 User.email=电子邮件
 
-Account=账户
-Account.enabled=是否启用
-Account.locked=是否锁定
-Account.password=密码
-Account.passwdExpiredOn=密码过期日期
-Account.passwdInactiveOn=密码不可用日期
+User.enabled=是否启用
+User.locked=是否锁定
+User.password=密码
+User.passwdExpiredOn=密码过期日期
 
 Category=用户类别
 Category.enName=英文名

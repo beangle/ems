@@ -17,20 +17,22 @@
 
 package org.beangle.ems.core.security.service.impl
 
-import org.beangle.commons.collection.Collections
+import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
-import org.beangle.ems.core.security.service.MenuService
+import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.security.authz.Scope
 
+import scala.collection.mutable
+
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   var domainService: DomainService = _
@@ -169,6 +171,46 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   def importFrom(app: App, xml: scala.xml.Node): Unit = {
     parseMenu(app, None, xml)
+  }
+
+  override def getDomainMenus(user: User, isEnName: Boolean): DomainMenus = {
+    val menus = getTopMenus(user)
+    val appsMenus = menus.groupBy(_.app)
+    val groupApps = appsMenus.keys.groupBy(_.group)
+    val directMenuMaps = groupApps map {
+      case (oned, _) =>
+        val group = new Properties(oned, "id", "name", "indexno")
+        group.put("title", if isEnName then oned.enTitle else oned.title)
+        val appMenus = groupApps(oned).toBuffer.sorted map { app =>
+          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          appProps.put("title", if isEnName then app.enTitle else app.title)
+          AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
+        }
+        (oned, GroupMenus(group, appMenus))
+    }
+
+    val groups = Collections.newBuffer[GroupMenus]
+    directMenuMaps.keys.toSeq.sorted foreach { g =>
+      groups += directMenuMaps(g)
+    }
+    val domain = domainService.getDomain
+    val domainp = new Properties(domain, "id", "name")
+    domainp.put("title", domain.getTitle(isEnName))
+    DomainMenus(domainp, groups)
+  }
+
+  override def convert(one: Menu, isEnName: Boolean): Properties = {
+    val menu = new Properties(one, "id", "fonticon", "indexno")
+    menu.put("title", if isEnName then one.enName else one.name)
+    if (one.entry.isDefined) menu.put("entry", one.entry.get.name + (if (one.params.isDefined) "?" + one.params.get else ""))
+    if (one.children.nonEmpty) {
+      val children = new mutable.ListBuffer[Properties]
+      one.children foreach { child =>
+        children += convert(child, isEnName)
+      }
+      menu.put("children", children)
+    }
+    menu
   }
 
   private def parseMenu(app: App, parent: Option[Menu], xml: scala.xml.Node): Unit = {

@@ -17,27 +17,19 @@
 
 package org.beangle.ems.ws.security.func
 
-import org.beangle.commons.collection.{Collections, Properties}
-import org.beangle.data.dao.EntityDao
-import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.commons.collection.Properties
+import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.Menu
-import org.beangle.ems.core.security.service.MenuService
-import org.beangle.ems.core.user.model.User
+import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.web.action.annotation.{mapping, param, response}
 import org.beangle.web.action.support.ActionSupport
 
-import scala.collection.mutable
-
 class MenuWS extends ActionSupport {
-
-  var entityDao: EntityDao = _
 
   var menuService: MenuService = _
 
   var appService: AppService = _
-
-  var domainService: DomainService = _
 
   var userService: UserService = _
 
@@ -48,7 +40,7 @@ class MenuWS extends ActionSupport {
       case None => List.empty[Menu]
     }
     val isEnName = get("request_locale", "zh_CN").startsWith("en")
-    menus map (m => convert(m, isEnName))
+    menus map (m => menuService.convert(m, isEnName))
   }
 
   @response()
@@ -65,11 +57,11 @@ class MenuWS extends ActionSupport {
     app match {
       case Some(app) =>
         if (forDomain) {
-          getDomainMenus(u, isEnName)
+          menuService.getDomainMenus(u, isEnName)
         } else {
           val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
           appProps.put("title", app.getTitle(isEnName))
-          val menus = menuService.getTopMenus(app, u) map (m => convert(m, isEnName))
+          val menus = menuService.getTopMenus(app, u) map (m => menuService.convert(m, isEnName))
           val domain = new Properties(app.domain, "id", "name")
           domain.put("title", app.domain.getTitle(isEnName))
           val group = new Properties(app.group, "id", "name", "indexno")
@@ -77,53 +69,7 @@ class MenuWS extends ActionSupport {
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
-        getDomainMenus(u, isEnName)
+        menuService.getDomainMenus(u, isEnName)
     }
-  }
-
-  private def getDomainMenus(u: User, isEnName: Boolean): DomainMenus = {
-    val menus = menuService.getTopMenus(u)
-    val appsMenus = menus.groupBy(_.app)
-    val groupApps = appsMenus.keys.groupBy(_.group)
-    val directMenuMaps = groupApps map {
-      case (oned, _) =>
-        val group = new Properties(oned, "id", "name", "indexno")
-        group.put("title", if isEnName then oned.enTitle else oned.title)
-        val appMenus = groupApps(oned).toBuffer.sorted map { app =>
-          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
-          appProps.put("title", if isEnName then app.enTitle else app.title)
-          AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
-        }
-        (oned, GroupMenus(group, appMenus))
-    }
-
-    val groups = Collections.newBuffer[GroupMenus]
-    directMenuMaps.keys.toSeq.sorted foreach { g =>
-      groups += directMenuMaps(g)
-    }
-    val domain = domainService.getDomain
-    val domainp = new Properties(domain, "id", "name")
-    domainp.put("title", domain.getTitle(isEnName))
-    DomainMenus(domainp, groups)
-  }
-
-  private def convert(one: Menu, isEnName: Boolean): Properties = {
-    val menu = new Properties(one, "id", "fonticon", "indexno")
-    menu.put("title", if isEnName then one.enName else one.name)
-    if (one.entry.isDefined) menu.put("entry", one.entry.get.name + (if (one.params.isDefined) "?" + one.params.get else ""))
-    if (one.children.nonEmpty) {
-      val children = new mutable.ListBuffer[Properties]
-      one.children foreach { child =>
-        children += convert(child, isEnName)
-      }
-      menu.put("children", children)
-    }
-    menu
   }
 }
-
-case class AppMenus(app: Properties, menus: Iterable[Properties])
-
-case class GroupMenus(group: Properties, appMenus: Iterable[AppMenus])
-
-case class DomainMenus(domain: Properties, groups: Iterable[GroupMenus]);

@@ -17,16 +17,22 @@
 
 package org.beangle.ems.portal.helper
 
-import org.beangle.data.dao.EntityDao
-import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService}
+import org.beangle.commons.codec.digest.Digests
+import org.beangle.commons.collection.page.PageLimit
+import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.app.Ems
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.security.model.SessionEvent
+import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService, SessionInfoService}
 import org.beangle.ems.core.user.model.{Profile, User}
 import org.beangle.ems.core.user.service.DimensionService
+import org.beangle.security.Securities
 import org.beangle.security.session.SessionRegistry
 import org.beangle.web.action.context.ActionContext
 
 /**
- * @author chaostone
- */
+  * @author chaostone
+  */
 class UserDashboardHelper {
 
   var entityDao: EntityDao = _
@@ -41,10 +47,23 @@ class UserDashboardHelper {
 
   var dimensionService: DimensionService = _
 
+  var sessionInfoService: SessionInfoService = _
+
+  var domainService: DomainService = _
+
   def buildDashboard(user: User): Unit = {
     ActionContext.current.attribute("user", user)
-    ActionContext.current.attribute("credential", user)
+    ActionContext.current.attribute("sessioninfoes", sessionInfoService.find(Some(user.code), new PageLimit(1, 20), None))
     val myProfiles = entityDao.findBy(classOf[Profile], "user", List(user))
+    val menus = menuService.getDomainMenus(user, false)
+    ActionContext.current.attribute("menus", menus)
+
+    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(Securities.user)+"?t="+System.currentTimeMillis())
+
+    val seQuery = OqlBuilder.from(classOf[SessionEvent], "se")
+    seQuery.where("se.domain=:domain and se.principal=:principal", domainService.getDomain, user.code)
+    seQuery.orderBy("se.updatedAt desc")
+    ActionContext.current.attribute("sessionEvents", entityDao.topN(20, seQuery))
     new ProfileHelper(entityDao, profileService, dimensionService).populateInfo(myProfiles)
   }
 }

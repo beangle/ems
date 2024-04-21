@@ -213,8 +213,16 @@
             <li class="user-header">
               <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
               <p>
-                ${nav.principal.description} - (${nav.principal.name})[#if nav.username != nav.principal.name] 模拟${nav.username}[/#if]
+                ${nav.principal.description} - (${nav.principal.name})
+                [#if nav.username != nav.principal.name]<small> 模拟${nav.username} [@b.a href="!index" onclick="removeRunAs()"]退出模拟[/@]</small>[/#if]
                 <small>[#if nav.principal.remoteToken??]统一身份平台登录[#else]本地登录[/#if]</small>
+                [#if nav.username != nav.principal.name]
+                <script>
+                  function removeRunAs(){
+                    beangle.cookie.remove("beangle.security.runAs","/");
+                  }
+                </script>
+                [/#if]
               </p>
             </li>
             <li class="user-footer">

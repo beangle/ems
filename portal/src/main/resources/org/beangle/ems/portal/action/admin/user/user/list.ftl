@@ -1,7 +1,7 @@
 [#ftl]
 [@b.head/]
 [#include "../status.ftl"/]
-[@b.grid items=users var="account"]
+[@b.grid items=users var="user"]
   [@b.gridbar]
   function activateUser(isActivate){return action.multi("activate","确定提交?","isActivate="+isActivate);}
   bar.addItem("${b.text("action.new")}",action.add());
@@ -14,7 +14,7 @@
   [@b.row]
     [@b.boxcol/]
     [@b.col property="code" width="12%"]${user.code}[/@]
-    [@b.col property="name" width="15%"/]
+    [@b.col property="name" width="15%"][@b.a href="!dashboard?id="+user.id target="_blank"]${user.name}[/@][/@]
     [@b.col property="category.name" width="12%"/]
     [@b.col title="角色"]
       [#assign members=[]]
