@@ -225,7 +225,6 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     redirect("search", "info.save.success")
   }
 
-
   protected def updatePassword(user: User): Unit = {
     var password = get("password").orNull
     if (Strings.isBlank(password) && !user.persisted) {
