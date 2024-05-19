@@ -17,25 +17,21 @@
 
 package org.beangle.ems.core.user.model
 
-import java.security.Principal
-
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.{Numbers, Strings}
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo._
+import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
+
+import scala.collection.mutable
 
 /**
  * @author chaostone
  */
-class Group extends IntId with Named with Updated with Enabled with Hierarchical[Group] with IProfile with Principal with Remark {
-  var properties: collection.mutable.Map[Dimension, String] = new collection.mutable.HashMap[Dimension, String]
-  var creator: User = _
-  var members: collection.mutable.Seq[GroupMember] = new collection.mutable.ListBuffer[GroupMember]
+class Group extends IntId, Named, Coded, Updated, Enabled, Hierarchical[Group], Remark {
   var org: Org = _
-
-  override def getName: String = {
-    name
-  }
+  var manager: Option[User] = None
+  var roles: mutable.Set[Role] = Collections.newSet[Role]
 
   def index: Int = {
     if (Strings.isEmpty(indexno)) return 1;
@@ -47,5 +43,15 @@ class Group extends IntId with Named with Updated with Enabled with Hierarchical
     this()
     this.id = id
     this.name = name
+  }
+
+  def isParentOf(p: Group): Boolean = {
+    val pts = Collections.newSet[Group]
+    var pt: Group = p
+    while (null != pt && !pts.contains(pt) && !pts.contains(this)) {
+      pts.add(pt)
+      pt = pt.parent.orNull
+    }
+    pts.contains(this)
   }
 }

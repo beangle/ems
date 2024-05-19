@@ -23,7 +23,7 @@ import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
 
 import java.security.Principal
-import java.time.LocalDate
+import java.time.{Instant, LocalDate}
 
 /**
  * @author chaostone
@@ -32,9 +32,11 @@ import java.time.LocalDate
 class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark, Enabled {
   /** 组织 */
   var org: Org = _
+  /** 主用户组 */
+  var group: Option[Group] = None
   /** 角色 */
   var roles = Collections.newBuffer[RoleMember]
-  /** 用户组 */
+  /** 其他用户组 */
   var groups = Collections.newBuffer[GroupMember]
   /** 身份 */
   var category: Category = _
@@ -66,7 +68,30 @@ class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark,
     LocalDate.now.isAfter(passwdExpiredOn.plusDays(idleDays))
   }
 
-  override def getName: String = {
-    name
+  override def getName: String = name
+
+  def addGroup(g: Group): Unit = {
+    if !groups.exists(_.group == g) then
+      val m = new GroupMember
+      m.updatedAt = Instant.now
+      m.group = g
+      m.user = this
+      groups.addOne(m)
+  }
+
+  def removeGroup(g: Group): Unit = {
+    groups.subtractAll(groups.find(_.group == g))
+  }
+
+  def addGroups(gs: collection.Seq[Group]): Unit = {
+    gs.headOption foreach { g =>
+      this.group match
+        case None =>
+          this.group = Some(g)
+          if gs.size > 1 then gs.tail foreach { g => this.addGroup(g) }
+        case Some(pg) =>
+          gs foreach { g => this.addGroup(g) }
+    }
+    this.group foreach { g => this.removeGroup(g) } //从附加用户组删除主组
   }
 }

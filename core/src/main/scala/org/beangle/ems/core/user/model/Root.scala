@@ -24,7 +24,7 @@ import org.beangle.ems.core.config.model.App
 /**
  * @author chaostone
  */
-class Root extends IntId with Updated {
+class Root extends IntId, Updated {
   var app: App = _
   var user: User = _
 }

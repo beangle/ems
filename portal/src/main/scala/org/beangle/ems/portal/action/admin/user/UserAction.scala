@@ -39,10 +39,10 @@ import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 import java.time.Instant
 
 /**
-  * 用户管理响应处理类
-  *
-  * @author chaostone 2005-9-29
-  */
+ * 用户管理响应处理类
+ *
+ * @author chaostone 2005-9-29
+ */
 class UserAction extends RestfulAction[User], ExportSupport[User] {
 
   var userService: UserService = _
@@ -116,8 +116,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-    * 删除一个或多个用户
-    */
+   * 删除一个或多个用户
+   */
   override def remove(): View = {
     val userIds = getLongIds("user")
     val creator = loginUser
@@ -150,8 +150,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-    * 禁用或激活一个或多个用户
-    */
+   * 禁用或激活一个或多个用户
+   */
   def activate(): View = {
     val userIds = getLongIds("user")
     val isActivate = get("isActivate", "true")
@@ -198,8 +198,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /**
-    * 保存用户信息
-    */
+   * 保存用户信息
+   */
   protected override def saveAndRedirect(user: User): View = {
     val user =
       if (getLong("user.id").isEmpty) {
@@ -214,6 +214,10 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
       } else {
         populateEntity(classOf[User], "user")
       }
+    val groupIds = getAll("group.id", classOf[Int])
+    val newGroups = entityDao.find(classOf[Group], groupIds)
+    user.groups.clear()
+    user.addGroups(newGroups)
     // check user exists
     if (!user.persisted) {
       userService.create(loginUser, user)
@@ -262,10 +266,11 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
 
     val memberMap = new collection.mutable.HashMap[Role, RoleMember]
     for (gm <- user.roles) {
-      if (gm.role.domain == domain) {
-        memberMap.put(gm.role, gm)
-      }
+      if gm.role.domain == domain then memberMap.put(gm.role, gm)
     }
+    put("userGroups", user.groups.map(_.group).sortBy(_.indexno))
+    put("groups", entityDao.findBy(classOf[Group], "org", domain.org).sortBy(_.indexno))
+
     put("user", user)
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)

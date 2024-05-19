@@ -17,18 +17,18 @@
 
 package org.beangle.ems.core.user.model
 
-import java.security.Principal
-
 import org.beangle.commons.lang.{Numbers, Strings}
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo._
+import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Domain
+
+import java.security.Principal
 
 /**
  * @author chaostone
  */
 
-class Role extends IntId with Named with Updated with Enabled with Hierarchical[Role] with IProfile with Principal with Remark {
+class Role extends IntId, Named, Updated, Enabled, Hierarchical[Role], IProfile, Principal, Remark {
   var properties: collection.mutable.Map[Dimension, String] = new collection.mutable.HashMap[Dimension, String]
   var creator: User = _
   var members: collection.mutable.Seq[RoleMember] = new collection.mutable.ListBuffer[RoleMember]

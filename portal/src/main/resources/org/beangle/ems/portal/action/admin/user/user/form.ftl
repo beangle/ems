@@ -8,6 +8,8 @@
         [@b.textfield name="user.code" value=user.code style="width:200px;" required="true" maxlength="30"/]
         [@b.textfield name="user.name" value=user.name  style="width:200px;" required="true" maxlength="30"/]
         [@b.select name="user.category.id" label="身份" value=user.category! items=categories required="true"/]
+        [@b.select name="user.group.id" label="默认用户组" value=user.group! items =groups /]
+        [@b.select name="group.id" label="附加用户组" values=userGroups items=groups multiple="true"/]
         [@b.cellphone name="user.mobile" value=user.mobile! /]
         [@b.email name="user.email" value=user.email! /]
         [@b.radios name="user.enabled" value=user.enabled items="1:action.activate,0:action.freeze"/]

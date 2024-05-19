@@ -58,7 +58,7 @@ class UserDashboardHelper {
     val menus = menuService.getDomainMenus(user, false)
     ActionContext.current.attribute("menus", menus)
 
-    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(Securities.user)+"?t="+System.currentTimeMillis())
+    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(user.code)+"?t="+System.currentTimeMillis())
 
     val seQuery = OqlBuilder.from(classOf[SessionEvent], "se")
     seQuery.where("se.domain=:domain and se.principal=:principal", domainService.getDomain, user.code)

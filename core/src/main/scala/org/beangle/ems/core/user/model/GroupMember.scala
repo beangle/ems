@@ -19,27 +19,17 @@ package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
+
 /**
  * @author chaostone
  */
-class GroupMember extends LongId with Updated {
+class GroupMember extends LongId, Updated {
   var user: User = _
   var group: Group = _
-  var member: Boolean = _
-  var granter: Boolean = _
-  var manager: Boolean = _
 
   def this(user: User, group: Group) = {
     this()
     this.user = user
     this.group = group
-  }
-
-  def is(ship: MemberShip): Boolean = {
-    ship match {
-      case MemberShip.Member => member
-      case MemberShip.Manager => manager
-      case MemberShip.Granter => granter
-    }
   }
 }

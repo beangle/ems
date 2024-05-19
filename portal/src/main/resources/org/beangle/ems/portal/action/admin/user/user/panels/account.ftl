@@ -30,6 +30,13 @@
         [#if user.passwdExpiredOn??]${(user.passwdExpiredOn)!}[#else]永不过期[/#if]
       </p>
 
+    [#if user.groups?size>0 || user.group??]
+      <strong><i class="fas fa-user mr-1"></i>用户组</strong>
+      <p class="text-muted"> [#if user.group??]${user.group.name}&nbsp;[/#if]
+        [#list user.groups as g]${g.group.name}&nbsp;[/#list]
+      </p>
+    [/#if]
+
     [#assign members=[]/]
     [#assign granters=[]/]
     [#assign managers=[]/]

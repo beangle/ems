@@ -18,7 +18,6 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.orm.{IdGenerator, MappingModule}
-import org.beangle.ems.core.oa.model.{Message, Notification}
 
 object DefaultMapping extends MappingModule {
 
@@ -76,17 +75,13 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[GroupMember].declare { e =>
-      e.member is column("is_member")
-      e.granter is column("is_granter")
-      e.manager is column("is_manager")
+      index("", true, e.group, e.user)
     }
 
     bind[Group].declare { e =>
-      e.getName is length(100)
+      e.name is length(100)
       e.children is depends("parent")
-      e.members is depends("group")
-      e.properties is eleLength(2000)
-      index("idx_group", true, e.org, e.name)
+      index("idx_group", true, e.org, e.code)
     }
 
     bind[Avatar].declare { e =>

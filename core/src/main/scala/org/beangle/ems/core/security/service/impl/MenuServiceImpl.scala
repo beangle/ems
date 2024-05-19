@@ -31,8 +31,8 @@ import org.beangle.security.authz.Scope
 import scala.collection.mutable
 
 /**
-  * @author chaostone
-  */
+ * @author chaostone
+ */
 class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   var domainService: DomainService = _
@@ -40,7 +40,13 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   private def getRoles(user: User): Seq[Role] = {
     val domain = domainService.getDomain
     val roles = user.roles.filter(m => m.member && m.role.domain == domain).map { m => m.role }
-    roles.toSeq
+    user.group foreach { g =>
+      roles.addAll(g.roles filter (r => r.domain == domain))
+    }
+    user.groups foreach { gm =>
+      roles.addAll(gm.group.roles filter (r => r.domain == domain))
+    }
+    roles.toSet.toSeq //去重后返回
   }
 
   def getTopMenus(app: App, user: User): collection.Seq[Menu] = {

@@ -1,0 +1,21 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=groups var="group"]
+  [@b.gridbar]
+    bar.addItem("${b.text("action.new")}",action.add());
+    bar.addItem("${b.text("action.modify")}",action.edit());
+    bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
+  [/@]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.treecol title="层级编号" width="20%"]${group.indexno}[/@]
+    [@b.col width="13%" property="code" title="代码"/]
+    [@b.col width="20%" property="name" title="名称"/]
+    [@b.col width="30%" property="name" title="角色"]
+      [#list group.roles as role]${role.name}[#sep]&nbsp;[/#list]
+    [/@]
+    [@b.col width="10%" property="enabled" title="是否启用"/]
+    [@b.col property="remark" title="备注"/]
+  [/@]
+[/@]
+[@b.foot/]

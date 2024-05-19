@@ -21,6 +21,7 @@ import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
+import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
@@ -114,12 +115,8 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         account.disabled = !user.enabled
         account.categoryId = user.category.id
 
-        val query = OqlBuilder.from[Int](classOf[RoleMember].getName, "rm")
-          .where("rm.user=:user and rm.member=true", user)
-          .where("rm.role.domain=:domain", domain)
-          .select("rm.role.id")
-        val rs = entityDao.search(query)
-        account.authorities = rs.map(_.toString).toArray
+        val rs = getRoles(user, domain)
+        account.authorities = rs.map(_.id.toString).toArray
 
         val upQuery = OqlBuilder.from(classOf[Profile], "up")
           .where("up.user=:user", user)
@@ -137,6 +134,17 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         Some(account)
       case None => None
     }
+  }
+
+  private def getRoles(user: User, domain: Domain): Seq[Role] = {
+    val roles = user.roles.filter(m => m.member && m.role.domain == domain).map { m => m.role }
+    user.group foreach { g =>
+      roles.addAll(g.roles filter (r => r.domain == domain))
+    }
+    user.groups foreach { gm =>
+      roles.addAll(gm.group.roles filter (r => r.domain == domain))
+    }
+    roles.toSet.toSeq //去重后返回
   }
 
   override def enable(manager: User, userIds: Iterable[Long], enabled: Boolean): Int = {
