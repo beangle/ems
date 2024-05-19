@@ -25,9 +25,9 @@ import org.beangle.ems.core.config.model.Org
 import java.security.Principal
 import java.time.{Instant, LocalDate}
 
-/**
- * @author chaostone
- */
+/** 用户信息
+  * @author chaostone
+  */
 
 class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark, Enabled {
   /** 组织 */
