@@ -18,13 +18,30 @@
 package org.beangle.ems.app.datasource
 
 import org.beangle.commons.io.IOs
-import org.beangle.jdbc.ds.DataSourceFactory
 import org.beangle.ems.app.util.AesEncryptor
 import org.beangle.ems.app.{Ems, EmsApi, EmsApp}
+import org.beangle.jdbc.ds.DataSourceFactory
 
 import java.io.FileInputStream
+import javax.sql.DataSource
+
+object AppDataSourceFactory {
+  def build(name: String): Option[DataSource] = {
+    try {
+      val dsf = new AppDataSourceFactory(name)
+      dsf.init()
+      Some(dsf.result)
+    } catch
+      case e: Exception => None
+  }
+}
 
 class AppDataSourceFactory extends DataSourceFactory {
+
+  def this(datasouceName: String) = {
+    this()
+    this.name = datasouceName
+  }
 
   override def init(): Unit = {
     if (null == name) name = "default"
