@@ -9,4 +9,5 @@ alter table ems.usr_groups add code varchar(50);
 alter table ems.usr_groups drop column creator_id;
 alter table ems.usr_groups add manager_id int8;
 alter table ems.usr_users add group_id int4;
+alter table ems.usr_groups add org_id int4;
 

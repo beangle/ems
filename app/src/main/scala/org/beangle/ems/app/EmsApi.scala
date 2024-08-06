@@ -17,6 +17,9 @@
 
 package org.beangle.ems.app
 
+import org.beangle.security.Securities
+import org.beangle.web.action.context.ActionContext
+
 object EmsApi {
 
   def getDatasourceUrl(resourceKey: String): String = {
@@ -25,5 +28,16 @@ object EmsApi {
 
   def getRedisUrl: String = {
     Ems.api + "/platform/config/rediss/" + EmsApp.name + ".xml?secret=" + EmsApp.secret
+  }
+
+  /** 构造一个完整url
+   *
+   * @param uri
+   * @return
+   */
+  def url(uri: String): String = {
+    val base = Ems.base + ActionContext.current.request.getContextPath + uri
+    val sidParam = s"${Ems.sid.name}=" + Securities.session.map(_.id).getOrElse("")
+    if base.contains("?") then s"${base}?$sidParam" else s"${base}&$sidParam"
   }
 }
