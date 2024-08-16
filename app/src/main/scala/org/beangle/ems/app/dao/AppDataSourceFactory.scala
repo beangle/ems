@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.datasource
+package org.beangle.ems.app.dao
 
 import org.beangle.commons.io.IOs
 import org.beangle.ems.app.util.AesEncryptor

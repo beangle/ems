@@ -24,7 +24,7 @@ import org.beangle.ems.core.security.model.SessionInfo
 import org.beangle.ems.core.security.service.SessionInfoService
 import org.beangle.ems.core.user.model.Category
 import org.beangle.jdbc.query.JdbcExecutor
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.hibernate.query.internal.QueryHelper
 
 import java.sql.Timestamp
 import javax.sql.DataSource
@@ -48,7 +48,6 @@ class SessionInfoServiceImpl(ds: DataSource) extends SessionInfoService {
     sql += " where s.domain_id=" + domainService.getDomain.id
     principal foreach { p => sql += " and s.principal='" + p + "'" }
     sql += (" order by " + order.getOrElse("login_at desc"))
-    val limit = QueryHelper.pageLimit
     val list = jdbcExecutor.fetch(sql, limit)
     val datas = list.map { d =>
       val info = new SessionInfo()

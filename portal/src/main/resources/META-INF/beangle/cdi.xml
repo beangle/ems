@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <cdi>
   <container>
+    <module class="org.beangle.ems.app.dao.DaoModule"/>
+    <module class="org.beangle.ems.app.web.HibernateModule"/>
+    <module class="org.beangle.ems.app.web.DefaultModule"/>
+    <module class="org.beangle.ems.app.log.DefaultModule"/>
+    <module class="org.beangle.ems.app.cache.DefaultModule"/>
+    <module class="org.beangle.ems.app.cas.DefaultModule"/>
+    <module class="org.beangle.ems.app.event.EventPublishModule"/>
+
     <module class="org.beangle.ems.portal.action.admin.ConfigModule"/>
     <module class="org.beangle.ems.portal.action.admin.SecurityModule"/>
     <module class="org.beangle.ems.portal.action.admin.BlobModule"/>
@@ -9,15 +17,8 @@
     <module class="org.beangle.ems.portal.action.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.action.DefaultModule"/>
 
-    <module class="org.beangle.ems.app.cas.DefaultModule"/>
-    <module class="org.beangle.ems.app.log.DefaultModule"/>
-    <module class="org.beangle.ems.app.web.DefaultModule"/>
-    <module class="org.beangle.ems.app.cache.DefaultModule"/>
-    <module class="org.beangle.ems.app.event.EventPublishModule"/>
-
     <module class="org.beangle.ems.core.WebReconfigModule"/>
     <module class="org.beangle.ems.core.EventModule"/>
-    <module class="org.beangle.ems.core.DaoModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>

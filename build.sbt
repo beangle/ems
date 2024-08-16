@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.10.2-SNAPSHOT"
+ThisBuild / version := "4.10.2"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -40,14 +40,15 @@ lazy val app = (project in file("app"))
   .settings(
     name := "beangle-ems-app",
     common,
-    libraryDependencies ++= appDepends
+    libraryDependencies ++= appDepends,
+    libraryDependencies ++= Seq(b_webmvc % "optional")
   )
 
 lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(b_commons, b_ids, b_model, apache_commons_compress)
+    libraryDependencies ++= Seq(b_ids, apache_commons_compress)
   ).dependsOn(app)
 
 lazy val cas = (project in file("cas"))
@@ -55,8 +56,7 @@ lazy val cas = (project in file("cas"))
   .settings(
     name := "beangle-ems-cas",
     common,
-    libraryDependencies ++= appDepends,
-    libraryDependencies ++= Seq(b_webmvc, freemarker)
+    libraryDependencies ++= webAppDepends,
   ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
@@ -64,8 +64,7 @@ lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
     common,
-    libraryDependencies ++= Seq(b_serializer, b_event),
-    libraryDependencies ++= appDepends
+    libraryDependencies ++= webAppDepends,
   ).dependsOn(core)
 
 lazy val portal = (project in file("portal"))
@@ -73,9 +72,8 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(b_webmvc, freemarker),
-    libraryDependencies ++= Seq(b_doc_transfer, b_event),
-    libraryDependencies ++= appDepends
+    libraryDependencies ++= Seq(b_doc_transfer),
+    libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 
 lazy val index = (project in file("index"))
@@ -83,7 +81,7 @@ lazy val index = (project in file("index"))
   .settings(
     name := "beangle-ems-index",
     common,
-    libraryDependencies ++= Seq(b_webmvc)
+    libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 
 publish / skip := true
