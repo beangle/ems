@@ -309,7 +309,7 @@
           </div>
           <div class="mb-2">
             每页数据量<select id="page_size_selector">
-              [#list [10,20,30,50,70,100,300] as ps]
+              [#list [10,20,30,50,70,100,200,500] as ps]
               <option value="${ps}" [#if ps==20]selected[/#if]>${ps}</option>
               [/#list]
             </select>
