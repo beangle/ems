@@ -171,7 +171,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   protected override def getQueryBuilder: OqlBuilder[User] = {
     val domain = domainService.getDomain
     put("domain", domain)
-    val accQuery = OqlBuilder.from(classOf[User], "user")
+    val q = OqlBuilder.from(classOf[User], "user")
+    q.where("user.org=:org",domain.org)
     // 查询角色
     val sb = new StringBuilder()
     val params = new collection.mutable.ListBuffer[Object]
@@ -186,15 +187,15 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     if (sb.nonEmpty) {
       val roleCondition = new Condition(sb.toString)
       roleCondition.params(params)
-      accQuery.where(roleCondition)
+      q.where(roleCondition)
     }
     getBoolean("hasAvatar") foreach { hasAvatar =>
-      accQuery.where((if (hasAvatar) "" else " not ") + s"exists(from ${classOf[Avatar].getName} avatar where avatar.user=user)")
+      q.where((if (hasAvatar) "" else " not ") + s"exists(from ${classOf[Avatar].getName} avatar where avatar.user=user)")
     }
-    populateConditions(accQuery)
-    accQuery.tailOrder("user.id")
-    accQuery.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
-    accQuery
+    populateConditions(q)
+    q.tailOrder("user.id")
+    q.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
+    q
   }
 
   /**
