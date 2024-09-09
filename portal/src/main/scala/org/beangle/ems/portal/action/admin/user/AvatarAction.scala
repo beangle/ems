@@ -19,8 +19,12 @@ package org.beangle.ems.portal.action.admin.user
 
 import jakarta.servlet.http.Part
 import org.apache.commons.compress.archivers.zip.ZipFile
-import org.beangle.commons.io.IOs
+import org.beangle.commons.collection.Collections
+import org.beangle.commons.concurrent.Workers
+import org.beangle.commons.file.zip.Zipper
+import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.lang.{Strings, SystemInfo, Throwables}
+import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
@@ -28,7 +32,7 @@ import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.{AvatarService, UserService}
 import org.beangle.web.action.annotation.{mapping, param}
 import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, View}
+import org.beangle.web.action.view.{Status, Stream, View}
 import org.beangle.webmvc.support.helper.QueryHelper
 
 import java.io.*
@@ -52,7 +56,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
       query.where("user.code like :u or user.name like :u", "%" + u + "%")
     }
     query.where("user.avatarId is not null")
-    query.limit(QueryHelper.pageIndex, 50)
+    query.limit(QueryHelper.pageIndex, 60)
     query.orderBy("user.code")
     put("users", entityDao.search(query))
     forward()
@@ -157,6 +161,67 @@ class AvatarAction extends ActionSupport with ServletSupport {
       case e: IOException => Throwables.propagate(e)
     }
     i
+  }
+
+  def downloadSetting(): View = {
+    forward()
+  }
+
+  /** 批量下载
+   *
+   * @return
+   */
+  def download(): View = {
+    var userCodeString = get("code", "")
+    userCodeString = Strings.replace(userCodeString, "\r", "")
+    userCodeString = Strings.replace(userCodeString, "，", ",")
+
+    val userCodes = Strings.split(userCodeString).toSet
+    val codesList = Collections.split(userCodes.toList, 500)
+    val userFiles = Collections.newBuffer[Array[Any]]
+    codesList foreach { codes =>
+      val q = OqlBuilder.from[Array[Any]](classOf[User].getName + " user," + classOf[Avatar].getName + " avatar")
+      q.where("user.org=:org", domainService.getOrg)
+      q.where("user.avatarId=avatar.id")
+      q.where("user.code in(:codes)", userCodes)
+      q.select("user.code,avatar.filePath")
+      userFiles.addAll(entityDao.search(q))
+    }
+
+    val tmpDir = System.getProperty("java.io.tmpdir") + "/avatar"
+    new File(tmpDir).mkdirs()
+    val blob = EmsApp.getBlobRepository()
+    val avatarFiles = Collections.newBuffer[File]
+    val exists = Collections.newSet[String]
+
+    Workers.work(userFiles, (userFile: Array[Any]) => {
+      blob.url(userFile(1).toString) foreach { url =>
+        val userCode = userFile(0).toString
+        val fileName = userCode + "." + Strings.substringAfterLast(userFile(1).toString, ".")
+        val localFile = new File(tmpDir + Files./ + fileName)
+        HttpUtils.download(url.openConnection(), localFile)
+        if (localFile.exists()) {
+          avatarFiles.addOne(localFile)
+          exists.addOne(userCode)
+        }
+      }
+    })
+
+    val missings = userCodes -- exists
+    if (missings.nonEmpty) {
+      val missingFile = new File(tmpDir + Files./ + "未找到照片的名单.txt")
+      val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(missingFile)))
+      writer.write(missings.mkString("\n"))
+      writer.close()
+      avatarFiles.addOne(missingFile)
+    }
+    val zipFile = new File(tmpDir + Files./ + s"照片(${exists.size}人).zip")
+    Zipper.zip(new File(tmpDir), avatarFiles, zipFile, "utf-8")
+    Stream(zipFile, "application/zip", s"照片(${exists.size}人).zip").cleanup { () =>
+      zipFile.delete()
+      Files.travel(new File(tmpDir), f => f.delete())
+      new File(tmpDir).delete()
+    }
   }
 
 }

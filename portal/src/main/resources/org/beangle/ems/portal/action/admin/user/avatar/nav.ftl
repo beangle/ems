@@ -1,0 +1,6 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="!index"]照片浏览[/@]
+    [@b.navitem href="!uploadSetting"]照片上传[/@]
+    [@b.navitem href="!downloadSetting"]照片下载[/@]
+  [/@]

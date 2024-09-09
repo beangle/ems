@@ -1,7 +1,8 @@
 [@b.head "照片浏览"/]
-  <div class="container ajax_container" style="width:100%">
+[#include "nav.ftl"/]
+  <div class="container-fluid ajax_container" style="width:100%">
     <style>
-      .imgdiv{width:88px; float:left; height:145px; overflow: hidden; margin:5px;}
+      .imgdiv{width:85px; margin:5px;}
       .imgdiv img{width:100%;}
       .imgdiv .text{text-align: center;}
     </style>
@@ -13,21 +14,22 @@
         </ul>
         [@b.form action="!index" name="photoSearchForm" id="photoSearchForm" class="form-inline"]
           <div class="form-group">
-            <input type="text" name="user" value="" placeholder="用户号/姓名" class="form-control form-control-sm">
+            <input type="text" name="user" value="${Parameters['user']!}" placeholder="用户号/姓名" class="form-control form-control-sm">
           </div>
           <input type="hidden" id="pageIndex" name="pageIndex" value="1">
           <input type="submit" onclick="bg.form.submit('photoSearchForm',null,null,null);return false;" class="btn btn-sm btn-outline-primary" value="搜索">
         [/@]
         [@b.a href="!uploadSetting" class="btn btn-sm btn-default"]<i class="fa-solid fa-upload"></i></span>上传照片[/@]
+        [@b.a href="!downloadSetting" class="btn btn-sm btn-default"]<i class="fa-solid fa-download"></i></span>下载照片[/@]
       </div>
     </nav>
 
     [#if users?size>0]
-      <div style="margin:-10px -5px 0 -5px;">
+      <div style="margin:-5px -5px 0 -5px;display: flex;justify-content: left;flex-wrap: wrap;">
          [#list users as u]
             <div class="imgdiv">
               <img class="img-thumbnail" src="${b.url('!info?userId='+u.id)}"/>
-              <div class="text">${u.code} ${u.name}</div>
+              <div class="text text-muted" title="${u.code}">${u.name}</div>
             </div>
          [/#list]
         <div style="clear:both"></div>

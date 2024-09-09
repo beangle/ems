@@ -1,8 +1,6 @@
 [@b.head "照片管理"/]
-  <div class="container" style="width:600px">
-    <div>
-      <h1>照片管理 <small>照片上传</small></h1>
-    </div>
+[#include "nav.ftl"/]
+  <div class="container-fluid">
 [@b.form action="!upload"   enctype="multipart/form-data" class="form-inline" role="form"]
     <label for="zipfile" class="control-label">选择zip文件：</label>
     <div class="form-group">
