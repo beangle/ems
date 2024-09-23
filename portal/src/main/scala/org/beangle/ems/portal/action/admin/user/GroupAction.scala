@@ -26,23 +26,27 @@ class GroupAction extends RestfulAction[Group] {
 
   var domainService: DomainService = _
 
-  override protected def editSetting(entity: Group): Unit = {
+  override protected def editSetting(group: Group): Unit = {
     val parents = entityDao.findBy(classOf[Group], "org.id", domainService.getOrg.id).toBuffer
-    if (entity.persisted) {
-      parents.subtractOne(entity)
+    if (group.persisted) {
+      parents.subtractOne(group)
     } else {
-      entity.enabled = true
+      group.enabled = true
     }
+    val domain = domainService.getDomain
     put("parents", parents.sortBy(_.indexno))
-    put("roles", entityDao.findBy(classOf[Role], "domain.id", domainService.getDomain.id))
-    super.editSetting(entity)
+    put("groupRoles", group.roles.filter(_.domain == domain))
+    put("roles", entityDao.findBy(classOf[Role], "domain", domain))
+    super.editSetting(group)
   }
 
   override protected def saveAndRedirect(group: Group): View = {
     group.org = domainService.getOrg
     val roleIds = getAll("role.id", classOf[Int])
     val newRoles = entityDao.find(classOf[Role], roleIds)
-    group.roles.clear()
+    val domain = domainService.getDomain
+    val groupRoles = group.roles.filter(_.domain == domain)
+    group.roles.subtractAll(groupRoles)
     group.roles.addAll(newRoles)
     super.saveAndRedirect(group)
   }

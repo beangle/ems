@@ -7,7 +7,7 @@
     [@b.textfield name="group.name" label="名称" value=group.name! required="true" maxlength="80"/]
     [@b.radios label="是否启用"  name="group.enabled" value=group.enabled items="1:common.yes,0:common.no"/]
     [@b.select label="上级组" name="group.parent.id" value=(group.parent)! style="width:200px;"  items=parents  empty="..."/]
-    [@b.select name="role.id" label="绑定角色" values=group.roles items=roles multiple="true"/]
+    [@b.select name="role.id" label="绑定角色" values=groupRoles items=roles multiple="true"/]
     [@b.textfield name="group.remark" label="说明" value=group.remark! maxlength="190"/]
     [@b.formfoot]
       [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
