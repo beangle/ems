@@ -19,6 +19,7 @@ package org.beangle.ems.portal.action.admin.user
 
 import jakarta.servlet.http.Part
 import org.apache.commons.compress.archivers.zip.ZipFile
+import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.concurrent.Workers
 import org.beangle.commons.file.zip.Zipper
@@ -217,7 +218,7 @@ class AvatarAction extends ActionSupport with ServletSupport {
     }
     val zipFile = new File(tmpDir + Files./ + s"照片(${exists.size}人).zip")
     Zipper.zip(new File(tmpDir), avatarFiles, zipFile, "utf-8")
-    Stream(zipFile, "application/zip", s"照片(${exists.size}人).zip").cleanup { () =>
+    Stream(zipFile, MediaTypes.ApplicationZip, s"照片(${exists.size}人).zip").cleanup { () =>
       zipFile.delete()
       Files.travel(new File(tmpDir), f => f.delete())
       new File(tmpDir).delete()

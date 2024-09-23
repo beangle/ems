@@ -22,8 +22,8 @@ import org.beangle.commons.lang.ClassLoaders
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.user.model.Avatar
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.annotation.{mapping, param}
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
 import org.beangle.web.action.view.{Stream, View}
 
 class AvatarWS(entityDao: EntityDao)
@@ -34,7 +34,7 @@ class AvatarWS(entityDao: EntityDao)
   @mapping("default")
   def defaultAvatar(): View = {
     Stream(ClassLoaders.getResourceAsStream("org/beangle/ems/ws/default_avatar.jpg").get,
-      MediaTypes.ImageJpeg.toString(), "default_avatar.jpg", None)
+      MediaTypes.ImageJpeg, "default_avatar.jpg", None)
   }
 
   @mapping("{avatarId}")
