@@ -40,4 +40,10 @@ object EmsApi {
     val sidParam = s"${Ems.sid.name}=" + Securities.session.map(_.id).getOrElse("")
     if base.contains("?") then s"${base}?$sidParam" else s"${base}&$sidParam"
   }
+
+  def url(contextPath: String, uri: String): String = {
+    val base = Ems.base + contextPath + uri
+    val sidParam = s"${Ems.sid.name}=" + Securities.session.map(_.id).getOrElse("")
+    if base.contains("?") then s"${base}&$sidParam" else s"${base}?$sidParam"
+  }
 }
