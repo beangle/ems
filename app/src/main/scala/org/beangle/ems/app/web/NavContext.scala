@@ -23,7 +23,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.ems.app.security.RemoteService
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
-import org.beangle.security.authc.Account
+import org.beangle.security.authc.{Account, Profile}
 import org.beangle.web.action.context.ActionContext
 import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.web.servlet.util.RequestUtils
@@ -66,12 +66,26 @@ object NavContext {
       ctx.cookie = Some(cookie.toJson)
       val sb = Collections.newBuffer[String]
       account.profiles foreach { profile =>
-        sb += profile.toJson
+        sb += profileToJson(profile)
       }
       ctx.profiles = Some("[" + sb.mkString(",") + "]")
     }
     ctx.theme = RemoteService.getTheme
     ctx
+  }
+
+  def profileToJson(profile: Profile): String = {
+    val props = new StringBuilder
+    if (profile.properties.isEmpty) {
+      props ++= "{}"
+    } else {
+      props.append("{")
+      profile.properties foreach { case (k, v) =>
+        props ++= s""""$k":"$v","""
+      }
+      props.setCharAt(props.length - 1, '}')
+    }
+    s"""{"id":"${profile.id}","name":"${profile.name}","properties":$props}"""
   }
 }
 

@@ -52,7 +52,7 @@ object EmsCookie {
     }
     if (0 == newProfileId) {
       //在尝试从参数中获取?contextProfileId=id,只有这个参数可以更新cookie
-      Params.getInt("contextProfileId") foreach { pid =>
+      Params.getLong("contextProfileId") foreach { pid =>
         newProfileId = pid
         if (newProfileId != 0 && p.profile != newProfileId) {
           p.profile = newProfileId
