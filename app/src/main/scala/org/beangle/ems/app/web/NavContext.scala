@@ -66,26 +66,12 @@ object NavContext {
       ctx.cookie = Some(cookie.toJson)
       val sb = Collections.newBuffer[String]
       account.profiles foreach { profile =>
-        sb += profileToJson(profile)
+        sb += profile.toJson
       }
       ctx.profiles = Some("[" + sb.mkString(",") + "]")
     }
     ctx.theme = RemoteService.getTheme
     ctx
-  }
-
-  def profileToJson(profile: Profile): String = {
-    val props = new StringBuilder
-    if (profile.properties.isEmpty) {
-      props ++= "{}"
-    } else {
-      props.append("{")
-      profile.properties foreach { case (k, v) =>
-        props ++= s""""$k":"$v","""
-      }
-      props.setCharAt(props.length - 1, '}')
-    }
-    s"""{"id":"${profile.id}","name":"${profile.name}","properties":$props}"""
   }
 }
 
