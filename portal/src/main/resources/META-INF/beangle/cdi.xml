@@ -25,6 +25,5 @@
     <module class="org.beangle.ems.core.oa.service.DefaultModule"/>
 
     <module class="org.beangle.webmvc.view.freemarker.DefaultModule"/>
-    <module class="org.beangle.webmvc.inspect.DefaultModule"/>
   </container>
 </cdi>

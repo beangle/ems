@@ -24,7 +24,7 @@ import org.beangle.ems.app.security.RemoteService
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authc.{Account, Profile}
-import org.beangle.web.action.context.ActionContext
+import org.beangle.webmvc.context.ActionContext
 import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.web.servlet.util.RequestUtils
 

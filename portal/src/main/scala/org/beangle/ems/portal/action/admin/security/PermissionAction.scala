@@ -33,9 +33,9 @@ import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.event.mq.ChannelQueue
 import org.beangle.security.Securities
 import org.beangle.security.authz.{Authority, Authorizer}
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 /**

@@ -18,8 +18,8 @@
 package org.beangle.ems.portal.action.admin.security
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.view.View
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{DataPermission, FuncResource, Menu}
 import org.beangle.ems.core.user.model.{Dimension, RoleMember}

@@ -23,8 +23,8 @@ import org.beangle.ems.app.Ems
 import org.beangle.ems.core.oa.model.Message
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
-import org.beangle.web.action.annotation.{ignore, mapping, param}
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.{ignore, mapping, param}
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 import java.time.Instant

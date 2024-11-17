@@ -21,9 +21,9 @@ import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.BusinessLog
-import org.beangle.web.action.annotation.{action, mapping, param}
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.annotation.{action, mapping, param}
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Status, View}
 
 @action("list/{appName}")
 class ListWS extends ActionSupport {

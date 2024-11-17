@@ -17,8 +17,7 @@
 
 package org.beangle.ems.core.cas
 
-import org.beangle.cdi.PropertySource
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.{BindModule, PropertySource}
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.{Ems, EmsApp}
@@ -32,9 +31,9 @@ import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
 import java.io.FileInputStream
 
 /**
-  * @author chaostone
-  */
-class DefaultModule extends BindModule with PropertySource {
+ * @author chaostone
+ */
+class DefaultModule extends BindModule, PropertySource {
 
   private val clients = Collections.newBuffer[String]
 

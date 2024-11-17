@@ -23,9 +23,9 @@ import org.beangle.data.jsonapi.JsonAPI
 import org.beangle.data.jsonapi.JsonAPI.Context
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
-import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, JsonAPISupport}
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.{ActionSupport, JsonAPISupport}
 
 import java.time.LocalDate
 

@@ -17,10 +17,9 @@
 
 package org.beangle.ems.core.oauth.service.impl
 
-import org.beangle.cache.{Cache, CacheManager}
+import org.beangle.commons.cache.{Cache, CacheManager}
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.TokenRepository
-import org.beangle.ems.core.config.model.AccessToken
 
 class MemTokenRepository(val tokens: Cache[String, AccessToken]) extends TokenRepository {
 

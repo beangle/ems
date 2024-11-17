@@ -24,9 +24,9 @@ import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, Stream, View}
+import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Status, Stream, View}
 import org.beangle.webmvc.support.helper.QueryHelper
 
 import java.io.File

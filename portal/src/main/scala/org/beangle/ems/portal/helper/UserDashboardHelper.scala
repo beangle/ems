@@ -28,7 +28,7 @@ import org.beangle.ems.core.user.model.{Profile, User}
 import org.beangle.ems.core.user.service.DimensionService
 import org.beangle.security.Securities
 import org.beangle.security.session.SessionRegistry
-import org.beangle.web.action.context.ActionContext
+import org.beangle.webmvc.context.ActionContext
 
 /**
   * @author chaostone

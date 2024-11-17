@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.cas
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.security.authc.{DefaultAccountRealm, RealmAuthenticator}
 import org.beangle.ems.core.cas.service.DaoAccountStore
 

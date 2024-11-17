@@ -18,7 +18,7 @@
 package org.beangle.ems.app.cas
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.security.RemoteAuthorizer
 import org.beangle.security.authc.{DefaultAccount, RealmAuthenticator}

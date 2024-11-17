@@ -18,7 +18,7 @@
 package org.beangle.ems.core.cas
 
 import org.beangle.cache.redis.JedisPoolFactory
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ids.cas.id.impl.DefaultServiceTicketIdGenerator
 import org.beangle.ids.cas.service.CasServiceImpl
 import org.beangle.ids.cas.ticket.{DefaultTicketCacheService, DefaultTicketRegistry}

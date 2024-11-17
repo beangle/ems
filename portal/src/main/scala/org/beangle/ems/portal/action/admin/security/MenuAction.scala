@@ -29,8 +29,8 @@ import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
 import org.beangle.event.bus.DataEvent
-import org.beangle.web.action.annotation.{ignore, param}
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.{ignore, param}
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 class MenuAction extends RestfulAction[Menu], DomainSupport {

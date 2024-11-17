@@ -21,8 +21,8 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.DbService
 import org.beangle.ems.portal.action.admin.DomainSupport
-import org.beangle.web.action.annotation.ignore
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.ignore
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport {

@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.security.service
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.core.security.service.impl.{CategorySessionProfileImpl, FuncPermissionServiceImpl, MenuServiceImpl, ProfileServiceImpl, SessionInfoServiceImpl}
 
 class DefaultModule extends BindModule {

@@ -18,7 +18,7 @@
 package org.beangle.ems.app
 
 import org.beangle.security.Securities
-import org.beangle.web.action.context.ActionContext
+import org.beangle.webmvc.context.ActionContext
 
 object EmsApi {
 

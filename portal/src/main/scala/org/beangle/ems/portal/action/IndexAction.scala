@@ -26,10 +26,10 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Status, View}
 import org.beangle.web.servlet.url.UrlBuilder
 
 import java.time.LocalDate

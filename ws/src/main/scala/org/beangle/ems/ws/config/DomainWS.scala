@@ -19,8 +19,8 @@ package org.beangle.ems.ws.config
 
 import org.beangle.commons.collection.Properties
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.web.action.annotation.response
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.webmvc.annotation.response
+import org.beangle.webmvc.support.ActionSupport
 
 class DomainWS extends ActionSupport {
 

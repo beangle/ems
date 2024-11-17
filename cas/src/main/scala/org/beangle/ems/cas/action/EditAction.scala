@@ -31,9 +31,9 @@ import org.beangle.security.codec.DefaultPasswordEncoder
 import org.beangle.security.session.Session
 import org.beangle.security.web.WebSecurityManager
 import org.beangle.security.web.session.CookieSessionIdPolicy
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.View
 
 class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegistry)
   extends ActionSupport with ServletSupport {

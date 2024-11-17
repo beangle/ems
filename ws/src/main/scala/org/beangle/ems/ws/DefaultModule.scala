@@ -18,12 +18,12 @@
 package org.beangle.ems.ws
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.oauth.service.impl.MemTokenRepository
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
-import org.beangle.web.action.execution.CacheResult
+import org.beangle.webmvc.execution.CacheResult
 import org.beangle.webmvc.execution.DefaultResponseCache
 
 class DefaultModule extends BindModule {

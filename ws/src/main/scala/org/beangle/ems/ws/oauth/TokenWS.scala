@@ -22,8 +22,8 @@ import java.util.UUID
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.EntityDao
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.annotation.{param, response}
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.annotation.{param, response}
 import org.beangle.ems.core.config.model.AccessToken
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.oauth.service.TokenRepository

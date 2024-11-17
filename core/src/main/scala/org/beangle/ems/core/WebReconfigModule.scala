@@ -17,11 +17,11 @@
 
 package org.beangle.ems.core
 
-import org.beangle.cdi.bind.ReconfigModule
+import org.beangle.commons.cdi.ReconfigModule
 import org.beangle.commons.io.Files
 import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
-import org.beangle.web.action.view.Static
+import org.beangle.webmvc.view.Static
 
 import java.io.File
 

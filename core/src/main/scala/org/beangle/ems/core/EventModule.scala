@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.event.CacheEvictorRegister
 import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
 import org.beangle.event.mq.impl.RedisChannelQueue

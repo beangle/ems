@@ -17,7 +17,7 @@
 
 package org.beangle.ems.portal.action.admin
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 
 class ConfigModule extends BindModule {
 

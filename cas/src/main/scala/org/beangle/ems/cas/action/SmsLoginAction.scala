@@ -31,9 +31,9 @@ import org.beangle.security.context.SecurityContext
 import org.beangle.security.session.Session
 import org.beangle.security.web.WebSecurityManager
 import org.beangle.security.web.access.SecurityContextBuilder
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.View
 
 class SmsLoginAction(securityManager: WebSecurityManager, ticketRegistry: TicketRegistry)
   extends ActionSupport with ServletSupport {

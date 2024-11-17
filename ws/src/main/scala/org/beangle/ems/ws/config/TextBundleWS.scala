@@ -22,10 +22,10 @@ import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.TextBundle
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.view.{Status, View}
 
 class TextBundleWS extends ActionSupport {
 

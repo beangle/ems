@@ -17,7 +17,7 @@
 
 package org.beangle.ems.portal.action.user
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.portal.action.user.{AvatarAction, DocAction, MessageAction, NoticeAction, NotificationAction, TodoAction}
 
 class DefaultModule extends BindModule {

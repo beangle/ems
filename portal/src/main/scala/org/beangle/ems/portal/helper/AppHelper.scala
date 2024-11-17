@@ -20,7 +20,7 @@ package org.beangle.ems.portal.helper
 import org.beangle.commons.lang.Numbers
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.core.config.model.App
-import org.beangle.web.action.context.{ActionContext, Params}
+import org.beangle.webmvc.context.{ActionContext, Params}
 import org.beangle.web.servlet.util.CookieUtils
 
 object AppHelper {

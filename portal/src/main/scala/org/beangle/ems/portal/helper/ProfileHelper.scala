@@ -25,7 +25,7 @@ import org.beangle.ems.core.user.model.{Dimension, IProfile, Profile}
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService}
 import org.beangle.security.Securities
-import org.beangle.web.action.context.{ActionContext, Params}
+import org.beangle.webmvc.context.{ActionContext, Params}
 
 class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimensionService: DimensionService) {
   var dataResolver: DataResolver = CsvDataResolver

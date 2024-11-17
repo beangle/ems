@@ -17,7 +17,7 @@
 
 package org.beangle.ems.cas.action
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper

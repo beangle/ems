@@ -17,8 +17,8 @@
 
 package org.beangle.ems.portal.action.admin.security
 
-import org.beangle.web.action.annotation.ignore
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.ignore
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.ems.core.config.model.{App, Domain}
 import org.beangle.ems.core.security.model.{DataPermission, DataResource, FuncResource}

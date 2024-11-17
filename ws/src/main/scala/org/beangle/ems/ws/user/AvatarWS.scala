@@ -22,9 +22,9 @@ import org.beangle.commons.lang.ClassLoaders
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.user.model.Avatar
-import org.beangle.web.action.annotation.{mapping, param}
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Stream, View}
+import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Stream, View}
 
 class AvatarWS(entityDao: EntityDao)
   extends ActionSupport with ServletSupport {

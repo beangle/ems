@@ -17,7 +17,7 @@
 
 package org.beangle.ems.portal.action.admin
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.portal.helper.UserDashboardHelper
 
 class SecurityModule extends BindModule {

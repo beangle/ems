@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.user.service
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.core.user.service.impl._
 
 class DefaultModule extends BindModule {

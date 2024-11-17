@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.10.7-SNAPSHOT"
+ThisBuild / version := "4.10.7"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -57,6 +57,7 @@ lazy val cas = (project in file("cas"))
     name := "beangle-ems-cas",
     common,
     libraryDependencies ++= webAppDepends,
+    libraryDependencies ++= Seq(b_bui_bootstrap)
   ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
@@ -72,7 +73,7 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(b_doc_transfer),
+    libraryDependencies ++= Seq(b_doc_transfer, b_bui_bootstrap),
     libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 

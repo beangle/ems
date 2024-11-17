@@ -21,7 +21,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.user.model.Category
 import org.beangle.ems.portal.action.admin.DomainSupport
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 class PortaletAction extends RestfulAction[Portalet], DomainSupport {

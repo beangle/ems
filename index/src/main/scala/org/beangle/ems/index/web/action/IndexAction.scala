@@ -18,9 +18,9 @@
 package org.beangle.ems.index.web.action
 
 import org.beangle.ems.app.Ems
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.view.View
 
 class IndexAction extends ActionSupport {
 

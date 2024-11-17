@@ -20,7 +20,7 @@ package org.beangle.ems.portal.action.admin.config
 import org.beangle.ems.core.config.model.Theme
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.event.bus.DataEvent
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
 
 class ThemeAction extends RestfulAction[Theme], DomainSupport {

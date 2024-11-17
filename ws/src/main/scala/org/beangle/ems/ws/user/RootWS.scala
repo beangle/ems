@@ -20,8 +20,8 @@ package org.beangle.ems.ws.user
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Root, User}
-import org.beangle.web.action.annotation.{param, response}
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.webmvc.annotation.{param, response}
+import org.beangle.webmvc.support.ActionSupport
 
 /**
  * @author chaostone

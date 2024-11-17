@@ -22,9 +22,9 @@ import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.DataSource
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.ActionSupport
 
 class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
 

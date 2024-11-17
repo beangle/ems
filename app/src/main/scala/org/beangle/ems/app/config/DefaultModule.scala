@@ -17,7 +17,7 @@
 
 package org.beangle.ems.app.config
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.text.i18n.HttpTextBundleLoader
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.Ems

@@ -18,8 +18,8 @@
 package org.beangle.ems.ws.config
 
 import org.beangle.commons.collection.Properties
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.annotation.response
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.annotation.response
 import org.beangle.ems.core.config.service.DomainService
 
 class OrgWS extends ActionSupport {

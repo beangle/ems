@@ -18,7 +18,7 @@
 package org.beangle.ems.core.cas
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.security.authc.{DefaultAccount, Profile}
 import org.beangle.security.session.jdbc.DBSessionRegistry
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}

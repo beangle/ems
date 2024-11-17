@@ -17,7 +17,7 @@
 
 package org.beangle.ems.app.dao
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 

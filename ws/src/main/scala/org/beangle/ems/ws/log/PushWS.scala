@@ -22,9 +22,9 @@ import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.log.BusinessLogProto
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.BusinessLog
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Status, View}
 import org.hibernate.SessionFactory
 
 import java.io.InputStream

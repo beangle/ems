@@ -17,7 +17,7 @@
 
 package org.beangle.ems.app.web
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 
 class DefaultModule extends BindModule {

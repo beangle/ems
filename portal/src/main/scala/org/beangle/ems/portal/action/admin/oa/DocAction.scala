@@ -27,9 +27,9 @@ import org.beangle.ems.core.user.service.UserService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
-import org.beangle.web.action.annotation.{ignore, param}
-import org.beangle.web.action.support.ServletSupport
-import org.beangle.web.action.view.{Status, Stream, View}
+import org.beangle.webmvc.annotation.{ignore, param}
+import org.beangle.webmvc.support.ServletSupport
+import org.beangle.webmvc.view.{Status, Stream, View}
 import org.beangle.webmvc.support.action.RestfulAction
 
 import java.io.File

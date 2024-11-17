@@ -17,7 +17,7 @@
 
 package org.beangle.ems.index.web
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.index.web.action.IndexAction
 
 class DefaultModule extends BindModule {

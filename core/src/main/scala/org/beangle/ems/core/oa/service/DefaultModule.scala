@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.oa.service
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.core.oa.service.impl.DocServiceImpl
 import org.beangle.ems.core.user.service.impl._
 

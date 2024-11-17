@@ -17,10 +17,10 @@
 
 package org.beangle.ems.app.web
 
-import org.beangle.cdi.bind.ReconfigModule
+import org.beangle.commons.cdi.ReconfigModule
 import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
-import org.beangle.web.action.view.Static
+import org.beangle.webmvc.view.Static
 
 class WebReconfigModule extends ReconfigModule {
   override protected def config(): Unit = {

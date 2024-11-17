@@ -19,7 +19,7 @@ package org.beangle.ems.app.web.tag
 
 import org.beangle.security.authz.Authorizer
 import org.beangle.template.api.{ComponentContext, TagLibrary}
-import org.beangle.web.action.context.ActionContext
+import org.beangle.webmvc.context.ActionContext
 
 class EmsTagLibrary extends TagLibrary {
 

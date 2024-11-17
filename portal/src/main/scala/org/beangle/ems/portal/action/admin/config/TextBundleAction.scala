@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.model.TextBundle
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.util.Locale

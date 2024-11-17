@@ -17,7 +17,7 @@
 
 package org.beangle.ems.app.cas
 
-import org.beangle.cache.CacheManager
+import org.beangle.commons.cache.CacheManager
 import org.beangle.security.session.http.HttpSessionRepo
 import org.beangle.security.realm.cas.CasConfig
 import org.beangle.commons.io.BinarySerializer

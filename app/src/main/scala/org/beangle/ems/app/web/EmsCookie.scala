@@ -21,7 +21,7 @@ import com.google.gson.Gson
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.beangle.web.servlet.util.CookieUtils
 import org.beangle.security.authc.Profile
-import org.beangle.web.action.context.Params
+import org.beangle.webmvc.context.Params
 
 import scala.collection.mutable
 

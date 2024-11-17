@@ -29,7 +29,7 @@ import org.beangle.ems.core.user.service.{DataResolver, DimensionService, RoleSe
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.security.context.SecurityContext
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 import java.time.Instant

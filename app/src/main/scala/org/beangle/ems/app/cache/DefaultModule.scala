@@ -19,7 +19,7 @@ package org.beangle.ems.app.cache
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cache.redis.JedisPoolFactory
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.logging.Logging
 
 class DefaultModule extends BindModule, Logging {

@@ -19,8 +19,8 @@ package org.beangle.ems.ws.user
 
 import org.beangle.commons.collection.Properties
 import org.beangle.ems.core.user.service.UserService
-import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.support.ActionSupport
 
 /**
  * @author chaostone

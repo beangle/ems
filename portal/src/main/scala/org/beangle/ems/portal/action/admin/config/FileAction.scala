@@ -25,9 +25,9 @@ import org.beangle.ems.core.config.model.{App, File}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 class FileAction extends RestfulAction[File], ExportSupport[File] {

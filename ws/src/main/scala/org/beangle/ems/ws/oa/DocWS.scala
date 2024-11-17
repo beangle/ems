@@ -24,10 +24,10 @@ import org.beangle.data.jsonapi.JsonAPI.Context
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice}
-import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.context.ActionContext
-import org.beangle.web.action.support.{ActionSupport, ServletSupport}
-import org.beangle.web.action.view.{Status, Stream, View}
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.view.{Status, Stream, View}
 
 import java.io.File
 import java.time.LocalDate

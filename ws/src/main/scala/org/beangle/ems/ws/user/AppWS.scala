@@ -24,8 +24,8 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.FuncPermission
 import org.beangle.ems.core.user.model.{Root, User}
 import org.beangle.ems.core.user.service.UserService
-import org.beangle.web.action.annotation.{mapping, param, response}
-import org.beangle.web.action.support.ActionSupport
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.support.ActionSupport
 
 /**
  * @author chaostone

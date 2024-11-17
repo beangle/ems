@@ -21,9 +21,9 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.blob.model.{BlobMeta, Profile}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.web.action.annotation.mapping
-import org.beangle.web.action.support.ServletSupport
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.support.ServletSupport
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 
 class MetaAction extends RestfulAction[BlobMeta], ExportSupport[BlobMeta], ServletSupport {

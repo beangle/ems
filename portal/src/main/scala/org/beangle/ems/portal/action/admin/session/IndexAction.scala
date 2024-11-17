@@ -19,8 +19,8 @@ package org.beangle.ems.portal.action.admin.session
 
 import org.beangle.commons.collection.Order
 import org.beangle.ems.core.security.service.SessionInfoService
-import org.beangle.web.action.support.ActionSupport
-import org.beangle.web.action.view.View
+import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.helper.QueryHelper
 
 class IndexAction extends ActionSupport {

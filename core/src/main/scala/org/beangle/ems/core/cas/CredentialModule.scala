@@ -19,7 +19,7 @@ package org.beangle.ems.core.cas
 
 import java.io.FileInputStream
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.EmsApp
 import org.beangle.ids.cas.service.DBLdapCredentialChecker
 import org.beangle.security.realm.ldap.{LdapCredentialStore, PoolingContextSource, SimpleLdapUserStore}

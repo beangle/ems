@@ -19,7 +19,7 @@ package org.beangle.ems.app.web
 
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.log.{BusinessLogger, Level}
-import org.beangle.web.action.context.ActionContext
+import org.beangle.webmvc.context.ActionContext
 import org.beangle.web.servlet.util.RequestUtils
 
 import scala.collection.mutable
