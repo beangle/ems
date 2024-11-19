@@ -26,7 +26,7 @@ class WebReconfigModule extends ReconfigModule {
   override protected def config(): Unit = {
     //1.模板个性化
     //support load remote freemarker template files
-    update("mvc.FreemarkerConfigurer.default")
+    update("mvc.FreemarkerConfigurator.default")
       .set("templatePath", s"${Ems.api}/platform/config/files/${EmsApp.name}/{path},class://")
 
     //2.国际化词条个性化

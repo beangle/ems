@@ -37,7 +37,7 @@ class WebReconfigModule extends ReconfigModule {
       })
       if (templateCount > 0) {
         //support load local freemarker template files
-        update("mvc.FreemarkerConfigurer.default")
+        update("mvc.FreemarkerConfigurator.default")
           .set("templatePath", s"file://${Ems.home + EmsApp.path}/,class://")
       }
     }
