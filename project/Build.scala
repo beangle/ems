@@ -6,7 +6,7 @@ object EmsDepends {
   val jdbcVer = "1.0.6"
   val dataVer = "5.8.18"
   val cdiVer = "0.7.0"
-  val webVer = "0.6.0"
+  val webVer = "0.6.1"
   val serializerVer = "0.1.13"
   val cacheVer = "0.1.12"
   val templateVer = "0.1.21"
