@@ -18,6 +18,7 @@
 package org.beangle.ems.portal.action.admin.config
 
 import org.beangle.commons.collection.Collections
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.{Business, RuleMeta, RuleParamMeta}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
@@ -30,6 +31,12 @@ class RuleMetaAction extends RestfulAction[RuleMeta] {
 
   var databus: DataEventBus = _
   var domainService: DomainService = _
+
+  override def getQueryBuilder: OqlBuilder[RuleMeta] = {
+    val query = super.getQueryBuilder
+    query.where("ruleMeta.domain=:domain", domainService.getDomain)
+    query
+  }
 
   override protected def editSetting(entity: RuleMeta): Unit = {
     put("businesses", entityDao.getAll(classOf[Business]))

@@ -17,6 +17,7 @@
 
 package org.beangle.ems.portal.action.admin.config
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.support.action.RestfulAction
@@ -25,6 +26,12 @@ import org.beangle.webmvc.view.View
 class BusinessAction extends RestfulAction[Business] {
 
   var domainService: DomainService = _
+
+  override def getQueryBuilder: OqlBuilder[Business] = {
+    val query = super.getQueryBuilder
+    query.where("business.domain=:domain", domainService.getDomain)
+    query
+  }
 
   override def saveAndRedirect(b: Business): View = {
     b.domain = domainService.getDomain

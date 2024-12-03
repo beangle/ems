@@ -18,17 +18,18 @@
 package org.beangle.ems.app.rule
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.util.JSON
 
-import java.util as ju
+import scala.collection.mutable
 
 class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 
-  var builder: RuleExecutorBuilder = _
+  var builder: RuleCheckerBuilder = new DefaultRuleCheckerBuilder
 
-  def execute(context: Any): List[(Rule, Boolean, String)] = {
+  def execute(context: Any*): List[(Rule, Boolean, String)] = {
     val executors = builder.build(rules, stopWhenFail)
     val results = Collections.newBuffer[(Rule, Boolean, String)]
     var result = true
@@ -43,11 +44,41 @@ class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 }
 
 object RuleEngine {
+  private val cache = new ThreadLocal[mutable.Map[String, RuleEngine]]
+
+  def clearLocalCache(): Unit = {
+    cache.remove()
+  }
+
+  def get(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
+    if (cache.get == null) {
+      cache.set(Collections.newMap[String, RuleEngine])
+    }
+    val key = ruleIds + stopWhenFail
+    cache.get.get(key) match {
+      case Some(engine) => engine
+      case None =>
+        val ng = of(ruleIds, stopWhenFail)
+        cache.get.put(key, ng)
+        ng
+    }
+  }
+
   def of(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
+    if (Strings.isEmpty(ruleIds)) {
+      new RuleEngine(Nil)
+    } else {
+      val url = Ems.api + s"/platform/config/rules/${ruleIds}.json"
+      val json = HttpUtils.getText(url).getText
+      val rules = parseToRules(json)
+      new RuleEngine(rules, stopWhenFail)
+    }
+  }
+
+  def list(ruleIds: String): Iterable[Rule] = {
     val url = Ems.api + s"/platform/config/rules/${ruleIds}.json"
     val json = HttpUtils.getText(url).getText
-    val rules = parseToRules(json)
-    new RuleEngine(rules, stopWhenFail)
+    parseToRules(json)
   }
 
   def list(business: String, profileId: String): Iterable[Rule] = {
@@ -59,13 +90,12 @@ object RuleEngine {
   private def parseToRules(json: String): Iterable[Rule] = {
     val rules = JSON.parseSeq(json)
     rules.map { r =>
-      val rm = r.asInstanceOf[ju.Map[String, Any]]
-      val id = rm.get("id").toString.toLong
-      val name = rm.get("name").toString
-      val title = rm.get("title").toString
-      val params = rm.get("params").asInstanceOf[ju.Map[String, Any]]
-      import scala.jdk.javaapi.CollectionConverters.asScala
-      Rule(id, name, title, asScala(params).toMap)
+      val rm = r.asInstanceOf[mutable.Map[String, Any]]
+      val id = rm("id").toString.toLong
+      val name = rm("name").toString
+      val title = rm("title").toString
+      val params = rm.get("params").map(x => x.asInstanceOf[mutable.Map[String, Any]].toMap).getOrElse(Map.empty)
+      Rule(id, name, title, params)
     }
   }
 }

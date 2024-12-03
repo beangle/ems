@@ -17,12 +17,20 @@
 
 package org.beangle.ems.app.rule
 
-trait RuleExecutor {
-  def check(context: Any): (Boolean, String)
+import java.lang.reflect.Method
+
+trait RuleChecker {
+  def check(context: Seq[Any]): (Boolean, String)
 }
 
-trait RuleExecutorBuilder {
-  def build(rule: Rule): RuleExecutor
+trait RuleCheckerBuilder {
+  def build(rule: Rule): RuleChecker
 
-  def build(rules: Iterable[Rule], stopWhenFail: Boolean): Map[Rule, RuleExecutor]
+  def build(rules: Iterable[Rule], stopWhenFail: Boolean): Map[Rule, RuleChecker]
+}
+
+class ProxyRuleChecker(checker: AnyRef, method: Method) extends RuleChecker {
+  def check(context: Seq[Any]): (Boolean, String) = {
+    method.invoke(checker, context: _*).asInstanceOf[(Boolean, String)]
+  }
 }

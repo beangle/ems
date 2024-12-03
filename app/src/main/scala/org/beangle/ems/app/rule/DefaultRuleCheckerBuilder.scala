@@ -18,27 +18,36 @@
 package org.beangle.ems.app.rule
 
 import org.beangle.commons.bean.Properties
-import org.beangle.commons.cdi.{Container, ContainerAware}
+import org.beangle.commons.cdi.Container
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.reflect.Reflections
 
-class DefaultRuleCheckerBuilder extends RuleExecutorBuilder, ContainerAware {
-  var container: Container = null
+class DefaultRuleCheckerBuilder extends RuleCheckerBuilder {
 
-  override def build(rule: Rule): RuleExecutor = {
-    container.getBean(rule.name) match {
-      case Some(b) => b.asInstanceOf[RuleExecutor]
-      case None =>
-        val nr = Reflections.newInstance[RuleExecutor](rule.name)
-        for (p <- rule.params) {
-          Properties.copy(nr, p._1, p._2)
-        }
-        nr
+  override def build(rule: Rule): RuleChecker = {
+    val container = Container.Default.get
+    val checker = container.getBean[Object](rule.name) match {
+      case Some(b) => b
+      case None => populate(Reflections.newInstance[Object](rule.name), rule)
+    }
+
+    val methods = checker.getClass.getMethods.toIndexedSeq.filter(x => x.getName == "check" && x.getReturnType == classOf[Tuple2[_, _]])
+    if (methods.isEmpty) {
+      throw new IllegalArgumentException("rule " + rule.name + " has no check method")
+    } else {
+      new ProxyRuleChecker(checker, methods.head)
     }
   }
 
-  override def build(rules: Iterable[Rule], stopWhenFail: Boolean): Map[Rule, RuleExecutor] = {
-    val executors = Collections.newMap[Rule, RuleExecutor]
+  private def populate(checker: Object, rule: Rule): Object = {
+    for (p <- rule.params) {
+      Properties.copy(checker, p._1, p._2)
+    }
+    checker
+  }
+
+  override def build(rules: Iterable[Rule], stopWhenFail: Boolean): Map[Rule, RuleChecker] = {
+    val executors = Collections.newMap[Rule, RuleChecker]
     for (rule <- rules) {
       executors.put(rule, this.build(rule))
     }

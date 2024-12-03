@@ -17,6 +17,7 @@
 
 package org.beangle.ems.portal.action.admin.config
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.{Business, Rule, RuleMeta, RuleParam}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
@@ -33,6 +34,12 @@ class RuleAction extends RestfulAction[Rule] {
   override def indexSetting(): Unit = {
     super.indexSetting()
     put("businesses", entityDao.getAll(classOf[Business]))
+  }
+
+  override def getQueryBuilder: OqlBuilder[Rule] = {
+    val query = super.getQueryBuilder
+    query.where("rule.domain=:domain", domainService.getDomain)
+    query
   }
 
   override protected def editSetting(rule: Rule): Unit = {

@@ -56,14 +56,16 @@ class RuleWS extends ActionSupport {
 
   private def convert(rules: Iterable[Rule]): Iterable[Properties] = {
     rules.map { r =>
-      val p = new Properties(r, "id,")
+      val p = new Properties(r, "id")
       p.put("name", r.meta.name)
-      p.put("title", r.meta.title)
-      val pp = new Properties()
-      r.params foreach { rp =>
-        pp.put(rp.meta.name, rp.contents)
+      p.put("title", r.name)
+      if (r.params.nonEmpty) {
+        val pp = new Properties()
+        r.params foreach { rp =>
+          pp.put(rp.meta.name, rp.contents)
+        }
+        p.put("params", pp)
       }
-      p.put("params", pp)
       p
     }
   }

@@ -4,6 +4,7 @@
 <div class="search-container">
     <div class="search-panel">
     [@b.form name="ruleMetaSearchForm" action="!search" target="ruleMetalist" title="ui.searchForm" theme="search"]
+      [@b.select name="ruleMeta.business.id" label="业务类型" items=businesses/]
       [@b.textfields names="ruleMeta.name;名称"/]
       <input type="hidden" name="orderBy" value="ruleMeta.name"/>
     [/@]
