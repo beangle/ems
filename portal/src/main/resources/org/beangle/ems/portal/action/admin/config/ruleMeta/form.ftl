@@ -41,9 +41,12 @@
       </thead>
       <tbody>
         [@ruleParams params=ruleMeta.params/]
+        [#if ruleMeta.params?size <5]
         [#list ruleMeta.params?size .. 5 as paramCount]
         <tr id="paramsEditTr">
-          <td><input id="param_name" name="${paramCount}.name" type="text" value="" maxlength="80" style="width:80px"/></td>
+          <td>
+            <input id="param_name" name="${paramCount}.name" type="text" value="" maxlength="80" style="width:80px"/>
+          </td>
           <td>
             <input id="param_type" type="text" name="${paramCount}.dataType" value="" maxlength="80" />
           </td>
@@ -51,11 +54,12 @@
           <td><input id="param_description" type="text" name="${paramCount}.description" value="" maxlength="80" /></td>
         </tr>
         [/#list]
+        [/#if]
       </tbody>
     </table>
   [/@]
   [@b.formfoot]
-    [@b.submit/]  [@b.reset/]
+    [@b.reset/] [@b.submit/]
   [/@]
 [/@]
 
@@ -65,6 +69,7 @@
       [#assign paramJSid = param_index/]
       <tr>
         <td>
+          <input  name="${paramJSid}.id" type="hidden" value="${param.id}"/>
           <input type="text" class="paramEditInput" name="${paramJSid}.name" value="${param.name}" title='参数名称' maxlength="80" />
         </td>
         <td >

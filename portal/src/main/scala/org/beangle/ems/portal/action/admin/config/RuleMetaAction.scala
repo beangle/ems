@@ -24,7 +24,6 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.webmvc.support.helper.PopulateHelper
 import org.beangle.webmvc.view.View
 
 class RuleMetaAction extends RestfulAction[RuleMeta] {
@@ -48,16 +47,17 @@ class RuleMetaAction extends RestfulAction[RuleMeta] {
     val paramNames = Collections.newSet[String]
     (0 to 10) foreach { i =>
       val p = Params.sub(i.toString)
-      val paramMeta = PopulateHelper.populate(new RuleParamMeta, p)
-      if (null != paramMeta.name && null != paramMeta.title) {
-        paramNames += paramMeta.name
-        params.get(paramMeta.name) match {
+      val paramId = getLong(i + ".id").getOrElse(0L)
+      val param = if (paramId > 0) entityDao.get(classOf[RuleParamMeta], paramId) else new RuleParamMeta
+      if (null != param.name && null != param.title) {
+        paramNames += param.name
+        params.get(param.name) match {
           case Some(x) =>
-            x.title = paramMeta.title
-            x.description = paramMeta.description
+            x.title = param.title
+            x.description = param.description
           case None =>
-            paramMeta.ruleMeta = meta
-            meta.params += paramMeta
+            param.ruleMeta = meta
+            meta.params += param
         }
       }
     }
