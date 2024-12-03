@@ -15,24 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.app.rule
 
-import org.beangle.commons.cdi.BindModule
+trait RuleExecutor {
+  def check(context: Any): (Boolean, String)
+}
 
-class ConfigModule extends BindModule {
+trait RuleExecutorBuilder {
+  def build(rule: Rule): RuleExecutor
 
-  protected override def binding(): Unit = {
-    bind(classOf[config.AppAction], classOf[config.AppGroupAction])
-    bind(classOf[config.DbAction])
-    bind(classOf[config.CredentialAction])
-    bind(classOf[config.FileAction])
-
-    bind(classOf[config.PortaletAction])
-    bind(classOf[config.ThemeAction])
-    bind(classOf[config.TextBundleAction])
-
-    bind(classOf[config.BusinessAction])
-    bind(classOf[config.RuleAction])
-    bind(classOf[config.RuleMetaAction])
-  }
+  def build(rules: Iterable[Rule], stopWhenFail: Boolean): Map[Rule, RuleExecutor]
 }

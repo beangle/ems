@@ -1,0 +1,6 @@
+[#ftl]
+[@b.nav class="nav-tabs nav-tabs-compact"]
+  [@b.navitem href="rule"]业务配置[/@]
+  [@b.navitem href="business"]业务类型[/@]
+  [@b.navitem href="rule-meta"]业务规则[/@]
+[/@]

@@ -32,6 +32,7 @@ Role.users=成员
 
 Group=组
 Group.properties=组属性
+Group.roles=组的默认角色列表
 
 GroupMember=组成员
 GroupMember.member=成员

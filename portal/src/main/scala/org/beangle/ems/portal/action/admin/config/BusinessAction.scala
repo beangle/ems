@@ -15,24 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.portal.action.admin.config
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.ems.core.config.model.Business
+import org.beangle.ems.core.config.service.DomainService
+import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
-class ConfigModule extends BindModule {
+class BusinessAction extends RestfulAction[Business] {
 
-  protected override def binding(): Unit = {
-    bind(classOf[config.AppAction], classOf[config.AppGroupAction])
-    bind(classOf[config.DbAction])
-    bind(classOf[config.CredentialAction])
-    bind(classOf[config.FileAction])
+  var domainService: DomainService = _
 
-    bind(classOf[config.PortaletAction])
-    bind(classOf[config.ThemeAction])
-    bind(classOf[config.TextBundleAction])
-
-    bind(classOf[config.BusinessAction])
-    bind(classOf[config.RuleAction])
-    bind(classOf[config.RuleMetaAction])
+  override def saveAndRedirect(b: Business): View = {
+    b.domain = domainService.getDomain
+    super.saveAndRedirect(b)
   }
 }

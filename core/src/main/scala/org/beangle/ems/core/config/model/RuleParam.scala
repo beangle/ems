@@ -15,24 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.core.config.model
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.data.model.LongId
+/**
+ * 规则参数
+ */
+class RuleParam extends LongId {
 
-class ConfigModule extends BindModule {
+  var rule: Rule = _
 
-  protected override def binding(): Unit = {
-    bind(classOf[config.AppAction], classOf[config.AppGroupAction])
-    bind(classOf[config.DbAction])
-    bind(classOf[config.CredentialAction])
-    bind(classOf[config.FileAction])
+  var meta: RuleParamMeta = _
 
-    bind(classOf[config.PortaletAction])
-    bind(classOf[config.ThemeAction])
-    bind(classOf[config.TextBundleAction])
-
-    bind(classOf[config.BusinessAction])
-    bind(classOf[config.RuleAction])
-    bind(classOf[config.RuleMetaAction])
-  }
+  var contents: String = _
 }

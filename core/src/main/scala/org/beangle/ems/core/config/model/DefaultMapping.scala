@@ -96,6 +96,33 @@ object DefaultMapping extends MappingModule {
       e.texts is lob
     }
 
+    //rule
+    bind[Business].declare { e =>
+      e.code is length(50)
+      e.name is length(100)
+    }.generator(IdGenerator.AutoIncrement)
+
+    bind[RuleMeta] declare { e =>
+      e.name is length(50)
+      e.title is length(80)
+      e.description is length(500)
+      e.params is depends("ruleMeta")
+    }
+
+    bind[RuleParamMeta] declare { e =>
+      e.name is length(50)
+      e.title is length(80)
+      e.description is length(200)
+    }
+
+    bind[Rule] declare { e =>
+      e.params is depends("rule")
+    }
+
+    bind[RuleParam] declare { e =>
+      e.contents is length(500)
+    }
+
     all.cacheAll()
   }
 

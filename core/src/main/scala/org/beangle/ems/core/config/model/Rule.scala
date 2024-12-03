@@ -15,24 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.core.config.model
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.{Enabled, Named, Updated}
 
-class ConfigModule extends BindModule {
+import scala.collection.mutable
 
-  protected override def binding(): Unit = {
-    bind(classOf[config.AppAction], classOf[config.AppGroupAction])
-    bind(classOf[config.DbAction])
-    bind(classOf[config.CredentialAction])
-    bind(classOf[config.FileAction])
+class Rule extends LongId, Enabled, Named, Updated {
 
-    bind(classOf[config.PortaletAction])
-    bind(classOf[config.ThemeAction])
-    bind(classOf[config.TextBundleAction])
+  var domain: Domain = _
 
-    bind(classOf[config.BusinessAction])
-    bind(classOf[config.RuleAction])
-    bind(classOf[config.RuleMetaAction])
-  }
+  var profileId: String = _
+
+  var meta: RuleMeta = _
+
+  var params: mutable.Set[RuleParam] = Collections.newSet[RuleParam]
 }
