@@ -26,7 +26,9 @@ ThisBuild / homepage := Some(url("http://beangle.github.io/ems/index.html"))
 ThisBuild / resolvers += Resolver.mavenLocal
 
 lazy val root = (project in file("."))
-  .settings()
+  .settings(
+    common
+  )
   .aggregate(static, app, core, cas, portal, index, ws)
 
 lazy val static = (project in file("static"))

@@ -47,7 +47,7 @@ class RuleMetaAction extends RestfulAction[RuleMeta] {
     val paramNames = Collections.newSet[String]
     (0 to 10) foreach { i =>
       val p = Params.sub(i.toString)
-      val paramId = getLong(i + ".id").getOrElse(0L)
+      val paramId = getLong(i.toString + ".id").getOrElse(0L)
       val param = if (paramId > 0) entityDao.get(classOf[RuleParamMeta], paramId) else new RuleParamMeta
       if (null != param.name && null != param.title) {
         paramNames += param.name
