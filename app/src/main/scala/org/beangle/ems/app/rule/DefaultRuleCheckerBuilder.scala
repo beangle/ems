@@ -20,9 +20,7 @@ package org.beangle.ems.app.rule
 import org.beangle.commons.bean.Properties
 import org.beangle.commons.cdi.{Container, ContainerAware}
 import org.beangle.commons.collection.Collections
-import org.beangle.data.model.util.Populator
-import org.springframework.beans.BeansException
-import org.springframework.context.{ApplicationContext, ApplicationContextAware}
+import org.beangle.commons.lang.reflect.Reflections
 
 class DefaultRuleCheckerBuilder extends RuleExecutorBuilder, ContainerAware {
   var container: Container = null
@@ -31,7 +29,7 @@ class DefaultRuleCheckerBuilder extends RuleExecutorBuilder, ContainerAware {
     container.getBean(rule.name) match {
       case Some(b) => b.asInstanceOf[RuleExecutor]
       case None =>
-        val nr = Class.forName(rule.name).newInstance.asInstanceOf[RuleExecutor]
+        val nr = Reflections.newInstance[RuleExecutor](rule.name)
         for (p <- rule.params) {
           Properties.copy(nr, p._1, p._2)
         }

@@ -59,8 +59,11 @@ class RuleWS extends ActionSupport {
       val p = new Properties(r, "id,")
       p.put("name", r.meta.name)
       p.put("title", r.meta.title)
-      val params = r.params.map(p => p.meta.name -> p.contents).toMap
-      p.put("params", params)
+      val pp = new Properties()
+      r.params foreach { rp =>
+        pp.put(rp.meta.name, rp.contents)
+      }
+      p.put("params", pp)
       p
     }
   }

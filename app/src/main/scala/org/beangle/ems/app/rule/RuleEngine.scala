@@ -44,14 +44,14 @@ class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 
 object RuleEngine {
   def of(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
-    val url = Ems.api + s"/platform/config/rules/${ruleIds}"
+    val url = Ems.api + s"/platform/config/rules/${ruleIds}.json"
     val json = HttpUtils.getText(url).getText
     val rules = parseToRules(json)
     new RuleEngine(rules, stopWhenFail)
   }
 
   def list(business: String, profileId: String): Iterable[Rule] = {
-    val url = Ems.api + s"/platform/config/rules/${business}/${profileId}"
+    val url = Ems.api + s"/platform/config/rules/${business}/${profileId}.json"
     val json = HttpUtils.getText(url).getText
     parseToRules(json)
   }
