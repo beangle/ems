@@ -170,9 +170,8 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
       }
     entityDao.saveOrUpdate(nodes)
 
-    if (null != location) {
-      entityDao.refresh(location)
-    }
+    if null != location then entityDao.refresh(location)
+    if null == menu.indexno then menu.indexno = index.toString
   }
 
   def importFrom(app: App, xml: scala.xml.Node): Unit = {

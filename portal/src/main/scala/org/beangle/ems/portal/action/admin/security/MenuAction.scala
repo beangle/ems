@@ -30,8 +30,8 @@ import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
 import org.beangle.event.bus.DataEvent
 import org.beangle.webmvc.annotation.{ignore, param}
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
 class MenuAction extends RestfulAction[Menu], DomainSupport {
   var menuService: MenuService = _
@@ -126,6 +126,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
     if (newParentId.isDefined) parent = entityDao.get(classOf[Menu], newParentId.get)
 
     menuService.move(menu, parent, indexno)
+    entityDao.saveOrUpdate(menu)
     if (!menu.enabled) {
       val family = Hierarchicals.getFamily(menu)
       for (one <- family) one.enabled = false
