@@ -27,7 +27,7 @@ class DefaultRuleCheckerBuilder extends RuleCheckerBuilder {
   override def build(rule: Rule): RuleChecker = {
     val container = Container.Default.get
     val checker = container.getBean[Object](rule.name) match {
-      case Some(b) => b
+      case Some(b) => populate(b, rule)
       case None => populate(Reflections.newInstance[Object](rule.name), rule)
     }
 
