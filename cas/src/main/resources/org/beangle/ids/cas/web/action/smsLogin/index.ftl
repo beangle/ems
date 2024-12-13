@@ -28,7 +28,7 @@
      <form name="loginForm" action="${b.base}/sms-login" target="_top" method="post">
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
-        <div style="text-align:center;color:red;margin-top: -24px;" id="error_msg">${error!'&nbsp;'}</div>
+        <div style="text-align:center;color:red;margin-top: -24px;max-width:210px;" id="error_msg">${error!'&nbsp;'}</div>
         <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
                   <div class="col-auto">
                     <div class="input-group mb-1">
