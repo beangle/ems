@@ -15,23 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.service
+package org.beangle.ems.core.user.service.impl
 
-import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.core.user.service.impl.*
+import org.beangle.ems.core.user.service.UserService
+import org.beangle.ids.cas.service.UserMobileProvider
+import org.beangle.ids.cas.service.UserMobileProvider.MobileInfo
 
-class DefaultModule extends BindModule {
+class DefaultUserMobileProvider extends UserMobileProvider {
+  var userService: UserService = _
 
-  override def binding(): Unit = {
-    bind(classOf[UserServiceImpl])
-    bind(classOf[RoleServiceImpl])
-    bind(classOf[PasswordConfigServiceImpl])
-    bind(classOf[DimensionServiceImpl])
-
-    bind(classOf[DefaultPasswordPolicyProvider])
-    bind(classOf[DefaultCredentialStore])
-
-    bind(classOf[AvatarServiceImpl])
-    bind(classOf[DefaultUserMobileProvider])
+  override def get(principal: String): Option[MobileInfo] = {
+    userService.get(principal) match {
+      case None => None
+      case Some(user) => user.mobile match {
+        case None => None
+        case Some(mobile) => Some(MobileInfo(principal, user.name, mobile))
+      }
+    }
   }
 }

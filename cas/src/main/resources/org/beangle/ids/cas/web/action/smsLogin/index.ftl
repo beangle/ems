@@ -39,10 +39,21 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
-                      <input name="smsCode" tabindex="2" class="form-control" placeholder="验证码" value="">
+                      <input name="smsCode" tabindex="2" class="form-control" placeholder="短信验证码" value="">
                       <input type="button"  tabindex="3" class="btn btn-outline-primary btn-sm"  onclick="send(this.form);return false;" value="发送" style="margin-left: 2px;"/>
                     </div>
                   </div>
+            [#if setting.enableCaptcha]
+                  <div class="col-auto">
+                    <div class="input-group mb-1">
+                      <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
+                      <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码">
+                      <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
+                        <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
+                      </div></div>
+                    </div>
+                  </div>
+            [/#if]
             <div class="col-auto">
               <div class="input-group mb-1">
                     <div style="padding-top: 5px;margin-right: 50px;"><a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;">密码登录</a></div>

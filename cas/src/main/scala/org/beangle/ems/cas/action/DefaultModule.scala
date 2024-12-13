@@ -19,6 +19,8 @@ package org.beangle.ems.cas.action
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
+import org.beangle.ids.cas.service.LoginRetryServiceImpl
+import org.beangle.ids.cas.ticket.DefaultTicketCacheService
 import org.beangle.ids.cas.web.action.{LoginAction, LogoutAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper
 import org.beangle.ids.cas.web.ws.{ServiceValidateAction, SessionAction}
@@ -31,5 +33,6 @@ class DefaultModule extends BindModule {
     bind(classOf[SessionAction])
     bind(classOf[EditAction])
     bind(classOf[CaptchaHelper]).constructor(Ems.api + "/tools")
+    bind(classOf[LoginRetryServiceImpl]).constructor(ref("jedis.Factory"))
   }
 }

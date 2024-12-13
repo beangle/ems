@@ -22,6 +22,7 @@ import org.beangle.commons.bean.{Initializing, Properties}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.reflect.Reflections
 import org.beangle.ems.app.EmsApp
+import org.beangle.ids.cas.web.action.SmsLoginAction
 import org.beangle.ids.sms.service.impl.{DefaultSmsCacheService, DefaultSmsCodeService}
 import org.beangle.notify.sms.SmsSender
 
