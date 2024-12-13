@@ -87,10 +87,20 @@
           displayError("用户名称不能为空");return false;
       }
       if(!form['smsCode'].value){
-          displayError("验证码不能为空");return false;
+          displayError("短信验证码不能为空");return false;
       }
+      [#if setting.enableCaptcha]
+      if(!form['captcha_response'].value){
+          displayError("图片验证码不能为空");return false;
+      }
+      [/#if]
       return true;
     }
+[#if setting.enableCaptcha]
+    function change_captcha(){
+       document.getElementById('captcha_image').src="${captcha_url}?t="+(new Date()).getTime();
+    }
+[/#if]
     function addHidden(form,name,value){
       var input = document.createElement('input');
       input.setAttribute("name",name);

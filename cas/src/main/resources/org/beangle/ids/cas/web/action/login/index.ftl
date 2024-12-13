@@ -56,7 +56,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
-                      <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="验证码">
+                      <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码">
                       <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
                         <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
                       </div></div>
@@ -116,7 +116,7 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
         }
         [#if setting.enableCaptcha]
         if(!form['captcha_response'].value){
-            displayError("验证码不能为空");return false;
+            displayError("图片验证码不能为空");return false;
         }
         [/#if]
 
