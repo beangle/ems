@@ -48,7 +48,11 @@ class AppDataSourceFactory extends DataSourceFactory {
     if (EmsApp.getAppFile exists (file => IOs.readString(new FileInputStream(file)).contains("</datasource>"))) {
       this.url = EmsApp.getAppFile.get.getCanonicalPath
     } else {
-      this.url = EmsApi.getDatasourceUrl(name)
+      if (Ems.getResourceFile exists (file => IOs.readString(new FileInputStream(file)).contains("</datasource>"))) {
+        this.url = Ems.getResourceFile.get.getCanonicalPath
+      } else {
+        this.url = EmsApi.getDatasourceUrl(name)
+      }
     }
     super.init()
   }

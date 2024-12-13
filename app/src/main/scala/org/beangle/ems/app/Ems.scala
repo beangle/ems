@@ -20,6 +20,8 @@ package org.beangle.ems.app
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.logging.Logging
 
+import java.io.File
+
 object Ems extends Logging {
 
   val home: String = EmsEnv.findHome()
@@ -77,6 +79,11 @@ object Ems extends Logging {
     env.api
   }
 
+  def getResourceFile: Option[File] = {
+    val resfile = new File(home + "/resources.xml")
+    if (resfile.exists) Some(resfile) else None
+  }
+
   class Org {
     var id: Int = _
     var code: String = _
@@ -93,7 +100,8 @@ object Ems extends Logging {
     var logoUrl: String = _
     var org: Org = _
   }
-  case class Theme(primaryColor:String,navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridBorderColor: String)
+
+  case class Theme(primaryColor: String, navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridBorderColor: String)
 
   case class Sid(name: String, prefix: String)
 

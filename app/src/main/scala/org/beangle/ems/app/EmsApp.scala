@@ -67,8 +67,7 @@ object EmsApp extends Logging {
 
   def getAppFile: Option[File] = {
     val homefile = new File(Ems.home + path + ".xml")
-    if (homefile.exists) Some(homefile)
-    else None
+    if (homefile.exists) Some(homefile) else None
   }
 
   def getFile(file: String): Option[File] = {
