@@ -31,6 +31,11 @@ class RuleMetaAction extends RestfulAction[RuleMeta] {
   var databus: DataEventBus = _
   var domainService: DomainService = _
 
+  override def indexSetting(): Unit = {
+    super.indexSetting()
+    put("businesses", entityDao.getAll(classOf[Business]))
+  }
+
   override def getQueryBuilder: OqlBuilder[RuleMeta] = {
     val query = super.getQueryBuilder
     query.where("ruleMeta.domain=:domain", domainService.getDomain)

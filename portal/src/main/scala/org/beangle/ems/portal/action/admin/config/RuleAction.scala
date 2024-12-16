@@ -50,8 +50,9 @@ class RuleAction extends RestfulAction[Rule] {
     if (!rule.persisted) {
       metas.headOption foreach { m =>
         rule.meta = m
-        rule.name = m.name
+        rule.name = m.title
       }
+      rule.enabled = true
     }
     put("metas", metas)
     super.editSetting(rule)

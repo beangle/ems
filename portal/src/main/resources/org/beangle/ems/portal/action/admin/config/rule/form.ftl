@@ -28,7 +28,7 @@
           jQuery("#ruleParamsTable tbody").html(jQuery("#ruleParamsTable tbody").html()+
             "<tr>"+
               "<input type='hidden' name='param" + i + ".id' value=''/>" +
-              "<input type='hidden' name='param" + i + ".param.id' value='" + param.id + "'/>" +
+              "<input type='hidden' name='param" + i + ".meta.id' value='" + param.id + "'/>" +
               "<td>" + param.title + "</td>" +
               "<td>" + param.description + "</td>" +
               "<td><input type='text' name='param" + i + ".contents' value=''/></td>" +
@@ -61,7 +61,7 @@
     [#else]
       [#assign paramMetas = metas[0].params/]
     [/#if]
-    [@b.select label="规则项目" name="rule.meta.id" items=metas required="true" onchange="queryMeta(this)"/]
+    [@b.select label="规则项目" name="rule.meta.id" items=metas required="true" onchange="queryMeta(this)" option="id,title"/]
     [@b.field label="规则描述"]<span id="ruleDescription">${(rule.meta.description)!}&nbsp;</span>[/@]
   [/#if]
   [@b.radios name="rule.enabled" label="是否有效" value=rule.enabled! /]
