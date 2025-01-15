@@ -17,15 +17,14 @@
 
 package org.beangle.ems.core.security.service.impl
 
-import org.beangle.commons.bean.Properties
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{JsonObject, JsonParser}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.app.util.JSON
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.FuncResource
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.{Dimension, IProfile, User, Profile}
+import org.beangle.ems.core.user.model.{Dimension, IProfile, Profile, User}
 
 class ProfileServiceImpl extends ProfileService {
 
@@ -49,7 +48,7 @@ class ProfileServiceImpl extends ProfileService {
 
     if (source.startsWith("json:")) {
       val json = source.substring(5)
-      JSON.parseSeq(json).filter { x => Properties.get(x, keyname) }
+      JsonParser.parseArray(json).map(x => x.asInstanceOf[JsonObject].get(keyname).orNull)
     } else if (source.startsWith("csv:")) {
       val csv = source.substring(4)
       val lines = Strings.split(Strings.replace(csv, "\r", ""), "\n")

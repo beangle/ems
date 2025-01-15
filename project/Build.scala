@@ -2,19 +2,19 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.22"
-  val jdbcVer = "1.0.6"
+  val commonsVer = "5.6.25"
+  val jdbcVer = "1.0.8"
   val dataVer = "5.8.18"
-  val cdiVer = "0.7.0"
+  val cdiVer = "0.7.1"
   val webVer = "0.6.2"
-  val serializerVer = "0.1.13"
+  val serializerVer = "0.1.14"
   val cacheVer = "0.1.12"
   val templateVer = "0.1.21"
   val webmvcVer = "0.10.1"
   val buiVer = "0.0.1"
   val securityVer = "4.3.26"
   val idsVer = "0.3.22"
-  val eventVer = "0.0.9"
+  val eventVer = "0.0.11"
   val docVer = "0.4.5"
 
   val b_commons = "org.beangle.commons" % "beangle-commons" % commonsVer
@@ -33,7 +33,7 @@ object EmsDepends {
   val b_doc_transfer = "org.beangle.doc" % "beangle-doc-transfer" % docVer
 
   val appDepends = Seq(b_commons, logback_classic, scalatest, b_web) ++
-    Seq(b_cdi, b_jdbc, spring_beans, spring_context, spring_tx, spring_jdbc, gson, HikariCP) ++
+    Seq(b_cdi, b_jdbc, spring_beans, spring_context, spring_tx, spring_jdbc, HikariCP) ++
     Seq(b_model, hibernate_core, postgresql, caffeine_jcache, hibernate_jcache, b_event, b_cache) ++
     Seq(b_template, jedis, b_security)
 

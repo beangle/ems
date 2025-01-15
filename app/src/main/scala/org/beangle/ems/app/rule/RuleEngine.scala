@@ -18,10 +18,10 @@
 package org.beangle.ems.app.rule
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{JsonObject, JsonParser}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.ems.app.Ems
-import org.beangle.ems.app.util.JSON
 
 import scala.collection.mutable
 
@@ -88,13 +88,13 @@ object RuleEngine {
   }
 
   private def parseToRules(json: String): Iterable[Rule] = {
-    val rules = JSON.parseSeq(json)
+    val rules = JsonParser.parseArray(json)
     rules.map { r =>
-      val rm = r.asInstanceOf[mutable.Map[String, Any]]
-      val id = rm("id").toString.toLong
-      val name = rm("name").toString
-      val title = rm("title").toString
-      val params = rm.get("params").map(x => x.asInstanceOf[mutable.Map[String, Any]].toMap).getOrElse(Map.empty)
+      val rm = r.asInstanceOf[JsonObject]
+      val id = rm.getLong("id")
+      val name = rm.getString("name")
+      val title = rm.getString("title")
+      val params = rm.getObject("params").values
       Rule(id, name, title, params)
     }
   }

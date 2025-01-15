@@ -17,7 +17,22 @@
 
 package org.beangle.ems.app.blob
 
+import org.beangle.commons.json.JsonParser
 import org.beangle.data.model.pojo.Updated
+
+object BlobMeta {
+  def fromJson(json: String): BlobMeta = {
+    val jb = JsonParser.parseObject(json)
+    val meta = new BlobMeta
+    meta.name = jb.getString("name")
+    meta.fileSize = jb.getInt("size")
+    meta.sha = jb.getString("sha")
+    meta.mediaType = jb.getString("type")
+    meta.filePath = jb.getString("path")
+    meta.updatedAt = jb.getInstant("updatedAt")
+    meta
+  }
+}
 
 class BlobMeta extends Updated {
   var name: String = _
@@ -29,4 +44,5 @@ class BlobMeta extends Updated {
   var mediaType: String = _
 
   var filePath: String = _
+
 }

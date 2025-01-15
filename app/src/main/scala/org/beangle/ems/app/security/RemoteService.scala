@@ -18,8 +18,8 @@
 package org.beangle.ems.app.security
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{JsonArray, JsonObject, JsonParser}
 import org.beangle.commons.net.http.HttpUtils.getText
-import org.beangle.ems.app.util.JSON
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authz.Authority
@@ -27,8 +27,8 @@ import org.beangle.security.authz.Authority
 import java.util.Locale
 
 /**
-  * @author chaostone
-  */
+ * @author chaostone
+ */
 object RemoteService {
 
   def roots: Option[Set[String]] = {
@@ -36,7 +36,7 @@ object RemoteService {
     val res = getText(url)
     if (res.status == 200) {
       val resources = Collections.newSet[String]
-      resources ++= JSON.parseSeq(res.getText).map(_.toString)
+      resources ++= JsonParser.parseArray(res.getText).map(_.toString)
       Some(resources.toSet)
     } else {
       None
@@ -50,14 +50,14 @@ object RemoteService {
 
   protected[security] def toAuthorities(content: String): collection.Seq[Authority] = {
     val resources = Collections.newBuffer[Authority]
-    val resourceJsons = JSON.parseSeq(content)
+    val resourceJsons = JsonParser.parseArray(content)
     resourceJsons.map { rj =>
-      val r = rj.asInstanceOf[collection.Map[String, _]]
+      val r = rj.asInstanceOf[JsonObject]
       val roles = r.get("roles") match {
         case None => Set.empty[String]
-        case Some(roleList) => roleList.asInstanceOf[Iterable[Number]].map(_.intValue.toString).toSet
+        case Some(roleList) => roleList.asInstanceOf[JsonArray].map(_.toString).toSet
       }
-      resources += Authority(r("name").toString, r("scope").toString, roles)
+      resources += Authority(r.getString("name"), r.getString("scope"), roles)
     }
     resources
   }
@@ -81,19 +81,18 @@ object RemoteService {
 
   def getOrg: Ems.Org = {
     val json = getText(Ems.api + "/platform/config/orgs.json").getOrElse(null)
-    val data = JSON.parseObj(json)
-    convert2Org(data)
+    convert2Org(JsonParser.parseObject(json).values)
   }
 
   def getDomain(locale: Locale): Ems.Domain = {
     val json = getText(Ems.api + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
-    val data = JSON.parseObj(json)
+    val data = JsonParser.parseObject(json)
     val domain = new Ems.Domain
-    data.get("id") foreach (e => domain.id = e.asInstanceOf[Number].intValue)
-    data.get("name") foreach (e => domain.name = e.toString)
-    data.get("title") foreach (e => domain.title = e.toString)
-    data.get("logoUrl") foreach (e => domain.logoUrl = e.toString)
-    domain.org = convert2Org(data.get("org").orNull.asInstanceOf[collection.Map[String, Any]])
+    domain.id = data.getInt("id")
+    domain.name = data.getString("name")
+    domain.title = data.getString("title")
+    domain.logoUrl = data.getString("logoUrl")
+    domain.org = convert2Org(data.getObject("org").values)
     domain
   }
 
@@ -111,18 +110,13 @@ object RemoteService {
 
   def getTheme: Ems.Theme = {
     val json = getText(Ems.api + "/platform/config/themes.json").getOrElse(null)
-    val data = JSON.parseObj(json)
-    var primaryColor: String = null
-    var navbarBgColor: String = null
-    var searchBgColor: String = null
-    var gridbarBgColor: String = null
-    var gridBorderColor: String = null
+    val data = JsonParser.parseObject(json)
+    val primaryColor = data.getString("primaryColor")
+    val navbarBgColor = data.getString("navbarBgColor")
+    val searchBgColor = data.getString("searchBgColor")
+    val gridbarBgColor = data.getString("gridbarBgColor")
+    val gridBorderColor = data.getString("gridBorderColor")
 
-    data.get("primaryColor") foreach (e => primaryColor = e.toString)
-    data.get("navbarBgColor") foreach (e => navbarBgColor = e.toString)
-    data.get("searchBgColor") foreach (e => searchBgColor = e.toString)
-    data.get("gridbarBgColor") foreach (e => gridbarBgColor = e.toString)
-    data.get("gridBorderColor") foreach (e => gridBorderColor = e.toString)
     Ems.Theme(primaryColor, navbarBgColor, searchBgColor, gridbarBgColor, gridBorderColor)
   }
 }

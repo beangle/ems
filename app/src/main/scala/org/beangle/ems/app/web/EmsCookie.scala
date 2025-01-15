@@ -17,10 +17,10 @@
 
 package org.beangle.ems.app.web
 
-import com.google.gson.Gson
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.beangle.web.servlet.util.CookieUtils
+import org.beangle.commons.json.{JsonObject, JsonParser}
 import org.beangle.security.authc.Profile
+import org.beangle.web.servlet.util.CookieUtils
 import org.beangle.webmvc.context.Params
 
 import scala.collection.mutable
@@ -83,11 +83,10 @@ object EmsCookie {
   private val COOKIE_AGE = 60 * 60 * 24 * 7 // 7 days
 
   private def parse(cookieValue: String): EmsCookie = {
-    val gson = new Gson
     val profile = new EmsCookie
-    import scala.jdk.javaapi.CollectionConverters._
-    val v = gson.fromJson(cookieValue, classOf[java.util.Map[String, String]])
-    profile.data ++= asScala(v)
+    JsonParser.parseObject(cookieValue) foreach { case (k, v) =>
+      profile.data.put(k, v.toString)
+    }
     profile
   }
 }
@@ -120,9 +119,7 @@ class EmsCookie {
   }
 
   def toJson: String = {
-    val gson = new Gson
-    import scala.jdk.javaapi.CollectionConverters._
-    gson.toJson(asJava(this.data))
+    new JsonObject(this.data).toJson
   }
 
   override def equals(obj: Any): Boolean = {

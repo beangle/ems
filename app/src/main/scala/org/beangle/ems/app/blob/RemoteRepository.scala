@@ -17,22 +17,17 @@
 
 package org.beangle.ems.app.blob
 
-import com.google.gson.{JsonDeserializationContext, JsonDeserializer}
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.conversion.Converter
 import org.beangle.commons.io.{Files, IOs}
-import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.Strings.isEmpty
 import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpMethods, Https}
 
 import java.io.*
-import java.lang.reflect.Type
 import java.net.{HttpURLConnection, URL}
 import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.{Instant, LocalDateTime, ZoneId}
 import java.util.Base64
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
@@ -119,10 +114,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     os.close() //don't forget to close the OutputStream
     try {
       if (conn.getResponseCode == 200) {
-        val response = IOs.readString(conn.getInputStream)
-        import com.google.gson.GsonBuilder
-        val gson = new GsonBuilder().registerTypeAdapter(classOf[Instant], new InstantAdapter).create
-        gson.fromJson(response, classOf[BlobMeta])
+        BlobMeta.fromJson(IOs.readString(conn.getInputStream))
       } else {
         var msg: String = ""
         try msg = IOs.readString(conn.getInputStream)
@@ -141,34 +133,5 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
   private def logError(str: String, e: Throwable): Unit = {
     logger.error(str, e)
     throw e
-  }
-
-  import com.google.gson.JsonElement
-
-  class InstantAdapter extends JsonDeserializer[Instant] {
-    def deserialize(elem: JsonElement, `type`: Type, context: JsonDeserializationContext): Instant = {
-      InstantConverter(elem.getAsString)
-    }
-  }
-
-  object InstantConverter extends Converter[String, Instant] {
-    override def apply(value: String): Instant = {
-      if (isEmpty(value)) return null
-      if (!value.endsWith("Z")) {
-        LocalDateTime.parse(normalize(value)).atZone(ZoneId.systemDefault).toInstant
-      } else {
-        Instant.parse(value)
-      }
-    }
-  }
-
-  /**
-   * Change DateTime Format
-   * 1. YYYY-MM-DD HH:mm into YYYY-MM-DDTHH:mm:00
-   * 2. YYYY-MM-DD HH:mm:ss into YYYY-MM-DDTHH:mm:ss
-   */
-  def normalize(value: String): String = {
-    val v = if (value.length == 16) value + ":00" else value
-    Strings.replace(v, " ", "T")
   }
 }
