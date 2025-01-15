@@ -15,7 +15,7 @@ object EmsDepends {
   val securityVer = "4.3.26"
   val idsVer = "0.3.22"
   val eventVer = "0.0.11"
-  val docVer = "0.4.5"
+  val docVer = "0.4.7"
 
   val b_commons = "org.beangle.commons" % "beangle-commons" % commonsVer
   val b_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % jdbcVer
