@@ -17,38 +17,19 @@
 
 package org.beangle.ems.core.oa.model
 
-import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.lang.Strings
+import org.beangle.data.json.JsonValue
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
-import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{Category, User}
+import org.beangle.data.model.pojo.{Named, Remark, Updated}
+import org.beangle.ems.core.config.model.{Business, Domain}
 
 import scala.collection.mutable
 
-class Doc extends LongId, Updated {
-
-  var app: App = _
-
-  var uploadBy: User = _
-
-  var name: String = _
-
-  var fileSize: Int = _
-
-  var filePath: String = _
-
-  var categories: mutable.Set[Category] = Collections.newSet
-
-  var archived: Boolean = _
-
-  def image: Boolean = {
-    MediaTypes.get(Strings.substringAfterLast(filePath, ".")) match
-      case None => false
-      case Some(mt) => mt.primaryType == "image"
-  }
-
-  def url: String = EmsApp.getBlobRepository().path(this.filePath).get
+/** 工作流定义
+ */
+class Flow extends LongId, Updated, Named, Remark {
+  var domain: Domain = _
+  var business: Business = _
+  var tasks: mutable.Buffer[FlowTask] = Collections.newBuffer[FlowTask]
+  var dataJson: JsonValue = JsonValue.Empty
 }

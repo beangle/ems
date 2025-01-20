@@ -19,8 +19,8 @@ package org.beangle.ems.ws.oa
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.data.jsonapi.JsonAPI
-import org.beangle.data.jsonapi.JsonAPI.Context
+import org.beangle.data.json.JsonAPI
+import org.beangle.data.json.JsonAPI.Context
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.oa.model.{Doc, Notice}

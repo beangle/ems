@@ -15,15 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.core.oa.model
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.{Named, Remark}
+import org.beangle.ems.core.user.model.Group
 
-class OAModule extends BindModule {
-
-  protected override def binding(): Unit = {
-    bind(classOf[oa.DocAction], classOf[oa.NoticeAction], classOf[oa.NewsAction])
-    bind(classOf[oa.NoticeAuditAction])
-    bind(classOf[oa.FlowAction])
-  }
+/** 工作流中的任务
+ */
+class FlowTask extends LongId, Named, Remark {
+  var flow: Flow = _
+  var idx: Int = _
+  var group: Group = _
 }

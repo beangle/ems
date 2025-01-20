@@ -4,7 +4,7 @@ import sbt.*
 object EmsDepends {
   val commonsVer = "5.6.25"
   val jdbcVer = "1.0.8"
-  val dataVer = "5.8.18"
+  val dataVer = "5.8.20-SNAPSHOT"
   val cdiVer = "0.7.1"
   val webVer = "0.6.2"
   val serializerVer = "0.1.14"

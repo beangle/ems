@@ -6,7 +6,6 @@
     [@b.form name="ruleSearchForm" action="!search" target="rulelist" title="ui.searchForm" theme="search"]
       [@b.select name="rule.meta.business.id" label="业务类型" items=businesses/]
       [@b.textfields names="rule.name;名称"/]
-
       <input type="hidden" name="orderBy" value="rule.meta.business.id,rule.name"/>
     [/@]
     </div>
