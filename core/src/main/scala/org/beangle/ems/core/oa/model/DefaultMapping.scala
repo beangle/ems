@@ -46,9 +46,15 @@ object DefaultMapping extends MappingModule {
       index("", false, e.recipient)
     }
 
-    bind[Flow].declare{e=>
+    bind[Flow].declare { e =>
       e.tasks is depends("flow")
+      e.gateways is depends("flow")
+
       e.dataJson is length(2000)
+    }.cacheable()
+
+    bind[FlowGateway].declare { e =>
+      e.conditions is length(4000)
     }.cacheable()
 
     bind[FlowTask].cacheable()

@@ -17,20 +17,18 @@
 
 package org.beangle.ems.ws.oa
 
-import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.json.JsonAPI
 import org.beangle.data.json.JsonAPI.Context
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.oa.model.{Doc, Notice}
+import org.beangle.ems.core.oa.model.Doc
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, Stream, View}
 
 import java.io.File
-import java.time.LocalDate
 
 class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 

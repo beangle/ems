@@ -20,16 +20,17 @@ package org.beangle.ems.core.oa.model
 import org.beangle.commons.collection.Collections
 import org.beangle.data.json.JsonValue
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Named, Remark, Updated}
+import org.beangle.data.model.pojo.{Coded, Named, Remark, Updated}
 import org.beangle.ems.core.config.model.{Business, Domain}
 
 import scala.collection.mutable
 
 /** 工作流定义
  */
-class Flow extends LongId, Updated, Named, Remark {
+class Flow extends LongId, Coded, Updated, Named, Remark {
   var domain: Domain = _
   var business: Business = _
   var tasks: mutable.Buffer[FlowTask] = Collections.newBuffer[FlowTask]
+  var gateways: mutable.Buffer[FlowGateway] = Collections.newBuffer[FlowGateway]
   var dataJson: JsonValue = JsonValue.Empty
 }

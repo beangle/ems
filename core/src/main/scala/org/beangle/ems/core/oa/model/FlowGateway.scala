@@ -18,14 +18,10 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Named, Remark}
-import org.beangle.ems.core.user.model.Group
 
-/** 工作流中的任务
+/** 流程定义网关
  */
-class FlowTask extends LongId, Named, Remark {
+class FlowGateway extends LongId {
   var flow: Flow = _
-  var idx: Int = _
-  var group: Group = _
-  var nextNode: Option[String] = None
+  var conditions: String = _
 }

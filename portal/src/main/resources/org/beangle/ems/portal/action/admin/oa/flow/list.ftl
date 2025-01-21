@@ -9,6 +9,7 @@
     [@b.row]
       [@b.boxcol/]
       [@b.col title="业务类型" property="business.name" width="13%"/]
+      [@b.col title="流程代码" property="code" width="15%"/]
       [@b.col title="流程名称" property="name" width="15%"]
        [@b.a href="!info?id=${flow.id}" title="查看详情"]${flow.name}[/@]
       [/@]

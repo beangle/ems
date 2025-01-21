@@ -33,7 +33,7 @@ class DefaultModule extends BindModule {
     bind(classOf[config.TextBundleWS], classOf[config.RedisWS])
     bind(classOf[config.RuleWS])
 
-    bind(classOf[oa.NoticeWS], classOf[oa.DocWS])
+    bind(classOf[oa.NoticeWS], classOf[oa.DocWS], classOf[oa.FlowWS])
 
     bind(classOf[func.MenuWS])
     bind(classOf[func.ResourceWS], classOf[func.PermissionWS])

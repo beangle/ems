@@ -2,7 +2,7 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val commonsVer = "5.6.25"
+  val commonsVer = "5.6.26-SNAPSHOT"
   val jdbcVer = "1.0.8"
   val dataVer = "5.8.20-SNAPSHOT"
   val cdiVer = "0.7.1"
