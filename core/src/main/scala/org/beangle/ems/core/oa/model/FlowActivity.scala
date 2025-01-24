@@ -39,6 +39,4 @@ class FlowActivity extends LongId, Named, Remark {
   var groups: mutable.Buffer[Group] = Collections.newBuffer[Group]
   /** 受理人部门，具体部门代码 或 求值为代码的表达式 */
   var depart: Option[String] = None
-  /** 表单定义 */
-  var formJson: String = "{}"
 }

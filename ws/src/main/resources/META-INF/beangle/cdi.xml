@@ -13,5 +13,6 @@
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.oa.service.DefaultModule"/>
   </container>
 </cdi>

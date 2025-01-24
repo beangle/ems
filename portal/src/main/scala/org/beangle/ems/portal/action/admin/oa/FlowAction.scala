@@ -18,6 +18,7 @@
 package org.beangle.ems.portal.action.admin.oa
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.lang.Strings
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Flow, FlowActivity}
@@ -45,31 +46,38 @@ class FlowAction extends RestfulAction[Flow] {
   }
 
   override protected def saveAndRedirect(flow: Flow): View = {
-    //flow.dataJson = new JsonValue(get("flow.dataJson", ""))
     val tasks = flow.activities.map(x => (x.name, x)).toMap
     val taskNames = Collections.newSet[String]
     (0 to 10) foreach { i =>
       val p = Params.sub(i.toString)
       val paramId = getLong(i.toString + ".id").getOrElse(0L)
-      val task = if (paramId > 0) entityDao.get(classOf[FlowActivity], paramId) else new FlowActivity
-      populate(task, i.toString)
-      if (null != task.name) {
-        taskNames += task.name
-        val group = getInt(s"${i}groupId") map { groupId => entityDao.get(classOf[Group], groupId) }
-        tasks.get(task.name) match {
+      val act = if (paramId > 0) entityDao.get(classOf[FlowActivity], paramId) else new FlowActivity
+      populate(act, i.toString)
+      if (null != act.name) {
+        taskNames += act.name
+        val groups = getAll(s"${i}_group.id", classOf[Int]) map { groupId => entityDao.get(classOf[Group], groupId) }
+        tasks.get(act.name) match {
           case Some(x) =>
             x.idx = i
-            x.groups.addAll(group)
+            x.assignee = act.assignee
+            x.candidates = act.candidates
+            x.depart = act.depart
+            x.groups.clear()
+            x.groups.addAll(groups)
           case None =>
-            task.flow = flow
-            task.idx = i
-            flow.activities += task
-            task.groups.addAll(group)
+            act.flow = flow
+            act.idx = i
+            flow.activities += act
+            act.groups.addAll(groups)
         }
       }
     }
     flow.activities.subtractAll(flow.activities.filter(x => !taskNames.contains(x.name)))
     flow.domain = domainService.getDomain
+    if (Strings.isBlank(flow.guardJson)) flow.guardJson = "{}"
+    if (Strings.isBlank(flow.envJson)) flow.envJson = "{}"
+    if (Strings.isBlank(flow.flowJson)) flow.flowJson = "{}"
+
     entityDao.saveOrUpdate(flow)
     entityDao.refresh(flow)
     databus.publish(DataEvent.update(flow))

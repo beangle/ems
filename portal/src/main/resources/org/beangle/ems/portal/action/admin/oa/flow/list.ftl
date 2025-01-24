@@ -14,7 +14,7 @@
        [@b.a href="!info?id=${flow.id}" title="查看详情"]${flow.name}[/@]
       [/@]
       [@b.col title="流程步骤"]
-        [#list flow.tasks?sort_by("idx") as task]${task.name}[#sep]&nbsp;[/#list]
+        [#list flow.activities?sort_by("idx") as act]${act.name}[#sep]&nbsp;[/#list]
       [/@]
     [/@]
   [/@]
