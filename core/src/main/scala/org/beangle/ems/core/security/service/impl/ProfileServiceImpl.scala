@@ -18,7 +18,7 @@
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{JsonObject, JsonParser}
+import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.DomainService
@@ -48,7 +48,7 @@ class ProfileServiceImpl extends ProfileService {
 
     if (source.startsWith("json:")) {
       val json = source.substring(5)
-      JsonParser.parseArray(json).map(x => x.asInstanceOf[JsonObject].get(keyname).orNull)
+      Json.parseArray(json).map(x => x.asInstanceOf[JsonObject].get(keyname).orNull)
     } else if (source.startsWith("csv:")) {
       val csv = source.substring(4)
       val lines = Strings.split(Strings.replace(csv, "\r", ""), "\n")

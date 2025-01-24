@@ -47,17 +47,36 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Flow].declare { e =>
-      e.tasks is depends("flow")
-      e.gateways is depends("flow")
-
-      e.dataJson is length(2000)
+      e.activities is depends("flow")
+      e.envJson is length(2000)
+      e.flowJson is length(8000)
+      e.guardJson is length(300)
     }.cacheable()
 
-    bind[FlowGateway].declare { e =>
-      e.conditions is length(4000)
-    }.cacheable()
+    bind[FlowActivity].cacheable()
 
-    bind[FlowTask].cacheable()
+    bind[FlowActiveProcess].declare { e =>
+      e.tasks is depends("process")
+    }
+    bind[FlowActiveTask]
+
+    bind[FlowProcess].declare { e =>
+      e.tasks is depends("process")
+    }.generator(IdGenerator.Assigned)
+
+    bind[FlowTask].declare { e =>
+      e.comments is depends("task")
+      e.attachments is depends("task")
+    }.generator(IdGenerator.Assigned)
+
+    bind[FlowComment].declare { e =>
+      e.messages is length(4000)
+    }
+
+    bind[FlowAttachment].declare { e =>
+      e.name is length(300)
+      e.filePath is length(500)
+    }
 
     bind[Notification]
     bind[Todo]

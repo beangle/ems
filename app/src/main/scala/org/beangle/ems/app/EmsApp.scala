@@ -19,7 +19,7 @@ package org.beangle.ems.app
 
 import org.beangle.commons.conversion.string.DateConverter
 import org.beangle.commons.io.IOs
-import org.beangle.commons.json.JsonParser
+import org.beangle.commons.json.{Json, JsonParser}
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.http.HttpUtils
@@ -56,7 +56,7 @@ object EmsApp extends Logging {
       val tokenUrl = Ems.cas + "/oauth/token/login?app=" + name + "&secret=" + secret
       val res = HttpUtils.getText(tokenUrl)
       if (res.status == 200) {
-        val token = JsonParser.parseObject(res.getText)
+        val token = Json.parseObject(res.getText)
         _token = Token(token.getString("token"), DateConverter.convert(token.getString("expiredAt"), classOf[java.util.Date]).getTime)
       } else {
         throw new RuntimeException("cannot find token")

@@ -15,19 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.core.oa.model
 
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Named
+import org.beangle.data.model.LongId
+import org.beangle.ems.app.oa.Flows
 
-/** 业务系统
+/** 流程附件
  */
-class Domain extends IntId with Named with LocaleTitle {
-  var title: String = _
-  var enTitle: String = _
-  var hostname: String = _
-  var org: Org = _
-  var logoUrl: String = _
-  var sashubBase: Option[String] = None
-  var sashubProfile: Option[String] = None
+class FlowAttachment extends LongId {
+  var task: FlowTask = _
+  var name: String = _
+  var fileSize: Long = _
+  var filePath: String = _
+
+  def this(task: FlowTask, attachment: Flows.Attachment) = {
+    this()
+    this.task = task
+    this.name = attachment.name
+    this.fileSize = attachment.fileSize
+    this.filePath = attachment.filePath
+  }
 }

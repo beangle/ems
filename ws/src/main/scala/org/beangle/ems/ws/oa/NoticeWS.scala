@@ -18,6 +18,7 @@
 package org.beangle.ems.ws.oa
 
 import org.beangle.commons.collection.Properties
+import org.beangle.commons.json.JsonObject
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.json.JsonAPI
 import org.beangle.data.json.JsonAPI.Context
@@ -37,7 +38,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
 
   @mapping(value = "{app}/{category}")
   @response
-  def list(@param("app") app: String, @param("category") category: String): JsonAPI.Json = {
+  def list(@param("app") app: String, @param("category") category: String): JsonObject = {
     val query = buildQuery(category)
     app match {
       case "all" => query.where("notice.app.domain=:domain", domainService.getDomain)
@@ -74,7 +75,7 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
     if (notices.nonEmpty) convert(notices.head) else null
   }
 
-  private def convert(notices: Iterable[Notice]): JsonAPI.Json = {
+  private def convert(notices: Iterable[Notice]): JsonObject = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
     context.filters.include(classOf[Notice], "id", "title", "createdAt", "popup", "sticky", "docs")

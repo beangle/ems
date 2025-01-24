@@ -17,48 +17,84 @@
 
 package org.beangle.ems.ws.oa
 
-import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.commons.json.{Json, JsonObject}
+import org.beangle.commons.lang.Charsets
+import org.beangle.data.dao.EntityDao
 import org.beangle.data.json.JsonAPI
 import org.beangle.data.json.JsonAPI.Context
+import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.oa.model.{Flow, FlowTask}
-import org.beangle.ems.core.user.model.Group
+import org.beangle.ems.core.oa.model.*
+import org.beangle.ems.core.oa.service.FlowService
+import org.beangle.ems.core.user.model.User
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 
 class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   var domainService: DomainService = _
+  var flowService: FlowService = _
 
-  @mapping(value = "business/{businessCode}")
+  @mapping("{businessCode}/{profileId}")
   @response
-  def list(@param("businessCode") businessCode: String): AnyRef = {
-    val query = OqlBuilder.from(classOf[Flow], "flow")
-    query.where("flow.domain=:domain", domainService.getDomain)
-    query.where("flow.business.code=:businessCode", businessCode)
-    query.cacheable()
-    val flows = entityDao.search(query)
+  def profile(businessCode: String, profileId: String): AnyRef = {
+    val flows = flowService.getFlows(businessCode, profileId)
     convert(flows, false)
   }
 
-  @mapping(value = "{flowCode}")
+  @mapping("{flowCode}")
   @response
   def info(@param("flowCode") flowCode: String): AnyRef = {
-    val query = OqlBuilder.from(classOf[Flow], "flow")
-    query.where("flow.domain=:domain", domainService.getDomain)
-    query.where("flow.code=:flowCode", flowCode)
-    query.cacheable()
-    val flows = entityDao.search(query)
-    convert(flows, true)
+    convert(List(flowService.getFlow(flowCode)), true)
   }
 
-  private def convert(docs: Iterable[Flow], hasDetail: Boolean): JsonAPI.Json = {
+  /** 开始一个流程
+   */
+  @mapping("{flowCode}/start/{businessKey}", method = "post")
+  @response
+  def start(flowCode: String, businessKey: String): Flows.Process = {
+    val flow = flowService.getFlow(flowCode)
+    val data = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
+    flowService.start(flow, businessKey, data)
+  }
+
+  @mapping("processes/${processId}/tasks/${taskId}/complete", method = "post")
+  @response
+  def complete(processId: String, taskId: String): Flows.Process = {
+    val payload = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
+    val task = entityDao.get(classOf[FlowActiveTask], taskId.toLong)
+    flowService.complete(task, Flows.Payload.fromJson(payload))
+  }
+
+  @mapping("processes/${processId}/cancel", method = "post")
+  @response
+  def cancel(processId: String): String = {
+    val process = entityDao.get(classOf[FlowActiveProcess], processId.toLong)
+    flowService.cancel(process)
+    "OK"
+  }
+
+  @mapping("processes/${processId}")
+  @response
+  def process(processId: String): JsonObject = {
+    val process = entityDao.get(classOf[FlowProcess], processId.toLong)
+
+    given context: Context = JsonAPI.context(ActionContext.current.params)
+
+    context.filters.include(classOf[FlowProcess], "id", "businessKey", "startAt", "endAt", "status", "tasks")
+    context.filters.include(classOf[FlowTask], "id", "name", "idx", "assignee", "startAt", "endAt", "comments", "attachments", "dataJson", "status")
+    context.filters.include(classOf[FlowAttachment], "name", "fileSize", "filePath")
+    context.filters.include(classOf[FlowComment], "id", "messages", "updatedAt")
+    context.filters.include(classOf[User], "id", "code", "name")
+    JsonAPI.newJson(JsonAPI.create(process, ""))
+  }
+
+  private def convert(docs: Iterable[Flow], hasDetail: Boolean): JsonObject = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
     if (hasDetail) {
-      context.filters.include(classOf[Flow], "id", "name", "code", "tasks")
-      context.filters.include(classOf[FlowTask], "id", "name", "idx", "group")
-      context.filters.include(classOf[Group], "id", "name")
+      context.filters.include(classOf[Flow], "id", "name", "code", "activities", "envJson")
+      context.filters.include(classOf[FlowActivity], "id", "name", "idx")
     } else {
       context.filters.include(classOf[Flow], "id", "name", "code")
     }

@@ -17,15 +17,65 @@
 
 package org.beangle.ems.core.oa.model
 
+import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.Json
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Named, Remark}
-import org.beangle.ems.core.user.model.Group
+import org.beangle.data.model.pojo.Named
+import org.beangle.ems.app.oa.Flows.Payload
+import org.beangle.ems.core.user.model.User
 
-/** 工作流中的任务
+import java.time.Instant
+import scala.collection.mutable
+
+/** 流程任务
  */
-class FlowTask extends LongId, Named, Remark {
-  var flow: Flow = _
+class FlowTask extends LongId, Named {
+  /** 流程 */
+  var process: FlowProcess = _
+  /** 顺序号 */
   var idx: Int = _
-  var group: Group = _
-  var nextNode: Option[String] = None
+  /** 受理人 */
+  var assignee: Option[User] = None
+  /** 开始时间 */
+  var startAt: Instant = _
+  /** 结束时间 */
+  var endAt: Option[Instant] = None
+  /** 审批意见 */
+  var comments: mutable.Buffer[FlowComment] = Collections.newBuffer[FlowComment]
+  /** 审批附件 */
+  var attachments: mutable.Buffer[FlowAttachment] = Collections.newBuffer[FlowAttachment]
+  /** 任务填写表单 */
+  var dataJson: String = "{}"
+  /** 当前环节 */
+  var status: FlowStatus = FlowStatus.Initial
+
+  def this(process: FlowProcess, at: FlowActiveTask) = {
+    this()
+    this.id = at.id
+    this.process = process
+    this.name = at.name
+    this.idx = at.idx
+    this.startAt = at.startAt
+    this.status = FlowStatus.Initial
+  }
+
+  def complete(assignee: User, payload: Payload): Unit = {
+    this.assignee = Some(assignee)
+    if (payload.complete) {
+      this.endAt = Some(Instant.now())
+      this.status = FlowStatus.Completed
+    }
+    payload.comments foreach { c =>
+      val comment = new FlowComment(this, assignee, c)
+      this.comments += comment
+    }
+    payload.attachments foreach { a =>
+      val attachment = new FlowAttachment(this, a)
+      this.attachments += attachment
+    }
+    val j = Json.parseObject(this.dataJson)
+    j.addAll(payload.data)
+    this.dataJson = j.toJson
+    this.process.updateEnv(payload.env)
+  }
 }

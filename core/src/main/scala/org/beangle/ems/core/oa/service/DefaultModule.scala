@@ -18,12 +18,13 @@
 package org.beangle.ems.core.oa.service
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.core.oa.service.impl.DocServiceImpl
-import org.beangle.ems.core.user.service.impl._
+import org.beangle.ems.core.oa.service.impl.{DocServiceImpl, FlowServiceImpl}
+import org.beangle.ems.core.user.service.impl.*
 
 class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
     bind(classOf[DocServiceImpl])
+    bind(classOf[FlowServiceImpl])
   }
 }

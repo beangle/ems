@@ -15,19 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.core.oa.model
 
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Named
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
 
-/** 业务系统
+import java.time.Instant
+import scala.collection.mutable
+
+/** 业务流程实例
  */
-class Domain extends IntId with Named with LocaleTitle {
-  var title: String = _
-  var enTitle: String = _
-  var hostname: String = _
-  var org: Org = _
-  var logoUrl: String = _
-  var sashubBase: Option[String] = None
-  var sashubProfile: Option[String] = None
+class FlowActiveProcess extends LongId {
+  /** 流程定于 */
+  var flow: Flow = _
+  /** 业务主键 */
+  var businessKey: String = _
+  /** 所有执行环节 */
+  var tasks: mutable.Buffer[FlowActiveTask] = Collections.newBuffer[FlowActiveTask]
+  /** 开始时间 */
+  var startAt: Instant = _
+
+  def this(flow: Flow, businessKey: String) = {
+    this()
+    this.flow = flow
+    this.businessKey = businessKey
+    this.startAt = Instant.now()
+  }
 }

@@ -18,10 +18,9 @@
 package org.beangle.ems.portal.action.admin.oa
 
 import org.beangle.commons.collection.Collections
-import org.beangle.data.json.JsonValue
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.oa.model.{Flow, FlowTask}
+import org.beangle.ems.core.oa.model.{Flow, FlowActivity}
 import org.beangle.ems.core.user.model.Group
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
@@ -46,27 +45,30 @@ class FlowAction extends RestfulAction[Flow] {
   }
 
   override protected def saveAndRedirect(flow: Flow): View = {
-    flow.dataJson = new JsonValue(get("flow.dataJson", ""))
-    val tasks = flow.tasks.map(x => (x.name, x)).toMap
+    //flow.dataJson = new JsonValue(get("flow.dataJson", ""))
+    val tasks = flow.activities.map(x => (x.name, x)).toMap
     val taskNames = Collections.newSet[String]
     (0 to 10) foreach { i =>
       val p = Params.sub(i.toString)
       val paramId = getLong(i.toString + ".id").getOrElse(0L)
-      val task = if (paramId > 0) entityDao.get(classOf[FlowTask], paramId) else new FlowTask
+      val task = if (paramId > 0) entityDao.get(classOf[FlowActivity], paramId) else new FlowActivity
       populate(task, i.toString)
       if (null != task.name) {
         taskNames += task.name
+        val group = getInt(s"${i}groupId") map { groupId => entityDao.get(classOf[Group], groupId) }
         tasks.get(task.name) match {
           case Some(x) =>
             x.idx = i
+            x.groups.addAll(group)
           case None =>
             task.flow = flow
             task.idx = i
-            flow.tasks += task
+            flow.activities += task
+            task.groups.addAll(group)
         }
       }
     }
-    flow.tasks.subtractAll(flow.tasks.filter(x => !taskNames.contains(x.name)))
+    flow.activities.subtractAll(flow.activities.filter(x => !taskNames.contains(x.name)))
     flow.domain = domainService.getDomain
     entityDao.saveOrUpdate(flow)
     entityDao.refresh(flow)

@@ -15,19 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.core.oa.service
 
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Named
+import org.beangle.commons.json.JsonObject
+import org.beangle.ems.app.oa.Flows
+import org.beangle.ems.app.oa.Flows.Payload
+import org.beangle.ems.core.oa.model.{Flow, FlowActiveProcess, FlowActiveTask, FlowProcess}
 
-/** 业务系统
- */
-class Domain extends IntId with Named with LocaleTitle {
-  var title: String = _
-  var enTitle: String = _
-  var hostname: String = _
-  var org: Org = _
-  var logoUrl: String = _
-  var sashubBase: Option[String] = None
-  var sashubProfile: Option[String] = None
+trait FlowService {
+
+  def getFlows(businessCode: String, profileId: String): Seq[Flow]
+
+  def getFlow(code: String): Flow
+
+  def start(flow: Flow, businessKey: String, data: JsonObject): Flows.Process
+
+  def complete(task: FlowActiveTask, payload: Payload): Flows.Process
+
+  def cancel(process: FlowActiveProcess): Unit
+
+  def remove(process: FlowProcess): Unit
 }

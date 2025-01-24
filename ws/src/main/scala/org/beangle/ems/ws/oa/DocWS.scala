@@ -17,6 +17,7 @@
 
 package org.beangle.ems.ws.oa
 
+import org.beangle.commons.json.JsonObject
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.json.JsonAPI
 import org.beangle.data.json.JsonAPI.Context
@@ -76,7 +77,7 @@ class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     }
   }
 
-  private def convert(docs: Iterable[Doc]): JsonAPI.Json = {
+  private def convert(docs: Iterable[Doc]): JsonObject = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
     context.filters.include(classOf[Doc], "id", "name", "updatedAt", "url")

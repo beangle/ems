@@ -8,7 +8,8 @@
   [@b.select name="flow.business.id" label="业务类型" value=flow.business! items=businesses required="true"/]
   [@b.textfield name="flow.code" label="代码" value=flow.code! maxlength="100" required="true"/]
   [@b.textfield name="flow.name" label="名称" value=flow.name! maxlength="100" required="true"/]
-  [@b.textarea name="flow.dataJson" label="初始数据" value=flow.dataJson! maxlength="2000" cols="80" rows="4" required="false" placeholder="json object 格式"/]
+  [@b.textarea name="flow.envJson" label="环境数据" value=flow.dataJson! maxlength="2000" cols="80" rows="4" required="false" placeholder="json object 格式"/]
+  [@b.textarea name="flow.Json" label="环境数据" value=flow.dataJson! maxlength="2000" cols="80" rows="4" required="false" placeholder="json object 格式"/]
   [@b.field label="流程步骤"]
     <table class="rulesTable" width="600px">
       <thead>

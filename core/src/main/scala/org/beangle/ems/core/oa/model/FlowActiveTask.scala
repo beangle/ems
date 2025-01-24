@@ -17,11 +17,34 @@
 
 package org.beangle.ems.core.oa.model
 
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.Named
+import org.beangle.ems.core.user.model.User
 
-/** 流程定义网关
+import java.time.Instant
+
+/** 流程任务
  */
-class FlowGateway extends LongId {
-  var flow: Flow = _
-  var conditions: String = _
+class FlowActiveTask extends LongId, Named {
+  /** 流程 */
+  var process: FlowActiveProcess = _
+  /** 顺序号 */
+  var idx: Int = _
+  /** 受理人 */
+  var assignee: Option[User] = None
+  /** 可选人 */
+  var candidates: collection.mutable.Set[User] = Collections.newSet[User]
+  /** 开始时间 */
+  var startAt: Instant = _
+  /** 预计完成时间 */
+  var dueTime: Option[Instant] = None
+
+  def this(process: FlowActiveProcess, activity: FlowActivity) = {
+    this()
+    this.process = process
+    this.idx = activity.idx
+    this.startAt = Instant.now
+    this.name = activity.name
+  }
 }

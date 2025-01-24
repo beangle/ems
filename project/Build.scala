@@ -7,7 +7,7 @@ object EmsDepends {
   val dataVer = "5.8.20-SNAPSHOT"
   val cdiVer = "0.7.1"
   val webVer = "0.6.2"
-  val serializerVer = "0.1.14"
+  val serializerVer = "0.1.15-SNAPSHOT"
   val cacheVer = "0.1.12"
   val templateVer = "0.1.21"
   val webmvcVer = "0.10.1"
@@ -34,8 +34,8 @@ object EmsDepends {
 
   val appDepends = Seq(b_commons, logback_classic, scalatest, b_web) ++
     Seq(b_cdi, b_jdbc, spring_beans, spring_context, spring_tx, spring_jdbc, HikariCP) ++
-    Seq(b_model, hibernate_core, postgresql, caffeine_jcache, hibernate_jcache, b_event, b_cache) ++
+    Seq(b_model, hibernate_core, postgresql, b_serializer, caffeine_jcache, hibernate_jcache, b_event, b_cache) ++
     Seq(b_template, jedis, b_security)
 
-  val webAppDepends = appDepends ++ Seq(b_webmvc, b_serializer, freemarker)
+  val webAppDepends = appDepends ++ Seq(b_webmvc, freemarker)
 }

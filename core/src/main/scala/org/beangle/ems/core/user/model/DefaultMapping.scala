@@ -90,6 +90,13 @@ object DefaultMapping extends MappingModule {
       e.filePath is length(300)
     }.generator(IdGenerator.Assigned)
 
+    bind[Depart].declare { e =>
+      e.name is length(300)
+      e.shortName is length(200)
+      e.code is length(20)
+      e.indexno is length(20)
+      e.children is depends("parent")
+    }
     bind[Root]
 
     all.except(classOf[RoleMember], classOf[GroupMember], classOf[User], classOf[Profile]).cacheAll()

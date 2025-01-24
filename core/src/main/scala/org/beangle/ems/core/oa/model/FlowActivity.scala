@@ -18,37 +18,27 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{Json, JsonObject, JsonParser}
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Named, Remark, Updated}
-import org.beangle.ems.core.config.model.{Business, Domain}
+import org.beangle.data.model.pojo.{Named, Remark}
+import org.beangle.ems.core.user.model.Group
 
 import scala.collection.mutable
 
-/** 工作流定义
+/** 工作流中的活动
  */
-class Flow extends LongId, Coded, Updated, Named, Remark {
-  /** 业务系统 */
-  var domain: Domain = _
-  /** 环境配置 */
-  var profileId: String = _
-  /** 业务类型 */
-  var business: Business = _
-  /** 活动列表 */
-  var activities: mutable.Buffer[FlowActivity] = Collections.newBuffer[FlowActivity]
-  /** 节点流转关系 */
-  var flowJson: String = "{}"
-  /** 初始数据 */
-  var envJson: String = "{}"
-  /** 先决条件 */
-  var guardJson: String = "{}"
-
-  def firstActivity: FlowActivity = {
-    activities.minBy(_.idx)
-  }
-
-  def checkMatch(data: JsonObject): Boolean = {
-    data.isMatch(Json.parseObject(guardJson))
-  }
-
+class FlowActivity extends LongId, Named, Remark {
+  /** 流程定义 */
+  var flow: Flow = _
+  /** 顺序号 */
+  var idx: Int = _
+  /** 受理人 工号 或  求值为代码的表达式 */
+  var assignee: Option[String] = None
+  /** 可选人 工号 或 求值为代码的表达式 */
+  var candidates: Option[String] = None
+  /** 受理用户组 */
+  var groups: mutable.Buffer[Group] = Collections.newBuffer[Group]
+  /** 受理人部门，具体部门代码 或 求值为代码的表达式 */
+  var depart: Option[String] = None
+  /** 表单定义 */
+  var formJson: String = "{}"
 }

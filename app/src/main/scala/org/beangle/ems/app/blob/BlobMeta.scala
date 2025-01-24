@@ -17,12 +17,12 @@
 
 package org.beangle.ems.app.blob
 
-import org.beangle.commons.json.JsonParser
+import org.beangle.commons.json.Json
 import org.beangle.data.model.pojo.Updated
 
 object BlobMeta {
   def fromJson(json: String): BlobMeta = {
-    val jb = JsonParser.parseObject(json)
+    val jb = Json.parseObject(json)
     val meta = new BlobMeta
     meta.name = jb.getString("name")
     meta.fileSize = jb.getInt("size")

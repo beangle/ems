@@ -15,19 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Named
+import org.beangle.data.model.pojo.{Coded, Hierarchical, Named, Updated}
+import org.beangle.ems.core.config.model.Org
 
-/** 业务系统
+/** 部门
  */
-class Domain extends IntId with Named with LocaleTitle {
-  var title: String = _
-  var enTitle: String = _
-  var hostname: String = _
+class Depart extends IntId, Coded, Named, Updated, Hierarchical[Depart] {
   var org: Org = _
-  var logoUrl: String = _
-  var sashubBase: Option[String] = None
-  var sashubProfile: Option[String] = None
+  var shortName: Option[String] = None
 }

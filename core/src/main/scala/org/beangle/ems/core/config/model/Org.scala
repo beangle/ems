@@ -18,13 +18,18 @@
 package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{ Named, Remark }
+import org.beangle.data.model.pojo.{Named, Remark}
 
+/** 组织信息
+ */
 class Org extends IntId with Named with Remark {
-
+  /** 组织编号 */
   var code: String = _
+  /** 简称 */
   var shortName: String = _
+  /** logo地址 */
   var logoUrl: String = _
+  /** 网站地址 */
   var wwwUrl: String = _
 
 }

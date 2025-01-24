@@ -18,7 +18,7 @@
 package org.beangle.ems.app.web
 
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.beangle.commons.json.{JsonObject, JsonParser}
+import org.beangle.commons.json.{Json, JsonObject, JsonParser}
 import org.beangle.security.authc.Profile
 import org.beangle.web.servlet.util.CookieUtils
 import org.beangle.webmvc.context.Params
@@ -84,7 +84,7 @@ object EmsCookie {
 
   private def parse(cookieValue: String): EmsCookie = {
     val profile = new EmsCookie
-    JsonParser.parseObject(cookieValue) foreach { case (k, v) =>
+    Json.parseObject(cookieValue) foreach { case (k, v) =>
       profile.data.put(k, v.toString)
     }
     profile

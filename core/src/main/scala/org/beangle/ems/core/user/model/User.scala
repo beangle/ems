@@ -26,12 +26,15 @@ import java.security.Principal
 import java.time.{Instant, LocalDate}
 
 /** 用户信息
-  * @author chaostone
-  */
+ *
+ * @author chaostone
+ */
 
 class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark, Enabled {
   /** 组织 */
   var org: Org = _
+  /** 所属部门 */
+  var depart: Option[Depart] = None
   /** 主用户组 */
   var group: Option[Group] = None
   /** 角色 */

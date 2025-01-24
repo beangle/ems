@@ -18,7 +18,7 @@
 package org.beangle.ems.app.security
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{JsonArray, JsonObject, JsonParser}
+import org.beangle.commons.json.{Json, JsonArray, JsonObject}
 import org.beangle.commons.net.http.HttpUtils.getText
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
@@ -36,7 +36,7 @@ object RemoteService {
     val res = getText(url)
     if (res.status == 200) {
       val resources = Collections.newSet[String]
-      resources ++= JsonParser.parseArray(res.getText).map(_.toString)
+      resources ++= Json.parseArray(res.getText).map(_.toString)
       Some(resources.toSet)
     } else {
       None
@@ -50,7 +50,7 @@ object RemoteService {
 
   protected[security] def toAuthorities(content: String): collection.Seq[Authority] = {
     val resources = Collections.newBuffer[Authority]
-    val resourceJsons = JsonParser.parseArray(content)
+    val resourceJsons = Json.parseArray(content)
     resourceJsons.map { rj =>
       val r = rj.asInstanceOf[JsonObject]
       val roles = r.get("roles") match {
@@ -81,18 +81,18 @@ object RemoteService {
 
   def getOrg: Ems.Org = {
     val json = getText(Ems.api + "/platform/config/orgs.json").getOrElse(null)
-    convert2Org(JsonParser.parseObject(json).values)
+    convert2Org(Json.parseObject(json))
   }
 
   def getDomain(locale: Locale): Ems.Domain = {
     val json = getText(Ems.api + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
-    val data = JsonParser.parseObject(json)
+    val data = Json.parseObject(json)
     val domain = new Ems.Domain
     domain.id = data.getInt("id")
     domain.name = data.getString("name")
     domain.title = data.getString("title")
     domain.logoUrl = data.getString("logoUrl")
-    domain.org = convert2Org(data.getObject("org").values)
+    domain.org = convert2Org(data.getObject("org"))
     domain
   }
 
@@ -110,7 +110,7 @@ object RemoteService {
 
   def getTheme: Ems.Theme = {
     val json = getText(Ems.api + "/platform/config/themes.json").getOrElse(null)
-    val data = JsonParser.parseObject(json)
+    val data = Json.parseObject(json)
     val primaryColor = data.getString("primaryColor")
     val navbarBgColor = data.getString("navbarBgColor")
     val searchBgColor = data.getString("searchBgColor")
