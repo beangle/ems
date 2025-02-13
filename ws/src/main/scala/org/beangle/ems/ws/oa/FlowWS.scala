@@ -39,7 +39,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   @response
   def profile(businessCode: String, profileId: String): AnyRef = {
     val flows = flowService.getFlows(businessCode, profileId)
-    convert(flows, false)
+    convert(flows, true)
   }
 
   @mapping("{flowCode}")

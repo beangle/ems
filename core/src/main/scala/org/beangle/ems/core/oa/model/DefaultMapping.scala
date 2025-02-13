@@ -53,7 +53,11 @@ object DefaultMapping extends MappingModule {
       e.guardJson is length(300)
     }.cacheable()
 
-    bind[FlowActivity].cacheable()
+    bind[FlowActivity].declare { e =>
+      e.assignee is length(50)
+      e.candidates is length(250)
+      e.depart is length(50)
+    }.cacheable()
 
     bind[FlowActiveProcess].declare { e =>
       e.tasks is depends("process")

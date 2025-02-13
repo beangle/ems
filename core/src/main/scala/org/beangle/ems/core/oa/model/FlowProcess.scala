@@ -49,6 +49,7 @@ class FlowProcess extends LongId {
     this.businessKey = activeProcess.businessKey
     this.startAt = activeProcess.startAt
     this.envJson = env.toJson
+    this.status = FlowStatus.Initial
   }
 
   def updateEnv(data: JsonObject): Unit = {
@@ -58,7 +59,7 @@ class FlowProcess extends LongId {
   }
 }
 
-enum FlowStatus(id: Int, name: String) {
+enum FlowStatus(val id: Int, val name: String) {
   case Initial extends FlowStatus(1, "起始")
   case Running extends FlowStatus(2, "进行中")
   case Pending extends FlowStatus(3, "待处理")

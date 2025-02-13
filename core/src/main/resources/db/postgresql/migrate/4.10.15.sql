@@ -1,7 +1,7 @@
 create table ems.oa_flow_active_processes (id bigint not null, start_at timestamptz not null, flow_id bigint not null, business_key varchar(255) not null);
 create table ems.oa_flow_active_tasks (name varchar(255) not null, process_id bigint not null, id bigint not null, start_at timestamptz not null, idx integer default 0 not null, assignee_id bigint, due_time timestamptz);
 create table ems.oa_flow_active_tasks_candidates (flow_active_task_id bigint not null, user_id bigint not null);
-create table ems.oa_flow_activities (form_json varchar(255) not null, name varchar(255) not null, assignee varchar(255), candidates varchar(255), id bigint not null, remark varchar(255), flow_id bigint not null, idx integer default 0 not null, depart varchar(255));
+create table ems.oa_flow_activities (name varchar(255) not null, assignee varchar(50), candidates varchar(250), id bigint not null, remark varchar(255), flow_id bigint not null, idx integer default 0 not null, depart varchar(50));
 create table ems.oa_flow_activities_groups (flow_activity_id bigint not null, group_id integer not null);
 create table ems.oa_flow_attachments (name varchar(300) not null, task_id bigint not null, id bigint not null, file_size bigint default 0 not null, file_path varchar(500) not null);
 create table ems.oa_flow_comments (messages varchar(4000) not null, updated_at timestamptz not null, task_id bigint not null, id bigint not null, user_id bigint not null);

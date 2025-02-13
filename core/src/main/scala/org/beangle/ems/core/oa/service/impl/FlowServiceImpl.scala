@@ -62,8 +62,6 @@ class FlowServiceImpl extends FlowService {
    */
   override def start(flow: Flow, businessKey: String, env: JsonObject): Flows.Process = {
     if (flow.checkMatch(env)) {
-      Flows.Process(null, List.empty, "不满足流程启动条件")
-    } else {
       val ap = new FlowActiveProcess(flow, businessKey)
       entityDao.saveOrUpdate(ap)
       val p = new FlowProcess(ap, env)
@@ -72,7 +70,9 @@ class FlowServiceImpl extends FlowService {
 
       val pt = new Flows.Task(ap.id.toString, at.name, at.startAt,
         at.assignee.map(u => Flows.User(u.code, u.name)), at.candidates.map(u => Flows.User(u.code, u.name)))
-      Flows.Process(ap.id.toString, List(pt), null)
+      Flows.Process(ap.id.toString, flow.code, List(pt), null)
+    } else {
+      Flows.Process(null, "", List.empty, "不满足流程启动条件")
     }
   }
 
@@ -95,12 +95,12 @@ class FlowServiceImpl extends FlowService {
     }
     val ap = activeTask.process
     if (tasks.isEmpty) {
-      Flows.Process(ap.id.toString, List.empty, null)
+      Flows.Process(ap.id.toString, ap.flow.code, List.empty, null)
     } else {
       val at = tasks.head
       val pt = new Flows.Task(ap.id.toString, at.name, at.startAt,
         at.assignee.map(u => Flows.User(u.code, u.name)), at.candidates.map(u => Flows.User(u.code, u.name)))
-      Flows.Process(ap.id.toString, List(pt), null)
+      Flows.Process(ap.id.toString, ap.flow.code, List(pt), null)
     }
   }
 

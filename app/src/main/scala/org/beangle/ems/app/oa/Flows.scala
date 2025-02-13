@@ -49,7 +49,7 @@ object Flows {
     }
   }
 
-  case class Process(id: String, tasks: Iterable[Task], remark: String)
+  case class Process(id: String, flowCode: String, tasks: Iterable[Task], remark: String)
 
   case class Comment(messages: String, updatedAt: Instant)
 
@@ -93,12 +93,12 @@ object Flows {
 
   def cancel(processId: String): Unit = {
     val url = Ems.api + s"/platform/oa/flows/processes/${processId}/cancel.json"
-    HttpUtils.invoke(Networks.url(url), null, "application/json")
+    HttpUtils.invoke(Networks.url(url), "", "application/json")
   }
 
   def start(flowCode: String, businessKey: Any, ctx: JsonObject): Process = {
     val url = Ems.api + s"/platform/oa/flows/${flowCode}/start/${businessKey}.json"
-    val res = HttpUtils.invoke(Networks.url(url), ctx, "application/json")
+    val res = HttpUtils.invoke(Networks.url(url), ctx.toJson, "application/json")
     convertProcess(res)
   }
 
@@ -133,11 +133,11 @@ object Flows {
           val data = Json.parseObject(jo.getString("data", "{}"))
           //FIXME attachments,comments,data
           Task(id, name, startAt, assignee, candidates, comments, attachments, data)
-      }.toSeq
+      }.toSeq.sortBy(_.startAt)
 
-      Process(jo.getString("processId"), tasks, null)
+      Process(jo.getString("processId"), jo.getString("flowCode"), tasks, null)
     } else {
-      Process("", List(), res.getText)
+      Process("", "", List(), res.getText)
     }
   }
 
