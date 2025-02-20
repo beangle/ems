@@ -35,13 +35,17 @@ class FlowAction extends RestfulAction[Flow] {
 
   override def indexSetting(): Unit = {
     super.indexSetting()
-    put("businesses", entityDao.getAll(classOf[Business]))
+    put("businesses", getBusinesses())
+  }
+
+  private def getBusinesses(): Seq[Business] = {
+    entityDao.findBy(classOf[Business], "domain", domainService.getDomain)
   }
 
   override protected def editSetting(entity: Flow): Unit = {
     val groups = entityDao.getAll(classOf[Group])
     put("groups", groups)
-    put("businesses", entityDao.getAll(classOf[Business]))
+    put("businesses", getBusinesses())
     super.editSetting(entity)
   }
 
@@ -59,8 +63,7 @@ class FlowAction extends RestfulAction[Flow] {
         tasks.get(act.name) match {
           case Some(x) =>
             x.idx = i
-            x.assignee = act.assignee
-            x.candidates = act.candidates
+            x.assignees = act.assignees
             x.depart = act.depart
             x.groups.clear()
             x.groups.addAll(groups)

@@ -26,7 +26,7 @@ class SecurityModule extends BindModule {
     bind(classOf[user.UserAction], classOf[user.AvatarAction])
     bind(classOf[user.PasswordConfigAction], classOf[user.RootAction])
     bind(classOf[user.DimensionAction], classOf[user.RoleAction], classOf[user.ProfileAction])
-    bind(classOf[user.GroupAction])
+    bind(classOf[user.GroupAction], classOf[user.DepartAction])
 
     bind(classOf[security.FuncResourceAction], classOf[security.MenuAction])
     bind(classOf[security.DataPermissionAction], classOf[security.DashboardAction])

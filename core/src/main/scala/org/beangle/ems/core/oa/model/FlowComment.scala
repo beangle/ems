@@ -21,6 +21,8 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.core.user.model.User
 
+import java.time.Instant
+
 /** 流程审批意见
  */
 class FlowComment extends LongId, Updated {
@@ -33,5 +35,6 @@ class FlowComment extends LongId, Updated {
     this.task = task
     this.user = user
     this.messages = messages
+    this.updatedAt = Instant.now
   }
 }

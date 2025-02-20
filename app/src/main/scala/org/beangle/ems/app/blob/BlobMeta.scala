@@ -28,7 +28,7 @@ object BlobMeta {
     meta.fileSize = jb.getInt("size")
     meta.sha = jb.getString("sha")
     meta.mediaType = jb.getString("type")
-    meta.filePath = jb.getString("path")
+    meta.filePath = jb.getString("filePath")
     meta.updatedAt = jb.getInstant("updatedAt")
     meta
   }

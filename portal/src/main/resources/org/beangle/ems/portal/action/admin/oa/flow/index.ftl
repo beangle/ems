@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+[#include "../flow-nav.ftl"/]
 <div class="search-container">
     <div class="search-panel">
     [@b.form name="flowSearchForm" action="!search" target="flowlist" title="ui.searchForm" theme="search"]

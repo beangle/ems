@@ -16,8 +16,7 @@
       <thead>
         <tr>
           <th style="width:15%">名称</th>
-          <th style="width:10%">受理人</th>
-          <th style="width:20%">可选用户</th>
+          <th style="width:30%">受理人(值/或表达式，多值使用半角逗号相隔)</th>
           <th style="width:15%">部门</th>
           <th style="width:20%">用户组</th>
         </tr>
@@ -30,8 +29,7 @@
           <td>
             <input name="${prefix}.name" type="text" value="" maxlength="80" style="width:100%"/>
           </td>
-          <td><input name="${prefix}.assignee" value="" maxlength="80" style="width:100%"></td>
-          <td><input name="${prefix}.candidates" value="" maxlength="80" style="width:100%"></td>
+          <td><input name="${prefix}.assignees" value="" maxlength="300" style="width:100%"></td>
           <td><input name="${prefix}.depart" value="" maxlength="80" style="width:100%"></td>
           <td>
           <select name="${prefix}_group.id" style="width:100%" multiple="true">
@@ -62,8 +60,7 @@
           <input type="text" class="activityEditInput" name="${prefix}.name" value="${activity.name}" title='名称'
                  maxlength="80" style="width:100%"/>
         </td>
-        <td><input name="${prefix}.assignee" value="${activity.assignee!}" maxlength="80" style="width:100%"></td>
-        <td><input name="${prefix}.candidates" value="${activity.candidates!}" maxlength="80" style="width:100%"></td>
+        <td><input name="${prefix}.assignees" value="${activity.assignees!}" maxlength="300" style="width:100%"></td>
         <td><input name="${prefix}.depart" value="${activity.depart!}" maxlength="80" style="width:100%"></td>
         <td>
           <select name="${prefix}_group.id" style="width:100%" multiple="true">

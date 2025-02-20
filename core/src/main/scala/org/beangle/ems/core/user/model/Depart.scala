@@ -18,12 +18,12 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{Coded, Hierarchical, Named, Updated}
+import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
 
 /** 部门
  */
-class Depart extends IntId, Coded, Named, Updated, Hierarchical[Depart] {
+class Depart extends IntId, Coded, Named, Updated, TemporalOn, Hierarchical[Depart] {
   var org: Org = _
   var shortName: Option[String] = None
 }

@@ -54,8 +54,7 @@ object DefaultMapping extends MappingModule {
     }.cacheable()
 
     bind[FlowActivity].declare { e =>
-      e.assignee is length(50)
-      e.candidates is length(250)
+      e.assignees is length(300)
       e.depart is length(50)
     }.cacheable()
 
@@ -71,6 +70,7 @@ object DefaultMapping extends MappingModule {
     bind[FlowTask].declare { e =>
       e.comments is depends("task")
       e.attachments is depends("task")
+      e.assignees is length(500)
     }.generator(IdGenerator.Assigned)
 
     bind[FlowComment].declare { e =>

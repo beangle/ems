@@ -18,8 +18,9 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{Json, JsonObject, JsonParser}
+import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.data.model.LongId
+import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 import scala.collection.mutable
@@ -39,8 +40,10 @@ class FlowProcess extends LongId {
   var endAt: Option[Instant] = None
   /** 全局环境变量 */
   var envJson: String = "{}"
-  /** 当前环节 */
+  /** 当前状态 */
   var status: FlowStatus = FlowStatus.Initial
+  /** 受理人 */
+  var initiator: Option[User] = None
 
   def this(activeProcess: FlowActiveProcess, env: JsonObject) = {
     this()
@@ -49,7 +52,7 @@ class FlowProcess extends LongId {
     this.businessKey = activeProcess.businessKey
     this.startAt = activeProcess.startAt
     this.envJson = env.toJson
-    this.status = FlowStatus.Initial
+    this.status = FlowStatus.Pending
   }
 
   def updateEnv(data: JsonObject): Unit = {
@@ -57,12 +60,21 @@ class FlowProcess extends LongId {
     j.addAll(data)
     envJson = j.toJson
   }
+
+  def newTask(at: FlowActiveTask): FlowTask = {
+    val t = new FlowTask(this, at)
+    this.tasks.addOne(t)
+    t
+  }
 }
 
 enum FlowStatus(val id: Int, val name: String) {
   case Initial extends FlowStatus(1, "起始")
   case Running extends FlowStatus(2, "进行中")
   case Pending extends FlowStatus(3, "待处理")
+  case Rejected extends FlowStatus(12, "驳回处理")
   case Completed extends FlowStatus(10, "已完结")
   case Canceled extends FlowStatus(11, "已取消")
+
+  override def toString: String = name
 }

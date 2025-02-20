@@ -19,6 +19,7 @@ package org.beangle.ems.core.oa.model
 
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
+import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 import scala.collection.mutable
@@ -34,6 +35,8 @@ class FlowActiveProcess extends LongId {
   var tasks: mutable.Buffer[FlowActiveTask] = Collections.newBuffer[FlowActiveTask]
   /** 开始时间 */
   var startAt: Instant = _
+  /** 受理人 */
+  var initiator: Option[User] = None
 
   def this(flow: Flow, businessKey: String) = {
     this()

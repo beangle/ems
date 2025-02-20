@@ -17,7 +17,6 @@
 
 package org.beangle.ems.core.oa.service.impl
 
-import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
@@ -29,6 +28,19 @@ import org.beangle.ems.core.oa.service.FlowService
 import org.beangle.ems.core.user.model.User
 
 import java.time.{Instant, LocalDate}
+
+object FlowServiceImpl {
+
+  def resolveVar(data: JsonObject, exp: String): String = {
+    val varname = Strings.substringBetween(exp, "{", "}")
+    if (Strings.isEmpty(varname)) {
+      exp
+    } else {
+      data.query(varname).getOrElse("").toString
+    }
+  }
+}
+import org.beangle.ems.core.oa.service.impl.FlowServiceImpl.*
 
 /** 流程服务的实现
  */
@@ -60,19 +72,16 @@ class FlowServiceImpl extends FlowService {
    * @param data
    * @return
    */
-  override def start(flow: Flow, businessKey: String, env: JsonObject): Flows.Process = {
+  override def start(flow: Flow, businessKey: String, env: JsonObject): FlowProcess = {
     if (flow.checkMatch(env)) {
       val ap = new FlowActiveProcess(flow, businessKey)
       entityDao.saveOrUpdate(ap)
       val p = new FlowProcess(ap, env)
       entityDao.saveOrUpdate(p)
       val at = startTask(ap, p, flow.firstActivity)
-
-      val pt = new Flows.Task(ap.id.toString, at.name, at.startAt,
-        at.assignee.map(u => Flows.User(u.code, u.name)), at.candidates.map(u => Flows.User(u.code, u.name)))
-      Flows.Process(ap.id.toString, flow.code, List(pt), null)
+      p
     } else {
-      Flows.Process(null, "", List.empty, "不满足流程启动条件")
+      null
     }
   }
 
@@ -81,27 +90,35 @@ class FlowServiceImpl extends FlowService {
    * @param activeTask
    * @param payload
    */
-  override def complete(activeTask: FlowActiveTask, payload: Payload): Flows.Process = {
+  override def complete(activeTask: FlowActiveTask, payload: Payload): FlowProcess = {
     val task = entityDao.get(classOf[FlowTask], activeTask.id)
     val assignee = entityDao.findBy(classOf[User], "code" -> payload.assignee.code, "org" -> domainService.getOrg).head
     task.complete(assignee, payload)
     entityDao.saveOrUpdate(task, task.process)
 
+    if (activeTask.process.tasks.size == 1) {
+      activeTask.process.initiator = Some(assignee)
+    }
+    activeTask.process.tasks.subtractOne(activeTask)
     entityDao.remove(activeTask)
-    val tasks = Collections.newBuffer[FlowActiveTask]
-    findNext(task) foreach { next =>
-      val at = startTask(activeTask.process, task.process, next)
-      tasks.addOne(at)
-    }
-    val ap = activeTask.process
-    if (tasks.isEmpty) {
-      Flows.Process(ap.id.toString, ap.flow.code, List.empty, null)
+
+    if (payload.data.getBoolean("passed", true)) {
+      val nextActivities = findNext(task)
+      nextActivities foreach { next =>
+        startTask(activeTask.process, task.process, next)
+      }
+      if (nextActivities.isEmpty) {
+        task.process.status = FlowStatus.Completed
+        task.process.endAt = Some(Instant.now)
+        entityDao.remove(activeTask.process)
+      } else {
+        task.process.status = FlowStatus.Running
+      }
     } else {
-      val at = tasks.head
-      val pt = new Flows.Task(ap.id.toString, at.name, at.startAt,
-        at.assignee.map(u => Flows.User(u.code, u.name)), at.candidates.map(u => Flows.User(u.code, u.name)))
-      Flows.Process(ap.id.toString, ap.flow.code, List(pt), null)
+      startTask(activeTask.process, task.process, task.process.flow.firstActivity)
+      task.process.status = FlowStatus.Rejected
     }
+    task.process
   }
 
   /** 取消一个流程
@@ -149,20 +166,13 @@ class FlowServiceImpl extends FlowService {
     val env = Json.parseObject(p.envJson)
 
     //解析活动的受理人，候选人，部门
-    activity.assignee foreach { assignee =>
+    activity.assignees foreach { assignee =>
       val userCode = resolveVar(env, assignee)
       if (Strings.isNotEmpty(userCode)) {
-        val user = entityDao.findBy(classOf[User], "code" -> userCode, "org" -> domainService.getOrg).head
-        at.assignee = Some(user)
+        at.assignees.addAll(entityDao.findBy(classOf[User], "code" -> Strings.split(userCode), "org" -> domainService.getOrg))
       }
     }
-    activity.candidates foreach { candidates =>
-      Strings.split(candidates, ",") foreach { c =>
-        val code = resolveVar(env, c)
-        at.candidates.addAll(entityDao.findBy(classOf[User], "code" -> code, "org" -> domainService.getOrg))
-      }
-    }
-    if (activity.candidates.isEmpty && activity.assignee.isEmpty && activity.groups.nonEmpty) {
+    if (activity.assignees.isEmpty && activity.groups.nonEmpty) {
       val depart = Option(resolveVar(env, activity.depart.get))
       val q = OqlBuilder.from(classOf[User], "u")
       q.join("u.groups", "g").where("g in (:groups)", activity.groups)
@@ -176,23 +186,13 @@ class FlowServiceImpl extends FlowService {
       q.limit(1, 50) //最多取50个
       val users = entityDao.search(q)
 
-      at.candidates.addAll(users)
+      at.assignees.addAll(users)
     }
-
     entityDao.saveOrUpdate(at)
     //create task synchronized
-    val t = new FlowTask(p, at)
-    entityDao.saveOrUpdate(t)
+    p.newTask(at)
+    entityDao.saveOrUpdate(p)
     at
   }
 
-
-  private def resolveVar(data: JsonObject, exp: String): String = {
-    val varname = Strings.substringBetween(exp, "{", "}")
-    if (Strings.isEmpty(varname)) {
-      exp
-    } else {
-      data.getString(varname)
-    }
-  }
 }

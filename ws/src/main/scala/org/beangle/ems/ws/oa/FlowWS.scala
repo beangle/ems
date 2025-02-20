@@ -39,34 +39,41 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   @response
   def profile(businessCode: String, profileId: String): AnyRef = {
     val flows = flowService.getFlows(businessCode, profileId)
-    convert(flows, true)
+    convertFlow(flows, true)
   }
 
   @mapping("{flowCode}")
   @response
   def info(@param("flowCode") flowCode: String): AnyRef = {
-    convert(List(flowService.getFlow(flowCode)), true)
+    convertFlow(List(flowService.getFlow(flowCode)), true)
   }
 
   /** 开始一个流程
    */
   @mapping("{flowCode}/start/{businessKey}", method = "post")
   @response
-  def start(flowCode: String, businessKey: String): Flows.Process = {
+  def start(flowCode: String, businessKey: String): JsonObject = {
     val flow = flowService.getFlow(flowCode)
     val data = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
-    flowService.start(flow, businessKey, data)
+    val p = flowService.start(flow, businessKey, data)
+    if (null != p) {
+      convertProcess(p)
+    } else {
+      //FIXME 错误处理
+      null
+    }
   }
 
-  @mapping("processes/${processId}/tasks/${taskId}/complete", method = "post")
+  @mapping("processes/{processId}/tasks/{taskId}/complete", method = "post")
   @response
-  def complete(processId: String, taskId: String): Flows.Process = {
+  def complete(processId: String, taskId: String): JsonObject = {
     val payload = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
     val task = entityDao.get(classOf[FlowActiveTask], taskId.toLong)
-    flowService.complete(task, Flows.Payload.fromJson(payload))
+    val p = flowService.complete(task, Flows.Payload.fromJson(payload))
+    convertProcess(p)
   }
 
-  @mapping("processes/${processId}/cancel", method = "post")
+  @mapping("processes/{processId}/cancel", method = "post")
   @response
   def cancel(processId: String): String = {
     val process = entityDao.get(classOf[FlowActiveProcess], processId.toLong)
@@ -74,22 +81,25 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     "OK"
   }
 
-  @mapping("processes/${processId}")
+  @mapping("processes/{processId}")
   @response
   def process(processId: String): JsonObject = {
-    val process = entityDao.get(classOf[FlowProcess], processId.toLong)
+    convertProcess(entityDao.get(classOf[FlowProcess], processId.toLong))
+  }
 
+  private def convertProcess(process: FlowProcess) = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
-    context.filters.include(classOf[FlowProcess], "id", "businessKey", "startAt", "endAt", "status", "tasks")
-    context.filters.include(classOf[FlowTask], "id", "name", "idx", "assignee", "startAt", "endAt", "comments", "attachments", "dataJson", "status")
+    context.filters.include(classOf[FlowProcess], "id", "businessKey", "flow", "startAt", "endAt", "status", "tasks")
+    context.filters.include(classOf[FlowTask], "id", "name", "idx", "assignee", "assignees", "startAt", "endAt", "comments", "attachments", "dataJson", "status")
     context.filters.include(classOf[FlowAttachment], "name", "fileSize", "filePath")
     context.filters.include(classOf[FlowComment], "id", "messages", "updatedAt")
     context.filters.include(classOf[User], "id", "code", "name")
+    context.filters.include(classOf[Flow], "id", "code", "name")
     JsonAPI.newJson(JsonAPI.create(process, ""))
   }
 
-  private def convert(docs: Iterable[Flow], hasDetail: Boolean): JsonObject = {
+  private def convertFlow(docs: Iterable[Flow], hasDetail: Boolean): JsonObject = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
     if (hasDetail) {

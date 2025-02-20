@@ -18,7 +18,6 @@
 package org.beangle.ems.core.oa.service
 
 import org.beangle.commons.json.JsonObject
-import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.oa.model.{Flow, FlowActiveProcess, FlowActiveTask, FlowProcess}
 
@@ -28,9 +27,9 @@ trait FlowService {
 
   def getFlow(code: String): Flow
 
-  def start(flow: Flow, businessKey: String, data: JsonObject): Flows.Process
+  def start(flow: Flow, businessKey: String, data: JsonObject): FlowProcess
 
-  def complete(task: FlowActiveTask, payload: Payload): Flows.Process
+  def complete(task: FlowActiveTask, payload: Payload): FlowProcess
 
   def cancel(process: FlowActiveProcess): Unit
 

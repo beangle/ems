@@ -17,14 +17,18 @@
 
 package org.beangle.ems.app.oa
 
+import jakarta.servlet.http.Part
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils.getText
 import org.beangle.commons.net.http.{HttpUtils, Response}
 import org.beangle.data.json.JsonAPI
-import org.beangle.ems.app.Ems
+import org.beangle.data.model.Entity
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.serializer.json.JsonSerializer
 
+import java.io.ByteArrayInputStream
 import java.time.Instant
 
 object Flows {
@@ -37,19 +41,26 @@ object Flows {
 
   case class Group(code: String, name: String)
 
-  case class Task(id: String, name: String, startAt: Instant, assignee: Option[User], candidates: Iterable[User],
+  case class Task(id: String, name: String, startAt: Instant, endAt: Option[Instant], assignee: Option[User], assignees: Option[String],
                   comments: Iterable[Comment],
                   attachments: Iterable[Attachment], data: JsonObject) {
-    def allCandidates: Seq[User] = {
-      assignee.toBuffer.addAll(candidates).toSeq
-    }
 
-    def this(id: String, name: String, startAt: Instant, assignee: Option[User], candidates: Iterable[User]) = {
-      this(id, name, startAt, assignee, candidates, Seq.empty, Seq.empty, new JsonObject)
+    def this(id: String, name: String, startAt: Instant, assignee: Option[User], assignees: Option[String]) = {
+      this(id, name, startAt, None, assignee, assignees, Seq.empty, Seq.empty, new JsonObject)
     }
   }
 
-  case class Process(id: String, flowCode: String, tasks: Iterable[Task], remark: String)
+  case class Process(id: String, flowCode: String, tasks: Iterable[Task], remark: String) extends Entity[String] {
+    def activeTasks: Iterable[Task] = {
+      val ordered = tasks.toSeq.sortBy(_.startAt)
+      val uncomplete = ordered.filter(_.endAt.isEmpty)
+      if (uncomplete.isEmpty) {
+        uncomplete
+      } else {
+        ordered.lastOption
+      }
+    }
+  }
 
   case class Comment(messages: String, updatedAt: Instant)
 
@@ -65,15 +76,18 @@ object Flows {
       }.toSeq
       val env = json.getObject("env")
       val data = json.getObject("data")
-      val complete = json.getBoolean("complete", false)
-      Payload(assignee, comments, attachments, env, data, complete)
+      Payload(assignee, comments, attachments, env, data)
     }
   }
 
-  case class Payload(assignee: User, comments: Seq[String], attachments: Seq[Attachment], env: JsonObject, data: JsonObject, complete: Boolean) {
+  case class Payload(assignee: User, comments: Iterable[String], attachments: Seq[Attachment], env: JsonObject, data: JsonObject) {
     def toJson: String = {
       JsonSerializer.Default.serialize(this)
     }
+  }
+
+  def payload(assignee: User, comments: Option[String], data: JsonObject): Payload = {
+    Payload(assignee, comments, List.empty, new JsonObject, data)
   }
 
   def getFlows(businessCode: String, profileId: Any): Iterable[Flow] = {
@@ -108,41 +122,84 @@ object Flows {
     convertProcess(res)
   }
 
+  def user(code: String, name: String): User = {
+    User(code, name)
+  }
+
+  /** 上传附件
+   *
+   * @param parts
+   * @param dir
+   * @param businessKey
+   * @param owner
+   * @return
+   */
+  def upload(parts: Iterable[Part], dir: String, businessKey: Any, owner: User): Seq[Attachment] = {
+    val blob = EmsApp.getBlobRepository(true)
+    val files = Collections.newBuffer[Flows.Attachment]
+
+    parts foreach { part =>
+      val f = blob.upload(s"${dir}/${businessKey}/files/",
+        part.getInputStream, part.getSubmittedFileName, owner.code + " " + owner.name)
+      files.addOne(Flows.Attachment(part.getSubmittedFileName, f.fileSize, f.filePath))
+    }
+    files.toSeq
+  }
+
+  /** 上传签名
+   *
+   * @param signature
+   * @param dir
+   * @param businessKey
+   * @param owner
+   * @param data
+   * @param storePath
+   */
+  def uploadSignature(signature: Option[String], dir: String, businessKey: Any, owner: User, data: JsonObject,
+                      storePath: String = "signaturePath"): Unit = {
+    val blob = EmsApp.getBlobRepository(true)
+    val signs = Collections.newBuffer[String]
+    signature foreach { signature =>
+      val sign = blob.upload(s"${dir}/${businessKey}/signatures/",
+        new ByteArrayInputStream(signature.getBytes), owner.code + ".png.txt", owner.code + " " + owner.name)
+      data.add(storePath, sign.filePath)
+    }
+  }
+
   private def convertProcess(res: Response): Process = {
     if (res.isOk) {
-      val jo = Json.parseObject(res.getText)
+      val r = JsonAPI.parse(res.getText)
+      val jo = r.resource
       val tasks = jo.getArray("tasks").map {
         case jo: JsonObject =>
           val id = jo.getString("id")
           val name = jo.getString("name")
           val startAt = jo.getInstant("startAt")
+          val endAt = Option(jo.getInstant("endAt"))
           var assignee: Option[User] = None
           if (jo.contains("assignee")) {
             val a = jo.getObject("assignee")
             assignee = Some(User(a.getString("code"), a.getString("name")))
           }
-          val candidates = jo.getArray("candidates").map {
-            case o: JsonObject => User(o.getString("code"), o.getString("name"))
-          }
+          val assignees = Option(jo.getString("assignees", null))
           val comments = jo.getArray("comments").map {
             case o: JsonObject => Comment(o.getString("messages"), o.getInstant("updatedAt"))
           }
           val attachments = jo.getArray("attachments").map {
             case o: JsonObject => Attachment(o.getString("name"), o.getLong("fileSize"), o.getString("filePath"))
           }
-          val data = Json.parseObject(jo.getString("data", "{}"))
-          //FIXME attachments,comments,data
-          Task(id, name, startAt, assignee, candidates, comments, attachments, data)
+          val data = Json.parseObject(jo.getString("dataJson", "{}"))
+          Task(id, name, startAt, endAt, assignee, assignees, comments, attachments, data)
       }.toSeq.sortBy(_.startAt)
 
-      Process(jo.getString("processId"), jo.getString("flowCode"), tasks, null)
+      Process(jo.getString("id"), jo.query("flow.code").getOrElse("").asInstanceOf[String], tasks, null)
     } else {
       Process("", "", List(), res.getText)
     }
   }
 
   protected[oa] def convertFlow(content: String): collection.Seq[Flow] = {
-    val r = JsonAPI.parse(content)
+    val r = JsonAPI.parse(content).resources
     r.map { f =>
       val activities = f.getArray("activities").map {
         case jo: JsonObject => Activity(jo.getInt("idx"), jo.getString("name"))

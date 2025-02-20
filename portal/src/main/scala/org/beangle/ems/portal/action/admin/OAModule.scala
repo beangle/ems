@@ -24,6 +24,6 @@ class OAModule extends BindModule {
   protected override def binding(): Unit = {
     bind(classOf[oa.DocAction], classOf[oa.NoticeAction], classOf[oa.NewsAction])
     bind(classOf[oa.NoticeAuditAction])
-    bind(classOf[oa.FlowAction])
+    bind(classOf[oa.FlowAction], classOf[oa.FlowProcessAction], classOf[oa.FlowActiveProcessAction])
   }
 }

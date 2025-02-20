@@ -48,6 +48,8 @@ class FlowTask extends LongId, Named {
   var dataJson: String = "{}"
   /** 当前环节 */
   var status: FlowStatus = FlowStatus.Initial
+  /** 所有可选的用户账户，包括assignee */
+  var assignees: Option[String] = None
 
   def this(process: FlowProcess, at: FlowActiveTask) = {
     this()
@@ -56,15 +58,18 @@ class FlowTask extends LongId, Named {
     this.name = at.name
     this.idx = at.idx
     this.startAt = at.startAt
+    this.assignees = if at.assignees.isEmpty then None else Some(at.assignees.map(_.code).mkString(","))
     this.status = FlowStatus.Initial
   }
 
   def complete(assignee: User, payload: Payload): Unit = {
     this.assignee = Some(assignee)
-    if (payload.complete) {
-      this.endAt = Some(Instant.now())
-      this.status = FlowStatus.Completed
+    if (this.process.tasks.size == 1) {
+      this.process.initiator = Some(assignee)
     }
+
+    this.endAt = Some(Instant.now())
+    this.status = FlowStatus.Completed
     payload.comments foreach { c =>
       val comment = new FlowComment(this, assignee, c)
       this.comments += comment

@@ -3,11 +3,11 @@ import sbt.*
 
 object EmsDepends {
   val commonsVer = "5.6.26"
-  val jdbcVer = "1.0.9"
-  val dataVer = "5.8.20"
+  val jdbcVer = "1.0.10"
+  val dataVer = "5.8.21"
   val cdiVer = "0.7.2"
   val webVer = "0.6.3"
-  val serializerVer = "0.1.16-SNAPSHOT"
+  val serializerVer = "0.1.16"
   val cacheVer = "0.1.13"
   val templateVer = "0.1.23"
   val webmvcVer = "0.10.3"

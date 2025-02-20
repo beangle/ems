@@ -1,0 +1,17 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="部门基本信息"]bar.addBack();[/@]
+  [@b.form action=b.rest.save(depart) theme="list"]
+    [@b.textfield name="depart.code" label="代码" value="${depart.code!}" required="true" maxlength="10"/]
+    [@b.textfield name="depart.indexno" label="序号" value="${depart.indexno!}" required="true" maxlength="20"/]
+    [@b.textfield name="depart.name" label="名称" value="${depart.name!}" required="true" maxlength="80"/]
+    [@b.textfield name="depart.shortName" label="简称" value="${depart.shortName!}" maxlength="100"/]
+    [@b.select name="depart.parent.id" label="上级部门" value=depart.parent! items=parents required="false"/]
+    [@b.startend label="有效期限"
+      name="depart.beginOn,depart.endOn" required="true,false"
+      start=depart.beginOn end=depart.endOn format="date"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[@b.foot/]

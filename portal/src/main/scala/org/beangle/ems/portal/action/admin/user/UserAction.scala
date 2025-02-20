@@ -33,8 +33,8 @@ import org.beangle.security.codec.DefaultPasswordEncoder
 import org.beangle.security.context.SecurityContext
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
+import org.beangle.webmvc.view.View
 
 import java.time.Instant
 
@@ -57,6 +57,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
+    put("departs", entityDao.findBy(classOf[Depart], "org", domainService.getOrg))
     put("isRoot", SecurityContext.get.root)
   }
 
@@ -172,18 +173,27 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val domain = domainService.getDomain
     put("domain", domain)
     val q = OqlBuilder.from(classOf[User], "user")
-    q.where("user.org=:org",domain.org)
+    q.where("user.org=:org", domain.org)
     // 查询角色
     val sb = new StringBuilder()
     val params = new collection.mutable.ListBuffer[Object]
     val roleName = get("roleName", "")
     if (Strings.isNotEmpty(roleName)) {
       sb.append("exists(from user.roles m where ")
-      sb.append("m.role.name like :roleName and m.role.domain=:domain ")
+      sb.append("m.role.name like :roleName and m.role.domain=:domain)")
       params += ("%" + roleName + "%")
       params += domain
-      sb.append(')')
     }
+
+    //查询用户组
+    val groupName = get("groupName", "")
+    if (Strings.isNotEmpty(groupName)) {
+      sb.append("user.group.name like :groupName or exists(from user.groups m where ")
+      sb.append("m.group.name like :groupName and m.group.org=:org)")
+      params += ("%" + groupName + "%")
+      params += domain.org
+    }
+
     if (sb.nonEmpty) {
       val roleCondition = new Condition(sb.toString)
       roleCondition.params(params)
@@ -275,6 +285,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     put("user", user)
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)
+    put("departs", entityDao.findBy(classOf[Depart], "org", domain.org))
   }
 
   override protected def configExport(context: ExportContext): Unit = {

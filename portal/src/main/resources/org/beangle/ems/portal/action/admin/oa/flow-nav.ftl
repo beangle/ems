@@ -1,0 +1,6 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="flow"]流程配置[/@]
+    [@b.navitem href="flow-active-process"]活跃流程[/@]
+    [@b.navitem href="flow-process"]所有流程[/@]
+  [/@]

@@ -32,9 +32,7 @@ class FlowActivity extends LongId, Named, Remark {
   /** 顺序号 */
   var idx: Int = _
   /** 受理人 工号 或  求值为代码的表达式 */
-  var assignee: Option[String] = None
-  /** 可选人 工号 或 求值为代码的表达式 */
-  var candidates: Option[String] = None
+  var assignees: Option[String] = None
   /** 受理用户组 */
   var groups: mutable.Buffer[Group] = Collections.newBuffer[Group]
   /** 受理人部门，具体部门代码 或 求值为代码的表达式 */

@@ -23,6 +23,7 @@ import org.beangle.data.model.pojo.Named
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
+import scala.collection.mutable
 
 /** 流程任务
  */
@@ -32,9 +33,7 @@ class FlowActiveTask extends LongId, Named {
   /** 顺序号 */
   var idx: Int = _
   /** 受理人 */
-  var assignee: Option[User] = None
-  /** 可选人 */
-  var candidates: collection.mutable.Set[User] = Collections.newSet[User]
+  var assignees: mutable.Set[User] = Collections.newSet[User]
   /** 开始时间 */
   var startAt: Instant = _
   /** 预计完成时间 */
@@ -46,5 +45,11 @@ class FlowActiveTask extends LongId, Named {
     this.idx = activity.idx
     this.startAt = Instant.now
     this.name = activity.name
+  }
+
+  def complete(assignee: User): Unit = {
+    if (this.process.tasks.size == 1) {
+      this.process.initiator = Some(assignee)
+    }
   }
 }
