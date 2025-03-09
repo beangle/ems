@@ -31,7 +31,8 @@
             <th style="width:20%;">时间</th>
             <th style="width:20%;">步骤</th>
             <th style="width:20%;">受理人</th>
-            <th style="width:40%;">备注</th>
+            <th style="width:20%;">候选受理人</th>
+            <th>备注</th>
           </tr>
         </thead>
         <tbody>
@@ -39,7 +40,8 @@
             <tr">
               <td>${task.startAt?string("yy-MM-dd HH:mm")}</td>
               <td>${task.name}</td>
-              <td>${(task.assignee.name)!}</td>
+              <td>${(task.assignee.code)!} ${(task.assignee.name)!}</td>
+              <td>${task.assignees!}</td>
               <td>
                 [#list task.comments as c]<div>${c.messages} <span class="text-muted">${c.updatedAt?string("yy-MM-dd HH:mm")}</span></div>[/#list]
               </td>

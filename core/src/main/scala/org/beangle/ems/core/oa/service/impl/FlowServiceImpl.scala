@@ -173,11 +173,13 @@ class FlowServiceImpl extends FlowService {
       }
     }
     if (activity.assignees.isEmpty && activity.groups.nonEmpty) {
-      val depart = Option(resolveVar(env, activity.depart.get))
       val q = OqlBuilder.from(classOf[User], "u")
-      q.join("u.groups", "g").where("g in (:groups)", activity.groups)
-      depart foreach { dcode =>
-        q.where("u.depart.code=:dcode", dcode)
+      q.where("exists(from u.groups as ug where ug.group in(:groups)) or u.group in (:groups)", activity.groups)
+      activity.depart foreach { departExpr =>
+        val depart = Option(resolveVar(env, departExpr))
+        depart foreach { dcode =>
+          q.where("u.depart.code=:dcode", dcode)
+        }
       }
       q.where("u.org=:org", domainService.getOrg)
       q.where("u.enabled = true")
@@ -195,4 +197,18 @@ class FlowServiceImpl extends FlowService {
     at
   }
 
+  override def back(ap: FlowActiveProcess, activity: FlowActivity): Unit = {
+    val process = entityDao.get(classOf[FlowProcess], ap.id)
+    val afters = process.tasks.filter(_.idx >= activity.idx)
+    process.tasks.subtractAll(afters)
+    entityDao.saveOrUpdate(process)
+
+    val afters2 = ap.tasks.filter(_.idx >= activity.idx)
+    ap.tasks.subtractAll(afters2)
+    entityDao.saveOrUpdate(ap)
+
+    startTask(ap, process, activity)
+  }
 }
+
+

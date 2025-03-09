@@ -1,0 +1,13 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="设置回退"]bar.addBack();[/@]
+[@b.form action="!back" theme="list"]
+  [@b.field label="流程"]${process.flow.name} ${(process.initiator.name)}[/@]
+  [@b.field label="发起时间"]${process.startAt?string('yyyy-MM-dd')}[/@]
+  [@b.select name="activity.id" label="回退步骤" required="true" items=activities/]
+  [@b.formfoot]
+    <input type="hidden" name="process.id" value="${process.id}"/>
+   [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+  [/@]
+[/@]
+[@b.foot/]

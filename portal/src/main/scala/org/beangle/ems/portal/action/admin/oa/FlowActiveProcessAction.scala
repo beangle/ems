@@ -20,12 +20,16 @@ package org.beangle.ems.portal.action.admin.oa
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.oa.model.FlowActiveProcess
+import org.beangle.ems.core.oa.model.{FlowActiveProcess, FlowActivity, FlowProcess}
+import org.beangle.ems.core.oa.service.FlowService
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
 class FlowActiveProcessAction extends RestfulAction[FlowActiveProcess] {
 
   var domainService: DomainService = _
+
+  var flowService: FlowService = _
 
   override protected def getQueryBuilder: OqlBuilder[FlowActiveProcess] = {
     val query = super.getQueryBuilder
@@ -36,6 +40,28 @@ class FlowActiveProcessAction extends RestfulAction[FlowActiveProcess] {
       }
     }
     query
+  }
+
+  /** 设置回退
+   *
+   * @return
+   */
+  def backForm(): View = {
+    val processId = getLongId("process")
+    val ap = entityDao.get(classOf[FlowActiveProcess], processId)
+    val p = entityDao.get(classOf[FlowProcess], processId)
+    put("process", ap)
+    val passedTasks = p.tasks.map(_.name).toSet
+    val activities = p.flow.activities.filter(x => passedTasks.contains(x.name)).sortBy(_.idx)
+    put("activities", activities)
+    forward()
+  }
+
+  def back(): View = {
+    val processId = getLongId("process")
+    val activity = entityDao.get(classOf[FlowActivity], getLongId("activity"))
+    flowService.back(entityDao.get(classOf[FlowActiveProcess], processId), activity)
+    redirect("search", "设置成功")
   }
 
   override protected def simpleEntityName: String = {

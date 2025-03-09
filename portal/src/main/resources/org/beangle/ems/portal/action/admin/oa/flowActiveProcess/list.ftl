@@ -3,6 +3,7 @@
   [@b.grid items=processes var="process"]
     [@b.gridbar]
       bar.addItem("${b.text("action.delete")}",action.remove());
+      bar.addItem("设置回退",action.single('backForm'));
     [/@]
     [@b.row]
       [@b.boxcol/]
@@ -14,7 +15,7 @@
         [#if process.initiator??]${process.initiator.code} ${process.initiator.name}[#else]--[/#if]
       [/@]
       [@b.col title="当前步骤"]
-        [#list process.tasks?sort_by("startAt") as task]${task.name}[#sep]&nbsp;[/#list]
+        [#list process.tasks?sort_by("startAt") as task]${task.name}([#list task.assignees as u]${u.code} ${u.name}[/#list])[#sep]&nbsp;[/#list]
       [/@]
       [@b.col title="发起时间" property="startAt" width="13%"]
         ${process.startAt?string("yy-MM-dd HH:mm")}
