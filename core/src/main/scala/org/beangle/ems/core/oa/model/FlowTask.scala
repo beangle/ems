@@ -64,8 +64,10 @@ class FlowTask extends LongId, Named {
 
   def complete(assignee: User, payload: Payload): Unit = {
     this.assignee = Some(assignee)
-    if (this.process.tasks.size == 1) {
-      this.process.initiator = Some(assignee)
+    if (this.process.initiator.isEmpty) {
+      if (!this.process.tasks.exists(_.idx < this.idx)) {
+        this.process.initiator = Some(assignee)
+      }
     }
 
     this.endAt = Some(Instant.now())

@@ -96,9 +96,7 @@ class FlowServiceImpl extends FlowService {
     task.complete(assignee, payload)
     entityDao.saveOrUpdate(task, task.process)
 
-    if (activeTask.process.initiator == null && activeTask.process.tasks.size == 1) {
-      activeTask.process.initiator = Some(assignee)
-    }
+    activeTask.complete(assignee)
     activeTask.process.tasks.subtractOne(activeTask)
     entityDao.remove(activeTask)
 
