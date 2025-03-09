@@ -20,6 +20,7 @@ package org.beangle.ems.app.oa
 import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
+import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils.getText
 import org.beangle.commons.net.http.{HttpUtils, Response}
@@ -160,9 +161,11 @@ object Flows {
     val blob = EmsApp.getBlobRepository(true)
     val signs = Collections.newBuffer[String]
     signature foreach { signature =>
-      val sign = blob.upload(s"${dir}/${businessKey}/signatures/",
-        new ByteArrayInputStream(signature.getBytes), owner.code + ".png.txt", owner.code + " " + owner.name)
-      data.add(storePath, sign.filePath)
+      if (Strings.isNotBlank(signature)) {
+        val sign = blob.upload(s"${dir}/${businessKey}/signatures/",
+          new ByteArrayInputStream(signature.getBytes), owner.code + ".png.txt", owner.code + " " + owner.name)
+        data.add(storePath, sign.filePath)
+      }
     }
   }
 
