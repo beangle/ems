@@ -10,7 +10,7 @@ create table ems.oa_flow_tasks (name varchar(255) not null, assignee_id bigint, 
 create table ems.oa_flows (env_json varchar(2000) not null, flow_json varchar(8000) not null, code varchar(255) not null, id bigint not null, remark varchar(255), guard_json varchar(300) not null, business_id bigint not null, profile_id varchar(255) not null, name varchar(255) not null, updated_at timestamptz not null, domain_id integer not null);
 
 --add departs
-create table ems.usr_departs (code varchar(20) not null, id integer not null, indexno varchar(20) not null, parent_id integer, name varchar(300) not null, updated_at timestamptz not null, org_id integer not null, short_name varchar(200));
+create table ems.usr_departs (code varchar(20) not null, id integer not null, indexno varchar(20) not null, parent_id integer, name varchar(300) not null, updated_at timestamptz not null, org_id integer not null, short_name varchar(200),begin_on date not null,end_on date);
 alter table ems.usr_users add depart_id int4;
 alter table ems.usr_departs add constraint pk_lqtwc4myrcgfw4e69xam0gx17 primary key (id);
 

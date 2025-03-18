@@ -5,6 +5,7 @@
       bar.addItem("${b.text("action.new")}",action.add());
       bar.addItem("${b.text("action.edit")}",action.edit());
       bar.addItem("${b.text("action.delete")}",action.remove());
+      bar.addItem("复制",action.single('copy'));
     [/@]
     [@b.row]
       [@b.boxcol/]

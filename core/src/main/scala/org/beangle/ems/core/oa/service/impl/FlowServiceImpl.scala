@@ -208,5 +208,3 @@ class FlowServiceImpl extends FlowService {
     startTask(ap, process, activity)
   }
 }
-
-

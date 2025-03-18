@@ -39,7 +39,7 @@
                   <div class="col-auto">
                     <div class="input-group mb-1">
                       <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
-                      <input name="smsCode" tabindex="2" class="form-control" placeholder="短信验证码" value="">
+                      <input name="smsCode" tabindex="2" class="form-control" placeholder="短信验证码" value="" maxlength="6">
                       <input type="button"  tabindex="3" class="btn btn-outline-primary btn-sm"  onclick="send(this.form);return false;" value="发送" style="margin-left: 2px;"/>
                     </div>
                   </div>

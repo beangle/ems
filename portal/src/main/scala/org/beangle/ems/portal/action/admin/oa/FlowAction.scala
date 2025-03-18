@@ -28,6 +28,8 @@ import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.webmvc.view.View
 
+import java.time.Instant
+
 class FlowAction extends RestfulAction[Flow] {
   var databus: DataEventBus = _
 
@@ -85,5 +87,33 @@ class FlowAction extends RestfulAction[Flow] {
     entityDao.refresh(flow)
     databus.publish(DataEvent.update(flow))
     super.saveAndRedirect(flow)
+  }
+
+  def copy(): View = {
+    val flow = entityDao.get(classOf[Flow], getLongId("flow"))
+    val nf = new Flow()
+    nf.name = flow.name + "副本"
+    nf.code = flow.code + "(copy)"
+
+    nf.business = flow.business
+    nf.domain = flow.domain
+    nf.activities = flow.activities.map(x => {
+      val nx = new FlowActivity()
+      nx.idx = x.idx
+      nx.name = x.name
+      nx.flow = nf
+      nx.assignees = x.assignees
+      nx.depart = x.depart
+      nx.groups.addAll(x.groups)
+      nx
+    })
+    nf.flowJson = flow.flowJson
+    nf.guardJson = flow.guardJson
+    nf.envJson = flow.envJson
+    nf.profileId = flow.profileId
+    nf.updatedAt = Instant.now
+
+    entityDao.saveOrUpdate(nf)
+    redirect("search", "复制成功")
   }
 }
