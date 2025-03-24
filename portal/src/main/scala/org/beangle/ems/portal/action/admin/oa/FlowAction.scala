@@ -54,6 +54,7 @@ class FlowAction extends RestfulAction[Flow] {
   override protected def saveAndRedirect(flow: Flow): View = {
     val tasks = flow.activities.map(x => (x.name, x)).toMap
     val taskNames = Collections.newSet[String]
+    //max 11 steps
     (0 to 10) foreach { i =>
       val p = Params.sub(i.toString)
       val paramId = getLong(i.toString + ".id").getOrElse(0L)
@@ -64,14 +65,15 @@ class FlowAction extends RestfulAction[Flow] {
         val groups = getAll(s"${i}_group.id", classOf[Int]) map { groupId => entityDao.get(classOf[Group], groupId) }
         tasks.get(act.name) match {
           case Some(x) =>
-            x.idx = i
             x.assignees = act.assignees
             x.depart = act.depart
             x.groups.clear()
             x.groups.addAll(groups)
+            x.idx = act.idx
+            x.guard = act.guard
+            x.guardComment = act.guardComment
           case None =>
             act.flow = flow
-            act.idx = i
             flow.activities += act
             act.groups.addAll(groups)
         }
@@ -83,6 +85,11 @@ class FlowAction extends RestfulAction[Flow] {
     if (Strings.isBlank(flow.envJson)) flow.envJson = "{}"
     if (Strings.isBlank(flow.flowJson)) flow.flowJson = "{}"
 
+    var idx = 0
+    flow.activities.sortBy(_.idx) foreach { a =>
+      a.idx = idx
+      idx += 1
+    }
     entityDao.saveOrUpdate(flow)
     entityDao.refresh(flow)
     databus.publish(DataEvent.update(flow))

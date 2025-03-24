@@ -36,7 +36,7 @@ object Flows {
 
   case class Flow(code: String, name: String, env: JsonObject, activities: Seq[Activity])
 
-  case class Activity(idx: Int, name: String)
+  case class Activity(idx: Int, name: String, guard: Option[String])
 
   case class User(code: String, name: String)
 
@@ -208,7 +208,7 @@ object Flows {
     val r = JsonAPI.parse(content).resources
     r.map { f =>
       val activities = f.getArray("activities").map {
-        case jo: JsonObject => Activity(jo.getInt("idx"), jo.getString("name"))
+        case jo: JsonObject => Activity(jo.getInt("idx"), jo.getString("name"), jo.get("guardComment").map(_.toString))
       }.toSeq.sortBy(_.idx)
 
       Flow(f.getString("code"), f.getString("name"), Json.parseObject(f.getString("envJson", "{}")), activities)

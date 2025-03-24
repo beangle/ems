@@ -111,7 +111,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
     if (hasDetail) {
       context.filters.include(classOf[Flow], "id", "name", "code", "activities", "envJson")
-      context.filters.include(classOf[FlowActivity], "id", "name", "idx")
+      context.filters.include(classOf[FlowActivity], "id", "name", "idx", "guardComment")
     } else {
       context.filters.include(classOf[Flow], "id", "name", "code")
     }

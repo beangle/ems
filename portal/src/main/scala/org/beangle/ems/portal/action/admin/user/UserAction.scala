@@ -177,7 +177,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     // 查询角色
     val sb = new StringBuilder()
     val params = new collection.mutable.ListBuffer[Object]
-    val roleName = get("roleName", "")
+    val roleName = get("roleName", "").trim()
     if (Strings.isNotEmpty(roleName)) {
       sb.append("exists(from user.roles m where ")
       sb.append("m.role.name like :roleName and m.role.domain=:domain)")
@@ -186,7 +186,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     }
 
     //查询用户组
-    val groupName = get("groupName", "")
+    val groupName = get("groupName", "").trim()
     if (Strings.isNotEmpty(groupName)) {
       sb.append("user.group.name like :groupName or exists(from user.groups m where ")
       sb.append("m.group.name like :groupName and m.group.org=:org)")
