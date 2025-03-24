@@ -7,7 +7,7 @@
     [@b.row]
       [@b.boxcol/]
       [@b.col title="业务类型" property="flow.business.name" width="13%"/]
-      [@b.col title="流程名称" property="flow.name" width="15%"]
+      [@b.col title="流程名称" property="flow.name" width="10%"]
        [@b.a href="!info?id=${process.id}" title="查看详情"]${process.flow.name}[/@]
       [/@]
       [@b.col title="发起人" property="initiator.id" width="15%"]

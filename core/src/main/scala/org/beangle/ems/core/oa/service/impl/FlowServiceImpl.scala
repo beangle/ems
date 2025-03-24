@@ -157,7 +157,7 @@ class FlowServiceImpl extends FlowService {
     activity.guard match {
       case None => true
       case Some(g) =>
-        val ee = ExpressionEvaluator.jsr223("jexl3")
+        val ee = ExpressionEvaluator.get("jexl3")
         ee.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
     }
   }

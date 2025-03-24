@@ -43,14 +43,14 @@ lazy val app = (project in file("app"))
     name := "beangle-ems-app",
     common,
     libraryDependencies ++= appDepends,
-    libraryDependencies ++= Seq(b_webmvc % "optional")
+    libraryDependencies ++= Seq(beangle_webmvc % "optional")
   )
 
 lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(b_ids, apache_commons_compress)
+    libraryDependencies ++= Seq(beangle_ids, apache_commons_compress)
   ).dependsOn(app)
 
 lazy val cas = (project in file("cas"))
@@ -59,7 +59,7 @@ lazy val cas = (project in file("cas"))
     name := "beangle-ems-cas",
     common,
     libraryDependencies ++= webAppDepends,
-    libraryDependencies ++= Seq(b_bui_bootstrap)
+    libraryDependencies ++= Seq(beangle_bui_bootstrap)
   ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
@@ -67,6 +67,7 @@ lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
     common,
+    libraryDependencies ++= Seq(jexl3),
     libraryDependencies ++= webAppDepends,
   ).dependsOn(core)
 
@@ -75,7 +76,7 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(b_doc_transfer, b_bui_bootstrap),
+    libraryDependencies ++= Seq(beangle_doc_transfer, beangle_bui_bootstrap, jexl3),
     libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 
