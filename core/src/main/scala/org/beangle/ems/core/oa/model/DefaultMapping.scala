@@ -65,6 +65,7 @@ object DefaultMapping extends MappingModule {
 
     bind[FlowProcess].declare { e =>
       e.tasks is depends("process")
+      e.envJson is length(1000)
     }.generator(IdGenerator.Assigned)
 
     bind[FlowTask].declare { e =>

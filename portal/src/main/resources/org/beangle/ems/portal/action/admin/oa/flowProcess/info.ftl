@@ -23,6 +23,10 @@
     <td class="title">业务KEY</td><td>${process.businessKey}</td>
   </tr>
   <tr>
+    <td class="title">提交数据</td>
+    <td colspan="3"><code id="envJson" style="white-space:pre">${process.envJson}</code></td>
+  </tr>
+  <tr>
     <td class="title">过程细节</td>
     <td colspan="3">
       <table class="table table-sm" style="width:85%">
@@ -52,4 +56,11 @@
     </td>
   </tr>
 </table>
+<script>
+    jQuery(document).ready(function(){
+      var j = document.getElementById("envJson");
+      var js = JSON.parse(j.innerHTML);
+      j.innerHTML=JSON.stringify(js,null,2);
+    });
+</script>
 [@b.foot/]

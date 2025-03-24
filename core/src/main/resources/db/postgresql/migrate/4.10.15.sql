@@ -5,7 +5,7 @@ create table ems.oa_flow_activities (name varchar(255) not null, assignee varcha
 create table ems.oa_flow_activities_groups (flow_activity_id bigint not null, group_id integer not null);
 create table ems.oa_flow_attachments (name varchar(300) not null, task_id bigint not null, id bigint not null, file_size bigint default 0 not null, file_path varchar(500) not null);
 create table ems.oa_flow_comments (messages varchar(4000) not null, updated_at timestamptz not null, task_id bigint not null, id bigint not null, user_id bigint not null);
-create table ems.oa_flow_processes (env_json varchar(255) not null, id bigint not null, start_at timestamptz not null, end_at timestamptz, business_key varchar(255) not null, flow_id bigint not null, status integer not null);
+create table ems.oa_flow_processes (env_json varchar(1000) not null, id bigint not null, start_at timestamptz not null, end_at timestamptz, business_key varchar(255) not null, flow_id bigint not null, status integer not null);
 create table ems.oa_flow_tasks (name varchar(255) not null, assignee_id bigint, process_id bigint not null, id bigint not null, status integer not null, idx integer default 0 not null, start_at timestamptz not null, data_json varchar(255) not null, end_at timestamptz);
 create table ems.oa_flows (env_json varchar(2000) not null, flow_json varchar(8000) not null, code varchar(255) not null, id bigint not null, remark varchar(255), guard_json varchar(300) not null, business_id bigint not null, profile_id varchar(255) not null, name varchar(255) not null, updated_at timestamptz not null, domain_id integer not null);
 

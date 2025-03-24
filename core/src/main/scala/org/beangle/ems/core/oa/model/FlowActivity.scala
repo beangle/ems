@@ -31,10 +31,14 @@ class FlowActivity extends LongId, Named, Remark {
   var flow: Flow = _
   /** 顺序号 */
   var idx: Int = _
+  /** 先决条件 */
+  var guard: Option[String] = None
   /** 受理人 工号 或  求值为代码的表达式 */
   var assignees: Option[String] = None
   /** 受理用户组 */
   var groups: mutable.Buffer[Group] = Collections.newBuffer[Group]
   /** 受理人部门，具体部门代码 或 求值为代码的表达式 */
   var depart: Option[String] = None
+  /** 先决条件说明 */
+  var guardComment: Option[String] = None
 }

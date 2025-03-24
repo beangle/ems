@@ -77,14 +77,21 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   @response
   def cancel(processId: String): String = {
     val process = entityDao.get(classOf[FlowActiveProcess], processId.toLong)
-    flowService.cancel(process)
+    if (null != process) {
+      flowService.cancel(process)
+    }
     "OK"
   }
 
   @mapping("processes/{processId}")
   @response
   def process(processId: String): JsonObject = {
-    convertProcess(entityDao.get(classOf[FlowProcess], processId.toLong))
+    val process = entityDao.get(classOf[FlowProcess], processId.toLong)
+    if (process == null) {
+      new JsonObject
+    } else {
+      convertProcess(process)
+    }
   }
 
   private def convertProcess(process: FlowProcess) = {

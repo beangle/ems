@@ -172,30 +172,33 @@ object Flows {
   private def convertProcess(res: Response): Process = {
     if (res.isOk) {
       val r = JsonAPI.parse(res.getText)
-      val jo = r.resource
-      val tasks = jo.getArray("tasks").map {
-        case jo: JsonObject =>
-          val id = jo.getString("id")
-          val name = jo.getString("name")
-          val startAt = jo.getInstant("startAt")
-          val endAt = Option(jo.getInstant("endAt"))
-          var assignee: Option[User] = None
-          if (jo.contains("assignee")) {
-            val a = jo.getObject("assignee")
-            assignee = Some(User(a.getString("code"), a.getString("name")))
-          }
-          val assignees = Option(jo.getString("assignees", null))
-          val comments = jo.getArray("comments").map {
-            case o: JsonObject => Comment(o.getString("messages"), o.getInstant("updatedAt"))
-          }
-          val attachments = jo.getArray("attachments").map {
-            case o: JsonObject => Attachment(o.getString("name"), o.getLong("fileSize"), o.getString("filePath"))
-          }
-          val data = Json.parseObject(jo.getString("dataJson", "{}"))
-          Task(id, name, startAt, endAt, assignee, assignees, comments, attachments, data)
-      }.toSeq.sortBy(_.startAt)
-
-      Process(jo.getString("id"), jo.query("flow.code").getOrElse("").asInstanceOf[String], tasks, null)
+      if (r.resources.isEmpty) {
+        Process("", "", List(), res.getText)
+      } else {
+        val jo = r.resource
+        val tasks = jo.getArray("tasks").map {
+          case jo: JsonObject =>
+            val id = jo.getString("id")
+            val name = jo.getString("name")
+            val startAt = jo.getInstant("startAt")
+            val endAt = Option(jo.getInstant("endAt"))
+            var assignee: Option[User] = None
+            if (jo.contains("assignee")) {
+              val a = jo.getObject("assignee")
+              assignee = Some(User(a.getString("code"), a.getString("name")))
+            }
+            val assignees = Option(jo.getString("assignees", null))
+            val comments = jo.getArray("comments").map {
+              case o: JsonObject => Comment(o.getString("messages"), o.getInstant("updatedAt"))
+            }
+            val attachments = jo.getArray("attachments").map {
+              case o: JsonObject => Attachment(o.getString("name"), o.getLong("fileSize"), o.getString("filePath"))
+            }
+            val data = Json.parseObject(jo.getString("dataJson", "{}"))
+            Task(id, name, startAt, endAt, assignee, assignees, comments, attachments, data)
+        }.toSeq.sortBy(_.startAt)
+        Process(jo.getString("id"), jo.query("flow.code").getOrElse("").asInstanceOf[String], tasks, null)
+      }
     } else {
       Process("", "", List(), res.getText)
     }

@@ -6,7 +6,7 @@
     [@b.form name="flowSearchForm" action="!search" target="flowlist" title="ui.searchForm" theme="search"]
       [@b.select name="flow.business.id" label="业务类型" items=businesses/]
       [@b.textfields names="flow.name;名称"/]
-      <input type="hidden" name="orderBy" value="flow.business.id,flow.name"/>
+      <input type="hidden" name="orderBy" value="flow.business.id,flow.code"/>
     [/@]
     </div>
     <div class="search-list">[@b.div id="flowlist" href="!search?orderBy=flow.name"/]

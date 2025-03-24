@@ -19,6 +19,7 @@ package org.beangle.ems.core.oa.service.impl
 
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
+import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
@@ -142,14 +143,23 @@ class FlowServiceImpl extends FlowService {
   }
 
   /** 查找下一个任务
-   * FIXME 这里过于简化
+   * FIXME 这里还是过于简化
    *
    * @param task
    * @return
    */
   private def findNext(task: FlowTask): Option[FlowActivity] = {
     val activities = task.process.flow.activities.sortBy(_.idx)
-    activities.find(a => a.idx > task.idx)
+    activities.find(a => a.idx > task.idx && matchable(a, task.process))
+  }
+
+  private def matchable(activity: FlowActivity, process: FlowProcess): Boolean = {
+    activity.guard match {
+      case None => true
+      case Some(g) =>
+        val ee = ExpressionEvaluator.jsr223("jexl3")
+        ee.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
+    }
   }
 
   /** 开始一个任务
