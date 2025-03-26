@@ -85,6 +85,7 @@ object DefaultMapping extends MappingModule {
 
     bind[Notification]
     bind[Todo]
+    bind[DoneTodo].generator(IdGenerator.Assigned)
 
     bind[Signature].declare { e =>
       index("", true, e.user)
