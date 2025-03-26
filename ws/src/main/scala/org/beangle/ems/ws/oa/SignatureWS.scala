@@ -52,4 +52,5 @@ class SignatureWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     query.select("a.filePath")
     entityDao.search(query).headOption
   }
+
 }

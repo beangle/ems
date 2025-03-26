@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.10.16-SNAPSHOT"
+ThisBuild / version := "4.11.0-SNAPSHOT"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -43,7 +43,7 @@ lazy val app = (project in file("app"))
     name := "beangle-ems-app",
     common,
     libraryDependencies ++= appDepends,
-    libraryDependencies ++= Seq(beangle_webmvc % "optional")
+    libraryDependencies ++= Seq(beangle_webmvc % "optional", beangle_bui_tag % "optional")
   )
 
 lazy val core = (project in file("core"))

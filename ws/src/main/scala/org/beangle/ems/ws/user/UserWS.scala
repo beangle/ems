@@ -31,12 +31,13 @@ class UserWS extends ActionSupport {
   var entityDao: EntityDao = _
 
   @response
-  @mapping("{q}")
+  @mapping("")
   def index(@param("q") q: String): Iterable[Properties] = {
     val query = OqlBuilder.from(classOf[User], "u")
-    query.where("u.name like :q ", "%" + URLDecoder.decode(q,Charsets.UTF_8) + "%")
+    val p = "%" + URLDecoder.decode(q, Charsets.UTF_8) + "%"
+    query.where("u.code like :q or u.name like :q ", p)
     query.limit(1, 20)
     val users = entityDao.search(query)
-    users.map(x => new Properties(x, "id", "name"))
+    users.map(x => new Properties(x, "id", "code", "name", "description"))
   }
 }

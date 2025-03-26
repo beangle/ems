@@ -18,12 +18,19 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.core.user.model.User
 
 /** 签名
  */
-class Signature extends LongId {
+class Signature extends LongId, Updated {
   var user: User = _
   var filePath: String = _
   var mediaType: String = _
+  var fileSize: Int = _
+
+  def this(user: User) = {
+    this()
+    this.user = user
+  }
 }

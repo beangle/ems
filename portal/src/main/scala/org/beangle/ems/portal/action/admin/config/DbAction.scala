@@ -88,7 +88,6 @@ class DbAction extends RestfulAction[Db], DomainSupport {
         password = new AesEncryptor(key).decrypt(credential.password)
       }
       if (Strings.isNotBlank(username) && Strings.isNotBlank(password)) {
-
         val url =
           cfg.url match {
             case None =>
@@ -114,7 +113,6 @@ class DbAction extends RestfulAction[Db], DomainSupport {
         put("msg", msg.toString)
         conn.close()
         put("passed", true)
-
       }
     } catch {
       case t: Throwable =>

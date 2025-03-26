@@ -15,16 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.app.web.tag
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.bui.Select
+import org.beangle.ems.app.Ems
+import org.beangle.template.api.ComponentContext
 
-class OAModule extends BindModule {
+class UserTag(context: ComponentContext) extends Select(context) {
 
-  protected override def binding(): Unit = {
-    bind(classOf[oa.DocAction], classOf[oa.NoticeAction], classOf[oa.NewsAction])
-    bind(classOf[oa.NoticeAuditAction])
-    bind(classOf[oa.FlowAction], classOf[oa.FlowProcessAction], classOf[oa.FlowActiveProcessAction])
-    bind(classOf[oa.SignatureAction],classOf[oa.TodoAction])
+  var params: String = ""
+
+  override def evaluateParams(): Unit = {
+    if (null == this.href) this.href = Ems.api + s"/platform/user/users.json?q={term}${params}"
+    if (null == this.option) this.option = "id,description"
+    super.evaluateParams()
   }
 }

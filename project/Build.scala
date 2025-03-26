@@ -25,6 +25,7 @@ object EmsDepends {
   val beangle_template = "org.beangle.template" % "beangle-template" % templateVer
   val beangle_web = "org.beangle.web" % "beangle-web" % webVer
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % webmvcVer
+  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % buiVer
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % buiVer
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % serializerVer
   val beangle_security = "org.beangle.security" % "beangle-security" % securityVer

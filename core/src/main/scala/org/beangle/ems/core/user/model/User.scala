@@ -97,4 +97,13 @@ class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark,
     }
     this.group foreach { g => this.removeGroup(g) } //从附加用户组删除主组
   }
+
+  /** 显示用户的简要信息
+   *
+   * @return
+   */
+  def description: String = {
+    val departName = depart.map(x => x.shortName.getOrElse(x.name)).getOrElse("")
+    s"$code $name ${departName}"
+  }
 }

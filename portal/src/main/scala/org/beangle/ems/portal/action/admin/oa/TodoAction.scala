@@ -15,16 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.portal.action.admin.oa
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.ems.core.oa.model.Todo
+import org.beangle.webmvc.support.action.RestfulAction
 
-class OAModule extends BindModule {
+class TodoAction extends RestfulAction[Todo] {
 
-  protected override def binding(): Unit = {
-    bind(classOf[oa.DocAction], classOf[oa.NoticeAction], classOf[oa.NewsAction])
-    bind(classOf[oa.NoticeAuditAction])
-    bind(classOf[oa.FlowAction], classOf[oa.FlowProcessAction], classOf[oa.FlowActiveProcessAction])
-    bind(classOf[oa.SignatureAction],classOf[oa.TodoAction])
-  }
 }

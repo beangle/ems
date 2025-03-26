@@ -38,4 +38,5 @@ class EmsModels(context: ComponentContext, authorizer: Authorizer) extends Abstr
     authorizer.isPermitted(SecurityContext.get, new DefaultRequest(res, null))
   }
 
+  def user: Tag = get(classOf[UserTag])
 }
