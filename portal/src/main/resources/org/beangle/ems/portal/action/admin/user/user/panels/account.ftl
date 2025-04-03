@@ -46,23 +46,23 @@
       [#if rm.manager][#assign managers=managers+[rm.role]/][/#if]
     [/#list]
     [#if members?size>0]
-      <strong><i class="fas fa-user mr-1"></i> 持有角色</strong>
+      <strong><i class="fas fa-user mr-1"></i> 持有角色<span class="badge badge-primary">${members?size}</span></strong>
       <p class="text-muted">
         [#list members as r]${r.name}&nbsp;[/#list]
       </p>
     [/#if]
 
     [#if granters?size>0]
-      <strong><i class="fa-solid fa-shield mr-1"></i> 可授权</strong>
+      <strong><i class="fa-solid fa-shield mr-1"></i> 可授权<span class="badge badge-primary">${granters?size}</span></strong>
       <p class="text-muted">
-        [#list granters as r]${r.name}&nbsp;[/#list]
+        [#list granters as r]${r.name}&nbsp;[#if r_index>3]...[#break/][/#if][/#list]
       </p>
     [/#if]
 
     [#if managers?size>0]
-      <strong><i class="fas fa-user mr-1"></i> 可管理</strong>
+      <strong><i class="fas fa-user mr-1"></i> 可管理 <span class="badge badge-primary">${managers?size}</span></strong>
       <p class="text-muted">
-        [#list managers as r]${r.name}&nbsp;[/#list]
+        [#list managers as r]${r.name}&nbsp;[#if r_index>3]...[#break/][/#if][/#list]
       </p>
     [/#if]
     </div>

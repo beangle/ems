@@ -17,10 +17,10 @@
 
 package org.beangle.ems.core.user.model
 
-import java.time.Instant
-
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
+
+import java.time.Instant
 
 /**
  * @author chaostone
@@ -39,9 +39,9 @@ class RoleMember extends LongId with Updated {
     this.updatedAt = Instant.now
   }
 
-  def this(user: User, role: Role, ship: MemberShip) = {
+  def this(user: User, role: Role, ships: MemberShip*) = {
     this(user, role)
-    ship match {
+    ships foreach {
       case MemberShip.Member => member = true
       case MemberShip.Manager => manager = true
       case MemberShip.Granter => granter = true

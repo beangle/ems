@@ -74,6 +74,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val removedMembers = Collections.newBuffer[RoleMember]
     val manager = loginUser
     val isAdmin = userService.isRoot(manager, EmsApp.name)
+    //查找用户可以授权的角色
     val members =
       if (isAdmin) {
         val adminRoleQuery = OqlBuilder.from(classOf[Role], "r").where("r.domain=:domain", domainService.getDomain)
@@ -265,7 +266,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
       roleQuery.where("r.domain=:domain", domain)
       roles ++= entityDao.search(roleQuery)
       for (role <- roles)
-        mngMemberMap.put(role, new RoleMember(manager, role, MemberShip.Granter))
+        mngMemberMap.put(role, new RoleMember(manager, role, MemberShip.Granter, MemberShip.Manager))
     } else {
       val members = userService.getRoles(manager, MemberShip.Granter)
       for (gm <- members) {
