@@ -2,7 +2,7 @@
   [@b.select name="dbId" label="数据源" items=dbs required="true"/]
   [@b.select name="credentialId" label="凭据" items=credentials required="true"/]
   [@b.textfield label="Key" name="key" required="true"/]
-  [@b.textfield label="Sql" name="sql" required="true"/]
+  [@b.textfield label="Sql" name="sql" required="true" style="width:400px" maxlength="500"/]
   [@b.formfoot]
     [@b.submit value="开始抓取更新"/]
   [/@]

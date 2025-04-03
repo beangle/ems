@@ -25,9 +25,9 @@ object BlobMeta {
     val jb = Json.parseObject(json)
     val meta = new BlobMeta
     meta.name = jb.getString("name")
-    meta.fileSize = jb.getInt("size")
+    meta.fileSize = jb.getInt("fileSize")
     meta.sha = jb.getString("sha")
-    meta.mediaType = jb.getString("type")
+    meta.mediaType = jb.getString("mediaType")
     meta.filePath = jb.getString("filePath")
     meta.updatedAt = jb.getInstant("updatedAt")
     meta

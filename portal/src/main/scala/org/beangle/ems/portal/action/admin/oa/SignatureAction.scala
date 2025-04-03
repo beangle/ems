@@ -18,18 +18,17 @@
 package org.beangle.ems.portal.action.admin.oa
 
 import jakarta.servlet.http.Part
-import org.beangle.commons.activation.{MediaType, MediaTypes}
+import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.codec.binary.Base64
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.file.zip.Zipper
 import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.lang.{Strings, SystemInfo}
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.app.blob.BlobMeta
 import org.beangle.ems.core.config.model.{Credential, Db}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.Signature
-import org.beangle.ems.core.user.model.User
+import org.beangle.ems.core.user.model.{Depart, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.jdbc.ds.{AesEncryptor, DataSourceFactory}
 import org.beangle.jdbc.engine.{Drivers, UrlFormat}
@@ -38,13 +37,18 @@ import org.beangle.webmvc.support.action.RestfulAction
 import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.{ByteArrayInputStream, File, FileOutputStream, InputStream}
-import java.sql.DriverManager
-import java.time.{Instant, LocalDate, LocalDateTime}
+import java.time.{Instant, LocalDate}
 
 class SignatureAction extends RestfulAction[Signature] {
 
   var domainService: DomainService = _
   var userService: UserService = _
+
+  override protected def indexSetting(): Unit = {
+    super.indexSetting()
+    put("categories", userService.getCategories())
+    put("departs", entityDao.findBy(classOf[Depart], "org", domainService.getOrg))
+  }
 
   override def search(): View = {
     val signatures = entityDao.search(getQueryBuilder)
@@ -72,7 +76,10 @@ class SignatureAction extends RestfulAction[Signature] {
   private def upload(sig: Signature, is: InputStream, ext: String): Unit = {
     val user = sig.user
     val blob = EmsApp.getBlobRepository(true)
-    val rs = blob.upload("/platform/oa/signature/",
+    if (Strings.isNotBlank(sig.filePath)) {
+      blob.remove(sig.filePath)
+    }
+    val rs = blob.upload("/oa/signature/",
       is, user.code + "_" + LocalDate.now().toString + s".${ext}", user.code + " " + user.name)
     if (Strings.isEmpty(rs.mediaType)) {
       rs.mediaType = MediaTypes.get(ext, MediaTypes.ImagePng).toString
@@ -147,6 +154,7 @@ class SignatureAction extends RestfulAction[Signature] {
     val ds = dsf.result
 
     val jdbcExecutor = new JdbcExecutor(ds)
+    println(sql)
     val dataIter = jdbcExecutor.iterate(sql)
     var count = 0
     dataIter.foreach { data =>

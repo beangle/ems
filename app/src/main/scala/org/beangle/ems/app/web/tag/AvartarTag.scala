@@ -31,7 +31,7 @@ class AvartarTag(context: ComponentContext) extends UIBean(context) {
       href = Ems.api + s"/platform/user/avatars/${Digests.md5Hex(username)}.jpg"
     }
     if (null == this.cssClass && !parameters.contains("style")) {
-      parameters.put("style", "border-radius: 50%;")
+      parameters.put("style", "border-radius: 50%;width:40px;")
     }
   }
 }

@@ -18,6 +18,7 @@
 package org.beangle.ems.app.oa
 
 import jakarta.servlet.http.Part
+import org.beangle.commons.codec.binary.Base64
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
@@ -162,8 +163,9 @@ object Flows {
     val signs = Collections.newBuffer[String]
     signature foreach { signature =>
       if (Strings.isNotBlank(signature)) {
+        val bytes = Base64.decode(Strings.substringAfter(signature, ";base64,"))
         val sign = blob.upload(s"${dir}/${businessKey}/signatures/",
-          new ByteArrayInputStream(signature.getBytes), owner.code + ".png.txt", owner.code + " " + owner.name)
+          new ByteArrayInputStream(bytes), owner.code + ".png", owner.code + " " + owner.name)
         data.add(storePath, sign.filePath)
       }
     }

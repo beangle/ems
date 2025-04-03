@@ -65,9 +65,9 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
     val roleQuery = OqlBuilder.from(classOf[Role], "r").orderBy("r.indexno")
     roleQuery.where("r.domain=:domain", domainService.getDomain)
     val roles = entityDao.search(roleQuery)
-    val granterRoles = user.roles filter (m => m.granter) map (m => m.role)
+    val myMngRoles = user.roles filter (m => m.manager) map (m => m.role)
     for (r <- roles) {
-      if (granterRoles.contains(r) || isPlatformRoot) mngRoles += r
+      if (myMngRoles.contains(r) || isPlatformRoot) mngRoles += r
     }
     put("mngRoles", mngRoles)
     val apps = appService.getWebapps

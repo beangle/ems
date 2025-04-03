@@ -37,7 +37,9 @@ class SignatureWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     loadSignaturePath(userCode) match {
       case Some(path) =>
         EmsApp.getBlobRepository().path(path) match {
-          case Some(p) => response.sendRedirect(p)
+          case Some(p) =>
+            response.addHeader("Access-Control-Allow-Origin", "*")
+            response.sendRedirect(p)
           case None => response.setStatus(404)
         }
         Status(404)

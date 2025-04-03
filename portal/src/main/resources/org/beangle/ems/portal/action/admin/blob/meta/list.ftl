@@ -7,7 +7,8 @@
                      "application/x-7z-compressed":'fa-file-zipper'}/]
 [@b.grid items=blobMetas var="blobMeta" sortable="true"]
   [@b.gridbar]
-   bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
+    bar.addItem("${b.text("action.export")}",action.exportData("owner:所有者,name:文件名,sha:SHA摘要,filePath:存储路径,fileSize:文件大小,mediaType:文件类型,updatedAt:更新时间",null,"fileName=文件信息"));
+    bar.addItem("删除",action.remove());
   [/@]
   [@b.row]
     [@b.boxcol /]
