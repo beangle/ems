@@ -20,8 +20,8 @@
       [@b.a href="!info?id="+blobMeta.id target="_blank"]${blobMeta.name}[/@]
       </span>
     [/@]
-    [@b.col  width="37%" property="filePath" title="路径"]
-       <span style="font-size:0.8em" title="${blobMeta.profile.name}">${blobMeta.filePath}</span>
+    [@b.col  width="38%" property="filePath" title="路径"]
+       <div style="font-size:0.8em" title="${blobMeta.profile.name} ${blobMeta.filePath}" class="text-ellipsis">${blobMeta.filePath}</div>
     [/@]
     [@b.col  width="8%" property="fileSize" title="大小"]
        ${(blobMeta.fileSize/1024.0)?string(".##")}K
