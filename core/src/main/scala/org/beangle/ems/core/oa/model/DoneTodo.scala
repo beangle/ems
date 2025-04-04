@@ -40,4 +40,17 @@ class DoneTodo extends LongId, Updated {
   var completeAt: Instant = _
   /** 处理代办的地址 */
   var url: String = _
+
+  def this(todo: Todo) = {
+    this()
+    this.id = todo.id
+    this.updatedAt = todo.updatedAt
+    this.user = todo.user
+    this.domain = todo.domain
+    this.business = todo.business
+    this.businessKey = todo.businessKey
+    this.contents = todo.contents
+    this.url = todo.url
+    this.completeAt = Instant.now
+  }
 }

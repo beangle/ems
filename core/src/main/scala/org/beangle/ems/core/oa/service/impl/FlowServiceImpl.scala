@@ -27,7 +27,7 @@ import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.*
-import org.beangle.ems.core.oa.service.FlowService
+import org.beangle.ems.core.oa.service.{FlowService, TodoService}
 import org.beangle.ems.core.user.model.User
 
 import java.time.{Instant, LocalDate}
@@ -51,6 +51,7 @@ import org.beangle.ems.core.oa.service.impl.FlowServiceImpl.*
 class FlowServiceImpl extends FlowService {
   var domainService: DomainService = _
   var entityDao: EntityDao = _
+  var todoService: TodoService = _
 
   override def getFlows(businessCode: String, profileId: String): Seq[Flow] = {
     val query = OqlBuilder.from(classOf[Flow], "flow")
@@ -96,31 +97,35 @@ class FlowServiceImpl extends FlowService {
    */
   override def complete(activeTask: FlowActiveTask, payload: Payload): FlowProcess = {
     val task = entityDao.get(classOf[FlowTask], activeTask.id)
+    val process = task.process
     val assignee = entityDao.findBy(classOf[User], "code" -> payload.assignee.code, "org" -> domainService.getOrg).head
     task.complete(assignee, payload)
-    entityDao.saveOrUpdate(task, task.process)
+
+    entityDao.saveOrUpdate(task, process)
 
     activeTask.complete(assignee)
     activeTask.process.tasks.subtractOne(activeTask)
     entityDao.remove(activeTask)
+    todoService.complete(assignee, process.flow.business, process.businessKey)
 
     if (payload.data.getBoolean("passed", true)) {
       val nextActivities = findNext(task)
       nextActivities foreach { next =>
-        startTask(activeTask.process, task.process, next)
+        startTask(activeTask.process, process, next)
       }
       if (nextActivities.isEmpty) {
-        task.process.status = FlowStatus.Completed
-        task.process.endAt = Some(Instant.now)
+        process.status = FlowStatus.Completed
+        process.endAt = Some(Instant.now)
         entityDao.remove(activeTask.process)
       } else {
-        task.process.status = FlowStatus.Running
+        process.status = FlowStatus.Running
       }
     } else {
-      startTask(activeTask.process, task.process, task.process.flow.firstActivity)
-      task.process.status = FlowStatus.Rejected
+      startTask(activeTask.process, process, process.flow.firstActivity)
+      process.status = FlowStatus.Rejected
     }
-    task.process
+    entityDao.saveOrUpdate(process)
+    process
   }
 
   /** 取消一个流程
@@ -212,13 +217,7 @@ class FlowServiceImpl extends FlowService {
     //issue todos
     at.assignees foreach { u =>
       if (p.initiator.nonEmpty && !p.initiator.contains(u)) {
-        val flow = at.process.flow
-        //FIXME contents missing template support
-        val url = generateTodoUrl(flow, p)
-        val contents = s"${p.initiator.get.name}发起的${flow.name}申请,需要您审批</a>。"
-        val todo = new Todo(flow, u, contents, at.process.businessKey)
-        todo.url = url
-        entityDao.saveOrUpdate(todo)
+        todoService.newTodo(u, at.process.flow, p)
       }
     }
     at
@@ -237,19 +236,4 @@ class FlowServiceImpl extends FlowService {
     startTask(ap, process, activity)
   }
 
-  private def generateTodoUrl(flow: Flow, process: FlowProcess): String = {
-    val evaluator = ExpressionEvaluator.get("jexl3")
-    val ctx = Collections.newMap[String, Any]
-    ctx.put("flow", flow)
-    ctx.put("process", process)
-    ctx.put("base", Ems.base)
-    var script = flow.formUrl
-    var exp = Strings.substringBetween(script, "${", "}")
-    while (Strings.isNotBlank(exp)) {
-      script = Strings.replace(script, "${" + exp + "}", evaluator.eval(exp, ctx).toString)
-      exp = Strings.substringBetween(script, "${", "}")
-    }
-    script
-  }
 }
-

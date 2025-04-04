@@ -17,15 +17,14 @@
 
 package org.beangle.ems.core.oa.service
 
-import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.core.oa.service.impl.{DocServiceImpl, FlowServiceImpl, TodoServiceImpl}
-import org.beangle.ems.core.user.service.impl.*
+import org.beangle.ems.core.config.model.Business
+import org.beangle.ems.core.oa.model.{DoneTodo, Flow, FlowProcess, Todo}
+import org.beangle.ems.core.user.model.User
 
-class DefaultModule extends BindModule {
+trait TodoService {
+  def newTodo(user: User, flow: Flow, process: FlowProcess): Todo
 
-  override def binding(): Unit = {
-    bind(classOf[DocServiceImpl])
-    bind(classOf[FlowServiceImpl])
-    bind(classOf[TodoServiceImpl])
-  }
+  def complete(todo: Todo): DoneTodo
+
+  def complete(user: User, business: Business, businessKey: String): Int
 }

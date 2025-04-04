@@ -19,7 +19,7 @@
     </div>
    [/@]
 
-    <div class="card-body p-0">
+    <div class="card-body">
       <div class="mailbox-controls">
         <button type="button" class="btn btn-default btn-sm checkbox-toggle" onclick="toggleAll()"><i class="far fa-square"></i>
         </button>

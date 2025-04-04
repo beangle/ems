@@ -9,7 +9,7 @@
             </div>
             <div class="card-body">
               <div class="form-group">
-                <input  name="recipient.code" class="form-control" placeholder="发送给:" value="${Parameters['recipient.code']!}">
+                <input  name="recipient.code" class="form-control" placeholder="发送给: 填写接受者的账号" value="${Parameters['recipient.code']!}">
               </div>
               <div class="form-group">
                 <input name="message.title" class="form-control" placeholder="标题(30字以内):">
