@@ -17,10 +17,12 @@
 
 package org.beangle.ems.core.oa.service.impl
 
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.app.Ems
 import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.config.service.DomainService
@@ -88,8 +90,8 @@ class FlowServiceImpl extends FlowService {
 
   /** 完成一个任务
    *
-   * @param activeTask
-   * @param payload
+   * @param activeTask task
+   * @param payload    payload data
    */
   override def complete(activeTask: FlowActiveTask, payload: Payload): FlowProcess = {
     val task = entityDao.get(classOf[FlowTask], activeTask.id)
@@ -202,6 +204,22 @@ class FlowServiceImpl extends FlowService {
     //create task synchronized
     p.newTask(at)
     entityDao.saveOrUpdate(p)
+    //issue todos
+    at.assignees foreach { u =>
+      val flow = at.process.flow
+      //FIXME contents missing template support
+      val exp = ExpressionEvaluator.get("jexl3")
+      val ctx = Collections.newMap[String, Any]
+      ctx.put("flow", flow)
+      ctx.put("process", p)
+      ctx.put("base", Ems.base)
+      val url = exp.eval(flow.formUrl, ctx, classOf[String])
+
+      val contents = s"<a href='${url}' target='_blank'>${p.initiator.get.name}发起的${flow.name}申请</a>,需要你审批</a>。"
+      val todo = new Todo(flow, u, contents, at.process.businessKey)
+      todo.url = url
+      entityDao.saveOrUpdate(todo)
+    }
     at
   }
 

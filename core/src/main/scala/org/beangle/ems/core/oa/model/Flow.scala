@@ -18,7 +18,7 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{Json, JsonObject, JsonParser}
+import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Coded, Named, Remark, Updated}
 import org.beangle.ems.core.config.model.{Business, Domain}
@@ -42,6 +42,8 @@ class Flow extends LongId, Coded, Updated, Named, Remark {
   var envJson: String = "{}"
   /** 先决条件 */
   var guardJson: String = "{}"
+  /** 审批表单地址 */
+  var formUrl: String = _
 
   def firstActivity: FlowActivity = {
     activities.minBy(_.idx)

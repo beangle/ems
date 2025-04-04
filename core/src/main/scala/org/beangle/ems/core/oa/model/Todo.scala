@@ -22,6 +22,8 @@ import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.core.config.model.{Business, Domain}
 import org.beangle.ems.core.user.model.User
 
+import java.time.Instant
+
 /** 代办 */
 class Todo extends LongId, Updated {
   /** 用户 */
@@ -36,4 +38,17 @@ class Todo extends LongId, Updated {
   var business: Business = _
   /** 是否完成 */
   var done: Boolean = _
+  /** 处理代码的地址 */
+  var url: String = _
+
+  def this(flow: Flow, user: User, contents: String, businessKey: String) = {
+    this()
+    this.business = flow.business
+    this.businessKey = businessKey
+    this.contents = contents
+    this.user = user
+    this.domain = flow.domain
+    this.done = false
+    this.updatedAt = Instant.now
+  }
 }
