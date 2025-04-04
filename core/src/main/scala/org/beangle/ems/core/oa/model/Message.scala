@@ -33,20 +33,16 @@ object Message {
 class Message extends LongId {
   /** 标题 */
   var title: String = _
-
   /** 内容 */
   var contents: String = _
-
+  /** 发送用户 */
+  var sender: Option[User] = None
   /** 发送人 */
-  var sender: User = _
-
+  var sendFrom: String = _
   /** 接受人 */
   var recipient: User = _
-
   /** 消息状态 */
   var status: Int = _
-
   /** 发送日期 */
   var sentAt: Instant = _
-
 }

@@ -42,7 +42,7 @@ class FlowProcess extends LongId {
   var envJson: String = "{}"
   /** 当前状态 */
   var status: FlowStatus = FlowStatus.Initial
-  /** 受理人 */
+  /** 发起人 */
   var initiator: Option[User] = None
 
   def this(activeProcess: FlowActiveProcess, env: JsonObject) = {

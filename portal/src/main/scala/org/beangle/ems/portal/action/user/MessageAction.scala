@@ -24,8 +24,8 @@ import org.beangle.ems.core.oa.model.Message
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{ignore, mapping, param}
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
 import java.time.Instant
 
@@ -69,8 +69,8 @@ class MessageAction extends RestfulAction[Message] {
     builder.where("message.status=" + Message.Newly)
     val messages = entityDao.search(builder)
     put("messages", messages)
-    val avatarUrls = messages map { m =>
-      (m.sender.code, Ems.api + "/platform/user/avatars/" + Digests.md5Hex(m.sender.code))
+    val avatarUrls = messages.filter(_.sender.nonEmpty) map { m =>
+      (m.sender.get.code, Ems.api + "/platform/user/avatars/" + Digests.md5Hex(m.sender.get.code))
     }
     put("avatarUrls", avatarUrls.toMap)
     forward()
@@ -90,11 +90,12 @@ class MessageAction extends RestfulAction[Message] {
         msg.recipient = users.head
       }
     }
-
     if (msg.recipient != null) {
       val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
       if (users.size == 1) {
-        msg.sender = users.head
+        val sender = users.head
+        msg.sender = Some(sender)
+        msg.sendFrom = sender.name
       }
       msg.sentAt = Instant.now
     }

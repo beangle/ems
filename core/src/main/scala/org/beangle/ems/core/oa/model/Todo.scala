@@ -38,7 +38,7 @@ class Todo extends LongId, Updated {
   var business: Business = _
   /** 是否完成 */
   var done: Boolean = _
-  /** 处理代码的地址 */
+  /** 处理代办的地址 */
   var url: String = _
 
   def this(flow: Flow, user: User, contents: String, businessKey: String) = {

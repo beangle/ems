@@ -43,6 +43,7 @@ object FlowServiceImpl {
     }
   }
 }
+
 import org.beangle.ems.core.oa.service.impl.FlowServiceImpl.*
 
 /** 流程服务的实现
@@ -203,22 +204,22 @@ class FlowServiceImpl extends FlowService {
     entityDao.saveOrUpdate(at)
     //create task synchronized
     p.newTask(at)
+    //update initiator as first task assignees
+    if (p.initiator.isEmpty && p.tasks.size == 1 && at.assignees.size == 1) {
+      p.initiator = at.assignees.headOption
+    }
     entityDao.saveOrUpdate(p)
     //issue todos
     at.assignees foreach { u =>
-      val flow = at.process.flow
-      //FIXME contents missing template support
-      val exp = ExpressionEvaluator.get("jexl3")
-      val ctx = Collections.newMap[String, Any]
-      ctx.put("flow", flow)
-      ctx.put("process", p)
-      ctx.put("base", Ems.base)
-      val url = exp.eval(flow.formUrl, ctx, classOf[String])
-
-      val contents = s"<a href='${url}' target='_blank'>${p.initiator.get.name}发起的${flow.name}申请</a>,需要你审批</a>。"
-      val todo = new Todo(flow, u, contents, at.process.businessKey)
-      todo.url = url
-      entityDao.saveOrUpdate(todo)
+      if (p.initiator.nonEmpty && !p.initiator.contains(u)) {
+        val flow = at.process.flow
+        //FIXME contents missing template support
+        val url = generateTodoUrl(flow, p)
+        val contents = s"${p.initiator.get.name}发起的${flow.name}申请,需要您审批</a>。"
+        val todo = new Todo(flow, u, contents, at.process.businessKey)
+        todo.url = url
+        entityDao.saveOrUpdate(todo)
+      }
     }
     at
   }
@@ -235,4 +236,20 @@ class FlowServiceImpl extends FlowService {
 
     startTask(ap, process, activity)
   }
+
+  private def generateTodoUrl(flow: Flow, process: FlowProcess): String = {
+    val evaluator = ExpressionEvaluator.get("jexl3")
+    val ctx = Collections.newMap[String, Any]
+    ctx.put("flow", flow)
+    ctx.put("process", process)
+    ctx.put("base", Ems.base)
+    var script = flow.formUrl
+    var exp = Strings.substringBetween(script, "${", "}")
+    while (Strings.isNotBlank(exp)) {
+      script = Strings.replace(script, "${" + exp + "}", evaluator.eval(exp, ctx).toString)
+      exp = Strings.substringBetween(script, "${", "}")
+    }
+    script
+  }
 }
+

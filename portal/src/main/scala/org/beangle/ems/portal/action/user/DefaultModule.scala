@@ -18,13 +18,12 @@
 package org.beangle.ems.portal.action.user
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.portal.action.user.{AvatarAction, DocAction, MessageAction, NoticeAction, NotificationAction, TodoAction}
 
 class DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
-    bind( classOf[TodoAction], classOf[MessageAction], classOf[NotificationAction])
+    bind(classOf[TodoAction], classOf[MessageAction])
 
-    bind(classOf[DocAction], classOf[NoticeAction],classOf[AvatarAction])
+    bind(classOf[DocAction], classOf[NoticeAction], classOf[AvatarAction])
   }
 }

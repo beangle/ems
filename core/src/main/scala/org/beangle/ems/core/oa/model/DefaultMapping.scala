@@ -83,9 +83,12 @@ object DefaultMapping extends MappingModule {
       e.filePath is length(500)
     }
 
-    bind[Notification]
-    bind[Todo]
-    bind[DoneTodo].generator(IdGenerator.Assigned)
+    bind[Todo].declare { e =>
+      index("", false, e.user)
+    }
+    bind[DoneTodo].declare { e =>
+      index("", false, e.user)
+    }.generator(IdGenerator.Assigned)
 
     bind[Signature].declare { e =>
       index("", true, e.user)

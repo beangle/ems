@@ -11,6 +11,7 @@
   [@b.textfield name="flow.name" label="名称" value=flow.name! maxlength="100" required="true"/]
   [@b.textarea name="flow.guardJson" label="先决条件" value=flow.guardJson! maxlength="300" cols="80" rows="4" required="false" placeholder="json object 格式"/]
   [@b.textarea name="flow.envJson" label="初始数据" value=flow.envJson! maxlength="2000" cols="80" rows="4" required="false" placeholder="json object 格式"/]
+  [@b.textfield name="flow.formUrl" label="表单URL" value=flow.formUrl! maxlength="300" required="true" style="width:400px"/]
   [@b.field label="流程步骤"]
     <table style="table-layout: fixed;" width="1000px">
       <thead>

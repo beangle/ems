@@ -50,7 +50,7 @@
           [#list messages as message]
           <tr>
             <td width="7%"><input type="checkbox" name="message.id" value="${message.id}"></td>
-            <td class="mailbox-name" width="13%">[@b.a href="!info?id=${message.id}"]${message.sender.name}[/@]</td>
+            <td class="mailbox-name" width="13%">[@b.a href="!info?id=${message.id}"]${message.sendFrom}[/@]</td>
             <td class="mailbox-subject" width="65%">
                <b>${message.title}</b> - [#if message.contents?length>30]${message.contents?substring(0,30)?html}...[#else]${message.contents?html}[/#if]
             </td>

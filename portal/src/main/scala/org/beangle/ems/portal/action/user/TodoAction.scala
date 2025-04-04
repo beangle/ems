@@ -19,7 +19,15 @@ package org.beangle.ems.portal.action.user
 
 import org.beangle.ems.core.oa.model.Todo
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
 class TodoAction extends RestfulAction[Todo] {
 
+  def newly(): View = {
+    val builder = getQueryBuilder
+    builder.limit(1, 5)
+    val todoes = entityDao.search(builder)
+    put("todoes", todoes)
+    forward()
+  }
 }

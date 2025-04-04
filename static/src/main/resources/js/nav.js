@@ -2,7 +2,9 @@
   function messageCallBack(c){
     jQuery('#newly-message-count').text(c)
   }
-
+  function taskCallBack(c){
+    jQuery('#newly-task-count').text(c)
+  }
   if (typeof String.prototype.endsWith != 'function') {
     String.prototype.endsWith = function(suffix) {
        return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -614,6 +616,15 @@
       complete: function( jqXHR) {
         try{
           jQuery("#newly-message").html(jqXHR.responseText);
+        }catch(e){alert(e)}
+      }
+    });
+    jQuery.ajax({
+      url: params['webapp']+'/portal/user/todo/newly?callback=taskCallBack',cache:false,
+      type: "GET",dataType: "html",
+      complete: function( jqXHR) {
+        try{
+          jQuery("#newly-task").html(jqXHR.responseText);
         }catch(e){alert(e)}
       }
     });

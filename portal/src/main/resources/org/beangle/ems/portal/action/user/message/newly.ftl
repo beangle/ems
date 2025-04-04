@@ -1,9 +1,13 @@
 [#list messages as message]
     <a class="dropdown-item" href="${ems.webapp}${b.base}/user/message/${message.id}" target="_blank">
       <div class="media">
-        <img src="${avatarUrls[message.sender.code]}" class="img-size-32 mr-3 img-circle" alt="${message.sender.name}">
+        [#if message.sender??]
+        <img src="${avatarUrls[message.sender.code]}" class="img-size-32 mr-3 img-circle" alt="${message.sendFrom}">
+        [#else]
+        ${message.sendFrom}
+        [/#if]
         <div class="media-body">
-          <h4 class="dropdown-item-title">${message.sender.name}
+          <h4 class="dropdown-item-title">${message.sendFrom}
           <span class="float-right text-sm text-muted"><i class="far fa-clock mr-1"></i>${message.sentAt?string('yy-MM-dd')}</span>
           </h4>
           <p class="text-sm">${message.title}</p>

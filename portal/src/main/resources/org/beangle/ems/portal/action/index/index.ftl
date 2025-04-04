@@ -169,37 +169,14 @@
           <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
 
-        <li class="nav-item dropdown notifications-menu">
-          <a href="#" class="nav-link" data-toggle="dropdown">
-            <i class="far fa-bell"></i>
-            <span class="badge badge-warning navbar-badge">0</span>
-          </a>
-          <ul class="dropdown-menu">
-            <li class="nav-header">You have 0 notifications</li>
-            <li>
-              <ul class="menu">
-              </ul>
-            </li>
-            <li class="footer"><a href="#">View all</a></li>
-          </ul>
-        </li>
-
         <li class="nav-item dropdown tasks-menu">
           <a href="#" class="nav-link" data-toggle="dropdown">
             <i class="far fa-flag"></i>
-            <span class="badge badge-warning navbar-badge">0</span>
+            <span class="badge badge-warning navbar-badge" id="newly-task-count">0</span>
           </a>
-          <ul class="dropdown-menu">
-            <li class="nav-header">You have 0 tasks</li>
-            <li>
-              <ul class="menu">
-              </ul>
-            </li>
-            <li class="footer">
-              <a href="#">View all tasks</a>
-            </li>
-          </ul>
+          <div id="newly-task" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>

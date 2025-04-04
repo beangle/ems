@@ -38,4 +38,6 @@ class DoneTodo extends LongId, Updated {
   var business: Business = _
   /** 完成时间 */
   var completeAt: Instant = _
+  /** 处理代办的地址 */
+  var url: String = _
 }

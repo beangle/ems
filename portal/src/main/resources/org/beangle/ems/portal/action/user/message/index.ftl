@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+<div class="container-fluid">
     <section class="content-header">
       <h1>
         我的消息
@@ -13,7 +14,7 @@
 
     <section class="content">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
           [@b.a href="!editNew" target="messageList" class="btn btn-primary btn-block margin-bottom"]发送新消息[/@]
           <div class="card">
            <div class="card-header">
@@ -53,7 +54,7 @@
             </div>
           </div>
         </div>
-      [@b.div id="messageList" href="!search?message.status=1"  class="col-md-9"/]
+      [@b.div id="messageList" href="!search?message.status=1"  class="col-md-10"/]
       </div>
     </section>
     <script>
@@ -62,4 +63,5 @@
          jQuery(this).addClass("active")
       });
     </script>
+</div>
 [@b.foot/]
