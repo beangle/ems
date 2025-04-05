@@ -4,13 +4,14 @@ create table ems.oa_signatures (id bigint not null, file_size integer default 0 
 
 alter table ems.oa_flows add form_url varchar(255);
 alter table ems.oa_todoes add url varchar(255);
+alter table ems.oa_todoes add title varchar(200);
 alter table ems.oa_todoes add business_id int8;
 alter table ems.oa_todoes add business_key varchar(255);
 alter table ems.oa_todoes add done bool default false;
 
 create index idx_7wu1nir9kwrxh80w8l9jmvubv on ems.oa_todoes (user_id);
 
-create table ems.oa_done_todoes (updated_at timestamptz not null, url varchar(255) not null, domain_id integer not null, contents varchar(255) not null, id bigint not null, business_key varchar(255) not null, user_id bigint not null, business_id bigint not null, complete_at timestamptz not null);
+create table ems.oa_done_todoes (updated_at timestamptz not null, url varchar(300) not null, domain_id integer not null, contents varchar(1000) not null, id bigint not null, business_key varchar(100) not null, title varchar(200) not null, user_id bigint not null, business_id bigint not null, complete_at timestamptz not null);
 alter table ems.oa_done_todoes add constraint pk_mn26km960qlp4vdudumww56lb primary key (id);
 create index idx_qg5tig2qcku0ai7jqajjre0xj on ems.oa_done_todoes (user_id);
 

@@ -43,7 +43,7 @@
           <tr>
             <td width="7%">${todo_index +1}</td>
             <td class="mailbox-subject" >
-               [#if !business??]<b>${todo.business.name}</b> - [/#if]${todo.contents?html}
+               [#if !business??]<b>${todo.business.name}</b> - [/#if] <b>${todo.title}</b> - ${todo.contents?html}
             </td>
             <td class="mailbox-name" width="13%"><a href="${todo.url}" target="_blank">开始审批</a></td>
             <td class="mailbox-name" width="13%">[@b.a href="!complete?todo.id="+todo.id target="_blank" onclick="if(confirm('确认已办结此事项?')){ return bg.Go(this)} else return false;"]设置为办结[/@]</td>

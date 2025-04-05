@@ -2,7 +2,7 @@
     <a class="dropdown-item" href="${todo.url}" target="_blank">
       <div class="media">
         <div class="media-body">
-          <h4 class="dropdown-item-title">${todo.business.name}
+          <h4 class="dropdown-item-title">${todo.title}
           <span class="float-right text-sm text-muted"><i class="far fa-clock mr-1"></i>${todo.updatedAt?string('yy-MM-dd')}</span>
           </h4>
           <p class="text-sm">${todo.contents}</p>

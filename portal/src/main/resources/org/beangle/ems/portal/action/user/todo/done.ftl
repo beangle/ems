@@ -43,7 +43,7 @@
           <tr>
             <td width="7%">${todo_index +1}</td>
             <td class="mailbox-subject" >
-               [#if !business??]<b>${todo.business.name}</b> - [/#if]${todo.contents?html}
+               [#if !business??]<b>${todo.business.name}</b> - [/#if] <b>${todo.title}</b> - ${todo.contents?html}
             </td>
             <td class="mailbox-name" width="13%"><a href="${todo.url}" target="_blank">查看</a></td>
             <td class="mailbox-date" width="15%">${todo.updatedAt?string('yy-MM-dd HH:mm')}</td>

@@ -18,11 +18,11 @@
 package org.beangle.ems.core.oa.service
 
 import org.beangle.ems.core.config.model.Business
-import org.beangle.ems.core.oa.model.{DoneTodo, Flow, FlowProcess, Todo}
+import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.user.model.User
 
 trait TodoService {
-  def newTodo(user: User, flow: Flow, process: FlowProcess): Todo
+  def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Todo
 
   def complete(todo: Todo): DoneTodo
 

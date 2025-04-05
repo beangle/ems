@@ -30,6 +30,8 @@ class Todo extends LongId, Updated {
   var user: User = _
   /** 领域 */
   var domain: Domain = _
+  /** 标题 */
+  var title: String = _
   /** 内容 */
   var contents: String = _
   /** 业务主键 */
@@ -41,10 +43,11 @@ class Todo extends LongId, Updated {
   /** 处理代办的地址 */
   var url: String = _
 
-  def this(flow: Flow, user: User, contents: String, businessKey: String) = {
+  def this(flow: Flow, user: User, title: String, contents: String, businessKey: String) = {
     this()
     this.business = flow.business
     this.businessKey = businessKey
+    this.title = title
     this.contents = contents
     this.user = user
     this.domain = flow.domain

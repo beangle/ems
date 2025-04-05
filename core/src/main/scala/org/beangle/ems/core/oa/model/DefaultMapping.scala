@@ -84,9 +84,17 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Todo].declare { e =>
+      e.title is length(200)
+      e.businessKey is length(100)
+      e.url is length(300)
+      e.contents is length(1000)
       index("", false, e.user)
     }
     bind[DoneTodo].declare { e =>
+      e.title is length(200)
+      e.businessKey is length(100)
+      e.url is length(300)
+      e.contents is length(1000)
       index("", false, e.user)
     }.generator(IdGenerator.Assigned)
 

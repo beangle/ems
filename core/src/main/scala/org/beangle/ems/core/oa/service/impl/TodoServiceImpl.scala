@@ -23,23 +23,13 @@ import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.Business
-import org.beangle.ems.core.oa.model.{DoneTodo, Flow, FlowProcess, Todo}
+import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.oa.service.TodoService
 import org.beangle.ems.core.user.model.User
 
 class TodoServiceImpl extends TodoService {
 
   var entityDao: EntityDao = _
-
-  override def newTodo(user: User, flow: Flow, process: FlowProcess): Todo = {
-    val url = generateTodoUrl(flow, process)
-    //FIXME contents missing template support
-    val contents = s"${process.initiator.get.name}发起的${flow.name}申请,需要您审批</a>。"
-    val todo = new Todo(flow, user, contents, process.businessKey)
-    todo.url = url
-    entityDao.saveOrUpdate(todo)
-    todo
-  }
 
   override def complete(todo: Todo): DoneTodo = {
     val done = new DoneTodo(todo)
@@ -56,6 +46,17 @@ class TodoServiceImpl extends TodoService {
     todoes.size
   }
 
+  override def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Todo = {
+    val url = generateTodoUrl(flow, process)
+    val title = s"${flow.name}申请${task.name}"
+    //FIXME contents missing template support
+    val contents = s"${process.initiator.get.name}发起的${flow.name}申请,需要您处理。"
+    val todo = new Todo(flow, user, title, contents, process.businessKey)
+    todo.url = url
+    entityDao.saveOrUpdate(todo)
+    todo
+  }
+
   private def generateTodoUrl(flow: Flow, process: FlowProcess): String = {
     val evaluator = ExpressionEvaluator.get("jexl3")
     val ctx = Collections.newMap[String, Any]
@@ -70,4 +71,5 @@ class TodoServiceImpl extends TodoService {
     }
     script
   }
+
 }

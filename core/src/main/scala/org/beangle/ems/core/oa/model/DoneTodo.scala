@@ -30,6 +30,8 @@ class DoneTodo extends LongId, Updated {
   var user: User = _
   /** 领域 */
   var domain: Domain = _
+  /** 标题 */
+  var title: String = _
   /** 内容 */
   var contents: String = _
   /** 业务主键 */
@@ -49,6 +51,7 @@ class DoneTodo extends LongId, Updated {
     this.domain = todo.domain
     this.business = todo.business
     this.businessKey = todo.businessKey
+    this.title = todo.title
     this.contents = todo.contents
     this.url = todo.url
     this.completeAt = Instant.now
