@@ -27,6 +27,7 @@ import org.beangle.ems.app.Ems.env
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 
 import java.io.{File, FileInputStream}
+import java.net.URL
 
 object EmsApp extends Logging {
 
@@ -118,6 +119,15 @@ object EmsApp extends Logging {
     }
   }
 
+  def getResource(path: String): Option[URL] = {
+    val p = if path.startsWith("/") then path.substring(1) else path
+    ClassLoaders.getResources(path).headOption match
+      case None =>
+        val url = new URL(s"${Ems.api}/platform/config/files/$name/$p")
+        val status = HttpUtils.access(url)
+        if status.isOk then Some(url) else None
+      case a@Some(url) => a
+  }
 }
 
 case class Token(token: String, expiredAt: Long)

@@ -18,8 +18,10 @@
 package org.beangle.ems.app.oa
 
 import jakarta.servlet.http.Part
+import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.codec.binary.Base64
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.io.IOs
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.Networks
@@ -30,7 +32,7 @@ import org.beangle.data.model.Entity
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.serializer.json.JsonSerializer
 
-import java.io.ByteArrayInputStream
+import java.io.{ByteArrayInputStream, InputStream}
 import java.time.Instant
 
 object Flows {
@@ -169,6 +171,20 @@ object Flows {
         data.add(storePath, sign.filePath)
       }
     }
+  }
+
+  def readSignature(path: String): String = {
+    val blob = EmsApp.getBlobRepository(true)
+    try {
+      toBase64(blob.url(path).get.openStream(), path)
+    } catch
+      case e: Exception => null
+  }
+
+  private def toBase64(is: InputStream, fileName: String): String = {
+    val contentType = MediaTypes.get(Strings.substringAfterLast(fileName, ".")).map(_.toString).getOrElse("image/png")
+    val data = Base64.encode(IOs.readBytes(is))
+    s"data:${contentType};base64,${data}"
   }
 
   private def convertProcess(res: Response): Process = {

@@ -18,6 +18,7 @@
       <profile package = "log" prefix="log_">
         <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" schema="log" prefix="ems_"/>
       </profile>
+      <profile package = "job" prefix="jb_"/>
     </profile>
   </naming>
 </orm>
