@@ -42,15 +42,17 @@ class Todo extends LongId, Updated {
   var done: Boolean = _
   /** 处理代办的地址 */
   var url: String = _
+  /** 发送到外部系统 0 表示不需要，1表示需要 2表示已经发送到外部系统 */
+  var smsStatus: Int = _
 
-  def this(flow: Flow, user: User, title: String, contents: String, businessKey: String) = {
+  def this(user: User, title: String, contents: String, business: Business, businessKey: String) = {
     this()
-    this.business = flow.business
+    this.domain = business.domain
+    this.business = business
     this.businessKey = businessKey
     this.title = title
     this.contents = contents
     this.user = user
-    this.domain = flow.domain
     this.done = false
     this.updatedAt = Instant.now
   }

@@ -22,7 +22,8 @@ import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.user.model.User
 
 trait TodoService {
-  def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Todo
+
+  def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Option[Todo]
 
   def complete(todo: Todo): DoneTodo
 

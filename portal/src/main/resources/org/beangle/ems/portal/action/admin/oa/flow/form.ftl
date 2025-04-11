@@ -4,7 +4,7 @@
 [@b.toolbar title="添加/更新流程定义"]
   bar.addBack();
 [/@]
-[@b.form action=b.rest.save(flow) theme="list" name="ruleForm"]
+[@b.form action=b.rest.save(flow) theme="list" ]
   [@b.select name="flow.business.id" label="业务类型" value=flow.business! items=businesses required="true"/]
   [@b.textfield label="场景配置ID" required="true" maxLength="150px" name="flow.profileId" value=flow.profileId!/]
   [@b.textfield name="flow.code" label="代码" value=flow.code! maxlength="100" required="true"/]
@@ -12,8 +12,10 @@
   [@b.textarea name="flow.guardJson" label="先决条件" value=flow.guardJson! maxlength="300" cols="80" rows="4" required="false" placeholder="json object 格式"/]
   [@b.textarea name="flow.envJson" label="初始数据" value=flow.envJson! maxlength="2000" cols="80" rows="4" required="false" placeholder="json object 格式"/]
   [@b.textfield name="flow.formUrl" label="表单URL" value=flow.formUrl! maxlength="300" required="true" style="width:400px"/]
+  [@b.select name="flow.todoMessage.id" label="代办提醒模板" value=flow.todoMessage! items=todoTemplates option=r"${item.business.name} ${item.name}" style="width:400px"/]
+  [@b.select name="flow.resultMessage.id" label="结果提醒模板" value=flow.resultMessage! items=resultTemplates option=r"${item.business.name} ${item.name}" style="width:400px"/]
   [@b.field label="流程步骤"]
-    <table style="table-layout: fixed;" width="1000px">
+    <table style="table-layout: fixed;" width="1000px" id="activity_table">
       <thead>
         <tr>
           <th style="width:5%">步骤</th>
@@ -90,7 +92,7 @@
 <script>
      jQuery(document).ready(function(){
        beangle.load(["chosen"],function(){
-         jQuery("#ruleForm select").each(function(i,e){
+         jQuery("#activity_table select").each(function(i,e){
            jQuery(e).chosen({placeholder_text_single:"...",no_results_text: "没有找到结果！",search_contains:true,allow_single_deselect:true,width:'150px'});
          });
        });

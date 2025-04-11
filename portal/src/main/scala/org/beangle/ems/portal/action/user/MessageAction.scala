@@ -72,6 +72,7 @@ class MessageAction extends RestfulAction[Message] {
     val avatarUrls = messages.filter(_.sender.nonEmpty) map { m =>
       (m.sender.get.code, Ems.api + "/platform/user/avatars/" + Digests.md5Hex(m.sender.get.code))
     }
+    put("defaultUrl", Ems.api + "/platform/user/avatars/" + Digests.md5Hex("default_user_code"))
     put("avatarUrls", avatarUrls.toMap)
     forward()
   }

@@ -44,6 +44,10 @@ class Flow extends LongId, Coded, Updated, Named, Remark {
   var guardJson: String = "{}"
   /** 审批表单地址 */
   var formUrl: String = _
+  /** 审核消息模板 */
+  var todoMessage: Option[MessageTemplate] = None
+  /** 审核结果消息模板 */
+  var resultMessage: Option[MessageTemplate] = None
 
   def firstActivity: FlowActivity = {
     activities.minBy(_.idx)

@@ -9,7 +9,7 @@ object EmsDepends {
   val webVer = "0.6.3"
   val serializerVer = "0.1.16"
   val cacheVer = "0.1.13"
-  val templateVer = "0.1.24"
+  val templateVer = "0.1.25-SNAPSHOT"
   val webmvcVer = "0.10.4"
   val buiVer = "0.0.3"
   val securityVer = "4.3.27"

@@ -3,4 +3,5 @@
     [@b.navitem href="flow"]流程配置[/@]
     [@b.navitem href="flow-active-process"]活跃流程[/@]
     [@b.navitem href="flow-process"]所有流程[/@]
+    [@b.navitem href="message-template"]消息模板[/@]
   [/@]

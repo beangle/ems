@@ -17,17 +17,15 @@
 
 package org.beangle.ems.core.oa.service.impl
 
-import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.app.Ems
 import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.*
-import org.beangle.ems.core.oa.service.{FlowService, TodoService}
+import org.beangle.ems.core.oa.service.{FlowService, MessageService, TodoService}
 import org.beangle.ems.core.user.model.User
 
 import java.time.{Instant, LocalDate}
@@ -52,6 +50,7 @@ class FlowServiceImpl extends FlowService {
   var domainService: DomainService = _
   var entityDao: EntityDao = _
   var todoService: TodoService = _
+  var messageService: MessageService = _
 
   override def getFlows(businessCode: String, profileId: String): Seq[Flow] = {
     val query = OqlBuilder.from(classOf[Flow], "flow")
@@ -117,6 +116,7 @@ class FlowServiceImpl extends FlowService {
         process.status = FlowStatus.Completed
         process.endAt = Some(Instant.now)
         entityDao.remove(activeTask.process)
+
       } else {
         process.status = FlowStatus.Running
       }
@@ -125,6 +125,9 @@ class FlowServiceImpl extends FlowService {
       process.status = FlowStatus.Rejected
     }
     entityDao.saveOrUpdate(process)
+    if(process.status == FlowStatus.Completed){
+      messageService.newMessage(process.initiator.get, process.flow, process)
+    }
     process
   }
 

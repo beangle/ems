@@ -58,6 +58,11 @@ object DefaultMapping extends MappingModule {
       e.depart is length(50)
     }.cacheable()
 
+    bind[MessageTemplate].declare { e =>
+      e.title is length(400)
+      e.contents is length(3000)
+    }.cacheable()
+
     bind[FlowActiveProcess].declare { e =>
       e.tasks is depends("process")
     }

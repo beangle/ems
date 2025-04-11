@@ -21,7 +21,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.oa.model.{Flow, FlowActivity}
+import org.beangle.ems.core.oa.model.{Flow, FlowActivity, MessageTemplate}
 import org.beangle.ems.core.user.model.Group
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
@@ -44,10 +44,17 @@ class FlowAction extends RestfulAction[Flow] {
     entityDao.findBy(classOf[Business], "domain", domainService.getDomain)
   }
 
+  private def getTemplates(): Seq[MessageTemplate] = {
+    entityDao.findBy(classOf[MessageTemplate], "business.domain", domainService.getDomain)
+  }
+
   override protected def editSetting(entity: Flow): Unit = {
     val groups = entityDao.getAll(classOf[Group])
     put("groups", groups)
     put("businesses", getBusinesses())
+    val templates = getTemplates()
+    put("todoTemplates", templates.filter(_.todo))
+    put("resultTemplates", templates.filter { x => !x.todo })
     super.editSetting(entity)
   }
 

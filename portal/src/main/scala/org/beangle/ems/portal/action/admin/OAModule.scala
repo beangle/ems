@@ -25,6 +25,7 @@ class OAModule extends BindModule {
     bind(classOf[oa.DocAction], classOf[oa.NoticeAction], classOf[oa.NewsAction])
     bind(classOf[oa.NoticeAuditAction])
     bind(classOf[oa.FlowAction], classOf[oa.FlowProcessAction], classOf[oa.FlowActiveProcessAction])
-    bind(classOf[oa.SignatureAction],classOf[oa.TodoAction])
+    bind(classOf[oa.SignatureAction], classOf[oa.TodoAction])
+    bind(classOf[oa.MessageTemplateAction])
   }
 }

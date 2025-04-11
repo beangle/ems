@@ -18,45 +18,22 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
-import org.beangle.ems.core.user.model.User
+import org.beangle.data.model.pojo.{Named, Updated}
+import org.beangle.ems.core.config.model.Business
 
-import java.time.Instant
-
-object Message {
-  val Newly = 1
-  val Readed = 2
-  val InTrash = 3
-}
-
-/** 消息
- * */
-class Message extends LongId {
-  /** 标题 */
+/** 消息模板
+ */
+class MessageTemplate extends LongId, Updated, Named {
+  /** 业务类型 */
+  var business: Business = _
+  /** 标题模板 */
   var title: String = _
-  /** 内容 */
+  /** 内容模板 */
   var contents: String = _
-  /** 发送用户 */
-  var sender: Option[User] = None
-  /** 发送人 */
-  var sendFrom: String = _
-  /** 接受人 */
-  var recipient: User = _
-  /** 消息状态 */
-  var status: Int = _
-  /** 发送时间 */
-  var sentAt: Instant = _
-
-  def this(recipient: User, title: String, contents: String) = {
-    this()
-    this.recipient = recipient
-    this.title = title
-    this.contents = contents
-    this.sentAt = Instant.now
-    this.status = Message.Newly
-  }
-
-  def updateSender(sender: User): Unit = {
-    this.sendFrom = sender.name
-    this.sender = Some(sender)
-  }
+  /** 变量 */
+  var variables: Option[String] = None
+  /** 是否是代办消息 */
+  var todo: Boolean = _
+  /** 延迟发送时间 */
+  var delayMinutes: Int = _
 }

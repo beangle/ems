@@ -17,15 +17,10 @@
 
 package org.beangle.ems.core.oa.service
 
-import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.core.oa.service.impl.{DocServiceImpl, FlowServiceImpl, MessageServiceImpl, TodoServiceImpl}
+import org.beangle.ems.core.oa.model.{Flow, FlowProcess, Message}
+import org.beangle.ems.core.user.model.User
 
-class DefaultModule extends BindModule {
+trait MessageService {
 
-  override def binding(): Unit = {
-    bind(classOf[DocServiceImpl])
-    bind(classOf[FlowServiceImpl])
-    bind(classOf[TodoServiceImpl])
-    bind(classOf[MessageServiceImpl])
-  }
+  def newMessage(recipient: User, flow: Flow, process: FlowProcess): Option[Message]
 }

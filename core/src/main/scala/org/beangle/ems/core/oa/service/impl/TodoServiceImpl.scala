@@ -18,14 +18,14 @@
 package org.beangle.ems.core.oa.service.impl
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.lang.Strings
-import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.oa.service.TodoService
 import org.beangle.ems.core.user.model.User
+import org.beangle.template.api.TemplateInterpreter
+import org.beangle.template.freemarker.{DefaultTemplateEngine, DefaultTemplateInterpreter}
 
 class TodoServiceImpl extends TodoService {
 
@@ -46,30 +46,25 @@ class TodoServiceImpl extends TodoService {
     todoes.size
   }
 
-  override def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Todo = {
-    val url = generateTodoUrl(flow, process)
-    val title = s"${flow.name}申请${task.name}"
-    //FIXME contents missing template support
-    val contents = s"${process.initiator.get.name}发起的${flow.name}申请,需要您处理。"
-    val todo = new Todo(flow, user, title, contents, process.businessKey)
-    todo.url = url
-    entityDao.saveOrUpdate(todo)
-    todo
-  }
-
-  private def generateTodoUrl(flow: Flow, process: FlowProcess): String = {
-    val evaluator = ExpressionEvaluator.get("jexl3")
-    val ctx = Collections.newMap[String, Any]
-    ctx.put("flow", flow)
-    ctx.put("process", process)
-    ctx.put("base", Ems.base)
-    var script = flow.formUrl
-    var exp = Strings.substringBetween(script, "${", "}")
-    while (Strings.isNotBlank(exp)) {
-      script = Strings.replace(script, "${" + exp + "}", evaluator.eval(exp, ctx).toString)
-      exp = Strings.substringBetween(script, "${", "}")
+  override def newTodo(user: User, task: FlowTask, flow: Flow, process: FlowProcess): Option[Todo] = {
+    flow.todoMessage map { template =>
+      val ctx = Collections.newMap[String, Any]
+      ctx.put("flow", flow)
+      ctx.put("process", process)
+      ctx.put("base", Ems.base)
+      ctx.put("task", task)
+      val title = DefaultTemplateInterpreter.process(template.title, ctx)
+      val contents = DefaultTemplateInterpreter.process(template.contents, ctx)
+      //    val title = s"${flow.name}申请${task.name}"
+      //    val contents = s"${process.initiator.get.name}发起的${flow.name}申请,需要您处理。"
+      val todo = new Todo(user, title, contents, flow.business, process.businessKey)
+      if (template.delayMinutes > 0) {
+        todo.updatedAt = todo.updatedAt.plusSeconds(template.delayMinutes * 60)
+      }
+      todo.url = DefaultTemplateInterpreter.process(flow.formUrl, ctx)
+      entityDao.saveOrUpdate(todo)
+      todo
     }
-    script
   }
 
 }

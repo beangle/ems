@@ -4,7 +4,7 @@
         [#if message.sender??]
         <img src="${avatarUrls[message.sender.code]}" class="img-size-32 mr-3 img-circle" alt="${message.sendFrom}">
         [#else]
-        ${message.sendFrom}
+        <img src="${defaultUrl}" class="img-size-32 mr-3 img-circle" alt="${message.sendFrom}">
         [/#if]
         <div class="media-body">
           <h4 class="dropdown-item-title">${message.sendFrom}
