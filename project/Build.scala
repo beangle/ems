@@ -9,13 +9,13 @@ object EmsDepends {
   val webVer = "0.6.3"
   val serializerVer = "0.1.16"
   val cacheVer = "0.1.13"
-  val templateVer = "0.1.25-SNAPSHOT"
-  val webmvcVer = "0.10.4"
-  val buiVer = "0.0.3"
+  val templateVer = "0.1.25"
+  val webmvcVer = "0.10.5"
+  val buiVer = "0.0.4"
   val securityVer = "4.3.27"
   val idsVer = "0.3.23"
   val eventVer = "0.0.12"
-  val docVer = "0.4.9"
+  val docVer = "0.4.10"
 
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % commonsVer
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % jdbcVer

@@ -771,20 +771,23 @@
         nav.displayGroupMenus(menuLoc.group.id,menuLoc.app.id,menuLoc.menu);
       }
     }
-    if(!menuLoc && sessionStorage){
-      groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
-      menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
-      if(menuHref) {
-        menuLoc = nav.locateMenu(menuHref);
-        if(menuLoc){
-          nav.displayGroupMenus(menuLoc.group.id,menuLoc.app.id,menuLoc.menu);
+    //只有在portal模式下才会路由到之前点击的菜单
+    if(document.location.pathname.startsWith("/portal")){
+      if(!menuLoc && sessionStorage){
+        groupId = sessionStorage.getItem("beangle.ems.nav_group_id")
+        menuHref = sessionStorage.getItem("beangle.ems.nav_menu_href");
+        if(menuHref) {
+          menuLoc = nav.locateMenu(menuHref);
+          if(menuLoc){
+            nav.displayGroupMenus(menuLoc.group.id,menuLoc.app.id,menuLoc.menu);
+          }
+        }else if(groupId){
+          nav.displayGroupMenus(groupId);
         }
-      }else if(groupId){
-        nav.displayGroupMenus(groupId);
       }
-    }
-    if(!menuLoc && nav.welcomeUrl){
-      bg.Go(nav.welcomeUrl,'main');
+      if(!menuLoc && nav.welcomeUrl){
+        bg.Go(nav.welcomeUrl,'main');
+      }
     }
   }
 

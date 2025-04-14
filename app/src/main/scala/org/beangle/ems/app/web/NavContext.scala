@@ -23,10 +23,10 @@ import org.beangle.commons.collection.Collections
 import org.beangle.ems.app.security.RemoteService
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
-import org.beangle.security.authc.{Account, Profile}
-import org.beangle.webmvc.context.ActionContext
+import org.beangle.security.authc.Account
 import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.web.servlet.util.RequestUtils
+import org.beangle.webmvc.context.ActionContext
 
 object NavContext {
   def get(request: HttpServletRequest): NavContext = {
@@ -41,6 +41,10 @@ object NavContext {
     builder.setScheme(if (RequestUtils.isHttps(request)) "https" else "http")
       .setServerName(request.getServerName)
       .setPort(RequestUtils.getServerPort(request))
+    //多层代理的原因，导致有些代理使用http代理haproxy，haproxy无法感知到是https协议
+    if (builder.scheme == "http" && request.getHeader("upgrade-insecure-requests") == "1") {
+      builder.setScheme("https").setPort(443)
+    }
     ctx.app = App(EmsApp.name, builder.buildUrl())
     ctx.params += ("webapp" -> Ems.webapp)
     if (null == ActionContext.current) {
