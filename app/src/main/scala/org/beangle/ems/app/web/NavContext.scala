@@ -41,10 +41,6 @@ object NavContext {
     builder.setScheme(if (RequestUtils.isHttps(request)) "https" else "http")
       .setServerName(request.getServerName)
       .setPort(RequestUtils.getServerPort(request))
-    //多层代理的原因，导致有些代理使用http代理haproxy，haproxy无法感知到是https协议
-    if (builder.scheme == "http" && request.getHeader("upgrade-insecure-requests") == "1") {
-      builder.setScheme("https").setPort(443)
-    }
     ctx.app = App(EmsApp.name, builder.buildUrl())
     ctx.params += ("webapp" -> Ems.webapp)
     if (null == ActionContext.current) {
