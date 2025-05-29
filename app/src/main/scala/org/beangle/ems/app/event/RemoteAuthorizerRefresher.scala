@@ -21,7 +21,7 @@ import org.beangle.commons.bean.Initializing
 import org.beangle.ems.app.EmsApp
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.event.mq.EventSubscriber
-import org.beangle.security.authz.Authorizer
+import org.beangle.security.authz.{Authority, Authorizer}
 
 class RemoteAuthorizerRefresher(databus: DataEventBus)
   extends EventSubscriber[DataEvent], Initializing {
@@ -30,12 +30,12 @@ class RemoteAuthorizerRefresher(databus: DataEventBus)
 
   override def init(): Unit = {
     authorizer foreach { a =>
-      databus.subscribe("org.beangle.security.authz", this)
+      databus.subscribe(classOf[Authority].getPackageName, this)
     }
   }
 
   override def process(event: DataEvent): Unit = {
-    if event.typeName == "Authority" && event.hasFilter("app.name", EmsApp.name) then
+    if event.dataType == classOf[Authority].getName && event.hasFilter("app.name", EmsApp.name) then
       authorizer.get.refresh()
   }
 }

@@ -28,8 +28,8 @@ import org.hibernate.SessionFactory
 class CacheEvictor(entityDao: EntityDao, sessionFactory: SessionFactory) extends EventSubscriber[DataEvent] {
   override def process(event: DataEvent): Unit = {
     val domain = entityDao.domain
-    val entityName = event.entityName
-    domain.getEntity(entityName) foreach { et =>
+    val dataType = event.dataType
+    domain.getEntity(dataType) foreach { et =>
       if et.cacheable then
         val h = SessionHelper.openSession(sessionFactory)
         try {
