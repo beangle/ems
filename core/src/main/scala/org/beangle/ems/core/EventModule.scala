@@ -27,11 +27,11 @@ class EventModule extends BindModule {
   protected override def binding(): Unit = {
     wiredEagerly(true)
     //using redis as pubsub
-    bind("channelQueue", classOf[RedisChannelQueue[DataEvent]])
+    val queueBean = "channelQueue"
+    bind(queueBean, classOf[RedisChannelQueue[DataEvent]])
       .constructor("ems_platform", ref("jedis.Factory"), new DataEventSerializer).primary()
-    //bind("channelQueue", classOf[PostgresChannelQueue[DataEvent]]).constructor("ems_platform", ?, new DataEventSerializer).primary()
-    bind(classOf[CacheEvictorRegister]).constructor(ref("channelQueue"))
-    bind("databus", classOf[DefaultDataEventBus]).constructor(ref("channelQueue"))
+    bind(classOf[CacheEvictorRegister]).constructor(ref(queueBean))
+    bind("databus", classOf[DefaultDataEventBus]).constructor(ref(queueBean))
   }
 
 }

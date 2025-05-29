@@ -27,12 +27,14 @@ object EventModule extends BindModule, Logging {
 
   val channelName = "publicChannel"
 
+  val queueName = "ems_public"
+
   protected override def binding(): Unit = {
     wiredEagerly(true)
 
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      bind(channelName, classOf[RedisChannelQueue[DataEvent]]).constructor("ems_public", ?, new DataEventSerializer)
+      bind(channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictorRegister])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelName))
       bind(classOf[RemoteAuthorizerRefresher])
@@ -45,13 +47,13 @@ object EventModule extends BindModule, Logging {
 }
 
 /** It only bind publishing channel.
-  */
+ */
 object EventPublishModule extends BindModule, Logging {
   protected override def binding(): Unit = {
     wiredEagerly(true)
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      bind(EventModule.channelName, classOf[RedisChannelQueue[DataEvent]]).constructor("ems_public", ?, new DataEventSerializer)
+      bind(EventModule.channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(EventModule.queueName, ?, new DataEventSerializer)
         .property("publishOnly", true)
     } else {
       bind(EventModule.channelName, NullChannelQueue)

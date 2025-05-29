@@ -10,7 +10,7 @@
     [@b.boxcol /]
     [@b.col property="name" title="common.name"/]
     [@b.col property="base" title="路径"/]
-    [@b.col property="users" width="30%" title="应用"/]
+    [@b.col property="users" width="55%" title="应用"/]
     [@b.col property="namedBySha" title="sha命名"/]
     [@b.col property="publicDownload" title="公开下载"/]
   [/@]

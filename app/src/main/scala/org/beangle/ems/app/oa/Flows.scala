@@ -64,6 +64,10 @@ object Flows {
         ordered.lastOption
       }
     }
+
+    def getTask(taskName: String): Option[Task] = {
+      tasks.find(_.name == taskName)
+    }
   }
 
   case class Comment(messages: String, updatedAt: Instant)

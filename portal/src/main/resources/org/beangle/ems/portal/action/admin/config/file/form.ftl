@@ -3,7 +3,7 @@
 [@b.toolbar title="新建/修改"]bar.addBack();[/@]
 <style>form.listform label.title{width:120px;}</style>
 [@b.form action=b.rest.save(file) theme="list"   enctype="multipart/form-data"]
-  [@b.textfield name="file.name" label="文件全路径" value=file.name! required="true" maxlength="200" style="width:300px"/]
+  [@b.textfield name="file.name" label="文件全路径" value=file.name! required="true" maxlength="200" style="width:600px"/]
   [@b.select name="file.app.id" label="应用" value=file.app! option="id,title" required="true" items=apps/]
   [@b.file name="attachment" label="文件" extensions="ftl,docx,xlsx,xml"/]
   [@b.formfoot]
