@@ -18,7 +18,7 @@
 package org.beangle.ems.ws.user
 
 import org.beangle.commons.collection.Properties
-import org.beangle.commons.lang.Charsets
+import org.beangle.commons.lang.{Charsets, Strings}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.user.model.User
 import org.beangle.webmvc.annotation.{mapping, param, response}
@@ -39,5 +39,29 @@ class UserWS extends ActionSupport {
     query.limit(1, 20)
     val users = entityDao.search(query)
     users.map(x => new Properties(x, "id", "code", "name", "description"))
+  }
+
+  @response
+  @mapping("openid/{openid}")
+  def openid(@param("openid") openid: String): String = {
+    if (Strings.isBlank(openid)) {
+      ""
+    } else {
+      val q = OqlBuilder.from[String](classOf[User].getName, "u")
+      q.where("u.openid=:openid", openid)
+      q.select("u.code")
+      entityDao.first(q).getOrElse("")
+    }
+  }
+
+  def check(@param("username") username: String, @param("openid") openid: String): Boolean = {
+    if (Strings.isBlank(username) || Strings.isBlank(openid)) {
+      false
+    } else {
+      val q = OqlBuilder.from(classOf[User], "u")
+      q.where("u.code=:code and u.openid=:openid", username, openid)
+      q.select("u.id")
+      entityDao.first(q).nonEmpty
+    }
   }
 }

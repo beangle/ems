@@ -17,7 +17,7 @@
 
 package org.beangle.ems.core.cas
 
-import org.beangle.commons.cdi.{BindModule, PropertySource}
+import org.beangle.commons.cdi.{BindModule, Binding, PropertySource}
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.{Ems, EmsApp}
@@ -25,6 +25,7 @@ import org.beangle.ids.cas.CasSetting
 import org.beangle.security.authz.PublicAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
 import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
+import org.beangle.security.realm.openid.OpenidPreauthFilter
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
 import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
 
@@ -39,9 +40,12 @@ class DefaultModule extends BindModule, PropertySource {
 
   private var remoteCasServer: Option[String] = None
 
+  private var remoteOpenidServer: Option[String] = None
+
   private var remoteLtpa: Option[LtpaConfig] = None
 
   override def binding(): Unit = {
+    //1.如果有配置CAS方式的SSO
     if (remoteCasServer.isDefined) {
       bind(classOf[CasConfig]).constructor($("remote.cas.server"))
         .property("gateway", $("remote.cas.gateway"))
@@ -62,17 +66,24 @@ class DefaultModule extends BindModule, PropertySource {
       bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primary()
     }
 
+    remoteOpenidServer foreach { serverUrl =>
+      bind("security.Filter.OpenidPreauth", classOf[OpenidPreauthFilter]).property("serviceUrl", serverUrl)
+    }
     //interceptor
     bind("security.AccessDeniedHandler.default", classOf[DefaultAccessDeniedHandler])
       .constructor($("security.access.errorPage", "/403.html"))
     bind("security.Filter.authorization", classOf[AuthorizationFilter])
 
     val interceptor = bind("web.Interceptor.security", classOf[SecurityInterceptor])
-    var filters = List(ref("security.Filter.authorization"))
-    if (remoteCasServer.isDefined || remoteLtpa.isDefined) {
-      filters = List(ref("security.Filter.Preauth"), ref("security.Filter.authorization"))
+    val filters = Collections.newBuffer[Binding.ReferenceValue]
+    if (remoteOpenidServer.isDefined) {
+      filters.addOne(ref("security.Filter.OpenidPreauth"))
     }
-    interceptor.property("filters", filters)
+    if (remoteCasServer.isDefined || remoteLtpa.isDefined) {
+      filters.addOne(ref("security.Filter.Preauth"))
+    }
+    filters.addOne(ref("security.Filter.authorization"))
+    interceptor.property("filters", filters.toList)
 
     //authorizer and manager
     bind("security.SecurityManager.default", classOf[WebSecurityManager])
@@ -150,6 +161,10 @@ class DefaultModule extends BindModule, PropertySource {
           val usernameDns = getAttribute(e, "usernameDns", null)
           val config = LtpaConfig(server, key, cookieName, usernameDns)
           if null != server && null != key then remoteLtpa = Some(config)
+        }
+        (r \ "openid") foreach { e =>
+          val server = getAttribute(e, "server", null)
+          remoteOpenidServer = Some(server)
         }
       }
       is.close()

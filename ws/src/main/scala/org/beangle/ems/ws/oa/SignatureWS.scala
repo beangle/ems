@@ -50,7 +50,7 @@ class SignatureWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   private def loadSignaturePath(userCode: String): Option[String] = {
     val query = OqlBuilder.from[String](classOf[Signature].getName, "a")
     query.where("a.user.org=:org", domainService.getOrg)
-    query.where("a.user.code = :code", userCode).cacheable()
+    query.where("a.user.code = :code", userCode)
     query.select("a.filePath")
     entityDao.search(query).headOption
   }

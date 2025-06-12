@@ -154,7 +154,6 @@ class SignatureAction extends RestfulAction[Signature] {
     val ds = dsf.result
 
     val jdbcExecutor = new JdbcExecutor(ds)
-    println(sql)
     val dataIter = jdbcExecutor.iterate(sql)
     var count = 0
     dataIter.foreach { data =>

@@ -55,6 +55,8 @@ class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark,
   var mobile: Option[String] = None
   /** 电子邮件 */
   var email: Option[String] = None
+  /** 绑定的openid */
+  var openid: Option[String] = None
 
   def accountExpired: Boolean = {
     endOn match {
