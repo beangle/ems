@@ -54,6 +54,7 @@ class UserWS extends ActionSupport {
     }
   }
 
+  @response
   def check(@param("username") username: String, @param("openid") openid: String): Boolean = {
     if (Strings.isBlank(username) || Strings.isBlank(openid)) {
       false
