@@ -19,8 +19,8 @@ package org.beangle.ems.app.web
 
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.log.{BusinessLogger, Level}
-import org.beangle.webmvc.context.ActionContext
 import org.beangle.web.servlet.util.RequestUtils
+import org.beangle.webmvc.context.ActionContext
 
 import scala.collection.mutable
 
@@ -54,6 +54,8 @@ class WebBusinessLogger {
             val stringValue = v match {
               case Some(n) => n.toString
               case None => "None"
+              case vs: Array[_] => "[" + vs.map(String.valueOf(_)).mkString(",") + "]"
+              case vs: Seq[_] => "[" + vs.map(String.valueOf(_)).mkString(",") + "]"
               case _ => String.valueOf(v)
             }
             val value = if k.toString.contains("password") then "*****" else stringValue

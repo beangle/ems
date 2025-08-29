@@ -21,7 +21,7 @@ import org.beangle.commons.codec.digest.Digests
 import org.beangle.ems.app.Ems
 import org.beangle.template.api.{ComponentContext, UIBean}
 
-class AvartarTag(context: ComponentContext) extends UIBean(context) {
+class AvatarTag(context: ComponentContext) extends UIBean(context) {
 
   var href: String = _
   var username: String = _

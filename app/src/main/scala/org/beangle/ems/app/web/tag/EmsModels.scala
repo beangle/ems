@@ -32,7 +32,7 @@ class EmsModels(context: ComponentContext, authorizer: Authorizer) extends Abstr
     Ems.webapp
   }
 
-  def avatar: Tag = get(classOf[AvartarTag])
+  def avatar: Tag = get(classOf[AvatarTag])
 
   def permitted(res: String): Boolean = {
     authorizer.isPermitted(SecurityContext.get, new DefaultRequest(res, null))
