@@ -17,8 +17,6 @@
 
 package org.beangle.ems.app.log
 
-import org.beangle.data.model.LongId
-
 import java.time.Instant
 
 class BusinessLogEvent {

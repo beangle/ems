@@ -17,20 +17,20 @@
 
 package org.beangle.ems.ws.log
 
-import org.beangle.commons.bean.{Disposable, Initializing}
-import org.beangle.commons.logging.Logging
+import org.beangle.commons.bean.Disposable
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.hibernate.SessionHelper
 import org.beangle.ems.app.log.BusinessLogProto.BusinessLogEvent
+import org.beangle.ems.app.log.Level
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.ems.core.log.model.{BusinessLog, Level}
+import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.ems.ws.log.PersistBuffer.Worker
 import org.hibernate.SessionFactory
 
 import java.time.Instant
 import java.util as ju
-import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
+import java.util.concurrent.ArrayBlockingQueue
 import scala.collection.mutable
 
 object PersistBuffer {
@@ -101,7 +101,7 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
     l.ip = e.getIp
     l.agent = e.getAgent
     l.entry = e.getEntry
-    l.level = new Level(e.getLevel)
+    l.logLevel = Level.fromOrdinal(e.getLevel - 1) //level is 1-based
     l
   }
 

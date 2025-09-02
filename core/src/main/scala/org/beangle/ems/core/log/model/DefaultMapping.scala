@@ -31,8 +31,6 @@ object DefaultMapping extends MappingModule {
       e.agent is length(100)
       e.entry is length(100)
     }
-
-    bind[Level]
   }
 
 }

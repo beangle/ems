@@ -19,6 +19,7 @@ package org.beangle.ems.core.log.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.annotation.log
+import org.beangle.ems.app.log.Level
 import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
@@ -44,5 +45,5 @@ class BusinessLog extends LongId {
   /** 访问入口 */
   var entry: String = _
   /** 级别 */
-  var level: Level = _
+  var logLevel: Level = Level.Info
 }

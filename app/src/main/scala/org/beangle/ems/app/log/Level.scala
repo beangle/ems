@@ -17,6 +17,9 @@
 
 package org.beangle.ems.app.log
 
-enum Level {
-  case Info, Warn, Error
+/** 日志级别 */
+enum Level(val id: Int, val name: String) {
+  case Info extends Level(1, "信息")
+  case Warning extends Level(2, "警告")
+  case Error extends Level(3, "错误")
 }

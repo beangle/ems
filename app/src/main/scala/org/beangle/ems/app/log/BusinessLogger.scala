@@ -33,6 +33,7 @@ object BusinessLogger {
       entry.agent = s"${s.agent.os} ${s.agent.name}"
     }
     entry.summary = summary
+    entry.level = Level.Info
     entry
   }
 }

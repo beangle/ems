@@ -18,9 +18,9 @@
 package org.beangle.ems.portal.action.admin.log
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.app.log.Level
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.ems.core.log.model.{BusinessLog, Level}
-import org.beangle.ems.core.oa.model.Doc
+import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.support.helper.QueryHelper
 
@@ -30,7 +30,7 @@ class BusinessAction extends RestfulAction[BusinessLog], ExportSupport[BusinessL
 
   override protected def indexSetting(): Unit = {
     put("apps", appService.getApps)
-    put("levels", entityDao.getAll(classOf[Level]))
+    put("levels", Level.values)
     super.indexSetting()
   }
 

@@ -21,15 +21,13 @@ import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.log.BusinessLogProto
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
 import org.hibernate.SessionFactory
 
-import java.io.InputStream
-import java.time.Instant
-
+/** 应用系统调用，存储日志的服务
+ */
 class PushWS extends ActionSupport with ServletSupport with Initializing with Disposable {
 
   var appService: AppService = _

@@ -33,7 +33,7 @@ class WebBusinessLogger {
   }
 
   def warn(summary: String, resources: Any, details: Any): Unit = {
-    log(Level.Warn, summary, resources, details)
+    log(Level.Warning, summary, resources, details)
   }
 
   def error(summary: String, resources: Any, details: Any): Unit = {
@@ -41,8 +41,8 @@ class WebBusinessLogger {
   }
 
   def log(level: Level, summary: String, resources: Any, details: Any): Unit = {
-    val log = BusinessLogger.newEvent(summary)
-    log.level = level
+    val e = BusinessLogger.newEvent(summary)
+    e.level = level
     val context = ActionContext.current
     val detailStr = details match {
       case null => "--"
@@ -66,7 +66,7 @@ class WebBusinessLogger {
         Strings.abbreviate(mapString, 4000)
       case e: Any => e.toString
     }
-    log.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, detailStr)
-    businessLogger.publish(log)
+    e.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, detailStr)
+    businessLogger.publish(e)
   }
 }

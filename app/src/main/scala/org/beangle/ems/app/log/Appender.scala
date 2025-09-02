@@ -18,7 +18,7 @@
 package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
-import org.beangle.commons.io.{Dirs, IOs}
+import org.beangle.commons.io.Dirs
 import org.beangle.commons.lang.{Charsets, Strings}
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpMethods, Https, Response}
@@ -68,7 +68,7 @@ class RemoteAppender(val url: String) extends Appender {
     builder.setIp(event.ip)
     builder.setAgent(event.agent)
     builder.setEntry(event.entry)
-    builder.setLevel(event.level.ordinal + 1)
+    builder.setLevel(event.level.ordinal + 1) //level is 1 based
     builder.setAppName(event.appName)
     val os = new ByteArrayOutputStream()
     builder.build().writeTo(os)
