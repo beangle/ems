@@ -23,7 +23,7 @@ import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 
-/** 流程审批意见
+/** 流程实例-审批意见
  */
 class FlowComment extends LongId, Updated {
   var task: FlowTask = _

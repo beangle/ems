@@ -24,7 +24,7 @@ import org.beangle.ems.core.user.model.User
 import java.time.Instant
 import scala.collection.mutable
 
-/** 业务流程实例
+/** 业务流程活跃实例
  */
 class FlowActiveProcess extends LongId {
   /** 流程定于 */

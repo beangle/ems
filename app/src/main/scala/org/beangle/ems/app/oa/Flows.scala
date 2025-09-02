@@ -45,12 +45,12 @@ object Flows {
 
   case class Group(code: String, name: String)
 
-  case class Task(id: String, name: String, startAt: Instant, endAt: Option[Instant], assignee: Option[User], assignees: Option[String],
+  case class Task(id: String, name: String, idx: Int, startAt: Instant, endAt: Option[Instant], assignee: Option[User], assignees: Option[String],
                   comments: Iterable[Comment],
                   attachments: Iterable[Attachment], data: JsonObject) {
 
-    def this(id: String, name: String, startAt: Instant, assignee: Option[User], assignees: Option[String]) = {
-      this(id, name, startAt, None, assignee, assignees, Seq.empty, Seq.empty, new JsonObject)
+    def this(id: String, name: String, idx: Int, startAt: Instant, assignee: Option[User], assignees: Option[String]) = {
+      this(id, name, idx, startAt, None, assignee, assignees, Seq.empty, Seq.empty, new JsonObject)
     }
   }
 
@@ -201,6 +201,7 @@ object Flows {
         val tasks = jo.getArray("tasks").map {
           case jo: JsonObject =>
             val id = jo.getString("id")
+            val idx = jo.getInt("idx")
             val name = jo.getString("name")
             val startAt = jo.getInstant("startAt")
             val endAt = Option(jo.getInstant("endAt"))
@@ -217,7 +218,7 @@ object Flows {
               case o: JsonObject => Attachment(o.getString("name"), o.getLong("fileSize"), o.getString("filePath"))
             }
             val data = Json.parseObject(jo.getString("dataJson", "{}"))
-            Task(id, name, startAt, endAt, assignee, assignees, comments, attachments, data)
+            Task(id, name, idx, startAt, endAt, assignee, assignees, comments, attachments, data)
         }.toSeq.sortBy(_.startAt)
         Process(jo.getString("id"), jo.query("flow.code").getOrElse("").asInstanceOf[String], tasks, null)
       }

@@ -25,7 +25,7 @@ import org.beangle.ems.core.user.model.User
 import java.time.Instant
 import scala.collection.mutable
 
-/** 流程任务
+/** 流程实例中的任务
  */
 class FlowActiveTask extends LongId, Named {
   /** 流程 */

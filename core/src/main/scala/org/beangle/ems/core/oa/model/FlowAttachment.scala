@@ -20,7 +20,7 @@ package org.beangle.ems.core.oa.model
 import org.beangle.data.model.LongId
 import org.beangle.ems.app.oa.Flows
 
-/** 流程附件
+/** 流程实例-附件
  */
 class FlowAttachment extends LongId {
   var task: FlowTask = _

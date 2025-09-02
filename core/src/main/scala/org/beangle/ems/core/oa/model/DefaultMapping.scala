@@ -68,6 +68,7 @@ object DefaultMapping extends MappingModule {
     }
     bind[FlowActiveTask]
 
+    //这两个实体是流程实例插入后，在赋值插入的，保持ID一致
     bind[FlowProcess].declare { e =>
       e.tasks is depends("process")
       e.envJson is length(1000)

@@ -24,7 +24,7 @@ import org.beangle.ems.core.user.model.Group
 
 import scala.collection.mutable
 
-/** 工作流中的活动
+/** 工作流定义中的活动
  */
 class FlowActivity extends LongId, Named, Remark {
   /** 流程定义 */
