@@ -7,7 +7,7 @@
       [@b.textfields names="businessLog.operator;操作人,businessLog.summary;内容,businessLog.ip;IP"/]
       [@b.date name="beginOn" label="开始于"/]
       [@b.date name="endOn" label="~到"/]
-      [@b.select name="businessLog.level.id" items=levels label="级别"/]
+      [@b.select name="businessLog.logLevel" items=levels label="级别"/]
       <input name="orderBy" value="businessLog.operateAt desc" type="hidden"/>
     [/@]
  </div>
