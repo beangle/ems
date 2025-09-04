@@ -3,7 +3,7 @@
 [@b.toolbar title="规则配置"]
   bar.addBack();
 [/@]
-<table class="infoTable">
+<table class="table table-sm table-detail">
   <tr>
     <td class="title" width="15%">业务</td><td>${rule.meta.business.name}</td>
     <td class="title" width="15%">名称</td><td>${rule.name}</td>
@@ -15,7 +15,7 @@
   <tr>
     <td class="title">参数</td>
     <td colspan="3">
-      <table class="table table-sm" style="width:85%">
+      <table class="table table-sm table-mini" style="width:85%">
         <thead>
           <tr>
             <th style="width:30%;">参数标题</th>

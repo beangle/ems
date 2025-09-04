@@ -3,7 +3,7 @@
 [@b.toolbar title="流程详情"]
   bar.addBack();
 [/@]
-<table class="infoTable">
+<table class="table table-sm table-detail">
   <tr>
     <td class="title" width="15%">业务</td><td>${process.flow.business.name}</td>
     <td class="title" width="15%">流程</td><td>${process.flow.name}</td>
@@ -25,7 +25,7 @@
   <tr>
     <td class="title">当前过程</td>
     <td colspan="3">
-      <table class="table table-sm" style="width:85%">
+      <table class="table table-sm table-mini" style="width:85%">
         <thead>
           <tr>
             <th style="width:20%;">时间</th>

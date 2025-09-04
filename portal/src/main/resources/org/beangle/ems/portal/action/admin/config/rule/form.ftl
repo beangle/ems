@@ -46,7 +46,7 @@
   }
 [/@]
 [@b.form action=b.rest.save(rule) theme="list"]
-    [@b.field label="业务类型"]<span id="ruleBusiness">${rule.meta.business.name}</span>[/@]
+    [@b.field label="业务类型"]<span id="ruleBusiness">${(rule.meta.business.name)!}</span>[/@]
     [@b.textfield label="规则名称" id="ruleName" required="true" maxLength="150px" name="rule.name" value=rule.name!/]
     [@b.textfield label="场景配置ID" required="true" maxLength="150px" name="rule.profileId" value=rule.profileId!/]
   [#if (rule.id)??]

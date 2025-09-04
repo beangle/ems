@@ -4,12 +4,12 @@
   <div class="card-body">
   [#assign eventTypeNames={'Login':'登录','Logout':'退出'}/]
   [#if (sessionEvents?size==0)]没有登录过系统[#else]
-   <table class="table table-sm table-striped">
+   <table class="table table-sm table-mini">
      <thead>
        <tr>
-         <th>时间</th>
-         <th>类型</th>
-         <th>内容</th>
+         <th width="15%">时间</th>
+         <th width="10%">类型</th>
+         <th width="75%">内容</th>
        </tr>
      </thead>
      <tbody>
