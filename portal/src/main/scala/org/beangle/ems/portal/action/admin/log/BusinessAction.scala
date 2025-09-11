@@ -19,14 +19,17 @@ package org.beangle.ems.portal.action.admin.log
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.log.Level
-import org.beangle.ems.core.config.service.AppService
+import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.support.helper.QueryHelper
 
+/** 业务日志
+ */
 class BusinessAction extends RestfulAction[BusinessLog], ExportSupport[BusinessLog] {
 
   var appService: AppService = _
+  var domainService: DomainService = _
 
   override protected def indexSetting(): Unit = {
     put("apps", appService.getApps)
@@ -36,6 +39,7 @@ class BusinessAction extends RestfulAction[BusinessLog], ExportSupport[BusinessL
 
   override protected def getQueryBuilder: OqlBuilder[BusinessLog] = {
     val builder = super.getQueryBuilder
+    builder.where("businessLog.app.domain=:domain", domainService.getDomain)
     QueryHelper.dateBetween(builder, null, "operateAt", "beginOn", "endOn")
     builder
   }
