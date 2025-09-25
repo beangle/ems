@@ -54,7 +54,7 @@ lazy val core = (project in file("core"))
   ).dependsOn(app)
 
 lazy val cas = (project in file("cas"))
-  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
+  .enablePlugins(WarPlugin,UndertowPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,
@@ -67,7 +67,7 @@ lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
     common,
-    libraryDependencies ++= webAppDepends,
+    libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 
 lazy val portal = (project in file("portal"))

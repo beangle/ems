@@ -8,7 +8,7 @@
     [/@]
  </div>
  <div class="search-list">
-   [@b.div id="file_list" href="!search?orderBy=file.name"/]
+   [@b.div id="file_list" href="!search?orderBy=file.app.title,file.name"/]
  </div>
 </div>
 [@b.foot/]
