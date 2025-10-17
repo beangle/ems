@@ -83,10 +83,13 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
   def create(creator: User, user: User): Unit = {
     user.updatedAt = Instant.now
     user.org = domainService.getOrg
-
+    if (null == user.password) {
+      user.password = "--EMPTY--"
+    }
     val config = passwordConfigService.get()
     val maxdays = if (config.mindays > 10000) 10000 else config.maxdays
     user.passwdExpiredOn = LocalDate.ofInstant(user.updatedAt, ZoneId.systemDefault()).plusDays(maxdays)
+
     entityDao.saveOrUpdate(user)
   }
 
