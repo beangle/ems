@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.12.2-SNAPSHOT"
+ThisBuild / version := "4.12.2"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -54,7 +54,7 @@ lazy val core = (project in file("core"))
   ).dependsOn(app)
 
 lazy val cas = (project in file("cas"))
-  .enablePlugins(WarPlugin,UndertowPlugin)
+  .enablePlugins(WarPlugin,TomcatPlugin)
   .settings(
     name := "beangle-ems-cas",
     common,
@@ -63,7 +63,7 @@ lazy val cas = (project in file("cas"))
   ).dependsOn(core)
 
 lazy val ws = (project in file("ws"))
-  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin)
   .settings(
     name := "beangle-ems-ws",
     common,

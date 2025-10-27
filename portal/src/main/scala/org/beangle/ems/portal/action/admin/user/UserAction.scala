@@ -303,7 +303,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   @mapping(value = "{id}")
-  override def info(@param("id") id: String): View = {
+  override def info(id: String): View = {
     val user = entityDao.get(classOf[User], id.toLong)
     put("user", user)
     forward()
