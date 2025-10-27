@@ -34,11 +34,13 @@ object EventModule extends BindModule, Logging {
 
     val redis = Redis.conf
     if (redis.nonEmpty) {
+      logger.info(s"using redis on ${queueName} to notify data evict event.")
       bind(channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictorRegister])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelName))
       bind(classOf[RemoteAuthorizerRefresher])
     } else {
+      logger.warn(s"Disable databus due to missing redis config.")
       bind(channelName, NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
     }
