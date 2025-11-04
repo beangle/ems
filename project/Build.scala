@@ -12,9 +12,9 @@ object EmsDepends {
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.12.0"
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.0"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.0"
-  val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.20"
-  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.1"
-  val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.1"
+  val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.21"
+  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.2"
+  val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.2"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.2"
   val beangle_doc_transfer = "org.beangle.doc" % "beangle-doc-transfer" % "0.4.18"
 

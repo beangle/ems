@@ -26,7 +26,7 @@ object DefaultMapping extends MappingModule {
     defaultIdGenerator(classOf[Int], IdGenerator.AutoIncrement)
     defaultIdGenerator(classOf[Long], IdGenerator.AutoIncrement)
 
-    defaultCache("ems.security", "read-write")
+    defaultCache("ems-security", "read-write")
 
     bind[FuncPermission].declare { e =>
       e.role & e.resource & e.beginAt are notnull

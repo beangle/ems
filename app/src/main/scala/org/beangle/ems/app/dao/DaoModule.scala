@@ -29,7 +29,7 @@ object DaoModule extends BindModule {
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("devMode", devEnabled)
-      .property("ormLocations", "classpath*:META-INF/beangle/orm.xml")
+      .property("ormLocations", "classpath*:beangle.xml")
       .primary()
 
     bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary()

@@ -24,7 +24,7 @@ object DefaultMapping extends MappingModule {
   def binding(): Unit = {
     defaultIdGenerator(classOf[Int], IdGenerator.AutoIncrement)
     defaultIdGenerator(classOf[Long], IdGenerator.AutoIncrement)
-    defaultCache("ems.security", "read-write")
+    defaultCache("ems-security", "read-write")
 
     bind[Dimension].declare { e =>
       e.name & e.title are length(40)

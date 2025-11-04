@@ -27,7 +27,7 @@ object DefaultMapping extends MappingModule {
 
   def binding(): Unit = {
     defaultIdGenerator(classOf[Long], IdGenerator.DateTime)
-    defaultCache("ems.security", "read-write")
+    defaultCache("ems-security", "read-write")
 
     bind[Profile].declare { e =>
       e.base & e.name are length(100)

@@ -134,7 +134,7 @@ object EmsApp extends Logging {
           props.put((p \ "@key").text, p.text.trim())
         }
         if (Strings.isNotBlank(appName)) {
-          props.put(name, appName)
+          props.put("name", appName)
         }
         props.toMap
       case None => Map.empty
