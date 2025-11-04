@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<beangle>
+  <ems app-name="platform-index"/>
+
+  <cdi>
+    <module class="org.beangle.ems.index.web.DefaultModule"/>
+  </cdi>
+
+  <mvc>
+    <profile package="org.beangle.ems.index.web.action">
+      <url path="/" suffix="" style="seo" />
+    </profile>
+  </mvc>
+</beangle>

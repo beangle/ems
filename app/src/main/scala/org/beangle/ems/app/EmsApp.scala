@@ -17,9 +17,10 @@
 
 package org.beangle.ems.app
 
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.conversion.string.DateConverter
 import org.beangle.commons.io.IOs
-import org.beangle.commons.json.{Json, JsonParser}
+import org.beangle.commons.json.Json
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.http.HttpUtils
@@ -82,16 +83,18 @@ object EmsApp extends Logging {
 
   private def readProperties(): Map[String, Any] = {
     try {
-      val configs = ClassLoaders.getResources("META-INF/beangle/ems-app.properties")
-      val appManifest = if (configs.isEmpty) {
-        Map.empty[String, String]
-      } else {
-        IOs.readJavaProperties(configs.head)
+      val configs = ClassLoaders.getResources("beangle.xml")
+      var appManifest: Map[String, String] = null
+      val iter = configs.iterator
+      while (iter.hasNext && null == appManifest) {
+        appManifest = parseEmsXml(iter.next())
       }
-      val name = appManifest.get("name") match {
-        case Some(n) => n
-        case None => throw new RuntimeException("cannot find META-INF/beangle/ems-app.properties")
+      if (null == appManifest) {
+        throw new RuntimeException("cannot find beangle.xml,contains <ems> element.")
+      } else if (!appManifest.contains("name")) {
+        throw new RuntimeException("<ems> missing app-name attribute.")
       }
+      val name = appManifest("name")
 
       //app path starts with /
       var appPath = Strings.replace(name, "-", "/")
@@ -108,14 +111,33 @@ object EmsApp extends Logging {
         rootNode \\ "app" foreach { app =>
           result ++= app.attributes.asAttrMap
         }
-        rootNode \ "properties" \ "property" foreach { pNode =>
-          result.put((pNode \ "@name").text.trim, (pNode \ "@value").text.trim)
+        rootNode \ "props" \ "prop" foreach { pNode =>
+          result.put((pNode \ "@key").text.trim, pNode.text.trim())
         }
         IOs.close(is)
       }
       result.toMap
     } catch {
       case e: Throwable => logger.error("Issue exception when read property", e); System.exit(1); Map.empty
+    }
+  }
+
+  private def parseEmsXml(url: URL): Map[String, String] = {
+    val is = url.openStream()
+    val emsOption = (scala.xml.XML.load(is) \ "ems").headOption
+    IOs.close(is)
+    emsOption match {
+      case Some(ems) =>
+        val appName = (ems \ "@app-name").text
+        val props = Collections.newMap[String, String]
+        (ems \ "props" \ "prop").map { p =>
+          props.put((p \ "@key").text, p.text.trim())
+        }
+        if (Strings.isNotBlank(appName)) {
+          props.put(name, appName)
+        }
+        props.toMap
+      case None => Map.empty
     }
   }
 

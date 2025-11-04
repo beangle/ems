@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<cdi>
-  <container>
+<beangle>
+  <ems app-name="platform-cas"/>
+
+  <cdi>
     <module class="org.beangle.ems.app.dao.DaoModule"/>
     <module class="org.beangle.ems.app.web.HibernateModule"/>
     <module class="org.beangle.ems.app.web.DefaultModule"/>
@@ -22,5 +24,23 @@
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>
 
     <module class="org.beangle.webmvc.view.freemarker.DefaultModule"/>
-  </container>
-</cdi>
+  </cdi>
+
+  <mvc>
+    <profile package="org.beangle.ems.cas.action">
+      <url path="/" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.security"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+    <profile package="org.beangle.ids.cas.web.action">
+      <url path="/" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.security"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+    <profile package="org.beangle.ids.cas.web.ws">
+      <url path="/" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+  </mvc>
+
+</beangle>

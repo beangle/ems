@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<cdi>
-  <container>
-    <module class="org.beangle.ems.index.web.DefaultModule"/>
-  </container>
-
-</cdi>

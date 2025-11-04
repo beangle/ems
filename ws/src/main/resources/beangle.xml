@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<beangle>
+  <ems app-name="platform-ws"/>
+
+  <cdi>
+    <module class="org.beangle.ems.app.dao.DaoModule"/>
+    <module class="org.beangle.ems.app.web.HibernateModule"/>
+
+    <module class="org.beangle.ems.ws.DefaultModule"/>
+    <module class="org.beangle.serializer.text.DefaultModule"/>
+    <module class="org.beangle.serializer.json.DefaultModule"/>
+    <module class="org.beangle.serializer.xml.DefaultModule"/>
+    <module class="org.beangle.ems.app.cache.DefaultModule"/>
+    <module class="org.beangle.ems.core.EventModule"/>
+    <module class="org.beangle.ems.core.user.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.config.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.security.service.DefaultModule"/>
+    <module class="org.beangle.ems.core.oa.service.DefaultModule"/>
+  </cdi>
+
+  <mvc>
+    <profile package="org.beangle.ems.ws">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/" suffix="" style="plur-seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+      <interceptor name="web.Interceptor.cors"/>
+    </profile>
+
+    <profile package="org.beangle.ems.ws.security.func">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/security/func/{app}/" suffix="" style="plur-seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+      <interceptor name="web.Interceptor.cors"/>
+    </profile>
+
+    <profile package="org.beangle.ems.ws.security.data">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/security/data/" suffix="" style="plur-seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+      <interceptor name="web.Interceptor.cors"/>
+    </profile>
+
+    <profile package="org.beangle.ems.ws.log.PushWS">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/log/" suffix="" style="seo"/>
+    </profile>
+  </mvc>
+
+</beangle>

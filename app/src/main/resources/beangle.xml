@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<beangle xmlns="http://beangle.github.io/schema/framework"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://beangle.github.io/schema/framework http://beangle.github.io/schema/framework-1.0.xsd">
+  <mvc>
+    <static>
+      <bundle name="local" version="default"/>
+      <bundle name="ems" version="4.11.0">
+        <module name="ems" js="js/ems.js"/>
+        <module name="ems-nav" js="js/nav.js" css="css/nav.css" depends="adminlte,ems"/>
+      </bundle>
+    </static>
+  </mvc>
+</beangle>
