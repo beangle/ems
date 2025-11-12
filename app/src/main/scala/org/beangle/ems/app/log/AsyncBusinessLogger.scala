@@ -29,7 +29,7 @@ class AsyncBusinessLogger extends BusinessLogger with Initializing with Disposab
   }
 
   override def init(): Unit = {
-    sidecar = new Sidecar[BusinessLogEvent]("Beangle Ems Async Logger", e => {
+    sidecar = new Sidecar[BusinessLogEvent]("beangle-ems-async-logger", e => {
       appenders foreach (ap => ap.append(e))
     })
   }

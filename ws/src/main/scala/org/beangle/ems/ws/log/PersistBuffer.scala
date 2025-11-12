@@ -58,7 +58,7 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
   private val worker = new Worker(this)
   private val appName2Id = new mutable.HashMap[String, Int]
   worker.setDaemon(true)
-  worker.setName("Beangle business log persister")
+  worker.setName("beangle-business-log-persister")
   worker.start()
 
   def push(entry: BusinessLogEvent): Unit = {
