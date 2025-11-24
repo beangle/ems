@@ -21,7 +21,7 @@ import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.io.Dirs
 import org.beangle.commons.lang.{Charsets, Strings}
 import org.beangle.commons.net.Networks
-import org.beangle.commons.net.http.{HttpMethods, Https, Response}
+import org.beangle.commons.net.http.{HttpMethods, HttpUtils, Https, Response}
 
 import java.io.*
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
@@ -73,28 +73,6 @@ class RemoteAppender(val url: String) extends Appender {
     val os = new ByteArrayOutputStream()
     builder.build().writeTo(os)
     val upload = Networks.url(url.replace("{level}", Strings.uncapitalize(event.level.toString)))
-    invoke(upload, os.toByteArray, "application/x-protobuf", None)
+    HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
   }
-
-  private def invoke(url: URL, body: Array[Byte], contentType: String, f: Option[(URLConnection) => Unit]): Response = {
-    val conn = url.openConnection.asInstanceOf[HttpURLConnection]
-    Https.noverify(conn)
-    conn.setDoOutput(true)
-    conn.setRequestMethod(HttpMethods.POST)
-    conn.setRequestProperty("Content-Type", contentType)
-    f foreach (x => x(conn))
-    val os = conn.getOutputStream
-    os.write(body)
-    os.flush()
-    os.close() //don't forget to close the OutputStream
-    try {
-      conn.connect()
-      Response(conn.getResponseCode, "")
-    } catch {
-      case e: Exception =>
-        Response(HTTP_NOT_FOUND, conn.getResponseMessage)
-    } finally
-      if (null != conn) conn.disconnect()
-  }
-
 }

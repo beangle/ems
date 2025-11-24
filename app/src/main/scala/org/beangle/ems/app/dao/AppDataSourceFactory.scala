@@ -61,6 +61,8 @@ class AppDataSourceFactory extends DataSourceFactory {
     if (password != null && password.startsWith("?")) {
       this.password = new AesEncryptor(Ems.key).decrypt(password.substring(1))
     }
+    setApplicationName(EmsApp.name)
+    setPoolName(EmsApp.name + ":" + this.name)
   }
 
 }

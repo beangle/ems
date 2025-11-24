@@ -20,7 +20,7 @@ package org.beangle.ems.app.log
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.concurrent.Sidecar
 
-class AsyncBusinessLogger extends BusinessLogger with Initializing with Disposable {
+class AsyncBusinessLogger extends BusinessLogger, Initializing, Disposable {
   var appenders: List[Appender] = _
   var sidecar: Sidecar[BusinessLogEvent] = _
 

@@ -18,6 +18,7 @@
 package org.beangle.ems.app.dao
 
 import org.beangle.commons.cdi.BindModule
+import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
@@ -34,17 +35,20 @@ object DaoModule extends BindModule {
 
     bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary()
 
+    //配置事务模板，不需要的方法不配置，例如find*
     bind("TransactionProxy.template", classOf[TransactionProxyFactoryBean]).setAbstract().property(
-      "transactionAttributes",
-      props("save*=PROPAGATION_REQUIRED", "update*=PROPAGATION_REQUIRED", "delete*=PROPAGATION_REQUIRED",
-        "batch*=PROPAGATION_REQUIRED", "execute*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED",
-        "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED",
-        "*=PROPAGATION_REQUIRED,readOnly")).primary()
+        "transactionAttributes",
+        props("save*=PROPAGATION_REQUIRED", "update*=PROPAGATION_REQUIRED", "delete*=PROPAGATION_REQUIRED",
+          "batch*=PROPAGATION_REQUIRED", "execute*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED",
+          "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED"))
+      .primary()
 
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
 
     bind("EntityDao.hibernate", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
+      .property("proxyInterfaces", Array(classOf[EntityDao]))
+      .property("proxyTargetClass", false)
   }
 
 }

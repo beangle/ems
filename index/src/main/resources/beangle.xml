@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<beangle>
+<beangle xmlns="http://beangle.github.io/schema/framework"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://beangle.github.io/schema/framework http://beangle.github.io/schema/framework-1.0.xsd">
   <ems app-name="platform-index"/>
 
   <cdi>
@@ -8,7 +10,7 @@
 
   <mvc>
     <profile package="org.beangle.ems.index.web.action">
-      <url path="/" suffix="" style="seo" />
+      <url path="/" suffix="" style="seo"/>
     </profile>
   </mvc>
 </beangle>
