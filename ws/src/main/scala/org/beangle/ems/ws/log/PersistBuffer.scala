@@ -20,11 +20,10 @@ package org.beangle.ems.ws.log
 import org.beangle.commons.bean.Disposable
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.hibernate.SessionHelper
-import org.beangle.ems.app.log.BusinessLogProto.BusinessLogEvent
-import org.beangle.ems.app.log.Level
+import org.beangle.ems.app.log.{ErrorLogEvent, Level, LogEvent, Proto}
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.ems.core.log.model.BusinessLog
+import org.beangle.ems.core.log.model.{AppLogEntry, BusinessLog, ErrorLog}
 import org.beangle.ems.ws.log.PersistBuffer.Worker
 import org.hibernate.SessionFactory
 
@@ -40,7 +39,7 @@ object PersistBuffer {
     override def run(): Unit = {
       while (!stopped) {
         try {
-          val logs = new ju.ArrayList[BusinessLogEvent]
+          val logs = new ju.ArrayList[AnyRef]
           val e0 = store.queue.take()
           logs.add(e0)
           store.queue.drainTo(logs)
@@ -54,33 +53,32 @@ object PersistBuffer {
 }
 
 class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, appService: AppService) extends Disposable {
-  private val queue = new ArrayBlockingQueue[BusinessLogEvent](queueSize)
+  private val queue = new ArrayBlockingQueue[AnyRef](queueSize)
   private val worker = new Worker(this)
   private val appName2Id = new mutable.HashMap[String, Int]
   worker.setDaemon(true)
-  worker.setName("beangle-business-log-persister")
+  worker.setName("beangle-log-persister")
   worker.start()
 
-  def push(entry: BusinessLogEvent): Unit = {
+  def push(entry: AnyRef): Unit = {
     queue.put(entry)
   }
 
-  private def persist(events: ju.ArrayList[BusinessLogEvent]): Unit = {
+  private def persist(events: ju.ArrayList[AnyRef]): Unit = {
     SessionHelper.openSession(sf)
     try {
-      val logs = new mutable.ArrayBuffer[BusinessLog]
+      val logs = new mutable.ArrayBuffer[AppLogEntry]
       val iter = events.iterator()
       while (iter.hasNext) {
         val event = iter.next()
-        appName2Id.get(event.getAppName) match {
-          case Some(id) =>
-            val app = new App
-            app.id = id
-            logs += convert(app, event)
-          case None =>
-            appService.getApp(event.getAppName) foreach { app =>
-              appName2Id.put(event.getAppName, app.id)
-              logs += convert(app, event)
+        event match {
+          case be: Proto.BusinessLogEvent =>
+            findAppByName(be.getAppName) foreach { app =>
+              logs += convert(app, be)
+            }
+          case ee: Proto.ErrorLogEvent =>
+            findAppByName(ee.getAppName) foreach { app =>
+              logs += convert(app, ee)
             }
         }
       }
@@ -90,7 +88,21 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
     }
   }
 
-  private def convert(app: App, e: BusinessLogEvent): BusinessLog = {
+  def findAppByName(appName: String): Option[App] = {
+    appName2Id.get(appName) match {
+      case Some(id) =>
+        val app = new App
+        app.id = id
+        Some(app)
+      case None =>
+        appService.getApp(appName).map { app =>
+          appName2Id.put(appName, app.id)
+          app
+        }
+    }
+  }
+
+  private def convert(app: App, e: Proto.BusinessLogEvent): AppLogEntry = {
     val l = new BusinessLog()
     l.app = app
     l.operator = e.getOperator
@@ -102,6 +114,19 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
     l.agent = e.getAgent
     l.entry = e.getEntry
     l.logLevel = Level.fromOrdinal(e.getLevel - 1) //level is 1-based
+    l
+  }
+
+  private def convert(app: App, e: Proto.ErrorLogEvent): AppLogEntry = {
+    val l = new ErrorLog
+    l.app = app
+    l.stackTrace = e.getStackTrace
+    l.exceptionName = e.getExceptionName
+    l.requestUrl = e.getRequestUrl
+    l.message = e.getMessage
+    l.occurredAt = Instant.ofEpochMilli(e.getOccurredAt)
+    l.username = Option(e.getUsername)
+    l.params = Option(e.getParams)
     l
   }
 

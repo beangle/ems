@@ -21,14 +21,14 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.DateRange
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.user.model.{User, Category}
+import org.beangle.ems.core.user.model.{Category, User}
 
 import java.time.Instant
 import scala.collection.mutable
 
 /** 公告
  * */
-class Notice extends LongId with DateRange {
+class Notice extends LongId, DateRange {
 
   var app: App = _
 

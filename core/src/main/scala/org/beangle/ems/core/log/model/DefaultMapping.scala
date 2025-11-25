@@ -29,7 +29,16 @@ object DefaultMapping extends MappingModule {
       e.resources is length(300)
       e.ip is length(50)
       e.agent is length(100)
-      e.entry is length(100)
+      e.requestUrl is length(100)
+    }
+
+    bind[ErrorLog].declare { e =>
+      e.username is length(100)
+      e.message is length(400)
+      e.exceptionName is length(400)
+      e.requestUrl is length(100)
+      e.stackTrace is length(4000)
+      e.params is length(4000)
     }
   }
 

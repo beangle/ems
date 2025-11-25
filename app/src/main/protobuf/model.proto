@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option java_package = "org.beangle.ems.app.log";
-option java_outer_classname = "BusinessLogProto";
+option java_outer_classname = "Proto";
 
 message BusinessLogEvent {
     string operator = 1;
@@ -14,4 +14,15 @@ message BusinessLogEvent {
     string entry = 8;
     int32 level=9;
     string appName=10;
+}
+
+message ErrorLogEvent {
+  string username = 1;
+  int64 occurredAt = 2;
+  string message = 3;
+  string stackTrace = 4;
+  string exceptionName = 5;
+  string requestUrl = 6;
+  string params=7;
+  string appName=8;
 }

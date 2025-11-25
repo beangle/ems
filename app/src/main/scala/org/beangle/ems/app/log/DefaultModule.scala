@@ -18,15 +18,16 @@
 package org.beangle.ems.app.log
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.app.web.WebBusinessLogger
-import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.ems.app.Ems
 
 class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
-    val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
-    bind(classOf[AsyncBusinessLogger])
+    //val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
+    bind(classOf[AsyncAppLogger])
       .property("appenders",
         List(new RemoteAppender(Ems.api + s"/platform/log/push")))
+
+    bind(classOf[LogExceptionHandler]).primary()
   }
 }

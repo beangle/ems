@@ -25,13 +25,13 @@ import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, Stream, View}
-import org.beangle.webmvc.support.helper.QueryHelper
 
 import java.io.File
 
-class DocAction extends ActionSupport with ServletSupport {
+class DocAction extends ActionSupport, ServletSupport {
 
   var entityDao: EntityDao = _
 

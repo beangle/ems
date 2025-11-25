@@ -15,26 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.log
+package org.beangle.ems.core.log.model
 
-import org.beangle.commons.bean.{Disposable, Initializing}
-import org.beangle.commons.concurrent.Sidecar
+import org.beangle.data.model.annotation.log
 
-class AsyncBusinessLogger extends BusinessLogger, Initializing, Disposable {
-  var appenders: List[Appender] = _
-  var sidecar: Sidecar[BusinessLogEvent] = _
+import java.time.Instant
 
-  override def publish(entry: BusinessLogEvent): Unit = {
-    sidecar.offer(entry)
-  }
-
-  override def init(): Unit = {
-    sidecar = new Sidecar[BusinessLogEvent]("beangle-ems-async-logger", e => {
-      appenders foreach (ap => ap.append(e))
-    })
-  }
-
-  override def destroy(): Unit = {
-    sidecar.destroy()
-  }
+/** 错误日至
+ */
+@log
+class ErrorLog extends AppLogEntry {
+  /** 访问路径 */
+  var requestUrl: String = _
+  /** 发生时间 */
+  var occurredAt: Instant = _
+  /** 异常名称 */
+  var exceptionName: String = _
+  /** 操作内容摘要 */
+  var message: String = _
+  /** 操作内容 */
+  var stackTrace: String = _
+  /** 调用上下文 */
+  var params: Option[String] = None
+  /** 业务操作人 */
+  var username: Option[String] = None
 }

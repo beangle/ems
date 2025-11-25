@@ -1,0 +1,27 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=errorLogs var="errorLog" sortable="true"]
+  [@b.gridbar]
+    [#if errorLogs.totalItems<10000]
+    bar.addItem("${b.text("action.export")}",action.exportData("id:流水号,app.name:应用名,username:操作者,occurredAt:操作时间,message:消息,requestUrl:入口地址,exceptionName:异常,details:明细",null,"fileName=日志明细"));
+    [/#if]
+  [/@]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.col  width="90px" property="app.name" title="应用"]
+       <span style="font-size:0.9em">${errorLog.app.title}</span>
+    [/@]
+    [@b.col  width="20%" property="exceptionName" title="异常"/]
+    [@b.col property="message" title="消息"]
+      [@b.a href="!info?id="+errorLog.id title="查看明细"]${errorLog.message}[/@]
+    [/@]
+    [@b.col  width="15%" property="requestUrl" title="入口"]
+      <span style="font-size:0.8em" title="${errorLog.requestUrl}">${errorLog.requestUrl}</span>
+    [/@]
+    [@b.col  width="10%" property="occurredAt" title="操作时间"]
+      ${errorLog.occurredAt?string("yy-MM-dd HH:mm")}
+    [/@]
+    [@b.col  width="10%" property="username" title="操作者"/]
+  [/@]
+[/@]
+[@b.foot/]

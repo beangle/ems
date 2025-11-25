@@ -19,7 +19,7 @@ package org.beangle.ems.ws.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.app.log.BusinessLogProto
+import org.beangle.ems.app.log.Proto
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -28,7 +28,7 @@ import org.hibernate.SessionFactory
 
 /** 应用系统调用，存储日志的服务
  */
-class PushWS extends ActionSupport with ServletSupport with Initializing with Disposable {
+class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
 
   var appService: AppService = _
 
@@ -40,7 +40,8 @@ class PushWS extends ActionSupport with ServletSupport with Initializing with Di
 
   @mapping("")
   def index(): View = {
-    buffer.push(BusinessLogProto.BusinessLogEvent.parseFrom(request.getInputStream))
+    if get("type", "business") == "business" then buffer.push(Proto.BusinessLogEvent.parseFrom(request.getInputStream))
+    else buffer.push(Proto.ErrorLogEvent.parseFrom(request.getInputStream))
     Status.Ok
   }
 

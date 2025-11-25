@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.13.3-SNAPSHOT"
+ThisBuild / version := "4.14.0"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -24,6 +24,7 @@ ThisBuild / developers := List(
 ThisBuild / description := "The Beangle EMS Application"
 ThisBuild / homepage := Some(url("http://beangle.github.io/ems/index.html"))
 ThisBuild / resolvers += Resolver.mavenLocal
+
 
 lazy val root = (project in file("."))
   .settings(

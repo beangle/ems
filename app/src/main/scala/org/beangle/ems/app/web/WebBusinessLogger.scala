@@ -18,7 +18,7 @@
 package org.beangle.ems.app.web
 
 import org.beangle.commons.lang.Strings
-import org.beangle.ems.app.log.{BusinessLogger, Level}
+import org.beangle.ems.app.log.{BusinessLogger, Level, LogEvent}
 import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.context.ActionContext
 
@@ -44,28 +44,7 @@ class WebBusinessLogger {
     val e = BusinessLogger.newEvent(summary)
     e.level = level
     val context = ActionContext.current
-    val detailStr = details match {
-      case null => "--"
-      case m: collection.Map[_, _] =>
-        val sb = new mutable.ArrayBuffer[String]
-        m foreach { case (k, v) =>
-          val key = k.toString
-          if !key.startsWith("_") then
-            val stringValue = v match {
-              case Some(n) => n.toString
-              case None => "None"
-              case vs: Array[_] => "[" + vs.map(String.valueOf(_)).mkString(",") + "]"
-              case vs: Seq[_] => "[" + vs.map(String.valueOf(_)).mkString(",") + "]"
-              case _ => String.valueOf(v)
-            }
-            val value = if k.toString.contains("password") then "*****" else stringValue
-
-            sb += s"$k = $value"
-        }
-        val mapString = sb.sorted.mkString("\n")
-        Strings.abbreviate(mapString, 4000)
-      case e: Any => e.toString
-    }
+    val detailStr = LogEvent.toDetailString(details)
     e.from(RequestUtils.getIpAddr(context.request)).operateOn(resources.toString, detailStr)
     businessLogger.publish(e)
   }

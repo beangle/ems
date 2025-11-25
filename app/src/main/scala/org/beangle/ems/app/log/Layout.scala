@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 import scala.collection.mutable
 
 trait Layout {
-  def mkString(entry: BusinessLogEvent): String
+  def mkString(event: LogEvent): String
 }
 
 case class Part(content: String, isVariable: Boolean)
@@ -55,23 +55,42 @@ class PatternLayout(pattern: String) extends Layout {
     parts.toList
   }
 
-  override def mkString(entry: BusinessLogEvent): String = {
+  override def mkString(event: LogEvent): String = {
     val result = new mutable.StringBuilder
-    parts foreach { p =>
-      if p.isVariable then
-        val v = p.content match {
-          case "app" => EmsApp.name
-          case "operator" => entry.operator
-          case "summary" => entry.summary
-          case "details" => entry.details
-          case "resources" => entry.resources
-          case "ip" => entry.ip
-          case "agent" => entry.agent
-          case "entry" => entry.entry
-          case "operateAt" => DateTimeFormatter.ISO_INSTANT.format(entry.operateAt)
+    event match {
+      case be: BusinessLogEvent =>
+        parts foreach { p =>
+          if p.isVariable then
+            val v = p.content match {
+              case "app" => EmsApp.name
+              case "operator" => be.operator
+              case "summary" => be.summary
+              case "details" => be.details
+              case "resources" => be.resources
+              case "ip" => be.ip
+              case "agent" => be.agent
+              case "entry" => be.entry
+              case "operateAt" => DateTimeFormatter.ISO_INSTANT.format(be.operateAt)
+            }
+            result.append(v)
+          else result.append(p.content)
         }
-        result.append(v)
-      else result.append(p.content)
+      case ee: ErrorLogEvent =>
+        parts foreach { p =>
+          if p.isVariable then
+            val v = p.content match {
+              case "app" => EmsApp.name
+              case "username" => ee.username.getOrElse("-")
+              case "message" => ee.message
+              case "stackTrace" => ee.stackTrace
+              case "requestUrl" => ee.requestUrl
+              case "occurredAt" => DateTimeFormatter.ISO_INSTANT.format(ee.occurredAt)
+              case "exceptionName" => ee.exceptionName
+              case "params" => ee.params.getOrElse("-")
+            }
+            result.append(v)
+          else result.append(p.content)
+        }
     }
     result.mkString
   }

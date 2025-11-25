@@ -15,14 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.core.log.model
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.data.model.LongId
+import org.beangle.ems.core.config.model.App
 
-class LogModule extends BindModule {
+import java.time.Instant
 
-  protected override def binding(): Unit = {
-    bind(classOf[log.BusinessAction])
-    bind(classOf[log.ErrorAction])
-  }
+/** 应用日志实体
+ */
+abstract class AppLogEntry extends LongId {
+
+  var app: App = _
+
+  def message: String
+
+  def occurredAt: Instant
+
+  def requestUrl: String
 }

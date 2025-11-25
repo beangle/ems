@@ -15,14 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.app.log
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.bean.{Disposable, Initializing}
+import org.beangle.commons.concurrent.Sidecar
 
-class LogModule extends BindModule {
+class AsyncAppLogger extends BusinessLogger, ErrorLogger, Initializing, Disposable {
+  var appenders: List[Appender] = _
+  var sidecar: Sidecar[LogEvent] = _
 
-  protected override def binding(): Unit = {
-    bind(classOf[log.BusinessAction])
-    bind(classOf[log.ErrorAction])
+  override def publish(event: BusinessLogEvent): Unit = {
+    sidecar.offer(event)
+  }
+
+  override def publish(event: ErrorLogEvent): Unit = {
+    sidecar.offer(event)
+  }
+
+  override def init(): Unit = {
+    sidecar = new Sidecar[LogEvent]("beangle-ems-logger", e => {
+      appenders foreach (ap => ap.append(e))
+    })
+  }
+
+  override def destroy(): Unit = {
+    sidecar.destroy()
   }
 }

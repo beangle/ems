@@ -19,26 +19,24 @@ package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.io.Dirs
-import org.beangle.commons.lang.{Charsets, Strings}
+import org.beangle.commons.lang.Charsets
 import org.beangle.commons.net.Networks
-import org.beangle.commons.net.http.{HttpMethods, HttpUtils, Https, Response}
+import org.beangle.commons.net.http.HttpUtils
 
 import java.io.*
-import java.net.HttpURLConnection.HTTP_NOT_FOUND
-import java.net.{HttpURLConnection, URL, URLConnection}
 
 trait Appender {
 
-  def append(entry: BusinessLogEvent): Unit
+  def append(entry: LogEvent): Unit
 }
 
 class ConsoleAppender(layout: Layout) extends Appender {
-  def append(entry: BusinessLogEvent): Unit = {
-    println(layout.mkString(entry))
+  def append(event: LogEvent): Unit = {
+    println(layout.mkString(event))
   }
 }
 
-class FileAppender(val fileName: String, layout: Layout) extends Appender with Initializing with Disposable {
+class FileAppender(val fileName: String, layout: Layout) extends Appender, Initializing, Disposable {
 
   private var fos: FileOutputStream = _
 
@@ -52,27 +50,45 @@ class FileAppender(val fileName: String, layout: Layout) extends Appender with I
     if null != fos then fos.close()
   }
 
-  def append(entry: BusinessLogEvent): Unit = {
-    fos.write(layout.mkString(entry).getBytes(Charsets.UTF_8))
+  def append(event: LogEvent): Unit = {
+    fos.write(layout.mkString(event).getBytes(Charsets.UTF_8))
   }
 }
 
 class RemoteAppender(val url: String) extends Appender {
-  def append(event: BusinessLogEvent): Unit = {
-    val builder = BusinessLogProto.BusinessLogEvent.newBuilder()
-    builder.setOperator(event.operator)
-    builder.setOperateAt(event.operateAt.toEpochMilli)
-    builder.setSummary(event.summary)
-    builder.setDetails(event.details)
-    builder.setResources(event.resources)
-    builder.setIp(event.ip)
-    builder.setAgent(event.agent)
-    builder.setEntry(event.entry)
-    builder.setLevel(event.level.ordinal + 1) //level is 1 based
-    builder.setAppName(event.appName)
-    val os = new ByteArrayOutputStream()
-    builder.build().writeTo(os)
-    val upload = Networks.url(url.replace("{level}", Strings.uncapitalize(event.level.toString)))
-    HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
+  def append(event: LogEvent): Unit = {
+    event match {
+      case be: BusinessLogEvent =>
+        val b = Proto.BusinessLogEvent.newBuilder()
+        b.setOperator(be.operator)
+        b.setOperateAt(be.operateAt.toEpochMilli)
+        b.setSummary(be.summary)
+        b.setDetails(be.details)
+        b.setResources(be.resources)
+        b.setIp(be.ip)
+        b.setAgent(be.agent)
+        b.setEntry(be.entry)
+        b.setLevel(be.level.ordinal + 1) //level is 1 based
+        b.setAppName(be.appName)
+        val os = new ByteArrayOutputStream()
+        b.build().writeTo(os)
+        val upload = Networks.url(url)
+        HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
+      case ee: ErrorLogEvent =>
+        val b = Proto.ErrorLogEvent.newBuilder()
+        b.setAppName(ee.appName)
+        b.setExceptionName(ee.exceptionName)
+        b.setMessage(ee.message)
+        b.setOccurredAt(ee.occurredAt.toEpochMilli)
+        b.setParams(ee.params.orNull)
+        b.setRequestUrl(ee.requestUrl)
+        b.setStackTrace(ee.stackTrace)
+        b.setUsername(ee.username.orNull)
+        val os = new ByteArrayOutputStream()
+        b.build().writeTo(os)
+        val upload = Networks.url(url + "?type=error")
+        HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
+    }
+
   }
 }

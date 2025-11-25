@@ -17,37 +17,27 @@
 
 package org.beangle.ems.app.log
 
+trait ErrorLogger {
+  def publish(entry: ErrorLogEvent): Unit
+}
+
 import java.time.Instant
 
-class BusinessLogEvent {
+class ErrorLogEvent extends LogEvent {
+  /** 应用 */
   var appName: String = _
-  /** 操作人 */
-  var operator: String = _
-  /** 操作时间 */
-  var operateAt: Instant = _
+  /** 访问路径 */
+  var requestUrl: String = _
+  /** 发生时间 */
+  var occurredAt: Instant = _
+  /** 异常名称 */
+  var exceptionName: String = _
   /** 操作内容摘要 */
-  var summary: String = _
+  var message: String = _
   /** 操作内容 */
-  var details: String = _
-  /** 对应的资源 */
-  var resources: String = _
-  /** IP */
-  var ip: String = _
-  /** 操作客户端代理 */
-  var agent: String = _
-  /** 访问入口 */
-  var entry: String = _
-  /** 日志级别 */
-  var level: Level = _
-
-  def from(ip: String): BusinessLogEvent = {
-    this.ip = ip
-    this
-  }
-
-  def operateOn(resources: String, details: String): BusinessLogEvent = {
-    this.resources = resources
-    this.details = details
-    this
-  }
+  var stackTrace: String = _
+  /** 调用上下文 */
+  var params: Option[String] = None
+  /** 业务操作人 */
+  var username: Option[String] = None
 }

@@ -42,3 +42,38 @@ trait BusinessLogger {
 
   def publish(entry: BusinessLogEvent): Unit
 }
+
+import java.time.Instant
+
+class BusinessLogEvent extends LogEvent {
+  var appName: String = _
+  /** 操作人 */
+  var operator: String = _
+  /** 操作时间 */
+  var operateAt: Instant = _
+  /** 操作内容摘要 */
+  var summary: String = _
+  /** 操作内容 */
+  var details: String = _
+  /** 对应的资源 */
+  var resources: String = _
+  /** IP */
+  var ip: String = _
+  /** 操作客户端代理 */
+  var agent: String = _
+  /** 访问入口 */
+  var entry: String = _
+  /** 日志级别 */
+  var level: Level = _
+
+  def from(ip: String): BusinessLogEvent = {
+    this.ip = ip
+    this
+  }
+
+  def operateOn(resources: String, details: String): BusinessLogEvent = {
+    this.resources = resources
+    this.details = details
+    this
+  }
+}

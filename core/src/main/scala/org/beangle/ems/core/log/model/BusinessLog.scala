@@ -24,10 +24,10 @@ import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
 
+/** 业务日志
+ */
 @log
-class BusinessLog extends LongId {
-
-  var app: App = _
+class BusinessLog extends AppLogEntry {
   /** 操作人 */
   var operator: String = _
   /** 操作时间 */
@@ -46,4 +46,11 @@ class BusinessLog extends LongId {
   var entry: String = _
   /** 级别 */
   var logLevel: Level = Level.Info
+
+  override def message: String = summary
+
+  override def occurredAt: Instant = operateAt
+
+  override def requestUrl: String = entry
+
 }

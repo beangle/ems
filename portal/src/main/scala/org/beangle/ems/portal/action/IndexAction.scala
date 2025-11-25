@@ -26,16 +26,16 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
+import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
-import org.beangle.web.servlet.url.UrlBuilder
 
 import java.time.LocalDate
 import scala.collection.mutable
 
-class IndexAction extends ActionSupport with ServletSupport {
+class IndexAction extends ActionSupport, ServletSupport {
   var entityDao: EntityDao = _
 
   var domainService: DomainService = _
