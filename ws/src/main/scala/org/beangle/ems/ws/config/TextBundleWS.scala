@@ -27,6 +27,8 @@ import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.{Status, View}
 
+/** 查询应用的国际化资源
+ */
 class TextBundleWS extends ActionSupport {
 
   var appService: AppService = _

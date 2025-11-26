@@ -18,10 +18,12 @@
 package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.io.Dirs
 import org.beangle.commons.lang.Charsets
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
+import org.beangle.ems.app.EmsApp
 
 import java.io.*
 
@@ -72,8 +74,9 @@ class RemoteAppender(val url: String) extends Appender {
         b.setAppName(be.appName)
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
-        val upload = Networks.url(url)
-        HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
+        val bytes = os.toByteArray
+        val upload = Networks.url(url + "?type=business&digest=" + digest(bytes, EmsApp.secret))
+        HttpUtils.invoke(upload, bytes, "application/x-protobuf", None)
       case ee: ErrorLogEvent =>
         val b = Proto.ErrorLogEvent.newBuilder()
         b.setAppName(ee.appName)
@@ -86,9 +89,14 @@ class RemoteAppender(val url: String) extends Appender {
         b.setUsername(ee.username.orNull)
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
-        val upload = Networks.url(url + "?type=error")
-        HttpUtils.invoke(upload, os.toByteArray, "application/x-protobuf", None)
+        val bytes = os.toByteArray
+        val upload = Networks.url(url + "?type=error&digest=" + digest(bytes, EmsApp.secret))
+        HttpUtils.invoke(upload, bytes, "application/x-protobuf", None)
     }
 
+  }
+
+  private def digest(bytes: Array[Byte], secret: String): String = {
+    Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
   }
 }

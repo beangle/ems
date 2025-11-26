@@ -18,6 +18,9 @@
 package org.beangle.ems.ws.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
+import org.beangle.commons.codec.digest.Digests
+import org.beangle.commons.io.IOs
+import org.beangle.commons.lang.Charsets
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.log.Proto
 import org.beangle.ems.core.config.service.AppService
@@ -40,9 +43,42 @@ class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
 
   @mapping("")
   def index(): View = {
-    if get("type", "business") == "business" then buffer.push(Proto.BusinessLogEvent.parseFrom(request.getInputStream))
-    else buffer.push(Proto.ErrorLogEvent.parseFrom(request.getInputStream))
-    Status.Ok
+    val bytes = IOs.readBytes(request.getInputStream)
+    var appName: String = null
+    val event = get("type", "business") match {
+      case "business" =>
+        val e = Proto.BusinessLogEvent.parseFrom(bytes)
+        appName = e.getAppName
+        e
+      case "error" =>
+        val e = Proto.ErrorLogEvent.parseFrom(bytes)
+        appName = e.getAppName
+        e
+      case _ => null
+    }
+    if (null == appName) {
+      error("Missing type parameter or missing appName in protobuf datas.")
+    } else {
+      appService.getApp(appName) match {
+        case Some(app) =>
+          if (validate(bytes, app.secret)) {
+            buffer.push(event)
+            Status.Ok
+          } else {
+            error("Invalidate data stream")
+          }
+        case None => error(s"Cannot find app $appName")
+      }
+    }
+  }
+
+  private def error(message: String): View = {
+    response.getWriter.write(message)
+    Status.BadRequest
+  }
+
+  private def validate(bytes: Array[Byte], secret: String): Boolean = {
+    get("digest", "--") == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
   }
 
   override def init(): Unit = {

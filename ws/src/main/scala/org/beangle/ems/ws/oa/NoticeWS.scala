@@ -30,6 +30,10 @@ import org.beangle.webmvc.support.{ActionSupport, JsonAPISupport}
 
 import java.time.LocalDate
 
+/** 读取app或者所在domain的通知公告
+ *
+ * @param entityDao
+ */
 class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
 
   var domainService: DomainService = _

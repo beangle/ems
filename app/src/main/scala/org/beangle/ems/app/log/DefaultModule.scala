@@ -28,6 +28,9 @@ class DefaultModule extends BindModule {
       .property("appenders",
         List(new RemoteAppender(Ems.api + s"/platform/log/push")))
 
-    bind(classOf[LogExceptionHandler]).primary()
+    //如果不是开发环境，则启用日志上报功能
+    if (!devEnabled) {
+      bind(classOf[LogExceptionHandler]).primary()
+    }
   }
 }

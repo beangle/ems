@@ -31,6 +31,9 @@ import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 
+/** 读取工作流状态
+ * @param entityDao
+ */
 class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   var domainService: DomainService = _
   var flowService: FlowService = _

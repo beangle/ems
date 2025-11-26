@@ -22,11 +22,13 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.File
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.View
 
+/** 应用配置文件
+ */
 class FileWS extends ActionSupport {
 
   var appService: AppService = _

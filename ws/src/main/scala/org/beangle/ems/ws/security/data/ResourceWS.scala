@@ -24,6 +24,8 @@ import org.beangle.ems.core.security.model.DataResource
 import org.beangle.webmvc.annotation.{param, response}
 import org.beangle.webmvc.support.ActionSupport
 
+/** 查询某个数据资源的明细信息
+ */
 class ResourceWS extends ActionSupport {
 
   var entityDao: EntityDao = _

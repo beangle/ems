@@ -19,13 +19,14 @@ package org.beangle.ems.ws.security.data
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.webmvc.support.ActionSupport
-import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.DataPermission
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.support.ActionSupport
 
-/**
+/** 查询app对应的用户授权信息
+ *
  * @author chaostone
  */
 class PermissionWS(entityDao: EntityDao) extends ActionSupport {

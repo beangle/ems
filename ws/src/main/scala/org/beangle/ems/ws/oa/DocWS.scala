@@ -31,6 +31,10 @@ import org.beangle.webmvc.view.{Status, Stream, View}
 
 import java.io.File
 
+/** 读取app或者所在domain的文档列表
+ *
+ * @param entityDao
+ */
 class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   var domainService: DomainService = _

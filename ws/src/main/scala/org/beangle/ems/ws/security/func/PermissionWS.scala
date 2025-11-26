@@ -19,12 +19,13 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.webmvc.support.ActionSupport
-import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.support.ActionSupport
 
-/**
+/** 查询app中某个roleId的资源范围
+ *
  * @author chaostone
  */
 class PermissionWS(entityDao: EntityDao) extends ActionSupport {

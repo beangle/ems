@@ -26,6 +26,10 @@ import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
 
+/** 获取应用数据源信息
+ *
+ * @param entityDao
+ */
 class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
@@ -57,8 +61,6 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
         ds.put("portNumber", rs.db.portNumber)
       }
       ds.put("maximumPoolSize", rs.maximumPoolSize)
-      ds.put("maxLifetime", 600000) //10 minutes
-      ds.put("minimumIdle", Math.min(5, rs.maximumPoolSize))
       rs.db.properties foreach { case (k, v) =>
         ds.put(k, v)
       }
