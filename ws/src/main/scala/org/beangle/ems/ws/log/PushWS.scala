@@ -78,7 +78,12 @@ class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
   }
 
   private def validate(bytes: Array[Byte], secret: String): Boolean = {
-    get("digest", "--") == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
+    get("digest") match {
+      case None => true
+      case Some(d) => d == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
+    }
+    //FIXME 暂时不要进行强制验证
+    //get("digest", "--") == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
   }
 
   override def init(): Unit = {

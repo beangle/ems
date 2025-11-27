@@ -50,46 +50,72 @@ object EmsEnv extends Logging {
       case e: Throwable => logger.error("Read config error", e); Map.empty
     }
   }
+
+  def readEnv(home: String, base: String, properties: Map[String, String]): EmsEnv = {
+    val reader = new PropertyReader(base, properties)
+    val cas = reader.find("cas", "{base}/cas")
+    val portal = reader.find("portal", "{base}/portal")
+    val index = reader.find("index", "{base}/portal")
+    val api = reader.find("api", "{base}/api")
+    val blob = reader.find("blob", "{base}/blob")
+    val webapp = reader.find("webapp", "{base}")
+    val static = reader.find("static", "{base}/static")
+    val key = reader.readKey()
+    EmsEnv(home, base, cas, portal, index, api, blob, webapp, static, key, properties)
+  }
+
+  def apply(home: String, properties: Map[String, String]): EmsEnv = {
+    readEnv(home, readBase(properties, "name"), properties)
+  }
+
+  def inner(env: EmsEnv): EmsEnv = {
+    env.properties.get("inner_base") match {
+      case None => env
+      case Some(b) =>
+        val base = normalize(b)
+        readEnv(env.home, base, env.properties)
+    }
+  }
+
+  private def readBase(properties: Map[String, String], name: String): String = {
+    properties.get(name) match {
+      case None =>
+        if (name == "base") logger.warn("Cannot find base,using localhost:8080")
+        "localhost:8080"
+      case Some(base) => normalize(base)
+    }
+  }
+
+  private def normalize(value: String): String = {
+    var url = value
+    if (url.endsWith("/")) url = url.substring(0, url.length - 1)
+    if (url.startsWith("http")) url else "http://" + url
+  }
+
 }
 
-final class EmsEnv(val home: String, val properties: Map[String, String]) extends Logging {
-
-  val base = readBase("base", null)
-
-  val cas = readBase("cas", "{base}/cas")
-
-  val portal = readBase("portal", "{base}/portal")
-
-  val index = readBase("index", "{base}/portal")
-
-  val api = readBase("api", "{base}/api")
-
-  var blob = readBase("blob", "{base}/blob")
-
-  val webapp = readBase("webapp", "{base}")
-
-  val static = readBase("static", "{base}/static")
-
-  val key = readKey()
-
-  private def readBase(property: String, defaults: String): String = {
-    var result =
-      properties.get(property) match {
-        case Some(v) => v
-        case None =>
-          if ("base" == property) {
-            logger.warn("Cannot find base,using localhost/base")
-            "localhost/base"
-          } else {
-            defaults.replace("{base}", this.base)
-          }
-      }
+class PropertyReader(base: String, properties: Map[String, String]) extends Logging {
+  def find(property: String, defaults: String): String = {
+    var result = properties.get(property) match {
+      case Some(v) => v
+      case None =>
+        if ("base" == property) {
+          logger.warn("Cannot find base,using localhost:8080")
+          "localhost:8080"
+        } else {
+          defaults.replace("{base}", this.base)
+        }
+    }
     if (result.endsWith("/")) result = result.substring(0, result.length - 1)
     if (result.startsWith("http")) result else "http://" + result
   }
 
-  private def readKey(): String = {
+  def readKey(): String = {
     properties.getOrElse("key", "ems")
   }
+}
 
+case class EmsEnv(home: String, base: String, cas: String, portal: String,
+                  index: String, api: String, blob: String, webapp: String,
+                  static: String, key: String, properties: Map[String, String]) extends Logging {
 }

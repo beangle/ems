@@ -99,33 +99,33 @@ object Flows {
   }
 
   def getFlows(businessCode: String, profileId: Any): Iterable[Flow] = {
-    val url = Ems.api + s"/platform/oa/flows/${businessCode}/${profileId}.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/${businessCode}/${profileId}.json"
     convertFlow(getText(url).getOrElse(null))
   }
 
   def getFlow(flowCode: String): Flow = {
-    val url = Ems.api + s"/platform/oa/flows/${flowCode}.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/${flowCode}.json"
     convertFlow(getText(url).getOrElse(null)).head
   }
 
   def getProcess(processId: String): Process = {
-    val url = Ems.api + s"/platform/oa/flows/processes/${processId}.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}.json"
     convertProcess(getText(url))
   }
 
   def cancel(processId: String): Unit = {
-    val url = Ems.api + s"/platform/oa/flows/processes/${processId}/cancel.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/cancel.json"
     HttpUtils.invoke(Networks.url(url), "", "application/json")
   }
 
   def start(flowCode: String, businessKey: Any, ctx: JsonObject): Process = {
-    val url = Ems.api + s"/platform/oa/flows/${flowCode}/start/${businessKey}.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/${flowCode}/start/${businessKey}.json"
     val res = HttpUtils.invoke(Networks.url(url), ctx.toJson, "application/json")
     convertProcess(res)
   }
 
   def complete(processId: String, taskId: String, payload: Payload): Process = {
-    val url = Ems.api + s"/platform/oa/flows/processes/${processId}/tasks/${taskId}/complete.json"
+    val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/tasks/${taskId}/complete.json"
     val res = HttpUtils.invoke(Networks.url(url), payload.toJson, "application/json")
     convertProcess(res)
   }

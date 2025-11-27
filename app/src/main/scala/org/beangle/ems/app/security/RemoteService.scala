@@ -32,7 +32,7 @@ import java.util.Locale
 object RemoteService {
 
   def roots: Option[Set[String]] = {
-    val url = Ems.api + "/platform/user/roots.json?app=" + EmsApp.name
+    val url = Ems.innerApi + "/platform/user/roots.json?app=" + EmsApp.name
     val res = getText(url)
     if (res.status == 200) {
       val resources = Collections.newSet[String]
@@ -44,7 +44,7 @@ object RemoteService {
   }
 
   def getAuthorities: collection.Seq[Authority] = {
-    val url = Ems.api + "/platform/security/func/" + EmsApp.name + "/resources.json"
+    val url = Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/resources.json"
     toAuthorities(getText(url).getOrElse(null))
   }
 
@@ -63,29 +63,29 @@ object RemoteService {
   }
 
   def getMenusJson(locale: Locale): String = {
-    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?request_locale=" + locale.toString).getOrElse(null)
+    getText(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?request_locale=" + locale.toString).getOrElse(null)
   }
 
   def getDomainMenusJson(locale: Locale): String = {
-    getText(Ems.api + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString).getOrElse(null)
+    getText(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString).getOrElse(null)
   }
 
   def getAppsJson: String = {
-    getText(Ems.api + "/platform/user/apps/" + Securities.user + ".json").getOrElse(null)
+    getText(Ems.innerApi + "/platform/user/apps/" + Securities.user + ".json").getOrElse(null)
   }
 
   def getProfiles(userCode: String, function: String): String = {
-    val url = Ems.api + "/platform/user/profiles/" + userCode + ".json"
+    val url = Ems.innerApi + "/platform/user/profiles/" + userCode + ".json"
     getText(url).getOrElse(null)
   }
 
   def getOrg: Ems.Org = {
-    val json = getText(Ems.api + "/platform/config/orgs.json").getOrElse(null)
+    val json = getText(Ems.innerApi + "/platform/config/orgs.json").getOrElse(null)
     convert2Org(Json.parseObject(json))
   }
 
   def getDomain(locale: Locale): Ems.Domain = {
-    val json = getText(Ems.api + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
+    val json = getText(Ems.innerApi + "/platform/config/domains.json?request_locale=" + locale.toString).getOrElse(null)
     val data = Json.parseObject(json)
     val domain = new Ems.Domain
     domain.id = data.getInt("id")
@@ -109,7 +109,7 @@ object RemoteService {
   }
 
   def getTheme: Ems.Theme = {
-    val json = getText(Ems.api + "/platform/config/themes.json").getOrElse(null)
+    val json = getText(Ems.innerApi + "/platform/config/themes.json").getOrElse(null)
     val data = Json.parseObject(json)
     val primaryColor = data.getString("primaryColor")
     val navbarBgColor = data.getString("navbarBgColor")

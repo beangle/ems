@@ -25,6 +25,6 @@ class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
     bind("mvc.TextBundleLoader.http", classOf[HttpTextBundleLoader])
-      .constructor(s"${Ems.api}/platform/config/text-bundles/${EmsApp.name}/{path}", true)
+      .constructor(s"${Ems.innerApi}/platform/config/text-bundles/${EmsApp.name}/{path}", true)
   }
 }

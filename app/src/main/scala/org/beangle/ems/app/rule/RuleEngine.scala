@@ -68,7 +68,7 @@ object RuleEngine {
     if (Strings.isEmpty(ruleIds)) {
       new RuleEngine(Nil)
     } else {
-      val url = Ems.api + s"/platform/config/rules/${ruleIds}.json"
+      val url = Ems.innerApi + s"/platform/config/rules/${ruleIds}.json"
       val json = HttpUtils.getText(url).getText
       val rules = parseToRules(json)
       new RuleEngine(rules, stopWhenFail)
@@ -76,13 +76,13 @@ object RuleEngine {
   }
 
   def list(ruleIds: String): Iterable[Rule] = {
-    val url = Ems.api + s"/platform/config/rules/${ruleIds}.json"
+    val url = Ems.innerApi + s"/platform/config/rules/${ruleIds}.json"
     val json = HttpUtils.getText(url).getText
     parseToRules(json)
   }
 
   def list(business: String, profileId: String): Iterable[Rule] = {
-    val url = Ems.api + s"/platform/config/rules/${business}/${profileId}.json"
+    val url = Ems.innerApi + s"/platform/config/rules/${business}/${profileId}.json"
     val json = HttpUtils.getText(url).getText
     parseToRules(json)
   }

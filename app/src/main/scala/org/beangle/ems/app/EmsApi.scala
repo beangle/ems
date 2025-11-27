@@ -23,11 +23,11 @@ import org.beangle.webmvc.context.ActionContext
 object EmsApi {
 
   def getDatasourceUrl(resourceKey: String): String = {
-    Ems.api + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
+    Ems.innerApi + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
   }
 
   def getRedisUrl: String = {
-    Ems.api + "/platform/config/rediss/" + EmsApp.name + ".xml?secret=" + EmsApp.secret
+    Ems.innerApi + "/platform/config/rediss/" + EmsApp.name + ".xml?secret=" + EmsApp.secret
   }
 
   /** 构造一个完整url

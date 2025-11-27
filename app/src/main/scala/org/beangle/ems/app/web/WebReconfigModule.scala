@@ -27,14 +27,14 @@ class WebReconfigModule extends ReconfigModule {
     //1.模板个性化
     //support load remote freemarker template files
     update("mvc.FreemarkerConfigurator.default")
-      .set("templatePath", s"${Ems.api}/platform/config/files/${EmsApp.name}/{path},class://")
+      .set("templatePath", s"${Ems.innerApi}/platform/config/files/${EmsApp.name}/{path},class://")
 
     //2.国际化词条个性化
     //using http text bundle loader
     update("mvc.TextBundleLoader.http").primaryOf(classOf[TextBundleLoader])
 
     //3.spring配置个性化
-    this.configUrl = s"${Ems.api}/platform/config/files/${EmsApp.name}/spring-config.xml"
+    this.configUrl = s"${Ems.innerApi}/platform/config/files/${EmsApp.name}/spring-config.xml"
 
     //4. 静态文件配置
     Static.Default.base = Ems.static

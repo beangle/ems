@@ -26,7 +26,7 @@ class DefaultModule extends BindModule {
     //val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
     bind(classOf[AsyncAppLogger])
       .property("appenders",
-        List(new RemoteAppender(Ems.api + s"/platform/log/push")))
+        List(new RemoteAppender(Ems.innerApi + s"/platform/log/push")))
 
     //如果不是开发环境，则启用日志上报功能
     if (!devEnabled) {

@@ -26,7 +26,9 @@ object Ems extends Logging {
 
   val home: String = EmsEnv.findHome()
 
-  val env: EmsEnv = new EmsEnv(home, EmsEnv.readConfig(home + "/conf.properties"))
+  val env: EmsEnv = EmsEnv(home, EmsEnv.readConfig(home + "/conf.properties"))
+
+  private val innerEnv = EmsEnv.inner(env)
 
   var sid: Sid = Sid(env.properties)
 
@@ -77,6 +79,10 @@ object Ems extends Logging {
 
   def api: String = {
     env.api
+  }
+
+  def innerApi: String = {
+    innerEnv.api
   }
 
   def getResourceFile: Option[File] = {
