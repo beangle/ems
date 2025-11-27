@@ -65,7 +65,7 @@ object EmsEnv extends Logging {
   }
 
   def apply(home: String, properties: Map[String, String]): EmsEnv = {
-    readEnv(home, readBase(properties, "name"), properties)
+    readEnv(home, readBase(properties), properties)
   }
 
   def inner(env: EmsEnv): EmsEnv = {
@@ -77,11 +77,11 @@ object EmsEnv extends Logging {
     }
   }
 
-  private def readBase(properties: Map[String, String], name: String): String = {
-    properties.get(name) match {
+  private def readBase(properties: Map[String, String]): String = {
+    properties.get("base") match {
       case None =>
-        if (name == "base") logger.warn("Cannot find base,using localhost:8080")
-        "localhost:8080"
+        logger.warn("Cannot find base,using http://localhost")
+        "http://localhost"
       case Some(base) => normalize(base)
     }
   }
@@ -98,13 +98,7 @@ class PropertyReader(base: String, properties: Map[String, String]) extends Logg
   def find(property: String, defaults: String): String = {
     var result = properties.get(property) match {
       case Some(v) => v
-      case None =>
-        if ("base" == property) {
-          logger.warn("Cannot find base,using localhost:8080")
-          "localhost:8080"
-        } else {
-          defaults.replace("{base}", this.base)
-        }
+      case None => defaults.replace("{base}", this.base)
     }
     if (result.endsWith("/")) result = result.substring(0, result.length - 1)
     if (result.startsWith("http")) result else "http://" + result
