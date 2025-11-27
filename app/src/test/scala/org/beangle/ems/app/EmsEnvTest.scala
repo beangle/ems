@@ -18,8 +18,8 @@
 package org.beangle.ems.app
 
 import org.beangle.security.codec.DefaultPasswordEncoder
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * @author chaostone
@@ -27,8 +27,8 @@ import org.scalatest.funspec.AnyFunSpec
 class EmsEnvTest extends AnyFunSpec with Matchers {
   describe("EmsEnv") {
     it("init") {
-      val env = new EmsEnv("/tmp/ems", Map("base" -> "localhost"))
-      assert(env.api=="http://localhost/api")
+      val env = EmsEnv("/tmp/ems", Map("base" -> "localhost"))
+      assert(env.api == "http://localhost/api")
     }
   }
 }
