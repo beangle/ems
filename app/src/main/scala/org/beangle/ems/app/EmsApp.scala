@@ -23,6 +23,7 @@ import org.beangle.commons.io.IOs
 import org.beangle.commons.json.Json
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.logging.Logging
+import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.ems.app.Ems.env
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
@@ -145,7 +146,7 @@ object EmsApp extends Logging {
     val p = if path.startsWith("/") then path.substring(1) else path
     ClassLoaders.getResources(path).headOption match
       case None =>
-        val url = new URL(s"${Ems.innerApi}/platform/config/files/$name/$p")
+        val url = Networks.url(s"${Ems.innerApi}/platform/config/files/$name/$p")
         val status = HttpUtils.access(url)
         if status.isOk then Some(url) else None
       case a@Some(url) => a

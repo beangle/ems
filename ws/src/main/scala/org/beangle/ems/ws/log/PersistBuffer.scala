@@ -18,9 +18,10 @@
 package org.beangle.ems.ws.log
 
 import org.beangle.commons.bean.Disposable
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.hibernate.SessionHelper
-import org.beangle.ems.app.log.{ErrorLogEvent, Level, LogEvent, Proto}
+import org.beangle.ems.app.log.{Level, Proto}
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.log.model.{AppLogEntry, BusinessLog, ErrorLog}
@@ -120,13 +121,13 @@ class PersistBuffer(entityDao: EntityDao, sf: SessionFactory, queueSize: Int, ap
   private def convert(app: App, e: Proto.ErrorLogEvent): AppLogEntry = {
     val l = new ErrorLog
     l.app = app
-    l.stackTrace = e.getStackTrace
+    l.stackTrace = Strings.abbreviate(e.getStackTrace, 4000)
     l.exceptionName = e.getExceptionName
     l.requestUrl = e.getRequestUrl
-    l.message = e.getMessage
+    l.message = Strings.abbreviate(e.getMessage, 400)
     l.occurredAt = Instant.ofEpochMilli(e.getOccurredAt)
     l.username = Option(e.getUsername)
-    l.params = Option(e.getParams)
+    l.params = Option(Strings.abbreviate(e.getParams, 4000))
     l
   }
 
