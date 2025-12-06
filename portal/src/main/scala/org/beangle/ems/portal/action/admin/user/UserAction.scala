@@ -31,7 +31,7 @@ import org.beangle.security.Securities
 import org.beangle.security.authc.DBCredentialStore
 import org.beangle.security.codec.DefaultPasswordEncoder
 import org.beangle.security.context.SecurityContext
-import org.beangle.webmvc.annotation.{mapping, param}
+import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.view.View

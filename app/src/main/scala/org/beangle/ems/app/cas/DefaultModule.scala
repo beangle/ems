@@ -17,13 +17,12 @@
 
 package org.beangle.ems.app.cas
 
-import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.security.RemoteAuthorizer
-import org.beangle.security.authc.{DefaultAccount, RealmAuthenticator}
+import org.beangle.security.authc.{DefaultAccount, Profile, RealmAuthenticator}
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint}
-import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, SessionSerializer}
+import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
 import org.beangle.security.session.{DefaultSession, Session}
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
 import org.beangle.security.web.session.CookieSessionIdReader
@@ -50,6 +49,7 @@ class DefaultModule extends BindModule {
     protobuf.register(classOf[DefaultSession], SessionSerializer)
     protobuf.register(classOf[DefaultAccount], AccountSerializer)
     protobuf.register(classOf[Session.Agent], AgentSerializer)
+    protobuf.register(classOf[Profile], ProfileSerializer)
 
     bind("security.SessionRepo.http", classOf[CasHttpSessionRepo])
       .constructor(ref("casConfig"), ref("cache.Caffeine"), protobuf)
