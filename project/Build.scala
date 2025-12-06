@@ -4,7 +4,7 @@ import sbt.*
 object EmsDepends {
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "5.6.32"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.4"
-  val beangle_model = "org.beangle.data" % "beangle-model" % "5.11.2"
+  val beangle_model = "org.beangle.data" % "beangle-model" % "5.11.4"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.9.0"
   val beangle_web = "org.beangle.web" % "beangle-web" % "0.7.0"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.16"

@@ -19,7 +19,7 @@ package org.beangle.ems.app.dao
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.data.dao.EntityDao
-import org.beangle.data.orm.hibernate.{DomainFactory, HibernateEntityDao, HibernateTransactionManager, LocalSessionFactoryBean}
+import org.beangle.data.orm.hibernate.*
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 object DaoModule extends BindModule {
@@ -49,6 +49,8 @@ object DaoModule extends BindModule {
       .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
       .property("proxyInterfaces", Array(classOf[EntityDao]))
       .property("proxyTargetClass", false)
+
+    bind(classOf[SessionCleaner])
   }
 
 }
