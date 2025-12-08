@@ -29,8 +29,8 @@ import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.webmvc.support.ServletSupport
-import org.beangle.webmvc.view.{Status, Stream, View}
 import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.{Status, Stream, View}
 
 import java.io.File
 import java.time.Instant
@@ -80,9 +80,7 @@ class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
       databus.publish(DataEvent.update(entities))
       redirect("search", "info.remove.success")
     } catch {
-      case e: Exception =>
-        logger.info("remove failure", e)
-        redirect("search", "info.delete.failure")
+      case e: Exception => redirect("search", "info.delete.failure")
     }
   }
 

@@ -24,21 +24,21 @@ import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
 import org.beangle.security.authz.Scope
 import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
+import org.beangle.webmvc.view.View
 
 /**
-  * 系统模块管理响应类
-  *
-  * @author chaostone 2005-10-9
-  */
+ * 系统模块管理响应类
+ *
+ * @author chaostone 2005-10-9
+ */
 class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource], DomainSupport {
 
   var funcPermissionService: FuncPermissionService = _
 
   /**
-    * 禁用或激活一个或多个模块
-    */
+   * 禁用或激活一个或多个模块
+   */
   def activate(): View = {
     val resourceIds = getIntIds("resource")
     val enabled = getBoolean("enabled", defaultValue = false)
@@ -107,9 +107,7 @@ class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[Func
       funcPermissionService.removeResources(entities)
       redirect("search", "info.remove.success")
     } catch {
-      case e: Exception =>
-        logger.info("removeAndForwad failure", e)
-        redirect("search", "info.delete.failure")
+      case e: Exception => redirect("search", "info.delete.failure")
     }
   }
 }

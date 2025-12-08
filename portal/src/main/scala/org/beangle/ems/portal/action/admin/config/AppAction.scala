@@ -84,7 +84,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
       redirect("search", "info.save.success")
     } catch {
       case e: Exception =>
-        logger.info("saveAndForwad failure", e)
+        logger.error("saveAndForwad failure", e)
         redirect("search", "info.save.failure")
     }
   }

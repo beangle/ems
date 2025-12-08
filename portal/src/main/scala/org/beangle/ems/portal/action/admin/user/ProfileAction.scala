@@ -18,16 +18,16 @@
 package org.beangle.ems.portal.action.admin.user
 
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.security.Securities
-import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.Profile
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, UserService}
+import org.beangle.ems.portal.helper.ProfileHelper
+import org.beangle.security.Securities
+import org.beangle.webmvc.annotation.ignore
+import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.webmvc.view.View
 
 /**
  * @author chaostone
@@ -64,7 +64,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
     helper.dataResolver = dataResolver
     //FIXME
     helper.populateSaveInfo(profile, isAdmin = true)
-    profile.domain=domainService.getDomain
+    profile.domain = domainService.getDomain
     if (profile.properties.isEmpty) {
       if (profile.persisted) {
         entityDao.remove(profile)
@@ -84,7 +84,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
       redirect("index", s"&profile.user.id=${profile.user.id}", "info.remove.success")
     } catch {
       case e: Exception =>
-        logger.info("removeAndForwad failure", e)
+        logger.error("removeAndForwad failure", e)
         redirect("appinfo", s"&profile.user.id=${profile.user.id}", "info.delete.failure")
     }
   }
