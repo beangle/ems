@@ -2,13 +2,13 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "5.6.32"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "5.6.33"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.4"
   val beangle_model = "org.beangle.data" % "beangle-model" % "5.11.4"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.9.0"
   val beangle_web = "org.beangle.web" % "beangle-web" % "0.7.0"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.16"
-  val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.0"
+  val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.1"
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.12.3"
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.1"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.1"
