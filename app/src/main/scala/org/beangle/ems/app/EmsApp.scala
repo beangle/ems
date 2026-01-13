@@ -17,10 +17,10 @@
 
 package org.beangle.ems.app
 
+import org.beangle.cdi.spring.config.EnvPropertySource
+import org.beangle.commons.cdi.PropertySource
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.conversion.string.DateConverter
 import org.beangle.commons.io.IOs
-import org.beangle.commons.json.Json
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.Networks
@@ -33,11 +33,9 @@ import java.net.URL
 
 object EmsApp extends Logging {
 
-  val properties: Map[String, Any] = readProperties()
-  val name: String = properties("name").asInstanceOf[String]
-  val path: String = properties("path").asInstanceOf[String]
-
-  private var _token: Token = _
+  val properties: Map[String, String] = readProperties()
+  val name: String = properties("name")
+  val path: String = properties("path")
 
   def getBlobRepository(remote: Boolean = true): Repository = {
     val dir = "/" + Strings.substringBefore(name, "-")
@@ -46,26 +44,7 @@ object EmsApp extends Logging {
   }
 
   def secret: String = {
-    properties.getOrElse("secret", name).asInstanceOf[String]
-  }
-
-  def token: String = {
-    if (null != _token) {
-      _token.expiredAt < System.currentTimeMillis()
-      _token = null
-    }
-
-    if (null == _token) {
-      val tokenUrl = Ems.cas + "/oauth/token/login?app=" + name + "&secret=" + secret
-      val res = HttpUtils.getText(tokenUrl)
-      if (res.status == 200) {
-        val token = Json.parseObject(res.getText)
-        _token = Token(token.getString("token"), DateConverter.convert(token.getString("expiredAt"), classOf[java.util.Date]).getTime)
-      } else {
-        throw new RuntimeException("cannot find token")
-      }
-    }
-    _token.token
+    properties.getOrElse("secret", name)
   }
 
   def getAppFile: Option[File] = {
@@ -82,7 +61,7 @@ object EmsApp extends Logging {
     else None
   }
 
-  private def readProperties(): Map[String, Any] = {
+  private def readProperties(): Map[String, String] = {
     try {
       val configs = ClassLoaders.getResources("beangle.xml")
       var appManifest: Map[String, String] = null
@@ -101,7 +80,7 @@ object EmsApp extends Logging {
       var appPath = Strings.replace(name, "-", "/")
       appPath = "/" + Strings.replace(appPath, ".", "/")
 
-      val result = new collection.mutable.HashMap[String, Any]
+      val result = new collection.mutable.HashMap[String, String]
       result ++= appManifest
       result.put("path", appPath)
 
@@ -117,7 +96,10 @@ object EmsApp extends Logging {
         }
         IOs.close(is)
       }
-      result.toMap
+      EmsApp.encryptor match {
+        case None => result.toMap
+        case Some(encryptor) => result.map(kv => (kv._1, encryptor.process(kv._1, kv._2))).toMap
+      }
     } catch {
       case e: Throwable => logger.error("Issue exception when read property", e); System.exit(1); Map.empty
     }
@@ -151,6 +133,14 @@ object EmsApp extends Logging {
         if status.isOk then Some(url) else None
       case a@Some(url) => a
   }
+
+  def encryptor: Option[PropertySource.Processor] = {
+    val key = "beangle.encryptor.password"
+    var pwd = System.getProperty(key)
+    if (null == pwd) {
+      pwd = EnvPropertySource.get(key, null)
+    }
+    if (null == pwd) None else Some(PropertySource.pbe(pwd))
+  }
 }
 
-case class Token(token: String, expiredAt: Long)

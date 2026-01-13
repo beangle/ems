@@ -17,19 +17,13 @@
 
 package org.beangle.ems.core.config.model
 
-import java.time.Instant
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.{Coded, Named, Updated}
 
-import org.beangle.data.model.StringId
+/** 第三方APP
+ */
+class ThirdPartyApp extends LongId, Coded, Named, Updated {
 
-class AccessToken extends StringId {
-
-  var appId: Int = _
-
-  var principal: String = _
-
-  var expiredAt: Instant = _
-
-  def expired: Boolean = {
-    Instant.now.isAfter(expiredAt)
-  }
+  var domain: Domain = _
+  var secret: String = _
 }

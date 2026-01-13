@@ -119,4 +119,8 @@ object RemoteService {
 
     Ems.Theme(primaryColor, navbarBgColor, searchBgColor, gridbarBgColor, gridBorderColor)
   }
+
+  def verifyJwtToken(token: String): Boolean = {
+    "true" == getText(Ems.innerApi + s"/platform/oauth/login/verify/$token.json").getText
+  }
 }

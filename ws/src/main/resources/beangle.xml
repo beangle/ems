@@ -46,6 +46,14 @@
       <action suffix="WS" defaultMethod="index"/>
       <url path="/log/" suffix="" style="seo"/>
     </profile>
+
+    <profile package="org.beangle.ems.ws.oauth">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/oauth/" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+      <interceptor name="web.Interceptor.cors"/>
+    </profile>
+
   </mvc>
 
 </beangle>

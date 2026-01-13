@@ -18,18 +18,17 @@
 package org.beangle.ems.ws
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.core.config.model.AccessToken
-import org.beangle.ems.core.oauth.service.impl.MemTokenRepository
+import org.beangle.commons.cdi.{BindModule, PropertySource}
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
 
-class DefaultModule extends BindModule {
+class DefaultModule extends BindModule, PropertySource.Provider {
 
   protected override def binding(): Unit = {
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
-    bind(classOf[oauth.TokenWS], classOf[config.DomainWS], classOf[config.ThemeWS])
+    bind(classOf[config.DomainWS], classOf[config.ThemeWS])
     bind(classOf[config.TextBundleWS], classOf[config.RedisWS])
     bind(classOf[config.RuleWS])
 
@@ -45,14 +44,21 @@ class DefaultModule extends BindModule {
     bind(classOf[AccountWS], classOf[AppWS], classOf[DimensionWS], classOf[AvatarWS])
     bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS], classOf[UserWS])
 
-    val cm = new CaffeineCacheManager(true)
-    val tokensCache = cm.getCache("tokens", classOf[String], classOf[AccessToken])
-    bind(classOf[MemTokenRepository]).constructor(tokensCache)
-
     // response cache is only 3 minutes
+    val cm = new CaffeineCacheManager(true)
     cm.ttl = 3 * 60
     cm.tti = 3 * 60
     val responseCache = cm.getCache("mvc.response", classOf[String], classOf[CacheResult])
     bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(responseCache)
+
+    bind(classOf[oauth.LoginWS])
+  }
+
+  override def properties: collection.Map[String, String] = {
+    EmsApp.properties
+  }
+
+  override def processors: Seq[PropertySource.Processor] = {
+    EmsApp.encryptor.toList
   }
 }

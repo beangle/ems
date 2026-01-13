@@ -36,7 +36,7 @@ class DefaultModule extends BindModule {
 
     //interceptor and filters
     bind("security.AccessDeniedHandler.default", classOf[DefaultAccessDeniedHandler])
-      .constructor($("security.access.errorPage", "/403.html"))
+      .constructor($("security.access.errorPage:/403.html"))
     bind("security.Filter.authorization", classOf[AuthorizationFilter])
     bind("web.Interceptor.security", classOf[SecurityInterceptor]).property(
       "filters", List(ref("security.Filter.authorization")))

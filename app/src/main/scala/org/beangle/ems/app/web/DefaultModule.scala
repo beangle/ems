@@ -17,13 +17,22 @@
 
 package org.beangle.ems.app.web
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.cdi.{BindModule, PropertySource}
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 
-class DefaultModule extends BindModule {
+class DefaultModule extends BindModule, PropertySource.Provider {
 
   protected override def binding(): Unit = {
     bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary])
     bind(classOf[WebBusinessLogger])
+  }
+
+  override def properties: collection.Map[String, String] = {
+    EmsApp.properties
+  }
+
+  override def processors: Seq[PropertySource.Processor] = {
+    EmsApp.encryptor.toList
   }
 }

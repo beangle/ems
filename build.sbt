@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.14.5-SNAPSHOT"
+ThisBuild / version := "4.14.6"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -24,7 +24,6 @@ ThisBuild / developers := List(
 ThisBuild / description := "The Beangle EMS Application"
 ThisBuild / homepage := Some(url("http://beangle.github.io/ems/index.html"))
 ThisBuild / resolvers += Resolver.mavenLocal
-
 
 lazy val root = (project in file("."))
   .settings(
@@ -76,7 +75,7 @@ lazy val portal = (project in file("portal"))
   .settings(
     name := "beangle-ems-portal",
     common,
-    libraryDependencies ++= Seq(beangle_doc_transfer, beangle_bui_bootstrap),
+    libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= webAppDepends
   ).dependsOn(core)
 

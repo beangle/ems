@@ -18,15 +18,13 @@
 package org.beangle.ems.app.web.tag
 
 import org.beangle.security.authz.Authorizer
-import org.beangle.template.api.{ComponentContext, TagLibrary}
-import org.beangle.webmvc.context.ActionContext
+import org.beangle.webmvc.view.tag.AbstractTagLibrary
 
-class EmsTagLibrary extends TagLibrary {
+class EmsTagLibrary extends AbstractTagLibrary {
 
   var authorizer: Authorizer = _
 
-  override def models(): AnyRef = {
-    val context = ActionContext.current.stash[ComponentContext]("_beangle_webmvc_component_context")
-    new EmsModels(context, authorizer)
+  override def models: AnyRef = {
+    new EmsModels(componentContext, authorizer)
   }
 }

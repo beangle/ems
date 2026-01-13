@@ -61,6 +61,14 @@ class AppDataSourceFactory extends DataSourceFactory {
     if (password != null && password.startsWith("?")) {
       this.password = new AesEncryptor(Ems.key).decrypt(password.substring(1))
     }
+
+    //针对敏感信息进行解密
+    EmsApp.encryptor foreach { encryptor =>
+      this.url = encryptor.process(null, this.url)
+      this.user = encryptor.process(null, this.user)
+      this.password = encryptor.process(null, this.password)
+    }
+
     setApplicationName(EmsApp.name)
     setPoolName(EmsApp.name + ":" + this.name)
   }

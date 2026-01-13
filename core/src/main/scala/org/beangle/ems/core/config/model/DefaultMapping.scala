@@ -123,6 +123,11 @@ object DefaultMapping extends MappingModule {
       e.contents is length(500)
     }
 
+    bind[ThirdPartyApp].declare { e =>
+      e.code is length(50)
+      e.name is length(100)
+      e.secret is length(100)
+    }
     all.cacheAll()
   }
 

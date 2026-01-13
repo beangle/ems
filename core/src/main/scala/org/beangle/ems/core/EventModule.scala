@@ -29,7 +29,7 @@ class EventModule extends BindModule {
     //using redis as pubsub
     val queueBean = "channelQueue"
     bind(queueBean, classOf[RedisChannelQueue[DataEvent]])
-      .constructor("ems_platform", ref("jedis.Factory"), new DataEventSerializer).primary()
+      .constructor("ems_platform", ref("redis.Factory"), new DataEventSerializer).primary()
     bind(classOf[CacheEvictorRegister]).constructor(ref(queueBean))
     bind("databus", classOf[DefaultDataEventBus]).constructor(ref(queueBean))
   }

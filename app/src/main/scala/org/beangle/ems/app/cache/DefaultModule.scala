@@ -18,7 +18,7 @@
 package org.beangle.ems.app.cache
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.cache.redis.JedisPoolFactory
+import org.beangle.cache.redis.RedisClientFactory
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.logging.Logging
 
@@ -29,7 +29,7 @@ class DefaultModule extends BindModule, Logging {
 
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      bind("jedis.Factory", classOf[JedisPoolFactory]).constructor(redis)
+      bind("redis.Factory", classOf[RedisClientFactory]).constructor(redis)
     }
   }
 }

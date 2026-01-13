@@ -17,7 +17,6 @@
 
 package org.beangle.ems.core.cas
 
-import org.beangle.cache.redis.JedisPoolFactory
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ids.cas.id.impl.DefaultServiceTicketIdGenerator
 import org.beangle.ids.cas.service.CasServiceImpl
@@ -25,7 +24,7 @@ import org.beangle.ids.cas.ticket.{DefaultTicketCacheService, DefaultTicketRegis
 
 class TicketModule extends BindModule {
   override def binding(): Unit = {
-    bind(classOf[DefaultTicketCacheService]).constructor(ref("jedis.Factory"))
+    bind(classOf[DefaultTicketCacheService]).constructor(ref("redis.Factory"))
     bind(classOf[DefaultTicketRegistry])
     bind(classOf[CasServiceImpl])
     bind(classOf[DefaultServiceTicketIdGenerator])

@@ -34,7 +34,7 @@ import java.io.FileInputStream
 /**
  * @author chaostone
  */
-class DefaultModule extends BindModule, PropertySource {
+class DefaultModule extends BindModule, PropertySource.Provider {
 
   private val clients = Collections.newBuffer[String]
 
@@ -71,7 +71,7 @@ class DefaultModule extends BindModule, PropertySource {
     }
     //interceptor
     bind("security.AccessDeniedHandler.default", classOf[DefaultAccessDeniedHandler])
-      .constructor($("security.access.errorPage", "/403.html"))
+      .constructor($("security.access.errorPage:/403.html"))
     bind("security.Filter.authorization", classOf[AuthorizationFilter])
 
     val interceptor = bind("web.Interceptor.security", classOf[SecurityInterceptor])
@@ -93,7 +93,7 @@ class DefaultModule extends BindModule, PropertySource {
     val setting = bind("casSetting", classOf[CasSetting])
       .property("enableCaptcha", $("login.enableCaptcha"))
       .property("forceHttps", $("login.forceHttps"))
-      .property("displayLoginSwitch", $("login.displayLoginSwitch", "false"))
+      .property("displayLoginSwitch", $("login.displayLoginSwitch:false"))
       .property("key", $("login.key"))
       .property("origin", $("login.origin"))
       .property("checkPasswordStrength", $("login.checkPasswordStrength"))
