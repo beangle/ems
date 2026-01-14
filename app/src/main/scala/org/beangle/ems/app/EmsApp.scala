@@ -143,4 +143,3 @@ object EmsApp extends Logging {
     if (null == pwd) None else Some(PropertySource.pbe(pwd))
   }
 }
-

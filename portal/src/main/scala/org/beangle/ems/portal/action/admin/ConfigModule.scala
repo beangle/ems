@@ -34,5 +34,6 @@ class ConfigModule extends BindModule {
     bind(classOf[config.BusinessAction])
     bind(classOf[config.RuleAction])
     bind(classOf[config.RuleMetaAction])
+    bind(classOf[config.ThirdPartyAppAction])
   }
 }

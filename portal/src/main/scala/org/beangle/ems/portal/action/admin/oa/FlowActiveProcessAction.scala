@@ -36,7 +36,7 @@ class FlowActiveProcessAction extends RestfulAction[FlowActiveProcess] {
     query.where("process.flow.domain=:domain", domainService.getDomain)
     get("initiator") foreach { i =>
       if (Strings.isNotBlank(i)) {
-        query.where("process.initiator.code like :initiator or process.initiator.name like :initiator", s"%${i}%")
+        query.where("process.initiator.code like :initiator or process.initiator.name like :initiator", s"%$i%")
       }
     }
     query

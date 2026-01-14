@@ -13,7 +13,7 @@
     [/@]
     [@b.col  width="20%" property="exceptionName" title="异常"/]
     [@b.col property="message" title="消息"]
-      [@b.a href="!info?id="+errorLog.id title="查看明细"]${errorLog.message}[/@]
+      [@b.a href="!info?id="+errorLog.id title="查看明细"]<div class="text-ellipsis">${errorLog.message}</div>[/@]
     [/@]
     [@b.col  width="15%" property="requestUrl" title="入口"]
       <span style="font-size:0.8em" title="${errorLog.requestUrl}">${errorLog.requestUrl}</span>

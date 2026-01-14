@@ -11,27 +11,30 @@ bar.addBack("${b.text("action.back")}");
    <td>${errorLog.occurredAt?string('yyyy-MM-dd HH:mm:ss')}</td>
   </tr>
   <tr>
-    <td class="title">异常:</td>
-    <td>${errorLog.exceptionName}</td>
-    <td class="title">消息:</td>
-    <td>${errorLog.message}</td>
-  </tr>
-  <tr>
     <td class="title">操作人:</td>
     <td>${errorLog.username!}</td>
     <td class="title">入口:</td>
     <td>${errorLog.requestUrl}</td>
   </tr>
+
+  <tr>
+    <td class="title">异常:</td>
+    <td colspan="3">${errorLog.exceptionName}</td>
+  </tr>
+  <tr>
+    <td class="title">消息:</td>
+    <td colspan="3">${errorLog.message}</td>
+  </tr>
   <tr>
     <td class="title">参数:</td>
     <td colspan="3">
-      <pre>${errorLog.params!}</pre>
+      <pre style="margin:0px;padding:0px">${errorLog.params!}</pre>
     </td>
   </tr>
   <tr>
     <td class="title">异常堆栈:</td>
     <td colspan="3">
-      <pre>${errorLog.stackTrace!}</pre>
+      <pre style="margin:0px;padding:0px">${errorLog.stackTrace!}</pre>
     </td>
   </tr>
 </table>

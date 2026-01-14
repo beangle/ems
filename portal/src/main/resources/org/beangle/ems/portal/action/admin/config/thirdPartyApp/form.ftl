@@ -1,0 +1,13 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改应用"]bar.addBack();[/@]
+<style>form.listform label.title{width:120px;}</style>
+  [@b.form action=b.rest.save(app) theme="list"]
+    [@b.textfield name="app.code" label="代码" value=app.code! required="true" maxlength="200"/]
+    [@b.textfield name="app.name" label="名称" value=app.name! required="true" maxlength="200"  style="width:200px"/]
+    [@b.textfield name="app.secret" label="密钥" value=app.secret! required="true" maxlength="200" style="width:300px"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[@b.foot/]
