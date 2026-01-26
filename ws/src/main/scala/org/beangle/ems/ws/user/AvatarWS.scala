@@ -19,7 +19,7 @@ package org.beangle.ems.ws.user
 
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.lang.ClassLoaders
-import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.user.model.Avatar
 import org.beangle.webmvc.annotation.{mapping, param}
@@ -39,9 +39,11 @@ class AvatarWS(entityDao: EntityDao)
 
   @mapping("{avatarId}")
   def info(@param("avatarId") avatarId: String): View = {
-    loadAvatarPath(avatarId) match {
-      case Some(a) => deliver(a); null
-      case None => this.redirect("defaultAvatar")
+    val avatar = entityDao.get(classOf[Avatar], avatarId)
+    if null == avatar then this.redirect("defaultAvatar")
+    else {
+      deliver(avatar.filePath)
+      null
     }
   }
 
@@ -51,12 +53,4 @@ class AvatarWS(entityDao: EntityDao)
       case None => response.setStatus(404)
     }
   }
-
-  private def loadAvatarPath(avatarId: String): Option[String] = {
-    val query = OqlBuilder.from[String](classOf[Avatar].getName, "a")
-    query.where("a.id = :id", avatarId).cacheable()
-    query.select("a.filePath")
-    entityDao.search(query).headOption
-  }
-
 }

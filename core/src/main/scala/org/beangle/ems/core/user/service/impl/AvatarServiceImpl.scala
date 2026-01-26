@@ -17,17 +17,19 @@
 
 package org.beangle.ems.core.user.service.impl
 
-import java.io.InputStream
-
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.AvatarService
+import org.beangle.event.bus.{DataEvent, DataEventBus}
+
+import java.io.InputStream
 
 class AvatarServiceImpl extends AvatarService {
 
   var entityDao: EntityDao = _
+  var databus: DataEventBus = _
 
   def save(user: User, filename: String, is: InputStream): Unit = {
     val repo = EmsApp.getBlobRepository()
@@ -40,8 +42,14 @@ class AvatarServiceImpl extends AvatarService {
       avatar.id = Digests.md5Hex(user.code)
     } else {
       avatar = avatars.head
-      if(null!=avatar.filePath) {
+      if (null != avatar.filePath) {
         repo.remove(avatar.filePath)
+      }
+      if (avatar.id != Digests.md5Hex(user.code)) {
+        entityDao.remove(avatar)
+        databus.publish(DataEvent.remove(avatar))
+        avatar = new Avatar(user)
+        avatar.id = Digests.md5Hex(user.code)
       }
     }
     val meta = repo.upload(s"/avatar/${user.beginOn.getYear}", is, filename, user.code + " " + user.name)
@@ -50,5 +58,6 @@ class AvatarServiceImpl extends AvatarService {
     avatar.updatedAt = meta.updatedAt
     avatar.filePath = meta.filePath
     entityDao.saveOrUpdate(avatar, user)
+    databus.publish(DataEvent.update(avatar))
   }
 }
