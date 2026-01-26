@@ -18,17 +18,14 @@
 package org.beangle.ems.app.blob
 
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.Networks
-import org.beangle.commons.net.http.{HttpMethods, Https}
+import org.beangle.commons.net.http.{HttpUtils, Request}
 
 import java.io.*
-import java.net.{HttpURLConnection, URL}
-import java.nio.charset.StandardCharsets
+import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Base64
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
 
@@ -37,17 +34,12 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
 
   override def remove(path: String): Boolean = {
     require(path.startsWith("/"))
-    val url = Networks.url(s"$base$dir${path}")
-    val conn = url.openConnection.asInstanceOf[HttpURLConnection]
-    Https.noverify(conn)
-    conn.setDoOutput(true)
-    conn.setRequestMethod(HttpMethods.DELETE)
-    val encoded = Base64.getEncoder.encodeToString((s"${user}:${key}").getBytes(StandardCharsets.UTF_8))
-    conn.setRequestProperty("Authorization", s"Basic $encoded")
-    if (conn.getResponseCode >= 300) {
-      throw new Exception("Remove Failed,Response code is " + conn.getResponseCode)
+    val load = Request.asJson("{}").auth(user, key)
+    val response = HttpUtils.delete(Networks.url(s"$base$dir${path}"), load)
+    if (response.status >= 300) {
+      throw new Exception("Remove Failed,Response is " + response.getText)
     } else {
-      conn.getResponseCode == 200
+      response.status == 200
     }
   }
 
@@ -66,72 +58,13 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val folderUrl = if (folder.endsWith("/")) folder else folder + "/"
-    val target = Networks.url(s"$base$dir$folderUrl")
-    val params = Map("owner" -> owner)
-    doUpload(target, is, fileName, params, Some(s"$user:$key"))
-  }
-
-  import java.nio.charset.StandardCharsets
-  import java.util.Base64
-
-  private def doUpload(url: URL, is: InputStream, fileName: String,
-                       params: Map[String, String], basicAuth: Option[String]): BlobMeta = {
-    val end = "\r\n"
-    val twoHyphens = "--"
-    val boundary = "*****";
-    val conn = url.openConnection.asInstanceOf[HttpURLConnection]
-    Https.noverify(conn)
-    conn.setDoOutput(true)
-    conn.setDoInput(true)
-    conn.setRequestMethod(HttpMethods.POST)
-    conn.setRequestProperty("Content-Type", s"multipart/form-data;boundary=$boundary")
-    conn.setRequestProperty("Connection", "Keep-Alive")
-    basicAuth foreach { auth =>
-      val encoded = Base64.getEncoder.encodeToString((auth).getBytes(StandardCharsets.UTF_8))
-      conn.setRequestProperty("Authorization", s"Basic $encoded")
-    }
-    val os = conn.getOutputStream
-    val ds = new DataOutputStream(os)
-    val text = new StringBuilder
-    params foreach { case (k, v) =>
-      text.append(twoHyphens).append(boundary).append(end)
-      text.append(s"""Content-Disposition: form-data; name="${k}"""")
-      text.append(end).append(end)
-      text.append(v).append(end);
-    }
-    ds.write(text.toString().getBytes())
-
-    val strBuf = new StringBuilder
-    strBuf.append(twoHyphens).append(boundary).append(end)
-    strBuf.append(s"""Content-Disposition: form-data; name="file"; filename="${Files.purify(fileName)}"""")
-    strBuf.append(end).append(end)
-    ds.write(strBuf.toString().getBytes())
-    IOs.copy(is, ds)
-    ds.writeBytes(end)
-    ds.writeBytes(twoHyphens + boundary + twoHyphens + end)
-    ds.flush()
-    ds.close()
-    os.close() //don't forget to close the OutputStream
-    try {
-      if (conn.getResponseCode == 200) {
-        BlobMeta.fromJson(IOs.readString(conn.getInputStream))
-      } else {
-        var msg: String = ""
-        try msg = IOs.readString(conn.getInputStream)
-        catch case e: Throwable => {} //ignore
-
-        throw new RuntimeException("Upload failed,response code is " + conn.getResponseCode + " and response body:" + msg)
-      }
-    } catch {
-      case e: Throwable =>
-        logger.warn("Upload failure:url:" + url.toString + " fileName:" + fileName + " params:" + params)
-        throw e
+    val params = Map("owner" -> owner, "file" -> (fileName, is))
+    val response = HttpUtils.post(Networks.url(s"$base$dir$folderUrl"), Request.asForm(params).auth(user, key))
+    if (response.status == 200) {
+      BlobMeta.fromJson(response.getText)
+    } else {
+      throw new RuntimeException("Upload failed,response code is " + response.status + " and response body:" + response.getText)
     }
   }
 
-  @throws[RuntimeException]
-  private def logError(str: String, e: Throwable): Unit = {
-    logger.error(str, e)
-    throw e
-  }
 }

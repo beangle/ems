@@ -6,7 +6,7 @@ object EmsDepends {
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.2"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.9.2"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.17"
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "5.7.0"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "5.8.0-SNAPSHOT"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.0.0"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.3"
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.3"

@@ -115,18 +115,18 @@ object Flows {
 
   def cancel(processId: String): Unit = {
     val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/cancel.json"
-    HttpUtils.invoke(Networks.url(url), "", "application/json")
+    HttpUtils.post(Networks.url(url), "", "application/json")
   }
 
   def start(flowCode: String, businessKey: Any, ctx: JsonObject): Process = {
     val url = Ems.innerApi + s"/platform/oa/flows/${flowCode}/start/${businessKey}.json"
-    val res = HttpUtils.invoke(Networks.url(url), ctx.toJson, "application/json")
+    val res = HttpUtils.post(Networks.url(url), ctx.toJson, "application/json")
     convertProcess(res)
   }
 
   def complete(processId: String, taskId: String, payload: Payload): Process = {
     val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/tasks/${taskId}/complete.json"
-    val res = HttpUtils.invoke(Networks.url(url), payload.toJson, "application/json")
+    val res = HttpUtils.post(Networks.url(url), payload.toJson, "application/json")
     convertProcess(res)
   }
 
