@@ -54,7 +54,7 @@ class SignatureAction extends RestfulAction[Signature] {
     val signatures = entityDao.search(getQueryBuilder)
     put("signatures", signatures)
     val blob = EmsApp.getBlobRepository(true)
-    val paths = signatures.map { s => (s, blob.url(s.filePath)) }.toMap
+    val paths = signatures.map { s => (s, blob.uri(s.filePath)) }.toMap
     put("paths", paths)
     forward()
   }
@@ -103,11 +103,11 @@ class SignatureAction extends RestfulAction[Signature] {
     docRoot.mkdirs()
     val innerFiles = Collections.newBuffer[File]
     signatures foreach { sig =>
-      blob.url(sig.filePath) foreach { url =>
+      blob.uri(sig.filePath) foreach { uri =>
         val user = sig.user
         val fileName = user.code + "_" + user.name + "." + Strings.substringAfterLast(sig.mediaType, "/")
         val localFile = new File(docRoot.getAbsolutePath + Files./ + fileName)
-        IOs.copy(url.openStream(), new FileOutputStream(localFile))
+        IOs.copy(uri.toURL.openStream(), new FileOutputStream(localFile))
         if (localFile.exists()) innerFiles.addOne(localFile)
       }
     }

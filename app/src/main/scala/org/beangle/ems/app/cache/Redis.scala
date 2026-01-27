@@ -48,7 +48,7 @@ object Redis {
       (scala.xml.XML.load(is) \\ "redis") foreach { e => elem = e }
     }
     if (null == elem) {
-      val res = HttpUtils.getText(EmsApi.getRedisUrl)
+      val res = HttpUtils.get(EmsApi.getRedisUrl)
       if (res.isOk) {
         (scala.xml.XML.loadString(res.getText) \\ "redis") foreach { e => elem = e }
       }

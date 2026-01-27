@@ -32,7 +32,7 @@ trait Repository {
 
   def path(path: String): Option[String]
 
-  def url(path: String): Option[URL]
+  def uri(path: String): Option[URI]
 
   def upload(folder: String, file: InputStream,fileName:String,owner:String): BlobMeta
 

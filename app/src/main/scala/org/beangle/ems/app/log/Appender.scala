@@ -75,7 +75,7 @@ class RemoteAppender(val url: String) extends Appender {
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
         val bytes = os.toByteArray
-        val upload = Networks.url(url + "?type=business&digest=" + digest(bytes, EmsApp.secret))
+        val upload = url + "?type=business&digest=" + digest(bytes, EmsApp.secret)
         HttpUtils.post(upload, bytes, "application/x-protobuf")
       case ee: ErrorLogEvent =>
         val b = Proto.ErrorLogEvent.newBuilder()
@@ -90,7 +90,7 @@ class RemoteAppender(val url: String) extends Appender {
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
         val bytes = os.toByteArray
-        val upload = Networks.url(url + "?type=error&digest=" + digest(bytes, EmsApp.secret))
+        val upload = url + "?type=error&digest=" + digest(bytes, EmsApp.secret)
         HttpUtils.post(upload, bytes, "application/x-protobuf")
     }
 

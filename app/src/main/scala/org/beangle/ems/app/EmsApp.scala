@@ -128,9 +128,9 @@ object EmsApp extends Logging {
     val p = if path.startsWith("/") then path.substring(1) else path
     ClassLoaders.getResources(path).headOption match
       case None =>
-        val url = Networks.url(s"${Ems.innerApi}/platform/config/files/$name/$p")
+        val url = s"${Ems.innerApi}/platform/config/files/$name/$p"
         val status = HttpUtils.access(url)
-        if status.isOk then Some(url) else None
+        if status.isOk then Some(Networks.url(url)) else None
       case a@Some(url) => a
   }
 

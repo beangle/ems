@@ -23,7 +23,7 @@ import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpUtils, Request}
 
 import java.io.*
-import java.net.URL
+import java.net.{URI, URL}
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -35,7 +35,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
   override def remove(path: String): Boolean = {
     require(path.startsWith("/"))
     val load = Request.asJson("{}").auth(user, key)
-    val response = HttpUtils.delete(Networks.url(s"$base$dir${path}"), load)
+    val response = HttpUtils.delete(s"$base$dir${path}", load)
     if (response.status >= 300) {
       throw new Exception("Remove Failed,Response is " + response.getText)
     } else {
@@ -48,18 +48,18 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     Some(s"$base$dir${p}")
   }
 
-  override def url(path: String): Option[URL] = {
+  override def uri(path: String): Option[URI] = {
     require(path.startsWith("/"))
     val now = LocalDateTime.now.format(formatter)
     val token = Digests.sha1Hex(s"$dir${path}$user$key$now")
-    Some(Networks.url(s"$base$dir${path}?token=$token&u=$user&t=$now"))
+    Some(Networks.uri(s"$base$dir${path}?token=$token&u=$user&t=$now"))
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val folderUrl = if (folder.endsWith("/")) folder else folder + "/"
     val params = Map("owner" -> owner, "file" -> (fileName, is))
-    val response = HttpUtils.post(Networks.url(s"$base$dir$folderUrl"), Request.asForm(params).auth(user, key))
+    val response = HttpUtils.post(s"$base$dir$folderUrl", Request.asForm(params).auth(user, key))
     if (response.status == 200) {
       BlobMeta.fromJson(response.getText)
     } else {

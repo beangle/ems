@@ -69,7 +69,7 @@ object RuleEngine {
       new RuleEngine(Nil)
     } else {
       val url = Ems.innerApi + s"/platform/config/rules/${ruleIds}.json"
-      val json = HttpUtils.getText(url).getText
+      val json = HttpUtils.get(url).getText
       val rules = parseToRules(json)
       new RuleEngine(rules, stopWhenFail)
     }
@@ -77,13 +77,13 @@ object RuleEngine {
 
   def list(ruleIds: String): Iterable[Rule] = {
     val url = Ems.innerApi + s"/platform/config/rules/${ruleIds}.json"
-    val json = HttpUtils.getText(url).getText
+    val json = HttpUtils.get(url).getText
     parseToRules(json)
   }
 
   def list(business: String, profileId: String): Iterable[Rule] = {
     val url = Ems.innerApi + s"/platform/config/rules/${business}/${profileId}.json"
-    val json = HttpUtils.getText(url).getText
+    val json = HttpUtils.get(url).getText
     parseToRules(json)
   }
 

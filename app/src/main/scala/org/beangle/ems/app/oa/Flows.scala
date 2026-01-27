@@ -25,7 +25,6 @@ import org.beangle.commons.io.IOs
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.Networks
-import org.beangle.commons.net.http.HttpUtils.getText
 import org.beangle.commons.net.http.{HttpUtils, Response}
 import org.beangle.data.json.JsonAPI
 import org.beangle.data.model.Entity
@@ -100,33 +99,33 @@ object Flows {
 
   def getFlows(businessCode: String, profileId: Any): Iterable[Flow] = {
     val url = Ems.innerApi + s"/platform/oa/flows/${businessCode}/${profileId}.json"
-    convertFlow(getText(url).getOrElse(null))
+    convertFlow(HttpUtils.get(url).getOrElse(null))
   }
 
   def getFlow(flowCode: String): Flow = {
     val url = Ems.innerApi + s"/platform/oa/flows/${flowCode}.json"
-    convertFlow(getText(url).getOrElse(null)).head
+    convertFlow(HttpUtils.get(url).getOrElse(null)).head
   }
 
   def getProcess(processId: String): Process = {
     val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}.json"
-    convertProcess(getText(url))
+    convertProcess(HttpUtils.get(url))
   }
 
   def cancel(processId: String): Unit = {
     val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/cancel.json"
-    HttpUtils.post(Networks.url(url), "", "application/json")
+    HttpUtils.post(url, "", "application/json")
   }
 
   def start(flowCode: String, businessKey: Any, ctx: JsonObject): Process = {
     val url = Ems.innerApi + s"/platform/oa/flows/${flowCode}/start/${businessKey}.json"
-    val res = HttpUtils.post(Networks.url(url), ctx.toJson, "application/json")
+    val res = HttpUtils.post(url, ctx.toJson, "application/json")
     convertProcess(res)
   }
 
   def complete(processId: String, taskId: String, payload: Payload): Process = {
     val url = Ems.innerApi + s"/platform/oa/flows/processes/${processId}/tasks/${taskId}/complete.json"
-    val res = HttpUtils.post(Networks.url(url), payload.toJson, "application/json")
+    val res = HttpUtils.post(url, payload.toJson, "application/json")
     convertProcess(res)
   }
 
@@ -180,7 +179,7 @@ object Flows {
   def readSignature(path: String): String = {
     val blob = EmsApp.getBlobRepository(true)
     try {
-      toBase64(blob.url(path).get.openStream(), path)
+      toBase64(blob.uri(path).get.toURL.openStream(), path)
     } catch
       case e: Exception => null
   }

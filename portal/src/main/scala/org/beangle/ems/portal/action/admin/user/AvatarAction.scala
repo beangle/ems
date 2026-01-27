@@ -197,11 +197,11 @@ class AvatarAction extends ActionSupport, ServletSupport, Logging {
     val exists = Collections.newSet[String]
 
     Workers.work(userFiles, (userFile: Array[Any]) => {
-      blob.url(userFile(1).toString) foreach { url =>
+      blob.uri(userFile(1).toString) foreach { uri =>
         val userCode = userFile(0).toString
         val fileName = userCode + "." + Strings.substringAfterLast(userFile(1).toString, ".")
         val localFile = new File(tmpDir + Files./ + fileName)
-        HttpUtils.download(url.openConnection(), localFile)
+        HttpUtils.download(uri.toString, localFile)
         if (localFile.exists()) {
           avatarFiles.addOne(localFile)
           exists.addOne(userCode)

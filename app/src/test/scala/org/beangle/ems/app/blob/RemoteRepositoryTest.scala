@@ -33,7 +33,7 @@ class RemoteRepositoryTest extends AnyFunSpec with Matchers {
         println(meta.updatedAt.atZone(ZoneId.systemDefault()))
       }
       it("download") {
-        println(repo.url("/java_help.txt"))
+        println(repo.uri("/java_help.txt"))
       }
       it("delete") {
         println(repo.remove("/a/b/9dd663285d545199ca79f87fad55f489217d9fd2.txt"))

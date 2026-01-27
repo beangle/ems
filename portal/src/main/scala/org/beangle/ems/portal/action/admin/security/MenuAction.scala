@@ -191,7 +191,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
       val remoteUrl = url + s"/api/${profile}/ems/menus/${app.name}.xml"
       put("remoteMenuURL", remoteUrl)
-      val res = HttpUtils.getText(remoteUrl)
+      val res = HttpUtils.get(remoteUrl)
       put("remoteContent", res.getText)
       put("remoteResponse", res.status)
     }
