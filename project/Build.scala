@@ -10,14 +10,14 @@ object EmsDepends {
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.0.0"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.3"
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.5"
-  val beangle_model = "org.beangle.data" % "beangle-model" % "5.11.5"
+  val beangle_model = "org.beangle.data" % "beangle-model" % "5.11.6"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.6"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.5"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.23"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.3"
-  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.2"
-  val beangle_web = "org.beangle.web" % "beangle-web" % "0.7.1"
-  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.13.0"
+  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.3"
+  val beangle_web = "org.beangle.web" % "beangle-web" % "0.7.2"
+  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.13.1"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.18"
 
   val appDepends = Seq(beangle_commons, logback_classic, scalatest, beangle_web, beangle_config) ++
