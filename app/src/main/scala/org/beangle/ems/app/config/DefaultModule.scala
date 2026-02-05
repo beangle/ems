@@ -18,7 +18,7 @@
 package org.beangle.ems.app.config
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.commons.text.i18n.HttpTextBundleLoader
+import org.beangle.commons.text.i18n.{HttpTextBundleLoader, TextBundleLoader}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.app.Ems
 class DefaultModule extends BindModule {
@@ -26,5 +26,6 @@ class DefaultModule extends BindModule {
   override def binding(): Unit = {
     bind("mvc.TextBundleLoader.http", classOf[HttpTextBundleLoader])
       .constructor(s"${Ems.innerApi}/platform/config/text-bundles/${EmsApp.name}/{path}", true)
+      .primaryOf(classOf[TextBundleLoader])
   }
 }
