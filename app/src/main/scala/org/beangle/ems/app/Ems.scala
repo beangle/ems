@@ -18,7 +18,6 @@
 package org.beangle.ems.app
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.logging.Logging
 
 import java.io.File
 

@@ -25,13 +25,13 @@ import org.beangle.commons.concurrent.Workers
 import org.beangle.commons.file.zip.Zipper
 import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.lang.{Strings, SystemInfo, Throwables}
-import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.{AvatarService, UserService}
+import org.beangle.ems.portal.PortalLogger
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -40,7 +40,7 @@ import org.beangle.webmvc.view.{Status, Stream, View}
 import java.io.*
 import scala.jdk.javaapi.CollectionConverters.asScala
 
-class AvatarAction extends ActionSupport, ServletSupport, Logging {
+class AvatarAction extends ActionSupport, ServletSupport {
 
   var entityDao: EntityDao = _
 
@@ -116,14 +116,14 @@ class AvatarAction extends ActionSupport, ServletSupport, Logging {
     dir.list() foreach { name =>
       val file = new File(dir.getAbsolutePath + "/" + name)
       if (name.indexOf(".") < 1) {
-        logger.warn(name + " without suffix,skipped")
+        PortalLogger.warn(name + " without suffix,skipped")
       } else if (file.isDirectory) {
-        logger.info(name + " is dir,skipped")
+        PortalLogger.info(name + " is dir,skipped")
       } else {
         val usercode = Strings.substringBeforeLast(name, ".")
         val users = userService.getIgnoreCase(usercode)
         if (users.isEmpty) {
-          logger.warn("Cannot find user info of " + usercode)
+          PortalLogger.warn("Cannot find user info of " + usercode)
         } else {
           i += 1
           avatarService.save(users.head, name, new FileInputStream(dir.getAbsolutePath + "/" + name))
@@ -146,12 +146,12 @@ class AvatarAction extends ActionSupport, ServletSupport, Logging {
         if (!ze.isDirectory) {
           val photoname = if (ze.getName.contains("/")) Strings.substringAfterLast(ze.getName, "/") else ze.getName
           if (photoname.indexOf(".") < 1) {
-            logger.warn(photoname + " format is error")
+            PortalLogger.warn(photoname + " format is error")
           } else {
             val usercode = Strings.substringBeforeLast(photoname, ".")
             val users = userService.getIgnoreCase(usercode)
             if (users.isEmpty) {
-              logger.warn("Cannot find user info of " + usercode)
+              PortalLogger.warn("Cannot find user info of " + usercode)
             } else {
               avatarService.save(users.head, photoname, file.getInputStream(ze))
             }

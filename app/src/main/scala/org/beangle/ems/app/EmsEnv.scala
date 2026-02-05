@@ -20,11 +20,10 @@ package org.beangle.ems.app
 import org.beangle.commons.io.Files./
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.SystemInfo
-import org.beangle.commons.logging.Logging
 
 import java.io.File
 
-object EmsEnv extends Logging {
+object EmsEnv {
 
   def findHome(): String = {
     SystemInfo.properties.get("ems.base") match {
@@ -39,15 +38,11 @@ object EmsEnv extends Logging {
   }
 
   def readConfig(location: String): Map[String, String] = {
-    try {
-      val configFile = new File(location)
-      if (!configFile.exists) {
-        Map.empty
-      } else {
-        IOs.readJavaProperties(configFile.toURI.toURL)
-      }
-    } catch {
-      case e: Throwable => logger.error("Read config error", e); Map.empty
+    val configFile = new File(location)
+    if (!configFile.exists) {
+      Map.empty
+    } else {
+      IOs.readJavaProperties(configFile.toURI.toURL)
     }
   }
 
@@ -80,7 +75,7 @@ object EmsEnv extends Logging {
   private def readBase(properties: Map[String, String]): String = {
     properties.get("base") match {
       case None =>
-        logger.warn("Cannot find base,using http://localhost")
+        AppLogger.warn("Cannot find base,using http://localhost")
         "http://localhost"
       case Some(base) => normalize(base)
     }
@@ -94,7 +89,7 @@ object EmsEnv extends Logging {
 
 }
 
-class PropertyReader(base: String, properties: Map[String, String]) extends Logging {
+class PropertyReader(base: String, properties: Map[String, String]) {
   def find(property: String, defaults: String): String = {
     var result = properties.get(property) match {
       case Some(v) => v
@@ -111,5 +106,5 @@ class PropertyReader(base: String, properties: Map[String, String]) extends Logg
 
 case class EmsEnv(home: String, base: String, cas: String, portal: String,
                   index: String, api: String, blob: String, webapp: String,
-                  static: String, key: String, properties: Map[String, String]) extends Logging {
+                  static: String, key: String, properties: Map[String, String]) {
 }

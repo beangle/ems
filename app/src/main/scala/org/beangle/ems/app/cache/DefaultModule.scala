@@ -20,9 +20,8 @@ package org.beangle.ems.app.cache
 import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cache.redis.RedisClientFactory
 import org.beangle.commons.cdi.BindModule
-import org.beangle.commons.logging.Logging
 
-class DefaultModule extends BindModule, Logging {
+class DefaultModule extends BindModule {
 
   protected override def binding(): Unit = {
     bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)

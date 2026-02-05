@@ -18,12 +18,12 @@
 package org.beangle.ems.app.event
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.commons.logging.Logging
+import org.beangle.ems.app.AppLogger
 import org.beangle.ems.app.cache.Redis
 import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
-object EventModule extends BindModule, Logging {
+object EventModule extends BindModule {
 
   val channelName = "publicChannel"
 
@@ -34,13 +34,13 @@ object EventModule extends BindModule, Logging {
 
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      logger.info(s"using redis on ${queueName} to notify data evict event.")
+      AppLogger.info(s"using redis on ${queueName} to notify data evict event.")
       bind(channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictorRegister])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelName))
       bind(classOf[RemoteAuthorizerRefresher])
     } else {
-      logger.warn(s"Disable databus due to missing redis config.")
+      AppLogger.warn(s"Disable databus due to missing redis config.")
       bind(channelName, NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
     }
@@ -50,7 +50,7 @@ object EventModule extends BindModule, Logging {
 
 /** It only bind publishing channel.
  */
-object EventPublishModule extends BindModule, Logging {
+object EventPublishModule extends BindModule {
   protected override def binding(): Unit = {
     wiredEagerly(true)
     val redis = Redis.conf

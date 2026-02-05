@@ -18,16 +18,15 @@
 package org.beangle.ems.app.blob
 
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpUtils, Request}
 
 import java.io.*
-import java.net.{URI, URL}
+import java.net.URI
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository with Logging {
+class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository {
 
   private val formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
   require(!dir.endsWith("/"))

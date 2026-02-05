@@ -19,16 +19,16 @@ package org.beangle.ems.portal.action.user
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.logging.Logging
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.user.model.User
 import org.beangle.ems.core.user.service.AvatarService
+import org.beangle.ems.portal.PortalLogger
 import org.beangle.security.Securities
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.{Status, View}
 
-class AvatarAction extends ActionSupport, Logging {
+class AvatarAction extends ActionSupport {
 
   var entityDao: EntityDao = _
 
@@ -43,7 +43,7 @@ class AvatarAction extends ActionSupport, Logging {
   def upload(): View = {
     val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
     if (users.isEmpty) {
-      logger.warn("Cannot find user info of " + Securities.user)
+      PortalLogger.warn("Cannot find user info of " + Securities.user)
       Status.NotFound
     } else {
       val user = users.head
