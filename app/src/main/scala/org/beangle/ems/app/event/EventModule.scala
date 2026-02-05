@@ -24,9 +24,7 @@ import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBu
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
 object EventModule extends BindModule {
-
-  val channelName = "publicChannel"
-
+  val channelBeanName = "publicChannel"
   val queueName = "ems_public"
 
   protected override def binding(): Unit = {
@@ -35,13 +33,13 @@ object EventModule extends BindModule {
     val redis = Redis.conf
     if (redis.nonEmpty) {
       AppLogger.info(s"using redis on ${queueName} to notify data evict event.")
-      bind(channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
+      bind(channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictorRegister])
-      bind(classOf[DefaultDataEventBus]).constructor(ref(channelName))
+      bind(classOf[DefaultDataEventBus]).constructor(ref(channelBeanName))
       bind(classOf[RemoteAuthorizerRefresher])
     } else {
       AppLogger.warn(s"Disable databus due to missing redis config.")
-      bind(channelName, NullChannelQueue)
+      bind(channelBeanName, NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
     }
   }
@@ -55,10 +53,10 @@ object EventPublishModule extends BindModule {
     wiredEagerly(true)
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      bind(EventModule.channelName, classOf[RedisChannelQueue[DataEvent]]).constructor(EventModule.queueName, ?, new DataEventSerializer)
+      bind(EventModule.channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(EventModule.queueName, ?, new DataEventSerializer)
         .property("publishOnly", true)
     } else {
-      bind(EventModule.channelName, NullChannelQueue)
+      bind(EventModule.channelBeanName, NullChannelQueue)
     }
   }
 }

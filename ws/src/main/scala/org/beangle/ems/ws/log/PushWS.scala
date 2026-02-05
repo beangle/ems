@@ -39,7 +39,7 @@ class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
 
   var sf: SessionFactory = _
 
-  var buffer: PersistBuffer = _
+  private var buffer: PersistBuffer = _
 
   @mapping("")
   def index(): View = {

@@ -31,7 +31,7 @@ object DaoModule extends BindModule {
 
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("devMode", devEnabled)
-      .property("ormLocations", "classpath*:beangle.xml")
+      .property("ormLocation", "classpath*:beangle.xml")
       .primaryOf(classOf[SessionFactory])
 
     bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager])
@@ -49,6 +49,7 @@ object DaoModule extends BindModule {
       .parent("TransactionProxy.template").primaryOf(classOf[EntityDao]).description("基于Hibernate提供的通用DAO")
       .property("proxyInterfaces", Array(classOf[EntityDao]))
       .property("proxyTargetClass", false)
+      .nowire()
 
     bind(classOf[SessionCleaner])
   }

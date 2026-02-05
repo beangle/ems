@@ -38,7 +38,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
   var userService: UserService = _
   var dimensionService: DimensionService = _
   var domainService: DomainService = _
-  val dataResolver: DataResolver = CsvDataResolver
+  private val dataResolver = CsvDataResolver
 
   protected override def indexSetting(): Unit = {
     val userId = getLong("profile.user.id").get

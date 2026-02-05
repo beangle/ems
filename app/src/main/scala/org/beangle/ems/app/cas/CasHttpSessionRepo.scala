@@ -21,6 +21,8 @@ import org.beangle.commons.cache.CacheManager
 import org.beangle.security.session.http.HttpSessionRepo
 import org.beangle.security.realm.cas.CasConfig
 import org.beangle.commons.io.BinarySerializer
+import org.beangle.commons.lang.reflect.BeanInfos
+import org.beangle.security.session.jdbc.DBSessionRegistry
 
 class CasHttpSessionRepo(casConfig: CasConfig, cacheManager: CacheManager, serializer: BinarySerializer)
     extends HttpSessionRepo(cacheManager, serializer) {
@@ -28,4 +30,11 @@ class CasHttpSessionRepo(casConfig: CasConfig, cacheManager: CacheManager, seria
   this.accessUrl = casConfig.casServer + "/session/{id}/access?time={time}"
   this.findUrl =  casConfig.casServer + "/session/{principal}/ids"
   this.expireUrl =  casConfig.casServer + "/session/{id}/expire"
+}
+
+object CasHttpSessionRepo {
+  def main(args: Array[String]): Unit = {
+    println("dd")
+    println(BeanInfos.of(classOf[DBSessionRegistry]))
+  }
 }

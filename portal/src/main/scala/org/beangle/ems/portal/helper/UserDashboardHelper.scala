@@ -26,8 +26,6 @@ import org.beangle.ems.core.security.model.SessionEvent
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService, SessionInfoService}
 import org.beangle.ems.core.user.model.{Profile, User}
 import org.beangle.ems.core.user.service.DimensionService
-import org.beangle.security.Securities
-import org.beangle.security.session.SessionRegistry
 import org.beangle.webmvc.context.ActionContext
 
 /**
@@ -36,8 +34,6 @@ import org.beangle.webmvc.context.ActionContext
 class UserDashboardHelper {
 
   var entityDao: EntityDao = _
-
-  var sessionRegistry: SessionRegistry = _
 
   var permissionService: FuncPermissionService = _
 

@@ -24,7 +24,6 @@ import org.beangle.webmvc.dispatch.ExceptionHandler
 class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
-    //val layout = new PatternLayout("%operateAt|%app|%entry|%summary|%operator|%resources|%details|%ip|%agent")
     bind(classOf[AsyncAppLogger])
       .property("appenders",
         List(new RemoteAppender(Ems.innerApi + s"/platform/log/push")))

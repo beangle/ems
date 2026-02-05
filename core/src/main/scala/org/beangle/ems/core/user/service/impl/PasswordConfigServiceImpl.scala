@@ -28,7 +28,8 @@ class PasswordConfigServiceImpl extends PasswordConfigService with Initializing 
   var domainService: DomainService = _
 
   var entityDao: EntityDao = _
-  var defaultConfig: PasswordConfig = _
+
+  private var defaultConfig: PasswordConfig = _
 
   override def init(): Unit = {
     defaultConfig = new PasswordConfig

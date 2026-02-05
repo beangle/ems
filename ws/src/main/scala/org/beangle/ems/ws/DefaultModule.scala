@@ -20,7 +20,7 @@ package org.beangle.ems.ws
 import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
-import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
@@ -28,6 +28,7 @@ import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
 class DefaultModule extends BindModule, Config.Provider {
 
   protected override def binding(): Unit = {
+    AppLogger.info("Ems Home:" + Ems.home)
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
     bind(classOf[config.DomainWS], classOf[config.ThemeWS])
     bind(classOf[config.TextBundleWS], classOf[config.RedisWS])

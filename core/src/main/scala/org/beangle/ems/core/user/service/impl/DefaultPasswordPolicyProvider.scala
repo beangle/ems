@@ -18,12 +18,12 @@
 package org.beangle.ems.core.user.service.impl
 
 import org.beangle.commons.bean.Initializing
-import org.beangle.security.authc.{PasswordPolicy, PasswordPolicyProvider}
 import org.beangle.ems.core.user.service.PasswordConfigService
+import org.beangle.security.authc.{PasswordPolicy, PasswordPolicyProvider}
 
 class DefaultPasswordPolicyProvider extends PasswordPolicyProvider with Initializing {
   var passwordConfigService: PasswordConfigService = _
-  var policy: PasswordPolicy = _
+  private var policy: PasswordPolicy = _
 
   override def init(): Unit = {
     policy = passwordConfigService.get()

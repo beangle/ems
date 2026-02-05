@@ -23,12 +23,11 @@ import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.{Domain, Org}
 import org.beangle.ems.core.config.service.DomainService
 
-class DomainServiceImpl extends DomainService with Initializing  {
+class DomainServiceImpl extends DomainService, Initializing {
   var entityDao: EntityDao = _
 
-  var domain: Domain = _
-
-  var org: Org = _
+  private var domain: Domain = _
+  private var org: Org = _
 
   override def getDomain: Domain = {
     domain

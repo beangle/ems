@@ -22,7 +22,7 @@ import org.beangle.commons.concurrent.Sidecar
 
 class AsyncAppLogger extends BusinessLogger, ErrorLogger, Initializing, Disposable {
   var appenders: List[Appender] = _
-  var sidecar: Sidecar[LogEvent] = _
+  private var sidecar: Sidecar[LogEvent] = _
 
   override def publish(event: BusinessLogEvent): Unit = {
     sidecar.offer(event)
