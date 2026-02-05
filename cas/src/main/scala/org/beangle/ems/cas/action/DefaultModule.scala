@@ -34,7 +34,6 @@ class DefaultModule extends BindModule {
     bind(classOf[EditAction])
     bind(classOf[CaptchaHelper]).constructor(Ems.api + "/tools")
     bind(classOf[LoginRetryServiceImpl]).constructor(ref("redis.Factory"))
-    
-    
+
   }
 }
