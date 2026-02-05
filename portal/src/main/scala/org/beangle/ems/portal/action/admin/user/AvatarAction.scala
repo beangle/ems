@@ -219,7 +219,7 @@ class AvatarAction extends ActionSupport, ServletSupport, Logging {
     }
     val zipFile = new File(tmpDir + Files./ + s"照片(${exists.size}人).zip")
     Zipper.zip(new File(tmpDir), avatarFiles, zipFile, "utf-8")
-    Stream(zipFile, MediaTypes.ApplicationZip, s"照片(${exists.size}人).zip").cleanup { () =>
+    Stream(zipFile, MediaTypes.zip, s"照片(${exists.size}人).zip").cleanup { () =>
       zipFile.delete()
       Files.travel(new File(tmpDir), f => f.delete())
       new File(tmpDir).delete()

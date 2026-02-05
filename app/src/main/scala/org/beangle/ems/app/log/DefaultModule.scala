@@ -19,6 +19,7 @@ package org.beangle.ems.app.log
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
+import org.beangle.webmvc.dispatch.ExceptionHandler
 
 class DefaultModule extends BindModule {
 
@@ -30,7 +31,7 @@ class DefaultModule extends BindModule {
 
     //如果不是开发环境，则启用日志上报功能
     if (!devEnabled) {
-      bind(classOf[LogExceptionHandler]).primary()
+      bind(classOf[LogExceptionHandler]).primaryOf(classOf[ExceptionHandler])
     }
   }
 }

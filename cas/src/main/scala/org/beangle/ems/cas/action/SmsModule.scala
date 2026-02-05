@@ -17,10 +17,10 @@
 
 package org.beangle.ems.cas.action
 
-import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.bean.{Initializing, Properties}
-import org.beangle.commons.lang.Strings
+import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.lang.reflect.Reflections
+import org.beangle.commons.xml.Document
 import org.beangle.ems.app.EmsApp
 import org.beangle.ids.cas.web.action.SmsLoginAction
 import org.beangle.ids.sms.service.impl.{DefaultSmsCacheService, DefaultSmsCodeService}
@@ -33,17 +33,16 @@ class SmsModule extends BindModule {
 
     EmsApp.getAppFile foreach { file =>
       val is = new FileInputStream(file)
-      val app = scala.xml.XML.load(is)
+      val app = Document.parse(is)
       (app \\ "sms") foreach { e =>
         bind(classOf[SmsLoginAction])
         bind(classOf[DefaultSmsCacheService])
         bind(classOf[DefaultSmsCodeService])
 
-        val senderClass = getAttribute(e, "class")
-        val sender = Reflections.newInstance[SmsSender](senderClass)
+        val sender = Reflections.newInstance[SmsSender](e("class"))
 
-        e.attributes foreach { m =>
-          if m.key != "class" then Properties.copy(sender, m.key, getAttribute(e, m.key))
+        e.attrs foreach { (k, v) =>
+          if k != "class" then Properties.copy(sender, k, v)
         }
         sender match
           case i: Initializing => i.init()
@@ -52,10 +51,5 @@ class SmsModule extends BindModule {
         bind("smsSender", sender)
       }
     }
-  }
-
-  private def getAttribute(e: scala.xml.Node, name: String): String = {
-    val v = (e \ ("@" + name)).text.trim
-    if Strings.isEmpty(v) then "" else v
   }
 }

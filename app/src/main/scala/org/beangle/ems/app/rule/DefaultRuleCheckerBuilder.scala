@@ -25,13 +25,13 @@ import org.beangle.commons.lang.reflect.Reflections
 class DefaultRuleCheckerBuilder extends RuleCheckerBuilder {
 
   override def build(rule: Rule): RuleChecker = {
-    val container = Container.Default.get
+    val container = Container.get("ROOT")
     val checker = container.getBean[Object](rule.name) match {
       case Some(b) => populate(b, rule)
       case None => populate(Reflections.newInstance[Object](rule.name), rule)
     }
 
-    val methods = checker.getClass.getMethods.toIndexedSeq.filter(x => x.getName == "check" && x.getReturnType == classOf[Tuple2[_, _]])
+    val methods = checker.getClass.getMethods.toIndexedSeq.filter(x => x.getName == "check" && x.getReturnType == classOf[(_, _)])
     if (methods.isEmpty) {
       throw new IllegalArgumentException("rule " + rule.name + " has no check method")
     } else {

@@ -56,7 +56,7 @@ class DocAction extends ActionSupport, ServletSupport {
   }
 
   private def decideContentType(fileName: String): String = {
-    MediaTypes.get(Strings.substringAfterLast(fileName, "."), MediaTypes.ApplicationOctetStream).toString
+    MediaTypes.get(Strings.substringAfterLast(fileName, "."), MediaTypes.stream).toString
   }
 
   @mapping("{id}")

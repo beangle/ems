@@ -23,6 +23,7 @@ import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.Profile
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, UserService}
+import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.ignore
@@ -84,7 +85,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
       redirect("index", s"&profile.user.id=${profile.user.id}", "info.remove.success")
     } catch {
       case e: Exception =>
-        logger.error("removeAndForwad failure", e)
+        PortalLogger.error("removeAndForwad failure", e)
         redirect("appinfo", s"&profile.user.id=${profile.user.id}", "info.delete.failure")
     }
   }

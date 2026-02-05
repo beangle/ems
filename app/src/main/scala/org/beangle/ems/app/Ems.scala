@@ -22,7 +22,7 @@ import org.beangle.commons.logging.Logging
 
 import java.io.File
 
-object Ems extends Logging {
+object Ems {
 
   val home: String = EmsEnv.findHome()
 
@@ -31,8 +31,6 @@ object Ems extends Logging {
   private val innerEnv = EmsEnv.inner(env)
 
   var sid: Sid = Sid(env.properties)
-
-  logger.info("Ems Home:" + home)
 
   def hostname: String = {
     val h = Strings.substringAfter(base, "://")

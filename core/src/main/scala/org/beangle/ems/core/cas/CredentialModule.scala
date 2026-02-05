@@ -18,8 +18,8 @@
 package org.beangle.ems.core.cas
 
 import java.io.FileInputStream
-
 import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.xml.Document
 import org.beangle.ems.app.EmsApp
 import org.beangle.ids.cas.service.DBLdapCredentialChecker
 import org.beangle.security.realm.ldap.{LdapCredentialStore, PoolingContextSource, SimpleLdapUserStore}
@@ -28,7 +28,7 @@ class CredentialModule extends BindModule {
   override def binding(): Unit = {
     EmsApp.getAppFile foreach { file =>
       val is = new FileInputStream(file)
-      val app = scala.xml.XML.load(is)
+      val app = Document.parse(is)
       if ((app \\ "ldap").nonEmpty) {
         bind("security.ldap.source", classOf[PoolingContextSource])
           .constructor($("ldap.url"), $("ldap.user"), $("ldap.password"))

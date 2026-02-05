@@ -18,6 +18,7 @@
 package org.beangle.ems.core.config.service
 
 import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.core.config.service.impl.*
 
 class DefaultModule extends BindModule {
@@ -28,6 +29,6 @@ class DefaultModule extends BindModule {
     bind(classOf[CredentialServiceImpl])
     bind(classOf[AppServiceImpl])
     bind(classOf[DomainServiceImpl])
-    bind("mvc.TextBundleLoader.db", classOf[DbTextBundleLoader]).primary()
+    bind("mvc.TextBundleLoader.db", classOf[DbTextBundleLoader]).primaryOf(classOf[TextBundleLoader])
   }
 }

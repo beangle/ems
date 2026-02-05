@@ -19,6 +19,7 @@ package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.commons.lang.Strings
+import org.beangle.commons.xml.Node
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.core.config.model.App
@@ -174,7 +175,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     if null == menu.indexno then menu.indexno = index.toString
   }
 
-  def importFrom(app: App, xml: scala.xml.Node): Unit = {
+  def importFrom(app: App, xml: Node): Unit = {
     parseMenu(app, None, xml)
   }
 
@@ -218,7 +219,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     menu
   }
 
-  private def parseMenu(app: App, parent: Option[Menu], xml: scala.xml.Node): Unit = {
+  private def parseMenu(app: App, parent: Option[Menu], xml: Node): Unit = {
     (xml \ "resources" \ "resource") foreach { r =>
       val name = (r \ "@name").text.trim
       val title = (r \ "@title").text.trim

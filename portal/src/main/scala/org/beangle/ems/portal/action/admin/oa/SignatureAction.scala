@@ -82,7 +82,7 @@ class SignatureAction extends RestfulAction[Signature] {
     val rs = blob.upload("/oa/signature/",
       is, user.code + "_" + LocalDate.now().toString + s".${ext}", user.code + " " + user.name)
     if (Strings.isEmpty(rs.mediaType)) {
-      rs.mediaType = MediaTypes.get(ext, MediaTypes.ImagePng).toString
+      rs.mediaType = MediaTypes.get(ext, MediaTypes.png).toString
     } else {
       rs.mediaType = rs.mediaType
     }
@@ -151,7 +151,7 @@ class SignatureAction extends RestfulAction[Signature] {
       case Some(url) => url
     dsf.props.put("url", dsf.url)
     dsf.init()
-    val ds = dsf.result
+    val ds = dsf.getObject
 
     val jdbcExecutor = new JdbcExecutor(ds)
     val dataIter = jdbcExecutor.iterate(sql)

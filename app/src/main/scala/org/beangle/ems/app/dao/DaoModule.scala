@@ -20,6 +20,7 @@ package org.beangle.ems.app.dao
 import org.beangle.commons.cdi.BindModule
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.hibernate.*
+import org.hibernate.SessionFactory
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 object DaoModule extends BindModule {
@@ -31,22 +32,21 @@ object DaoModule extends BindModule {
     bind("SessionFactory.default", classOf[LocalSessionFactoryBean])
       .property("devMode", devEnabled)
       .property("ormLocations", "classpath*:beangle.xml")
-      .primary()
+      .primaryOf(classOf[SessionFactory])
 
-    bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager]).primary()
+    bind("HibernateTransactionManager.default", classOf[HibernateTransactionManager])
 
     //配置事务模板，不需要的方法不配置，例如find*
     bind("TransactionProxy.template", classOf[TransactionProxyFactoryBean]).setAbstract().property(
-        "transactionAttributes",
-        props("save*=PROPAGATION_REQUIRED", "update*=PROPAGATION_REQUIRED", "delete*=PROPAGATION_REQUIRED",
-          "batch*=PROPAGATION_REQUIRED", "execute*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED",
-          "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED"))
-      .primary()
+      "transactionAttributes",
+      props("save*=PROPAGATION_REQUIRED", "update*=PROPAGATION_REQUIRED", "delete*=PROPAGATION_REQUIRED",
+        "batch*=PROPAGATION_REQUIRED", "execute*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED",
+        "create*=PROPAGATION_REQUIRED", "init*=PROPAGATION_REQUIRED", "authorize*=PROPAGATION_REQUIRED"))
 
     bind(classOf[DomainFactory]).constructor(list(ref("SessionFactory.default")))
 
     bind("EntityDao.hibernate", classOf[TransactionProxyFactoryBean]).proxy("target", classOf[HibernateEntityDao])
-      .parent("TransactionProxy.template").primary().description("基于Hibernate提供的通用DAO")
+      .parent("TransactionProxy.template").primaryOf(classOf[EntityDao]).description("基于Hibernate提供的通用DAO")
       .property("proxyInterfaces", Array(classOf[EntityDao]))
       .property("proxyTargetClass", false)
 

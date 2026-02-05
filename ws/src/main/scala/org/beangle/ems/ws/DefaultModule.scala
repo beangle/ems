@@ -18,13 +18,14 @@
 package org.beangle.ems.ws
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
-import org.beangle.commons.cdi.{BindModule, PropertySource}
+import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.config.Config
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
 
-class DefaultModule extends BindModule, PropertySource.Provider {
+class DefaultModule extends BindModule, Config.Provider {
 
   protected override def binding(): Unit = {
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
@@ -58,7 +59,7 @@ class DefaultModule extends BindModule, PropertySource.Provider {
     EmsApp.properties
   }
 
-  override def processors: Seq[PropertySource.Processor] = {
+  override def processors: Seq[Config.Processor] = {
     EmsApp.encryptor.toList
   }
 }

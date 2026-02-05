@@ -17,9 +17,11 @@
 
 package org.beangle.ems.core.cas
 
-import org.beangle.commons.cdi.{BindModule, Binding, PropertySource}
+import org.beangle.commons.cdi.{BindModule, Binder}
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.config.Config
 import org.beangle.commons.lang.Strings
+import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ids.cas.CasSetting
 import org.beangle.security.authz.PublicAuthorizer
@@ -27,14 +29,14 @@ import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilte
 import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
 import org.beangle.security.realm.openid.OpenidPreauthFilter
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
-import org.beangle.security.web.{UrlEntryPoint, WebSecurityManager}
+import org.beangle.security.web.{EntryPoint, UrlEntryPoint, WebSecurityManager}
 
 import java.io.FileInputStream
 
 /**
  * @author chaostone
  */
-class DefaultModule extends BindModule, PropertySource.Provider {
+class DefaultModule extends BindModule, Config.Provider {
 
   private val clients = Collections.newBuffer[String]
 
@@ -59,11 +61,11 @@ class DefaultModule extends BindModule, PropertySource.Provider {
         bind("ltpaTokenGenerator", classOf[LtpaTokenGenerator]).constructor(config.key, config.usernameDns)
         bind("security.Filter.Preauth", classOf[LtpaPreauthFilter])
         // entry point
-        bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primary()
+        bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primaryOf(classOf[EntryPoint])
       }
     } else {
       // entry point
-      bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primary()
+      bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor("/login").primaryOf(classOf[EntryPoint])
     }
 
     remoteOpenidServer foreach { serverUrl =>
@@ -75,7 +77,7 @@ class DefaultModule extends BindModule, PropertySource.Provider {
     bind("security.Filter.authorization", classOf[AuthorizationFilter])
 
     val interceptor = bind("web.Interceptor.security", classOf[SecurityInterceptor])
-    val filters = Collections.newBuffer[Binding.ReferenceValue]
+    val filters = Collections.newBuffer[Binder.Reference]
     if (remoteOpenidServer.isDefined) {
       filters.addOne(ref("security.Filter.OpenidPreauth"))
     }
@@ -116,7 +118,7 @@ class DefaultModule extends BindModule, PropertySource.Provider {
     val datas = Collections.newMap[String, String]
     EmsApp.getAppFile foreach { file =>
       val is = new FileInputStream(file)
-      val app = scala.xml.XML.load(is)
+      val app = Document.parse(is)
       (app \\ "ldap") foreach { e =>
         datas += ("ldap.url" -> (e \\ "url").text.trim)
         datas += ("ldap.user" -> (e \\ "user").text.trim)
@@ -124,15 +126,14 @@ class DefaultModule extends BindModule, PropertySource.Provider {
         datas += ("ldap.base" -> (e \\ "base").text.trim)
         datas += ("login.passwordReadOnly" -> "true") //本系统使用DB，一般使用LDAP即为外部密码库,禁止修改
       }
-      (app \\ "config" \\ "login") foreach { n =>
-        val e = n.asInstanceOf[scala.xml.Elem]
-        datas += ("login.enableCaptcha" -> getAttribute(e, "enableCaptcha", "false"))
-        datas += ("login.forceHttps" -> getAttribute(e, "forceHttps", "false"))
-        datas += ("login.key" -> getAttribute(e, "key", Ems.base))
-        datas += ("login.origin" -> getAttribute(e, "origin", Ems.base))
-        datas += ("login.checkPasswordStrength" -> getAttribute(e, "checkPasswordStrength", "true"))
-        datas += ("login.enableSmsLogin" -> getAttribute(e, "enableSmsLogin", "false"))
-        getAttribute(e, "passwordReadOnly") match {
+      (app \\ "config" \\ "login") foreach { e =>
+        datas += ("login.enableCaptcha" -> e.get("enableCaptcha", "false"))
+        datas += ("login.forceHttps" -> e.get("forceHttps", "false"))
+        datas += ("login.key" -> e.get("key", Ems.base))
+        datas += ("login.origin" -> e.get("origin", Ems.base))
+        datas += ("login.checkPasswordStrength" -> e.get("checkPasswordStrength", "true"))
+        datas += ("login.enableSmsLogin" -> e.get("enableSmsLogin", "false"))
+        e.get("passwordReadOnly") match {
           case Some(pronly) => datas += ("login.passwordReadOnly" -> pronly)
           case None => datas.getOrElseUpdate("login.passwordReadOnly", "false")
         }
@@ -143,42 +144,32 @@ class DefaultModule extends BindModule, PropertySource.Provider {
         datas += ("login.origin" -> Ems.base)
       }
       (app \\ "config" \\ "client") foreach { c =>
-        clients += getAttribute(c, "base", null)
+        clients += c("base")
       }
       //在项目的配置文件中出现remote/cas节点的情况下才配置如下信息
       (app \\ "config" \\ "remote") foreach { r =>
         (r \ "cas") foreach { e =>
-          val casServer = getAttribute(e, "server", null)
-          val gateway = getAttribute(e, "gateway", "false")
+          val casServer = e.get("server", null)
+          val gateway = e.get("gateway", "false")
           datas += ("remote.cas.server" -> casServer)
           datas += ("remote.cas.gateway" -> gateway)
           remoteCasServer = Some(casServer)
         }
         (r \ "ltpa") foreach { e =>
-          val server = getAttribute(e, "server", null)
-          val key = getAttribute(e, "key", null)
-          val cookieName = getAttribute(e, "cookieName", null)
-          val usernameDns = getAttribute(e, "usernameDns", null)
+          val server = e.get("server", null)
+          val key = e.get("key", null)
+          val cookieName = e.get("cookieName", null)
+          val usernameDns = e.get("usernameDns", null)
           val config = LtpaConfig(server, key, cookieName, usernameDns)
           if null != server && null != key then remoteLtpa = Some(config)
         }
         (r \ "openid") foreach { e =>
-          val server = getAttribute(e, "server", null)
+          val server = e.get("server", null)
           remoteOpenidServer = Some(server)
         }
       }
       is.close()
     }
     datas.toMap
-  }
-
-  private def getAttribute(e: scala.xml.Node, name: String): Option[String] = {
-    val v = (e \ ("@" + name)).text.trim
-    if Strings.isEmpty(v) then None else Some(v)
-  }
-
-  private def getAttribute(e: scala.xml.Node, name: String, defaultValue: String): String = {
-    val v = (e \ ("@" + name)).text.trim
-    if Strings.isEmpty(v) then defaultValue else v
   }
 }

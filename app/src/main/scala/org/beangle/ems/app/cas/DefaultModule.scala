@@ -24,6 +24,7 @@ import org.beangle.security.authc.{DefaultAccount, Profile, RealmAuthenticator}
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint}
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
 import org.beangle.security.session.{DefaultSession, Session}
+import org.beangle.security.web.EntryPoint
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, DefaultSecurityContextBuilder, SecurityInterceptor}
 import org.beangle.security.web.session.CookieSessionIdReader
 import org.beangle.serializer.protobuf.ProtobufSerializer
@@ -32,7 +33,7 @@ class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
     // entry point
-    bind("security.EntryPoint.cas", classOf[CasEntryPoint]).primary()
+    bind("security.EntryPoint.cas", classOf[CasEntryPoint]).primaryOf(classOf[EntryPoint])
 
     //interceptor and filters
     bind("security.AccessDeniedHandler.default", classOf[DefaultAccessDeniedHandler])

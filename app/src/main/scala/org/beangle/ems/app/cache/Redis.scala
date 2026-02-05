@@ -19,10 +19,10 @@ package org.beangle.ems.app.cache
 
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.net.http.HttpUtils
+import org.beangle.commons.xml.{Document, Node}
 import org.beangle.ems.app.{EmsApi, EmsApp}
 
 import java.io.FileInputStream
-import scala.xml.Node
 
 object Redis {
 
@@ -38,19 +38,19 @@ object Redis {
   }
 
   /** Load redis conf from local file,then remote url
-    *
-    * @return
-    */
+   *
+   * @return
+   */
   private def loadConf(): Map[String, String] = {
     var elem: Node = null
     EmsApp.getAppFile foreach { file =>
       val is = new FileInputStream(file)
-      (scala.xml.XML.load(is) \\ "redis") foreach { e => elem = e }
+      (Document.parse(is) \\ "redis") foreach { e => elem = e }
     }
     if (null == elem) {
       val res = HttpUtils.get(EmsApi.getRedisUrl)
       if (res.isOk) {
-        (scala.xml.XML.loadString(res.getText) \\ "redis") foreach { e => elem = e }
+        (Document.parse(res.getText) \\ "redis") foreach { e => elem = e }
       }
     }
 

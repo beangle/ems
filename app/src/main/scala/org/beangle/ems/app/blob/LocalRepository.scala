@@ -75,7 +75,7 @@ class LocalRepository(val base: String, val dir: String) extends Repository {
     meta.sha = sha
     meta.updatedAt = Instant.now
     meta.fileSize = target.length().asInstanceOf[Int]
-    meta.mediaType = MediaTypes.get(ext, MediaTypes.ApplicationOctetStream).toString()
+    meta.mediaType = MediaTypes.get(ext, MediaTypes.stream).toString()
     meta.filePath = s"$folder/$sha"
     meta
   }

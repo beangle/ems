@@ -17,21 +17,20 @@
 
 package org.beangle.ems.app
 
-import org.beangle.cdi.spring.config.EnvPropertySource
-import org.beangle.commons.cdi.PropertySource
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.config.{Config, ConfigFactory, XmlConfigs}
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.{ClassLoaders, Strings}
-import org.beangle.commons.logging.Logging
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
+import org.beangle.commons.xml.{Document, Node}
 import org.beangle.ems.app.Ems.env
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 
 import java.io.{File, FileInputStream}
 import java.net.URL
 
-object EmsApp extends Logging {
+object EmsApp {
 
   val properties: Map[String, String] = readProperties()
   val name: String = properties("name")
@@ -63,13 +62,13 @@ object EmsApp extends Logging {
 
   private def readProperties(): Map[String, String] = {
     try {
-      val configs = ClassLoaders.getResources("beangle.xml")
+      val configLocation = "classpath*:beangle.xml"
+      val doc = XmlConfigs.load(configLocation)
       var appManifest: Map[String, String] = null
-      val iter = configs.iterator
-      while (iter.hasNext && null == appManifest) {
-        appManifest = parseEmsXml(iter.next())
+      (doc \ "ems").headOption foreach { ems =>
+        appManifest = parseEmsXml(ems)
       }
-      if (null == appManifest) {
+      if (null == appManifest || appManifest.isEmpty) {
         throw new RuntimeException("cannot find beangle.xml,contains <ems> element.")
       } else if (!appManifest.contains("name")) {
         throw new RuntimeException("<ems> missing app-name attribute.")
@@ -86,42 +85,31 @@ object EmsApp extends Logging {
 
       val appFile = new File(Ems.home + appPath + ".xml")
       if (appFile.exists()) {
-        val is = new FileInputStream(appFile)
-        val rootNode = scala.xml.XML.load(is)
-        rootNode \\ "app" foreach { app =>
-          result ++= app.attributes.asAttrMap
-        }
+        val rootNode = Document.parse(appFile)
+        result ++= rootNode.attrs
         rootNode \ "props" \ "prop" foreach { pNode =>
           result.put((pNode \ "@key").text.trim, pNode.text.trim())
         }
-        IOs.close(is)
       }
       EmsApp.encryptor match {
         case None => result.toMap
         case Some(encryptor) => result.map(kv => (kv._1, encryptor.process(kv._1, kv._2))).toMap
       }
     } catch {
-      case e: Throwable => logger.error("Issue exception when read property", e); System.exit(1); Map.empty
+      case e: Throwable => e.printStackTrace(); System.exit(1); Map.empty
     }
   }
 
-  private def parseEmsXml(url: URL): Map[String, String] = {
-    val is = url.openStream()
-    val emsOption = (scala.xml.XML.load(is) \ "ems").headOption
-    IOs.close(is)
-    emsOption match {
-      case Some(ems) =>
-        val appName = (ems \ "@app-name").text
-        val props = Collections.newMap[String, String]
-        (ems \ "props" \ "prop").map { p =>
-          props.put((p \ "@key").text, p.text.trim())
-        }
-        if (Strings.isNotBlank(appName)) {
-          props.put("name", appName)
-        }
-        props.toMap
-      case None => Map.empty
+  private def parseEmsXml(ems: Node): Map[String, String] = {
+    val appName = (ems \ "@app-name").text
+    val props = Collections.newMap[String, String]
+    (ems \ "props" \ "prop").map { p =>
+      props.put((p \ "@key").text, p.text.trim())
     }
+    if (Strings.isNotBlank(appName)) {
+      props.put("name", appName)
+    }
+    props.toMap
   }
 
   def getResource(path: String): Option[URL] = {
@@ -134,12 +122,12 @@ object EmsApp extends Logging {
       case a@Some(url) => a
   }
 
-  def encryptor: Option[PropertySource.Processor] = {
+  def encryptor: Option[Config.Processor] = {
     val key = "beangle.encryptor.password"
     var pwd = System.getProperty(key)
     if (null == pwd) {
-      pwd = EnvPropertySource.get(key, null)
+      pwd = ConfigFactory.SystemEnvironment.get(key, null).asInstanceOf[String]
     }
-    if (null == pwd) None else Some(PropertySource.pbe(pwd))
+    if (null == pwd) None else Some(Config.pbe(pwd))
   }
 }

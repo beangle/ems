@@ -30,7 +30,7 @@ object AppDataSourceFactory {
     try {
       val dsf = new AppDataSourceFactory(name)
       dsf.init()
-      Some(dsf.result)
+      Some(dsf.getObject)
     } catch
       case e: Exception => None
   }

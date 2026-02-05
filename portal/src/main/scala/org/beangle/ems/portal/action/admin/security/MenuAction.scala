@@ -21,6 +21,7 @@ import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
+import org.beangle.commons.xml.Document
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.core.config.model.App
@@ -206,7 +207,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
       remoteUrl = Some(url + s"/api/${profile}/ems/menus/${app.name}.xml")
     }
     remoteUrl foreach { rl =>
-      menuService.importFrom(app, scala.xml.XML.load(Networks.openURL(rl).getInputStream))
+      menuService.importFrom(app, Document.parse(Networks.url(rl)))
     }
     redirect("search", "info.save.success")
   }
@@ -217,7 +218,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
       forward()
     } else {
       val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
-      menuService.importFrom(app, scala.xml.XML.load(parts.head.getInputStream))
+      menuService.importFrom(app, Document.parse(parts.head.getInputStream))
       redirect("search", "info.save.success")
     }
   }

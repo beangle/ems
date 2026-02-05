@@ -34,7 +34,7 @@ class AvatarWS(entityDao: EntityDao)
   @mapping("default")
   def defaultAvatar(): View = {
     Stream(ClassLoaders.getResourceAsStream("org/beangle/ems/ws/default_avatar.jpg").get,
-      MediaTypes.ImageJpeg, "default_avatar.jpg", None)
+      MediaTypes.jpeg, "default_avatar.jpg", None)
   }
 
   @mapping("{avatarId}")

@@ -18,6 +18,7 @@
 package org.beangle.ems.core.security.service
 
 import org.beangle.commons.collection.Properties
+import org.beangle.commons.xml.Node
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.user.model.{Role, User}
@@ -40,11 +41,11 @@ trait MenuService {
 
   def move(menu: Menu, location: Menu, index: Int): Unit
 
-  def importFrom(app: App, xml: scala.xml.Node): Unit
+  def importFrom(app: App, xml: Node): Unit
 
   def convert(one: Menu, isEnName: Boolean): Properties
 
-  def getDomainMenus(user:User,isEnName:Boolean):DomainMenus
+  def getDomainMenus(user: User, isEnName: Boolean): DomainMenus
 
 }
 
