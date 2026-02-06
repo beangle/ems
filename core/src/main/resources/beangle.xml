@@ -2,7 +2,7 @@
 <beangle xmlns="http://beangle.github.io/schema/framework"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://beangle.github.io/schema/framework http://beangle.github.io/schema/framework-1.0.xsd">
-  <orm>
+  <jpa>
     <mapping class="org.beangle.ems.core.oa.model.DefaultMapping"/>
     <mapping class="org.beangle.ems.core.config.model.DefaultMapping"/>
     <mapping class="org.beangle.ems.core.security.model.DefaultMapping"/>
@@ -24,5 +24,5 @@
         <profile package = "job" prefix="jb_"/>
       </profile>
     </naming>
-  </orm>
+  </jpa>
 </beangle>
