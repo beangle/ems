@@ -42,16 +42,16 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     }
   }
 
-  override def path(p: String): Option[String] = {
+  override def path(p: String): String = {
     require(p.startsWith("/"))
-    Some(s"$base$dir${p}")
+    s"$base$dir${p}"
   }
 
-  override def uri(path: String): Option[URI] = {
+  override def uri(path: String): URI = {
     require(path.startsWith("/"))
     val now = LocalDateTime.now.format(formatter)
     val token = Digests.sha1Hex(s"$dir${path}$user$key$now")
-    Some(Networks.uri(s"$base$dir${path}?token=$token&u=$user&t=$now"))
+    Networks.uri(s"$base$dir${path}?token=$token&u=$user&t=$now")
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {

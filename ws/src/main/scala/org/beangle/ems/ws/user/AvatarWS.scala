@@ -41,16 +41,7 @@ class AvatarWS(entityDao: EntityDao)
   def info(@param("avatarId") avatarId: String): View = {
     val avatar = entityDao.get(classOf[Avatar], avatarId)
     if null == avatar then this.redirect("defaultAvatar")
-    else {
-      deliver(avatar.filePath)
-      null
-    }
+    else redirect(to(EmsApp.getBlobRepository().path(avatar.filePath)), "")
   }
 
-  private def deliver(path: String): Unit = {
-    EmsApp.getBlobRepository().path(path) match {
-      case Some(p) => response.sendRedirect(p)
-      case None => response.setStatus(404)
-    }
-  }
 }

@@ -25,7 +25,7 @@ import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
-import org.beangle.webmvc.view.View
+import org.beangle.webmvc.view.{Status, View}
 
 /** 应用配置文件
  */
@@ -75,12 +75,9 @@ class FileWS extends ActionSupport {
       getFile(app, path) match {
         case Some(template) =>
           val repo = EmsApp.getBlobRepository()
-          val p = repo.path(template.filePath)
-          response.sendRedirect(p)
-        case None =>
-          response.setStatus(404)
+          redirect(to(repo.path(template.filePath)), "")
+        case None => Status.NotFound
       }
-      null
     }
   }
 }

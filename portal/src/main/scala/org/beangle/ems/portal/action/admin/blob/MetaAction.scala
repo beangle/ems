@@ -23,8 +23,8 @@ import org.beangle.ems.core.blob.model.{BlobMeta, Profile}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.support.ServletSupport
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
+import org.beangle.webmvc.view.View
 
 class MetaAction extends RestfulAction[BlobMeta], ExportSupport[BlobMeta], ServletSupport {
 
@@ -44,7 +44,6 @@ class MetaAction extends RestfulAction[BlobMeta], ExportSupport[BlobMeta], Servl
   @mapping(value = "{id}")
   override def info(id: String): View = {
     val meta = entityDao.get(classOf[BlobMeta], id.toLong)
-    response.sendRedirect(EmsApp.getBlobRepository().path(meta.filePath))
-    null
+    redirect(to(EmsApp.getBlobRepository().path(meta.filePath)), "")
   }
 }

@@ -27,7 +27,7 @@ import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.helper.QueryHelper
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
-import org.beangle.webmvc.view.{Status, Stream, View}
+import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File
 
@@ -63,9 +63,7 @@ class DocAction extends ActionSupport, ServletSupport {
   def info(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
     val p = EmsApp.getBlobRepository().path(doc.filePath)
-    if p.startsWith("http") then
-      response.sendRedirect(p)
-      null
+    if p.startsWith("http") then redirect(to(p), "")
     else Stream(new File(p), doc.name)
   }
 

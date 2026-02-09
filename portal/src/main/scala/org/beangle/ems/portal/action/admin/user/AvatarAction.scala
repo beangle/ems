@@ -81,8 +81,7 @@ class AvatarAction extends ActionSupport, ServletSupport {
               Status.NotFound
             } else {
               val url = EmsApp.getBlobRepository().path(avatar.filePath)
-              response.sendRedirect(url)
-              null
+              redirect(to(url), "")
             }
         }
     }
@@ -196,15 +195,14 @@ class AvatarAction extends ActionSupport, ServletSupport {
     val exists = Collections.newSet[String]
 
     Workers.work(userFiles, (userFile: Array[Any]) => {
-      blob.uri(userFile(1).toString) foreach { uri =>
-        val userCode = userFile(0).toString
-        val fileName = userCode + "." + Strings.substringAfterLast(userFile(1).toString, ".")
-        val localFile = new File(tmpDir + Files./ + fileName)
-        HttpUtils.download(uri.toString, localFile)
-        if (localFile.exists()) {
-          avatarFiles.addOne(localFile)
-          exists.addOne(userCode)
-        }
+      val uri = blob.uri(userFile(1).toString)
+      val userCode = userFile(0).toString
+      val fileName = userCode + "." + Strings.substringAfterLast(userFile(1).toString, ".")
+      val localFile = new File(tmpDir + Files./ + fileName)
+      HttpUtils.download(uri.toString, localFile)
+      if (localFile.exists()) {
+        avatarFiles.addOne(localFile)
+        exists.addOne(userCode)
       }
     })
 

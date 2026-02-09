@@ -30,7 +30,7 @@ import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.webmvc.support.ServletSupport
 import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.webmvc.view.{Status, Stream, View}
+import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File
 import java.time.Instant
@@ -62,9 +62,7 @@ class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
   def download(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
     val p = EmsApp.getBlobRepository().path(doc.filePath)
-    if p.startsWith("http") then
-      response.sendRedirect(p)
-      null
+    if p.startsWith("http") then redirect(to(p), "")
     else Stream(new File(p), doc.name)
   }
 

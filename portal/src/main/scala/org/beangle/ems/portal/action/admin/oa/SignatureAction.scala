@@ -103,13 +103,12 @@ class SignatureAction extends RestfulAction[Signature] {
     docRoot.mkdirs()
     val innerFiles = Collections.newBuffer[File]
     signatures foreach { sig =>
-      blob.uri(sig.filePath) foreach { uri =>
-        val user = sig.user
-        val fileName = user.code + "_" + user.name + "." + Strings.substringAfterLast(sig.mediaType, "/")
-        val localFile = new File(docRoot.getAbsolutePath + Files./ + fileName)
-        IOs.copy(uri.toURL.openStream(), new FileOutputStream(localFile))
-        if (localFile.exists()) innerFiles.addOne(localFile)
-      }
+      val uri = blob.uri(sig.filePath)
+      val user = sig.user
+      val fileName = user.code + "_" + user.name + "." + Strings.substringAfterLast(sig.mediaType, "/")
+      val localFile = new File(docRoot.getAbsolutePath + Files./ + fileName)
+      IOs.copy(uri.toURL.openStream(), new FileOutputStream(localFile))
+      if (localFile.exists()) innerFiles.addOne(localFile)
     }
     val zipFile = new File(SystemInfo.tmpDir + Files./ + s"签名${innerFiles.size}人.zip")
     Zipper.zip(docRoot, innerFiles, zipFile, "utf-8")
