@@ -45,7 +45,7 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
           smsCodeService match {
             case None => raw(Json.toJson(Map("code" -> 500, "msg" -> "Platform 未配置SMS发生接口")))
             case Some(s) =>
-              val rs = s.send(Receiver(name, mobile), template)
+              val rs = s.send(Receiver(mobile, name), template)
               val json = Json.toJson(Map("code" -> (if rs._1 then 200 else 500), "msg" -> rs._2))
               raw(json)
           }
