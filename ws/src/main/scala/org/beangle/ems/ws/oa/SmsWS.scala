@@ -19,7 +19,7 @@ package org.beangle.ems.ws.oa
 
 import org.beangle.commons.json.Json
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.config.service.AppService
 import org.beangle.notify.sms.{Receiver, SmsCodeService}
 import org.beangle.webmvc.annotation.{action, mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -27,10 +27,8 @@ import org.beangle.webmvc.view.{Status, View}
 
 @action("sms")
 class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
-
-  var domainService: DomainService = _
   var appService: AppService = _
-  var smsCodeService: SmsCodeService = _
+  var smsCodeService: Option[SmsCodeService] = None
 
   @mapping("send/{mobile}")
   def send(@param("mobile") mobile: String): View = {
@@ -44,15 +42,22 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
       appService.getApp(appName, appSecret) match {
         case None => Status.Forbidden
         case Some(app) =>
-          val rs = smsCodeService.send(Receiver(name, mobile), template)
-          val json = Json.toJson(Map("code" -> (if rs._1 then 200 else 500), "msg" -> rs._2))
-          raw(json)
+          smsCodeService match {
+            case None => raw(Json.toJson(Map("code" -> 500, "msg" -> "Platform 未配置SMS发生接口")))
+            case Some(s) =>
+              val rs = s.send(Receiver(name, mobile), template)
+              val json = Json.toJson(Map("code" -> (if rs._1 then 200 else 500), "msg" -> rs._2))
+              raw(json)
+          }
       }
     }
   }
 
   @mapping("verify/{mobile}/{code}")
   def verify(@param("mobile") mobile: String, @param("code") code: String): View = {
-    if smsCodeService.verify(mobile, code) then raw("true") else raw("false")
+    smsCodeService match {
+      case None => raw("false")
+      case Some(s) => if s.verify(mobile, code) then raw("true") else raw("false")
+    }
   }
 }
