@@ -24,13 +24,14 @@ import org.beangle.commons.lang.Charsets
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.log.Proto
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.webmvc.annotation.mapping
+import org.beangle.webmvc.annotation.{action, mapping}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
 import org.hibernate.SessionFactory
 
 /** 应用系统调用，存储日志的服务
  */
+@action("push")
 class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
 
   var appService: AppService = _
@@ -45,6 +46,7 @@ class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
   def index(): View = {
     val bytes = IOs.readBytes(request.getInputStream)
     var appName: String = null
+    //默认是业务日志
     val event = get("type", "business") match {
       case "business" =>
         val e = Proto.BusinessLogEvent.parseFrom(bytes)

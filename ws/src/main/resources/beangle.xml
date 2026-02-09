@@ -27,33 +27,6 @@
       <interceptor name="web.Interceptor.hibernate"/>
       <interceptor name="web.Interceptor.cors"/>
     </profile>
-
-    <profile package="org.beangle.ems.ws.security.func">
-      <action suffix="WS" defaultMethod="index"/>
-      <url path="/security/func/{app}/" suffix="" style="plur-seo"/>
-      <interceptor name="web.Interceptor.hibernate"/>
-      <interceptor name="web.Interceptor.cors"/>
-    </profile>
-
-    <profile package="org.beangle.ems.ws.security.data">
-      <action suffix="WS" defaultMethod="index"/>
-      <url path="/security/data/" suffix="" style="plur-seo"/>
-      <interceptor name="web.Interceptor.hibernate"/>
-      <interceptor name="web.Interceptor.cors"/>
-    </profile>
-
-    <profile package="org.beangle.ems.ws.log.PushWS">
-      <action suffix="WS" defaultMethod="index"/>
-      <url path="/log/" suffix="" style="seo"/>
-    </profile>
-
-    <profile package="org.beangle.ems.ws.oauth">
-      <action suffix="WS" defaultMethod="index"/>
-      <url path="/oauth/" suffix="" style="seo"/>
-      <interceptor name="web.Interceptor.hibernate"/>
-      <interceptor name="web.Interceptor.cors"/>
-    </profile>
-
   </mvc>
 
 </beangle>

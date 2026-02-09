@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.commons.lang.Strings
+import org.beangle.commons.net.Networks
 import org.beangle.ems.app.cache.Redis
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.web.servlet.util.RequestUtils
@@ -39,7 +40,7 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
   private var host: String = "127.0.0.1"
   private var port: Int = 6379
 
-  private val ips: Set[String] = getLocalIPs()
+  private val ips: Set[String] = Networks.addresses(1)
 
   override def init(): Unit = {
     val conf = Redis.conf
@@ -79,23 +80,5 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
     res.getWriter.print(msg)
     res.setStatus(HttpServletResponse.SC_BAD_REQUEST)
     null
-  }
-
-  private def getLocalIPs(): Set[String] = {
-    val niEnum = NetworkInterface.getNetworkInterfaces
-    val ips = Collections.newBuffer[String]("127.0.0.1")
-    while (niEnum.hasMoreElements) {
-      val ni = niEnum.nextElement()
-      if (ni.isUp && !ni.isLoopback) {
-        val ipEnum = ni.getInetAddresses
-        while (ipEnum.hasMoreElements) {
-          ipEnum.nextElement() match {
-            case ip: Inet4Address => ips += ip.getHostAddress
-            case _ =>
-          }
-        }
-      }
-    }
-    ips.toSet
   }
 }

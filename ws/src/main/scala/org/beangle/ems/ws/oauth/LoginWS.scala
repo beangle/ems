@@ -24,9 +24,10 @@ import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.ThirdPartyApp
 import org.beangle.security.realm.jwt.{JwtDigest, Jwts}
-import org.beangle.webmvc.annotation.{body, mapping, response}
+import org.beangle.webmvc.annotation.{action, body, mapping, response}
 import org.beangle.webmvc.support.ActionSupport
 
+@action("/oauth/login")
 class LoginWS extends ActionSupport, Initializing {
 
   var entityDao: EntityDao = _

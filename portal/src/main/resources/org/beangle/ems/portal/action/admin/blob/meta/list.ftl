@@ -34,7 +34,7 @@
           [#if blobMeta.mediaType?starts_with('image')]<i class="fas fa-file-image"></i>[#else]
           <i class="fa-solid fa-file"></i>
           [/#if]
-      [/#if]
+        [/#if]
       </span>
     [/@]
     [@b.col  width="10%" property="updatedAt" title="更新时间"]

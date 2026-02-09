@@ -18,12 +18,18 @@
 package org.beangle.ems.ws
 
 import org.beangle.cache.caffeine.CaffeineCacheManager
+import org.beangle.commons.bean.{Initializing, Properties}
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
+import org.beangle.commons.lang.reflect.Reflections
+import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
+import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
+
+import java.io.FileInputStream
 
 class DefaultModule extends BindModule, Config.Provider {
 
@@ -35,7 +41,7 @@ class DefaultModule extends BindModule, Config.Provider {
     bind(classOf[config.RuleWS])
 
     bind(classOf[oa.NoticeWS], classOf[oa.DocWS], classOf[oa.FlowWS])
-    bind(classOf[oa.SignatureWS])
+    bind(classOf[oa.SignatureWS], classOf[oa.SmsWS])
 
     bind(classOf[func.MenuWS])
     bind(classOf[func.ResourceWS], classOf[func.PermissionWS])
@@ -54,6 +60,23 @@ class DefaultModule extends BindModule, Config.Provider {
     bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(responseCache)
 
     bind(classOf[oauth.LoginWS])
+
+    //绑定sms服务
+    EmsApp.getAppFile foreach { file =>
+      val is = new FileInputStream(file)
+      val app = Document.parse(is)
+      (app \\ "sms") foreach { e =>
+        bind(classOf[DefaultSmsCodeService])
+        val sender = Reflections.newInstance[SmsSender](e("class"))
+        e.attrs foreach { (k, v) =>
+          if k != "class" then Properties.copy(sender, k, v)
+        }
+        sender match
+          case i: Initializing => i.init()
+          case _ =>
+        bind("smsSender", sender)
+      }
+    }
   }
 
   override def properties: collection.Map[String, String] = {

@@ -21,13 +21,14 @@ import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
-import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
 
 /** 查询app中某个roleId的资源范围
  *
  * @author chaostone
  */
+@action("/security/func/{app}/permissions")
 class PermissionWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
