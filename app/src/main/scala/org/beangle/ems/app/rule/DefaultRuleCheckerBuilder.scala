@@ -25,7 +25,7 @@ import org.beangle.commons.lang.reflect.Reflections
 class DefaultRuleCheckerBuilder extends RuleCheckerBuilder {
 
   override def build(rule: Rule): RuleChecker = {
-    val container = Container.get("ROOT")
+    val container = Container.root.get
     val checker = container.getBean[Object](rule.name) match {
       case Some(b) => populate(b, rule)
       case None => populate(Reflections.newInstance[Object](rule.name), rule)
