@@ -27,8 +27,8 @@ import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.context.ActionContext
-import org.beangle.webmvc.view.View
 import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
+import org.beangle.webmvc.view.View
 
 class FileAction extends RestfulAction[File], ExportSupport[File] {
 
@@ -96,10 +96,7 @@ class FileAction extends RestfulAction[File], ExportSupport[File] {
     val response = ActionContext.current.response
     val template = entityDao.get(classOf[File], id.toLong)
     val repo = EmsApp.getBlobRepository()
-    repo.path(template.filePath) match {
-      case Some(p) => response.sendRedirect(p)
-      case None => response.setStatus(404)
-    }
+    response.sendRedirect(repo.path(template.filePath))
     null
   }
 }

@@ -50,5 +50,5 @@ class Doc extends LongId, Updated {
       case Some(mt) => mt.primaryType == "image"
   }
 
-  def url: String = EmsApp.getBlobRepository().path(this.filePath).get
+  def url: String = EmsApp.getBlobRepository().path(this.filePath)
 }

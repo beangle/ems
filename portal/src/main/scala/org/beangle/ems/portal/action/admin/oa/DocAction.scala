@@ -61,14 +61,11 @@ class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
 
   def download(@param("id") id: String): View = {
     val doc = entityDao.get(classOf[Doc], id.toLong)
-    EmsApp.getBlobRepository().path(doc.filePath) match {
-      case Some(p) =>
-        if p.startsWith("http") then
-          response.sendRedirect(p)
-          null
-        else Stream(new File(p), doc.name)
-      case None => Status.NotFound
-    }
+    val p = EmsApp.getBlobRepository().path(doc.filePath)
+    if p.startsWith("http") then
+      response.sendRedirect(p)
+      null
+    else Stream(new File(p), doc.name)
   }
 
   @ignore

@@ -179,7 +179,7 @@ object Flows {
   def readSignature(path: String): String = {
     val blob = EmsApp.getBlobRepository(true)
     try {
-      toBase64(blob.uri(path).get.toURL.openStream(), path)
+      toBase64(blob.uri(path).toURL.openStream(), path)
     } catch
       case e: Exception => null
   }

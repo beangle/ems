@@ -2,8 +2,8 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.3"
-  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.3"
+  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.4"
+  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.4"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.0"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.19"
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.0.2"
@@ -17,7 +17,7 @@ object EmsDepends {
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.5"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.4"
   val beangle_web = "org.beangle.web" % "beangle-web" % "0.7.3"
-  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.13.2"
+  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.13.3"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.19"
 
   val appDepends = Seq(beangle_commons, logback_classic, scalatest, beangle_web, beangle_config) ++

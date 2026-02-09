@@ -17,24 +17,24 @@
 
 package org.beangle.ems.app.blob
 
-import java.io.{File, InputStream}
-import java.net.{URI, URL}
-
 import org.beangle.commons.lang.Strings
+
+import java.io.InputStream
+import java.net.URI
 
 trait Repository {
 
   final def remove(folder: String, sha: String): Boolean = {
-    remove(getPath(folder,sha))
+    remove(getPath(folder, sha))
   }
 
   def remove(p: String): Boolean
 
-  def path(path: String): Option[String]
+  def path(path: String): String
 
-  def uri(path: String): Option[URI]
+  def uri(path: String): URI
 
-  def upload(folder: String, file: InputStream,fileName:String,owner:String): BlobMeta
+  def upload(folder: String, file: InputStream, fileName: String, owner: String): BlobMeta
 
   private[blob] def getPath(folder: String, name: String): String = {
     if (folder == "/") {
