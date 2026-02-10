@@ -34,12 +34,12 @@ object Sms {
     params.put("appName", EmsApp.name)
     params.put("secret", EmsApp.secret)
 
-    val res = HttpUtils.post(url, Request.asForm(params), "application/json")
+    val res = HttpUtils.post(url, Request.asForm(params))
     res.getText
   }
 
   def verify(mobile: String, code: String): Boolean = {
-    val url = Ems.innerApi + s"/platform/oa/sms/send/${mobile}/${code}"
+    val url = Ems.innerApi + s"/platform/oa/sms/verify/${mobile}/${code}"
     HttpUtils.get(url).getText == "true"
   }
 }
