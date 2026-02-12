@@ -20,7 +20,6 @@ package org.beangle.ems.core.cas
 import org.beangle.commons.cdi.{BindModule, Binder}
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.config.Config
-import org.beangle.commons.lang.Strings
 import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ids.cas.CasSetting
@@ -39,14 +38,12 @@ import java.io.FileInputStream
 class DefaultModule extends BindModule, Config.Provider {
 
   private val clients = Collections.newBuffer[String]
-
   private var remoteCasServer: Option[String] = None
-
   private var remoteOpenidServer: Option[String] = None
-
   private var remoteLtpa: Option[LtpaConfig] = None
 
   override def binding(): Unit = {
+    readAppFile()
     //1.如果有配置CAS方式的SSO
     if (remoteCasServer.isDefined) {
       bind(classOf[CasConfig]).constructor($("remote.cas.server"))
@@ -114,6 +111,36 @@ class DefaultModule extends BindModule, Config.Provider {
     }
   }
 
+  private def readAppFile(): Unit = {
+    EmsApp.getAppFile foreach { file =>
+      val is = new FileInputStream(file)
+      val app = Document.parse(is)
+      (app \\ "config" \\ "client") foreach { c =>
+        clients += c("base")
+      }
+      //在项目的配置文件中出现remote/cas节点的情况下才配置如下信息
+      (app \\ "config" \\ "remote") foreach { r =>
+        (r \ "cas") foreach { e =>
+          val casServer = e.get("server", null)
+          remoteCasServer = Some(casServer)
+        }
+        (r \ "ltpa") foreach { e =>
+          val server = e.get("server", null)
+          val key = e.get("key", null)
+          val cookieName = e.get("cookieName", null)
+          val usernameDns = e.get("usernameDns", null)
+          val config = LtpaConfig(server, key, cookieName, usernameDns)
+          if null != server && null != key then remoteLtpa = Some(config)
+        }
+        (r \ "openid") foreach { e =>
+          val server = e.get("server", null)
+          remoteOpenidServer = Some(server)
+        }
+      }
+      is.close()
+    }
+  }
+
   override def properties: collection.Map[String, String] = {
     val datas = Collections.newMap[String, String]
     EmsApp.getAppFile foreach { file =>
@@ -143,9 +170,6 @@ class DefaultModule extends BindModule, Config.Provider {
         datas += ("login.key" -> Ems.base)
         datas += ("login.origin" -> Ems.base)
       }
-      (app \\ "config" \\ "client") foreach { c =>
-        clients += c("base")
-      }
       //在项目的配置文件中出现remote/cas节点的情况下才配置如下信息
       (app \\ "config" \\ "remote") foreach { r =>
         (r \ "cas") foreach { e =>
@@ -153,19 +177,6 @@ class DefaultModule extends BindModule, Config.Provider {
           val gateway = e.get("gateway", "false")
           datas += ("remote.cas.server" -> casServer)
           datas += ("remote.cas.gateway" -> gateway)
-          remoteCasServer = Some(casServer)
-        }
-        (r \ "ltpa") foreach { e =>
-          val server = e.get("server", null)
-          val key = e.get("key", null)
-          val cookieName = e.get("cookieName", null)
-          val usernameDns = e.get("usernameDns", null)
-          val config = LtpaConfig(server, key, cookieName, usernameDns)
-          if null != server && null != key then remoteLtpa = Some(config)
-        }
-        (r \ "openid") foreach { e =>
-          val server = e.get("server", null)
-          remoteOpenidServer = Some(server)
         }
       }
       is.close()
