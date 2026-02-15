@@ -22,7 +22,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{FlowActiveProcess, FlowActivity, FlowProcess}
 import org.beangle.ems.core.oa.service.FlowService
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 class FlowActiveProcessAction extends RestfulAction[FlowActiveProcess] {

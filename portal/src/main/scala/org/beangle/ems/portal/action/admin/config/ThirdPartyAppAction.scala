@@ -21,7 +21,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.ThirdPartyApp
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 import java.time.Instant

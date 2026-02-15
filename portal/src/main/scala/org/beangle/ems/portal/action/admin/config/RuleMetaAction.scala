@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.model.{Business, RuleMeta, RuleParamMeta}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 class RuleMetaAction extends RestfulAction[RuleMeta] {

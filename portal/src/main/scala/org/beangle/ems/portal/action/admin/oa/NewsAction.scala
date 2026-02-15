@@ -17,7 +17,7 @@
 
 package org.beangle.ems.portal.action.admin.oa
 
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.ems.core.oa.model.News
 
 class NewsAction extends RestfulAction[News] {

@@ -21,7 +21,7 @@ import org.beangle.commons.collection.Order
 import org.beangle.ems.core.security.service.SessionInfoService
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.QueryHelper
 
 class IndexAction extends ActionSupport {
 

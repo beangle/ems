@@ -24,7 +24,7 @@ import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
 import org.beangle.security.authz.Scope
 import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
+import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.view.View
 
 /**

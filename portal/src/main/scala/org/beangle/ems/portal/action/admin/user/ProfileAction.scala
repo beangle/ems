@@ -27,7 +27,7 @@ import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 /**

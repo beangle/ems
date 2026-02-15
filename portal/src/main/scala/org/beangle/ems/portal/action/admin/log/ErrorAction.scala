@@ -21,8 +21,8 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.log.Level
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.log.model.ErrorLog
-import org.beangle.webmvc.support.action.{ExportSupport, RestfulAction}
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
+import org.beangle.she.webmvc.QueryHelper
 
 class ErrorAction extends RestfulAction[ErrorLog], ExportSupport[ErrorLog] {
 

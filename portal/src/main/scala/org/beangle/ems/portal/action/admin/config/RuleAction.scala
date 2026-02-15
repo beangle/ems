@@ -21,7 +21,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.{Business, Rule, RuleMeta, RuleParam}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 import java.time.Instant

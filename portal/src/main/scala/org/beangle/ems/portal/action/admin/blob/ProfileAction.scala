@@ -23,7 +23,7 @@ import org.beangle.ems.core.blob.model.Profile
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 class ProfileAction extends RestfulAction[Profile] {
 

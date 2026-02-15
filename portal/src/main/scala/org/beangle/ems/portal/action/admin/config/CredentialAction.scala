@@ -20,7 +20,7 @@ package org.beangle.ems.portal.action.admin.config
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.ems.core.config.model.Credential
 import org.beangle.ems.core.config.service.DomainService
 

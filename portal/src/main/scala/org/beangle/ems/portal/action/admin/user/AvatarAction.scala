@@ -33,7 +33,7 @@ import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.{AvatarService, UserService}
 import org.beangle.ems.portal.PortalLogger
 import org.beangle.webmvc.annotation.{mapping, param}
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, Stream, View}
 

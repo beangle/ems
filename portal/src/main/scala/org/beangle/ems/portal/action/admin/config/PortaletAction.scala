@@ -22,7 +22,7 @@ import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.user.model.Category
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 class PortaletAction extends RestfulAction[Portalet], DomainSupport {
 

@@ -25,7 +25,7 @@ import org.beangle.ems.core.oa.model.{Flow, FlowActivity, MessageTemplate}
 import org.beangle.ems.core.user.model.Group
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 import java.time.Instant

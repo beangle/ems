@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.web
+package org.beangle.ems.app.dao
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.webmvc.support.hibernate.CloseSessionInterceptor
 
-object HibernateModule extends BindModule {
+object DataSourceModule extends BindModule {
 
   protected override def binding(): Unit = {
-    bind("web.Interceptor.hibernate", classOf[CloseSessionInterceptor])
+    wiredEagerly(false)
+    bind("DataSource.default", classOf[AppDataSourceFactory])
   }
 
 }

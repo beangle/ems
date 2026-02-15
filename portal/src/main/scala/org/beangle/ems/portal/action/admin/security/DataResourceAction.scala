@@ -22,7 +22,7 @@ import org.beangle.ems.core.config.service.DataSourceManager
 import org.beangle.ems.core.security.model.DataResource
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 /**
   * 系统模块管理响应类

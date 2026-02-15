@@ -29,7 +29,7 @@ import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.webmvc.support.ServletSupport
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File

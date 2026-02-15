@@ -22,7 +22,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.MessageTemplate
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 /** 消息模板维护

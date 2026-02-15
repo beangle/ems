@@ -18,10 +18,9 @@
 package org.beangle.ems.app.event
 
 import org.beangle.data.dao.EntityDao
+import org.beangle.data.hibernate.SessionHelper
 import org.beangle.data.model.Entity
-import org.beangle.data.orm.hibernate.SessionHelper
 import org.beangle.event.bus.DataEvent
-import org.beangle.event.bus.DataEventType.*
 import org.beangle.event.mq.EventSubscriber
 import org.hibernate.SessionFactory
 
@@ -31,11 +30,11 @@ class CacheEvictor(entityDao: EntityDao, sessionFactory: SessionFactory) extends
     val dataType = event.dataType
     domain.getEntity(dataType) foreach { et =>
       if et.cacheable then
-        val h = SessionHelper.openSession(sessionFactory)
+        val s = SessionHelper.openSession(sessionFactory)
         try {
           entityDao.evict(et.clazz.asInstanceOf[Class[_ <: Entity[_]]])
         } finally {
-          SessionHelper.closeSession(h.session)
+          SessionHelper.closeSession(s)
         }
     }
   }

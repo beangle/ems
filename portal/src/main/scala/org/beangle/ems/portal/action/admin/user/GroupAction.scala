@@ -20,7 +20,7 @@ package org.beangle.ems.portal.action.admin.user
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Group, Role}
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 class GroupAction extends RestfulAction[Group] {
 

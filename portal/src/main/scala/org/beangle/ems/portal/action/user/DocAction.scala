@@ -25,7 +25,7 @@ import org.beangle.ems.core.oa.model.Doc
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{mapping, param}
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Stream, View}
 

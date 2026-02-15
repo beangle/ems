@@ -29,7 +29,7 @@ import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 import java.time.{Instant, LocalDate}
 

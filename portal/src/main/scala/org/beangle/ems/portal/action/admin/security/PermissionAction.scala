@@ -36,7 +36,7 @@ import org.beangle.security.authz.{Authority, Authorizer}
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 /**
   * 权限分配与管理响应类

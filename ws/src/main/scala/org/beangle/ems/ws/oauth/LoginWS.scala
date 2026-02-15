@@ -27,10 +27,15 @@ import org.beangle.security.realm.jwt.{JwtDigest, Jwts}
 import org.beangle.webmvc.annotation.{action, body, mapping, response}
 import org.beangle.webmvc.support.ActionSupport
 
+import java.time.{Duration, Instant}
+
 @action("/oauth/login")
 class LoginWS extends ActionSupport, Initializing {
 
   var entityDao: EntityDao = _
+
+  /** 有效时长(默认5分钟) */
+  var expiresIn: Duration = Duration.ofMillis(5)
 
   private var digest: JwtDigest = _
 
@@ -88,10 +93,10 @@ class LoginWS extends ActionSupport, Initializing {
   }
 
   private def generateToken(app: ThirdPartyApp): String = {
-    val claims = Collections.newMap[String, String]
+    val claims = Collections.newMap[String, Any]
     claims.put("userId", app.id.toString)
     claims.put("userCode", app.code)
     claims.put("userName", app.name)
-    digest.generateToken(claims)
+    digest.generateToken(claims, expiresIn)
   }
 }

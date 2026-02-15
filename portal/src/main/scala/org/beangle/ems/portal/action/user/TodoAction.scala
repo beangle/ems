@@ -23,8 +23,8 @@ import org.beangle.ems.core.oa.model.{DoneTodo, Todo}
 import org.beangle.ems.core.oa.service.TodoService
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
-import org.beangle.webmvc.support.action.RestfulAction
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.RestfulAction
+import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.view.View
 
 class TodoAction extends RestfulAction[Todo] {

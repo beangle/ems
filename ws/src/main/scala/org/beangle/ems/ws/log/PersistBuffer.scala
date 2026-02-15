@@ -20,7 +20,7 @@ package org.beangle.ems.ws.log
 import org.beangle.commons.bean.Disposable
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.EntityDao
-import org.beangle.data.orm.hibernate.SessionHelper
+import org.beangle.data.hibernate.SessionHelper
 import org.beangle.ems.app.log.{Level, Proto}
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.AppService

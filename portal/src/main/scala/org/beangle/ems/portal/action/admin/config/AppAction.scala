@@ -24,7 +24,7 @@ import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 
 class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport {
 

@@ -33,7 +33,7 @@ import org.beangle.ems.core.user.service.UserService
 import org.beangle.jdbc.ds.{AesEncryptor, DataSourceFactory}
 import org.beangle.jdbc.engine.{Drivers, UrlFormat}
 import org.beangle.jdbc.query.JdbcExecutor
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.{ByteArrayInputStream, File, FileOutputStream, InputStream}

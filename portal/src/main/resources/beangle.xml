@@ -6,8 +6,9 @@
   <ems app-name="platform-portal"/>
 
   <cdi>
-    <module class="org.beangle.ems.app.dao.DaoModule"/>
-    <module class="org.beangle.ems.app.web.HibernateModule"/>
+    <module class="org.beangle.she.hibernate.OrmModule"/>
+
+    <module class="org.beangle.ems.app.dao.DataSourceModule"/>
     <module class="org.beangle.ems.app.web.DefaultModule"/>
     <module class="org.beangle.ems.app.log.DefaultModule"/>
     <module class="org.beangle.ems.app.cache.DefaultModule"/>

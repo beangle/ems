@@ -24,7 +24,7 @@ import org.beangle.ems.core.oa.model.Message
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
 import org.beangle.webmvc.annotation.{ignore, mapping, param}
-import org.beangle.webmvc.support.action.RestfulAction
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 import java.time.Instant

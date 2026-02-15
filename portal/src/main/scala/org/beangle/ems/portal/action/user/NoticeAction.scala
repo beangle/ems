@@ -23,7 +23,7 @@ import org.beangle.webmvc.support.{ActionSupport, ParamSupport}
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.view.View
-import org.beangle.webmvc.support.helper.QueryHelper
+import org.beangle.she.webmvc.QueryHelper
 import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 
