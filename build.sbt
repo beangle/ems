@@ -67,7 +67,8 @@ lazy val ws = (project in file("ws"))
   .settings(
     name := "beangle-ems-ws",
     common,
-    libraryDependencies ++= webAppDepends
+    libraryDependencies ++= webAppDepends,
+    libraryDependencies ++= Seq(sshd_core)
   ).dependsOn(core)
 
 lazy val portal = (project in file("portal"))

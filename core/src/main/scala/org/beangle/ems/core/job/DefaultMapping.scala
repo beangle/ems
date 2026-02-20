@@ -17,17 +17,24 @@
 
 package org.beangle.ems.core.job
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Named
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.data.orm.MappingModule
 
-/** 定时任务
- *
- */
-class Job extends LongId, Named {
-  var domain: Domain = _
-  var host: String = _
-  var command: String = _
-  var runAs: String = _
-  var cronExpression: String = _
+object DefaultMapping extends MappingModule {
+
+  def binding(): Unit = {
+
+    bind[CronJob].declare { e =>
+      e.name is length(100)
+      e.target is length(500)
+      e.description is length(500)
+      e.contents is length(1000)
+      e.expression is length(100)
+      index("idx_cron_job", true, e.domain, e.name)
+    }
+
+    bind[CronJobLog].declare { e =>
+      e.resultFilePath is length(500)
+    }
+  }
+
 }

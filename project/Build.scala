@@ -19,6 +19,8 @@ object EmsDepends {
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.5"
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.14.0"
 
+ val sshd_core = "org.apache.sshd" % "sshd-core" % "2.12.1"
+
   val appDepends = Seq(beangle_config, typesafe_config, slf4j, logback_classic) ++
     Seq(beangle_cdi, spring_beans) ++
     Seq(beangle_jdbc, HikariCP, postgresql) ++

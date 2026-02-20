@@ -15,23 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job
+package org.beangle.ems.portal.action.admin
 
-import org.beangle.data.model.LongId
+import org.beangle.commons.cdi.BindModule
 
-import java.time.Instant
+class JobModule extends BindModule {
 
-/** 定时任务执行结果
- */
-class Execution extends LongId {
-  /** 定时任务 */
-  var job: Job = _
-  /** 输出 */
-  var output: String = _
-  /** 退出码 */
-  var exitCode: Int = _
-  /** 执行开始时间 */
-  var startAt: Instant = _
-  /** 执行结束时间 */
-  var endAt: Instant = _
+  protected override def binding(): Unit = {
+    bind(classOf[job.CronJobAction])
+    bind(classOf[job.CronJobLogAction])
+  }
 }

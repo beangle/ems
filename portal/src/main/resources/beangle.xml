@@ -21,6 +21,7 @@
     <module class="org.beangle.ems.portal.action.admin.BlobModule"/>
     <module class="org.beangle.ems.portal.action.admin.OAModule"/>
     <module class="org.beangle.ems.portal.action.admin.LogModule"/>
+    <module class="org.beangle.ems.portal.action.admin.JobModule"/>
     <module class="org.beangle.ems.portal.action.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.action.DefaultModule"/>
 

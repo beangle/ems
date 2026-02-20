@@ -1,0 +1,26 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=cronJobLogs var="cronJobLog"]
+  [@b.gridbar]
+    bar.addItem("${b.text("action.new")}",action.add());
+    bar.addItem("${b.text("action.modify")}",action.edit());
+    bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
+  [/@]
+  [@b.row]
+    [@b.boxcol/]
+    [@b.col width="18%" property="job.name" title="计划任务"]
+      [@b.a href="!info?id=${cronJobLog.id}" title="查看详情"]${cronJobLog.job.name}[/@]
+    [/@]
+    [@b.col width="15%" property="executeAt" title="执行时间"]
+      ${cronJobLog.executeAt?string("yyyy-MM-dd HH:mm:ss")}
+    [/@]
+    [@b.col width="10%" title="耗时"]
+      [#if cronJobLog.duration??]${cronJobLog.duration.toMillis}ms[#else]-[/#if]
+    [/@]
+    [@b.col width="10%" title="状态"]
+      [#if cronJobLog.statusCode==0]成功[#elseif cronJobLog.statusCode==1]失败[#elseif cronJobLog.statusCode==2]运行中[#else]${cronJobLog.statusCode}[/#if]
+    [/@]
+    [@b.col property="resultFilePath" title="结果文件路径"/]
+  [/@]
+[/@]
+[@b.foot/]

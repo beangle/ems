@@ -9,6 +9,7 @@
     <mapping class="org.beangle.ems.core.user.model.DefaultMapping"/>
     <mapping class="org.beangle.ems.core.blob.model.DefaultMapping"/>
     <mapping class="org.beangle.ems.core.log.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.job.DefaultMapping"/>
     <naming>
       <profile package = "org.beangle.ems.core" schema="ems" pluralize="true">
         <profile package = "config" prefix="cfg_"/>
