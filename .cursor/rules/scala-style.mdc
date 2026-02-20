@@ -1,0 +1,80 @@
+---
+description: Scala 编码规范
+globs: "**/*.scala"
+alwaysApply: false
+---
+
+# Scala 编码规范
+
+## 强制性：使用 Scala 3 语法
+
+必须使用 Scala 3 语法，禁止使用已弃用或不推荐的 Scala 2 写法：
+
+| 避免（Scala 2） | 使用（Scala 3） |
+|----------------|----------------|
+| `implicit` 修饰符 | `given` / `using` |
+| `implicit def` 做类型转换 | `given` + `Conversion` |
+| `implicit class` 扩展方法 | `extension` 方法 |
+| `sealed trait` + `case object` 枚举 | `enum` |
+| `import pkg.X` 包导入 | `import pkg as alias` |
+| 过程语法 `def foo { }` | `def foo: Unit = { }` |
+| 符号字面量 `'foo` | 字符串 `"foo"` |
+| 存在类型 `List[_]` | `List[?]` 或具体类型 |
+
+## 多行函数体
+
+多行函数（体超过一行）必须使用花括号 `{}` 包裹：
+
+```scala
+// ❌ BAD
+def foo =
+  bar()
+  baz()
+
+// ✅ GOOD
+def foo = {
+  bar()
+  baz()
+}
+```
+
+## 公开方法注释
+
+公开（`public`，即无 `private`/`protected` 修饰）的方法、类、对象、成员变量等，需添加 Scaladoc 风格的文档注释。注释可为中文或英文。遵循 Scaladoc 规范，而非 Javadoc 写法：
+
+- 使用 `/** ... */` 块注释
+- 首行或首句为简短摘要，可单独成段
+- 参数用 `@param name 描述`，返回值用 `@return 描述`
+- 优先用 Markdown（如 `` `code` ``、`**粗体**`），避免 Javadoc 的 HTML 标签（如 `<code>`、`<p>`）
+
+```scala
+// ❌ BAD（Javadoc 风格，HTML 标签）
+/**
+ * <p>执行任务。</p>
+ * @param x <code>Int</code> 参数
+ * @return 结果
+ */
+
+// ✅ GOOD（Scaladoc 风格）
+/** 执行任务，返回处理后的结果。 */
+def run(x: Int): String
+
+/** 创建配置。
+ *  @param timeout 超时时长，单位秒
+ *  @return 配置实例，失败返回 None
+ */
+def create(timeout: Int): Option[Config]
+```
+
+## java.util 导入
+
+使用 `java.util` 时，需以包别名方式导入，避免与 `scala.collection` 冲突：
+
+```scala
+// ❌ BAD
+import java.util
+
+// ✅ GOOD
+import java.util as ju
+ju.EnumSet.of(ClientChannelEvent.CLOSED)
+```
