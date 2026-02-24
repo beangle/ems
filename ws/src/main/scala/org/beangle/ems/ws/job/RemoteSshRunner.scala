@@ -43,8 +43,8 @@ class RemoteSshRunner(val target: String, sshKeyPassphrase: Option[String]) exte
   /** 私钥文件路径（如 ~/.ssh/id_rsa） */
   var keyPath: Path = _
 
-  /** 命令执行超时，默认 30 秒 */
-  var timeout: Duration = Duration.ofSeconds(30)
+  /** 命令执行超时，默认 30 分钟 */
+  var timeout: Duration = Duration.ofMinutes(30)
 
   /** 执行远程命令
    *

@@ -5,6 +5,7 @@ object EmsDepends {
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.5"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.5"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.1"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.0.7"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.19"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.5"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.4"
@@ -21,7 +22,7 @@ object EmsDepends {
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.2"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.17.1"
 
-  val appDepends = Seq(beangle_config, typesafe_config, slf4j, logback_classic) ++
+  val appDepends = Seq(beangle_commons, beangle_config, typesafe_config, slf4j, logback_classic) ++
     Seq(beangle_cdi, spring_beans) ++
     Seq(beangle_jdbc, HikariCP, postgresql) ++
     Seq(beangle_cache, caffeine_jcache, jedis) ++
