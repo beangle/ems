@@ -15,7 +15,7 @@
       ${log.executeAt?string("yyyy-MM-dd HH:mm:ss")}
     [/@]
     [@b.col width="10%" title="耗时"]
-      [#if log.duration??]${log.duration.toMillis}ms[#else]-[/#if]
+      [#if log.duration??]${log.duration.toSeconds}s[#else]-[/#if]
     [/@]
     [@b.col width="10%" title="状态"]
       [#if log.statusCode==0]成功[#elseif log.statusCode==1]失败[#elseif log.statusCode==2]运行中[#else]${log.statusCode}[/#if]
