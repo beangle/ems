@@ -3,7 +3,6 @@
 [@b.grid items=logs var="log"]
   [@b.gridbar]
     bar.addItem("${b.text("action.new")}",action.add());
-    bar.addItem("${b.text("action.modify")}",action.edit());
     bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
   [/@]
   [@b.row]

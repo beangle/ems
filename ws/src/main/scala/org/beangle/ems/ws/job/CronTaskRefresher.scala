@@ -23,13 +23,12 @@ import org.beangle.commons.io.StringBuilderWriter
 import org.beangle.cron.{CronExpr, Scheduled, Scheduler}
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.app.blob.BlobMeta
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.job.model.{CronTask, CronTaskLog}
+import org.beangle.ems.ws.WsLogger
 import org.beangle.ems.ws.job.CronTaskRefresher.CronTaskRunner
 
-import java.io.ByteArrayInputStream
-import java.io.PrintWriter
+import java.io.{ByteArrayInputStream, PrintWriter}
 import java.time.{Duration, Instant}
 
 class CronTaskRefresher(entityDao: EntityDao, val expression: String) extends Scheduled {
@@ -51,11 +50,13 @@ class CronTaskRefresher(entityDao: EntityDao, val expression: String) extends Sc
     abandons foreach { digestId =>
       scheduler.cancel(runningTasks(digestId))
       runningTasks.remove(digestId)
+      WsLogger.debug(s"remove cron task ${digestId}")
     }
     tasks foreach { t =>
       val digestId = digestTaskId(t)
       if (!runningTasks.contains(digestId)) {
         newTask(digestId, t)
+        WsLogger.info(s"new cron task ${t.name} at ${t.expression}")
       }
     }
   }

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal
+package org.beangle.ems.ws
 
 import org.beangle.commons.logging.{Logger, slf4j}
 
-private[portal] object PortalLogger extends Logger(slf4j("org.beangle.ems.portal"))
+private[ws] object WsLogger extends Logger(slf4j("org.beangle.ems.ws"))
