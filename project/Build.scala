@@ -19,7 +19,7 @@ object EmsDepends {
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.5"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.6"
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.14.0"
-  val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.2"
+  val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.3"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.17.1"
 
   val slf4j_jcl = "org.slf4j" % "jcl-over-slf4j" % "2.0.17"

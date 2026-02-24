@@ -17,7 +17,7 @@ pre.output > code > span:before {
 </style>
 <table class="table table-sm table-detail">
   <tr>
-    <td class="title" width="20%">计划任务</td>
+    <td class="title" width="10%">计划任务</td>
     <td>${log.task.name!}</td>
   </tr>
   <tr>

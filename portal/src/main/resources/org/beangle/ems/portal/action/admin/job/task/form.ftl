@@ -6,7 +6,9 @@
     [@b.textfield name="task.target" label="目标" value=task.target! required="true" maxlength="500" comment="localhost或者user@server_ip:port"/]
     [@b.textfield name="task.command" label="任务内容" value=task.command!  maxlength="1000" style="width:400px;"/]
     [@b.textarea name="task.description" label="描述" value=task.description! cols="60" rows="2" maxlength="500"/]
-    [@b.textfield name="task.expression" label="Cron表达式" value=task.expression! required="true" maxlength="100" comment="如: 0 0 2 * * ? 表示每天凌晨2点"/]
+    [@b.textfield name="task.expression" label="Cron表达式" value=task.expression! required="true" maxlength="100"]
+      如: 0 0 2 * * ? 表示每天凌晨2点,参考 <a href="https://tool.lu/crontab/" target="_blank">在线工具中的sping配置</a>
+    [/@]
     [@b.radios name="task.enabled" label="是否启用" value=task.enabled! items="true:启用,false:禁用"/]
     [@b.formfoot]
       [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
