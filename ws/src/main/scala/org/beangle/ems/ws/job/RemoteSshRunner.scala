@@ -19,11 +19,11 @@ package org.beangle.ems.ws.job
 
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.channel.{ClientChannel, ClientChannelEvent}
-import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier
+import org.apache.sshd.client.keyverifier.{AcceptAllServerKeyVerifier, DefaultKnownHostsServerKeyVerifier}
 import org.apache.sshd.common.channel.Channel
 import org.apache.sshd.common.config.keys.FilePasswordProvider
 import org.apache.sshd.common.util.security.SecurityUtils
-import org.beangle.commons.lang.SystemInfo
+import org.beangle.commons.io.Files
 
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
@@ -33,15 +33,19 @@ import java.util as ju
 import java.util.concurrent.TimeUnit
 
 /**
- * 使用 Apache MINA SSHD 执行远程 SSH 命令的任务。仅支持密钥认证，忽略主机 key 校验。
+ * 使用 Apache MINA SSHD 执行远程 SSH 命令的任务。仅支持密钥认证。
+ * 使用 ~/.ssh/known_hosts 校验主机密钥。若主机不在 known_hosts 中则自动加入，下次连接时校验。
  *
  * @param target 目标，格式 user@host 或 user@host:port，port 可省略（默认 22）
  *
  */
 class RemoteSshRunner(val target: String, sshKeyPassphrase: Option[String]) extends TaskRunner {
 
-  /** 私钥文件路径（如 ~/.ssh/id_rsa） */
+  /** 私钥文件路径（如 ~/.ssh/ems_rsa） */
   var keyPath: Path = _
+
+  /** known_hosts 文件路径（如 ~/.ssh/known_hosts），默认 null 时使用 ~/.ssh/known_hosts */
+  var knownHostsPath: Path = _
 
   /** 命令执行超时，默认 30 分钟 */
   var timeout: Duration = Duration.ofMinutes(30)
@@ -55,12 +59,12 @@ class RemoteSshRunner(val target: String, sshKeyPassphrase: Option[String]) exte
     if (command == null || command.isBlank) {
       return (-1, "command is empty")
     }
-    if (keyPath == null) {
-      this.keyPath = Path.of(SystemInfo.user.home + "/.ssh/id_rsa")
-    }
+    if keyPath == null then this.keyPath = Path.of(Files.expandTilde("~/.ssh/ems_rsa"))
+    if (knownHostsPath == null) this.knownHostsPath = Path.of(Files.expandTilde("~/.ssh/known_hosts"))
     val (user, host, port) = parseTarget(target)
     val client = SshClient.setUpDefaultClient()
-    client.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE)
+    val verifier = new DefaultKnownHostsServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE, false, knownHostsPath)
+    client.setServerKeyVerifier(verifier)
     try {
       client.start()
       val session = client.connect(user, host, port)

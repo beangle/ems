@@ -44,7 +44,7 @@ class CronTaskRefresher(entityDao: EntityDao, val expression: String) extends Sc
   }
 
   override def run(): Unit = {
-    val tasks = entityDao.findBy(classOf[CronTask], "domain" -> domainService.getDomain)
+    val tasks = entityDao.findBy(classOf[CronTask], "domain" -> domainService.getDomain, "enabled" -> true)
     val taskMap = tasks.map(t => (digestTaskId(t), t)).toMap
 
     val abandons = runningTasks.keySet.toSet -- taskMap.keySet

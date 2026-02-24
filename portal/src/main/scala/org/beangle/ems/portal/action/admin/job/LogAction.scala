@@ -22,8 +22,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.job.model.{CronTask, CronTaskLog}
-import org.beangle.she.webmvc.RestfulAction
-import org.beangle.she.webmvc.QueryHelper
+import org.beangle.she.webmvc.{QueryHelper, RestfulAction}
 import org.beangle.webmvc.view.View
 
 import java.time.Duration
@@ -61,15 +60,24 @@ class LogAction extends RestfulAction[CronTaskLog] {
   }
 
   override def info(id: String): View = {
-    val log = entityDao.get(classOf[CronTaskLog],id.toLong)
-    if(log.resultFilePath.startsWith("/")){
+    val log = entityDao.get(classOf[CronTaskLog], id.toLong)
+    if (log.resultFilePath.startsWith("/")) {
       val blob = EmsApp.getBlobRepository()
       val result = HttpUtils.get(blob.uri(log.resultFilePath).toString).getText
-      put("result",result.split("\n"))
-    }else{
-      put("result",List.empty)
+      put("result", result.split("\n"))
+    } else {
+      put("result", List.empty)
     }
     super.info(id)
   }
+
+  override def removeAndRedirect(entities: Seq[CronTaskLog]): View = {
+    val blob = EmsApp.getBlobRepository()
+    entities.foreach { log =>
+      blob.remove(log.resultFilePath)
+    }
+    super.removeAndRedirect(entities)
+  }
+
   override protected def simpleEntityName: String = "log"
 }
