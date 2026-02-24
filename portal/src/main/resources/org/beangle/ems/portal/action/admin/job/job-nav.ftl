@@ -1,0 +1,5 @@
+[#ftl]
+  [@b.nav class="nav-tabs nav-tabs-compact"]
+    [@b.navitem href="task"]任务管理[/@]
+    [@b.navitem href="log"]执行日志[/@]
+  [/@]

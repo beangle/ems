@@ -23,7 +23,9 @@ import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
 import org.beangle.commons.lang.reflect.Reflections
 import org.beangle.commons.xml.Document
+import org.beangle.cron.{CronTaskRegistrar, Scheduler}
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
+import org.beangle.ems.ws.job.CronTaskRefresher
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
@@ -60,6 +62,10 @@ class DefaultModule extends BindModule, Config.Provider {
     bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(responseCache)
 
     bind(classOf[oauth.LoginWS])
+
+    bind(classOf[Scheduler])
+    bind(classOf[CronTaskRegistrar])
+    bind(classOf[CronTaskRefresher]).constructor(?,"0/5 * * * * *")
 
     //绑定sms服务
     EmsApp.getAppFile foreach { file =>

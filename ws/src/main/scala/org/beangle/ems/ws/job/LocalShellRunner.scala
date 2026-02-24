@@ -15,14 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.portal.action.admin
+package org.beangle.ems.ws.job
 
-import org.beangle.commons.cdi.BindModule
+import org.beangle.commons.os.{LinuxBash, Platform, WinCmd}
 
-class JobModule extends BindModule {
+/** 本地执行 Shell 命令的任务。
+ */
+class LocalShellRunner extends TaskRunner {
 
-  protected override def binding(): Unit = {
-    bind(classOf[job.TaskAction])
-    bind(classOf[job.LogAction])
+  /** 执行 Shell 命令
+   *
+   * @param command 要执行的命令（通过系统 shell 执行，支持管道、重定向等）
+   * @return
+   */
+  override def execute(command: String): (Int, String) = {
+    if (Platform.isLinux) {
+      val rs = LinuxBash.exec(command)
+      (rs._1, rs._2.mkString("\n"))
+    } else if (Platform.isWin) {
+      val rs = WinCmd.exec(command)
+      (rs._1, rs._2.mkString("\n"))
+    } else {
+      throw new RuntimeException(s"Cannot support platform ${Platform.osName}")
+    }
   }
 }

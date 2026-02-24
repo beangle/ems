@@ -15,18 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job
+package org.beangle.ems.core.job.model
 
 import org.beangle.data.model.LongId
 
 import java.time.Instant
 import java.time.Duration
+import org.beangle.ems.core.job.model.CronTask
 
 /** 计划任务执行日志
  */
-class CronJobLog extends LongId {
+class CronTaskLog extends LongId {
   /** 关联任务 */
-  var job: CronJob = _
+  var task: CronTask = _
   /** 执行时间 */
   var executeAt: Instant = _
   /** 执行耗时 */

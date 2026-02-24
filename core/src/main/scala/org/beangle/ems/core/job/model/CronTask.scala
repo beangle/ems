@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job
+package org.beangle.ems.core.job.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Named
@@ -28,7 +28,7 @@ import org.beangle.data.model.pojo.Updated
 /** 计划任务
  *
  */
-class CronJob extends LongId, Named,Updated {
+class CronTask extends LongId, Named,Updated {
   /** 所属域 */
   var domain: Domain = _
   /** 目标（执行目标类或地址） */
@@ -36,7 +36,7 @@ class CronJob extends LongId, Named,Updated {
   /** 描述 */
   var description: String = _
   /** 任务内容 */
-  var contents: String = _
+  var command: String = _
   /** Cron 表达式 */
   var expression: String = _
   /** 上次执行时间 */

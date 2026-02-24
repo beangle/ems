@@ -17,9 +17,11 @@
 
 package org.beangle.ems.portal.action.admin.job
 
+import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.job.{CronJob, CronJobLog}
+import org.beangle.ems.core.job.model.{CronTask, CronTaskLog}
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.view.View
@@ -28,35 +30,46 @@ import java.time.Duration
 
 /** 计划任务执行日志维护
  */
-class CronJobLogAction extends RestfulAction[CronJobLog] {
+class LogAction extends RestfulAction[CronTaskLog] {
 
   var domainService: DomainService = _
 
   override def indexSetting(): Unit = {
     super.indexSetting()
-    put("cronJobs", entityDao.findBy(classOf[CronJob], "domain", domainService.getDomain))
+    put("cronTasks", entityDao.findBy(classOf[CronTask], "domain", domainService.getDomain))
   }
 
-  override def getQueryBuilder: OqlBuilder[CronJobLog] = {
+  override def getQueryBuilder: OqlBuilder[CronTaskLog] = {
     val query = super.getQueryBuilder
-    query.where("cronJobLog.job.domain=:domain", domainService.getDomain)
+    query.where("log.task.domain=:domain", domainService.getDomain)
     QueryHelper.dateBetween(query, null, "executeAt", "beginOn", "endOn")
-    query.orderBy("cronJobLog.executeAt desc")
+    query.orderBy("log.executeAt desc")
     query
   }
 
-  override protected def editSetting(log: CronJobLog): Unit = {
-    put("cronJobs", entityDao.findBy(classOf[CronJob], "domain", domainService.getDomain))
+  override protected def editSetting(log: CronTaskLog): Unit = {
+    put("cronTasks", entityDao.findBy(classOf[CronTask], "domain", domainService.getDomain))
     super.editSetting(log)
   }
 
-  override def saveAndRedirect(log: CronJobLog): View = {
+  override def saveAndRedirect(log: CronTaskLog): View = {
     getLong("durationMillis").filter(_ > 0).foreach { ms =>
-      log.duration = Some(Duration.ofMillis(ms))
+      log.duration = Duration.ofMillis(ms)
     }
-    log.resultFilePath = get("cronJobLog.resultFilePath").filter(_.nonEmpty)
+    log.resultFilePath = get("log.resultFilePath").filter(_.nonEmpty).orNull
     super.saveAndRedirect(log)
   }
 
-  override protected def simpleEntityName: String = "cronJobLog"
+  override def info(id: String): View = {
+    val log = entityDao.get(classOf[CronTaskLog],id.toLong)
+    if(log.resultFilePath.startsWith("/")){
+      val blob = EmsApp.getBlobRepository()
+      val result = HttpUtils.get(blob.uri(log.resultFilePath).toString).getText
+      put("result",result.split("\n"))
+    }else{
+      put("result",List.empty)
+    }
+    super.info(id)
+  }
+  override protected def simpleEntityName: String = "log"
 }

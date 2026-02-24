@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job.service
+package org.beangle.ems.ws.job
 
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.channel.{ClientChannel, ClientChannelEvent}
 import org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier
 import org.apache.sshd.common.channel.Channel
+import org.apache.sshd.common.config.keys.FilePasswordProvider
 import org.apache.sshd.common.util.security.SecurityUtils
+import org.beangle.commons.lang.SystemInfo
 
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
@@ -36,7 +38,7 @@ import java.util.concurrent.TimeUnit
  * @param target 目标，格式 user@host 或 user@host:port，port 可省略（默认 22）
  *
  */
-class RemoteSshTask(val target: String) extends ShellTask {
+class RemoteSshRunner(val target: String, sshKeyPassphrase: Option[String]) extends TaskRunner {
 
   /** 私钥文件路径（如 ~/.ssh/id_rsa） */
   var keyPath: Path = _
@@ -53,6 +55,9 @@ class RemoteSshTask(val target: String) extends ShellTask {
     if (command == null || command.isBlank) {
       return (-1, "command is empty")
     }
+    if (keyPath == null) {
+      this.keyPath = Path.of(SystemInfo.user.home + "/.ssh/id_rsa")
+    }
     val (user, host, port) = parseTarget(target)
     val client = SshClient.setUpDefaultClient()
     client.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE)
@@ -64,7 +69,8 @@ class RemoteSshTask(val target: String) extends ShellTask {
 
       try {
         val parser = SecurityUtils.getKeyPairResourceParser
-        val keys = parser.loadKeyPairs(null, keyPath, null)
+        val passwordProvider = sshKeyPassphrase.map(x => FilePasswordProvider.of(x)).orNull
+        val keys = parser.loadKeyPairs(null, keyPath, passwordProvider)
         val iter = keys.iterator()
         if (!iter.hasNext) {
           return (-1, "no key pair loaded from: " + keyPath)

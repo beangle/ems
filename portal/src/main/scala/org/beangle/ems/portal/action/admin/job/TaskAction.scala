@@ -19,33 +19,33 @@ package org.beangle.ems.portal.action.admin.job
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.job.CronJob
+import org.beangle.ems.core.job.model.CronTask
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 /** 计划任务维护
  */
-class CronJobAction extends RestfulAction[CronJob] {
+class TaskAction extends RestfulAction[CronTask] {
 
   var domainService: DomainService = _
 
-  override def getQueryBuilder: OqlBuilder[CronJob] = {
+  override def getQueryBuilder: OqlBuilder[CronTask] = {
     val query = super.getQueryBuilder
-    query.where("cronJob.domain=:domain", domainService.getDomain)
+    query.where("task.domain=:domain", domainService.getDomain)
     query
   }
 
-  override protected def editSetting(cronJob: CronJob): Unit = {
-    if (!cronJob.persisted) {
-      cronJob.enabled = true
+  override protected def editSetting(cronTask: CronTask): Unit = {
+    if (!cronTask.persisted) {
+      cronTask.enabled = true
     }
-    super.editSetting(cronJob)
+    super.editSetting(cronTask)
   }
 
-  override def saveAndRedirect(cronJob: CronJob): View = {
-    cronJob.domain = domainService.getDomain
-    super.saveAndRedirect(cronJob)
+  override def saveAndRedirect(cronTask: CronTask): View = {
+    cronTask.domain = domainService.getDomain
+    super.saveAndRedirect(cronTask)
   }
 
-  override protected def simpleEntityName: String = "cronJob"
+  override protected def simpleEntityName: String = "task"
 }

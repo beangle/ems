@@ -15,26 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job
+package org.beangle.ems.ws.job
 
-import org.beangle.data.orm.MappingModule
+trait TaskRunner {
 
-object DefaultMapping extends MappingModule {
-
-  def binding(): Unit = {
-
-    bind[CronJob].declare { e =>
-      e.name is length(100)
-      e.target is length(500)
-      e.description is length(500)
-      e.contents is length(1000)
-      e.expression is length(100)
-      index("idx_cron_job", true, e.domain, e.name)
-    }
-
-    bind[CronJobLog].declare { e =>
-      e.resultFilePath is length(500)
-    }
-  }
-
+  def execute(command: String): (Int, String)
 }

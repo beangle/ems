@@ -15,28 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.job.service
+package org.beangle.ems.core.job.model
 
-import org.beangle.commons.os.{LinuxBash, Platform, WinCmd}
+import org.beangle.data.orm.MappingModule
 
-/** 本地执行 Shell 命令的任务。
- */
-class LocalShellTask extends ShellTask {
+object DefaultMapping extends MappingModule {
 
-  /** 执行 Shell 命令
-   *
-   * @param command 要执行的命令（通过系统 shell 执行，支持管道、重定向等）
-   * @return
-   */
-  override def execute(command: String): (Int, String) = {
-    if (Platform.isLinux) {
-      val rs = LinuxBash.exec(command)
-      (rs._1, rs._2.mkString("\n"))
-    } else if (Platform.isWin) {
-      val rs = WinCmd.exec(command)
-      (rs._1, rs._2.mkString("\n"))
-    } else {
-      throw new RuntimeException(s"Cannot support platform ${Platform.osName}")
+  override def binding(): Unit = {
+
+    bind[CronTask].declare { e =>
+      e.name is length(100)
+      e.target is length(500)
+      e.description is length(500)
+      e.command is length(500)
+      e.expression is length(100)
+      index("idx_cron_task", true, e.domain, e.name)
+    }
+
+    bind[CronTaskLog].declare { e =>
+      e.resultFilePath is length(500)
     }
   }
+
 }
