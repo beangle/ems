@@ -14,7 +14,7 @@ object EmsDepends {
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.20"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.8"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.4"
-  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.7"
+  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.8"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.24"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.5"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.6"
