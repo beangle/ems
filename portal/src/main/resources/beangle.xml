@@ -10,7 +10,6 @@
 
     <module class="org.beangle.ems.app.dao.DataSourceModule"/>
     <module class="org.beangle.ems.app.web.DefaultModule"/>
-    <module class="org.beangle.ems.app.log.DefaultModule"/>
     <module class="org.beangle.ems.app.cache.DefaultModule"/>
 
     <module class="org.beangle.ems.app.cas.DefaultModule"/>

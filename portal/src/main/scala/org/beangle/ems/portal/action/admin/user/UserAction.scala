@@ -20,8 +20,8 @@ package org.beangle.ems.portal.action.admin.user
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
+import org.beangle.ems.app.log.WebBusinessLogger
 import org.beangle.transfer.exporter.ExportContext
-import org.beangle.ems.app.web.WebBusinessLogger
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*

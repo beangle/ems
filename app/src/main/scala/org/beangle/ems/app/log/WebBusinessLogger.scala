@@ -15,14 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.web
+package org.beangle.ems.app.log
 
-import org.beangle.commons.lang.Strings
 import org.beangle.ems.app.log.{BusinessLogger, Level, LogEvent}
 import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.context.ActionContext
-
-import scala.collection.mutable
 
 class WebBusinessLogger {
 

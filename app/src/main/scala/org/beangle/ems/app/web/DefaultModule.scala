@@ -19,17 +19,39 @@ package org.beangle.ems.app.web
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
+import org.beangle.commons.text.i18n.{HttpTextBundleLoader, TextBundleLoader}
 import org.beangle.cron.CronTaskRegistrar
+import org.beangle.ems.app.log.{AsyncAppLogger, LogExceptionHandler, RemoteAppender, WebBusinessLogger}
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
+import org.beangle.security.authz.Authorizer
+import org.beangle.webmvc.dispatch.ExceptionHandler
 
 class DefaultModule extends BindModule, Config.Provider {
 
   protected override def binding(): Unit = {
     AppLogger.info("Ems Home:" + Ems.home)
-    bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary])
-    bind(classOf[WebBusinessLogger])
+
+    bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary]).onExist(classOf[Authorizer])
+
+    //Cron
     bind(classOf[CronTaskRegistrar]).lazyInit(false).onMissing(classOf[CronTaskRegistrar])
+
+    //Web Logger
+    bind(classOf[WebBusinessLogger])
+    bind(classOf[AsyncAppLogger])
+      .property("appenders",
+        List(new RemoteAppender(Ems.innerApi + s"/platform/log/push")))
+
+    //如果不是开发环境，则启用日志上报功能
+    if (!devEnabled) {
+      bind(classOf[LogExceptionHandler]).primaryOf(classOf[ExceptionHandler])
+    }
+
+    //DefaultTextBundle
+    bind("mvc.TextBundleLoader.http", classOf[HttpTextBundleLoader])
+      .constructor(s"${Ems.innerApi}/platform/config/text-bundles/${EmsApp.name}/{path}", true)
+      .onMissing(classOf[TextBundleLoader])
   }
 
   override def properties: collection.Map[String, String] = {

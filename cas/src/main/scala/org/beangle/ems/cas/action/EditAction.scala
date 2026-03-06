@@ -21,7 +21,7 @@ import org.beangle.commons.codec.binary.Aes
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
-import org.beangle.ems.app.web.WebBusinessLogger
+import org.beangle.ems.app.log.WebBusinessLogger
 import org.beangle.ems.core.user.model.User
 import org.beangle.ids.cas.ticket.TicketRegistry
 import org.beangle.ids.cas.web.helper.SessionHelper

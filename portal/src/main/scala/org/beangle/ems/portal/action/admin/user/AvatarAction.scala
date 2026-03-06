@@ -32,8 +32,8 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.{AvatarService, UserService}
 import org.beangle.ems.portal.PortalLogger
-import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.she.webmvc.QueryHelper
+import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, Stream, View}
 
@@ -194,7 +194,7 @@ class AvatarAction extends ActionSupport, ServletSupport {
     val avatarFiles = Collections.newBuffer[File]
     val exists = Collections.newSet[String]
 
-    Workers.work(userFiles, (userFile: Array[Any]) => {
+    Workers.workOn(userFiles, 0) { userFile =>
       val uri = blob.uri(userFile(1).toString)
       val userCode = userFile(0).toString
       val fileName = userCode + "." + Strings.substringAfterLast(userFile(1).toString, ".")
@@ -204,7 +204,7 @@ class AvatarAction extends ActionSupport, ServletSupport {
         avatarFiles.addOne(localFile)
         exists.addOne(userCode)
       }
-    })
+    }
 
     val missings = userCodes -- exists
     if (missings.nonEmpty) {

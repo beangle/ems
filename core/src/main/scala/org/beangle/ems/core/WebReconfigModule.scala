@@ -42,9 +42,6 @@ class WebReconfigModule extends ReconfigModule {
       }
     }
 
-    //2.国际化词条个性化
-    update("mvc.TextBundleLoader.db").primaryOf(classOf[TextBundleLoader])
-
     //3.spring配置个性化
     this.configUrl = s"file://${Ems.home + EmsApp.path}/spring-config.xml"
 
