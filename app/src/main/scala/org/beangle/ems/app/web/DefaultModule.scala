@@ -19,6 +19,7 @@ package org.beangle.ems.app.web
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
+import org.beangle.cron.CronTaskRegistrar
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 
@@ -28,6 +29,7 @@ class DefaultModule extends BindModule, Config.Provider {
     AppLogger.info("Ems Home:" + Ems.home)
     bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary])
     bind(classOf[WebBusinessLogger])
+    bind(classOf[CronTaskRegistrar]).lazyInit(false).onMissing(classOf[CronTaskRegistrar])
   }
 
   override def properties: collection.Map[String, String] = {

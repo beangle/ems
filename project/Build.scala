@@ -29,6 +29,7 @@ object EmsDepends {
     Seq(beangle_cache, caffeine_jcache, jedis) ++
     Seq(beangle_data_hibernate, spring_tx, spring_aop) ++
     Seq(beangle_security, beangle_template, beangle_serializer, beangle_event) ++
+    Seq(beangle_cron) ++
     Seq(scalatest)
 
   val webAppDepends = appDepends ++ Seq(beangle_she)
