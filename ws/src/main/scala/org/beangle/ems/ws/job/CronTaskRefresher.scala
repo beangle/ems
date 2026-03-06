@@ -22,6 +22,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.commons.io.StringBuilderWriter
 import org.beangle.cron.{CronExpr, Scheduled, Scheduler}
 import org.beangle.data.dao.EntityDao
+import org.beangle.data.orm.AbstractDaoTask
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.job.model.{CronTask, CronTaskLog}
@@ -31,7 +32,7 @@ import org.beangle.ems.ws.job.CronTaskRefresher.CronTaskRunner
 import java.io.{ByteArrayInputStream, PrintWriter}
 import java.time.{Duration, Instant}
 
-class CronTaskRefresher(entityDao: EntityDao, val expression: String) extends Scheduled {
+class CronTaskRefresher(val expression: String) extends AbstractDaoTask, Scheduled {
   var scheduler: Scheduler = _
   var domainService: DomainService = _
 
@@ -42,7 +43,7 @@ class CronTaskRefresher(entityDao: EntityDao, val expression: String) extends Sc
     Digests.md5Hex(t.id.toString + t.expression + t.command)
   }
 
-  override def run(): Unit = {
+  override def execute(): Unit = {
     val tasks = entityDao.findBy(classOf[CronTask], "domain" -> domainService.getDomain, "enabled" -> true)
     val taskMap = tasks.map(t => (digestTaskId(t), t)).toMap
 

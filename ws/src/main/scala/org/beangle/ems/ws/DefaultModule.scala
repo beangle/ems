@@ -65,7 +65,7 @@ class DefaultModule extends BindModule, Config.Provider {
 
     bind(classOf[Scheduler])
     bind(classOf[CronTaskRegistrar])
-    bind(classOf[CronTaskRefresher]).constructor(?,"0/5 * * * * *")
+    bind(classOf[CronTaskRefresher]).constructor("0/5 * * * * *")
 
     //绑定sms服务
     EmsApp.getAppFile foreach { file =>
