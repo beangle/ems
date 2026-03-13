@@ -32,7 +32,7 @@ object EventModule extends BindModule {
 
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      AppLogger.info(s"using redis on ${queueName} to notify data evict event.")
+      AppLogger.info(s"Using redis on ${queueName} to notify data evict event.")
       bind(channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictor])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelBeanName))
@@ -43,7 +43,6 @@ object EventModule extends BindModule {
       bind(classOf[DefaultDataEventBus])
     }
   }
-
 }
 
 /** It only bind publishing channel.
