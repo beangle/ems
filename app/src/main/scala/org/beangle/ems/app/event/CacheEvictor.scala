@@ -17,20 +17,25 @@
 
 package org.beangle.ems.app.event
 
+import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.hibernate.SessionHelper
 import org.beangle.data.model.Entity
 import org.beangle.event.bus.DataEvent
-import org.beangle.event.mq.EventSubscriber
-import org.hibernate.SessionFactory
+import org.beangle.event.mq.{ChannelQueue, EventSubscriber}
 
-class CacheEvictor(entityDao: EntityDao, sessionFactory: SessionFactory) extends EventSubscriber[DataEvent] {
+class CacheEvictor(entityDao: EntityDao, queue: ChannelQueue[DataEvent]) extends EventSubscriber[DataEvent], Initializing {
+
+  override def init(): Unit = {
+    queue.subscribe(this)
+  }
+
   override def process(event: DataEvent): Unit = {
     val domain = entityDao.domain
     val dataType = event.dataType
     domain.getEntity(dataType) foreach { et =>
       if et.cacheable then
-        val s = SessionHelper.openSession(sessionFactory)
+        val s = entityDao.openSession()
         try {
           entityDao.evict(et.clazz.asInstanceOf[Class[_ <: Entity[_]]])
         } finally {

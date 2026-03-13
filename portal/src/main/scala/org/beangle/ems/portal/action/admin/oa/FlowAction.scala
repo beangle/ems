@@ -24,8 +24,8 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Flow, FlowActivity, MessageTemplate}
 import org.beangle.ems.core.user.model.Group
 import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.webmvc.context.Params
 import org.beangle.she.webmvc.RestfulAction
+import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.view.View
 
 import java.time.Instant
@@ -111,6 +111,8 @@ class FlowAction extends RestfulAction[Flow] {
 
     nf.business = flow.business
     nf.domain = flow.domain
+    nf.formUrl = flow.formUrl
+
     nf.activities = flow.activities.map(x => {
       val nx = new FlowActivity()
       nx.idx = x.idx
@@ -118,6 +120,8 @@ class FlowAction extends RestfulAction[Flow] {
       nx.flow = nf
       nx.assignees = x.assignees
       nx.depart = x.depart
+      nx.guard = x.guard
+      nx.guardComment = x.guardComment
       nx.groups.addAll(x.groups)
       nx
     })

@@ -34,7 +34,7 @@ object EventModule extends BindModule {
     if (redis.nonEmpty) {
       AppLogger.info(s"using redis on ${queueName} to notify data evict event.")
       bind(channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
-      bind(classOf[CacheEvictorRegister])
+      bind(classOf[CacheEvictor])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelBeanName))
       bind(classOf[RemoteAuthorizerRefresher])
     } else {

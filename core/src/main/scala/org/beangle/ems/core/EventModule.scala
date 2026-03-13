@@ -18,7 +18,7 @@
 package org.beangle.ems.core
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.app.event.CacheEvictorRegister
+import org.beangle.ems.app.event.CacheEvictor
 import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
 import org.beangle.event.mq.ChannelQueue
 import org.beangle.event.mq.impl.RedisChannelQueue
@@ -33,7 +33,7 @@ class EventModule extends BindModule {
       .constructor("ems_platform", ref("redis.Factory"), new DataEventSerializer)
       .primaryOf(classOf[ChannelQueue[_]])
 
-    bind(classOf[CacheEvictorRegister]).constructor(ref(queueBean))
+    bind(classOf[CacheEvictor]).constructor(?, ref(queueBean))
     bind("databus", classOf[DefaultDataEventBus]).constructor(ref(queueBean))
   }
 
