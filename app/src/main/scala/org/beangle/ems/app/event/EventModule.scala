@@ -20,7 +20,7 @@ package org.beangle.ems.app.event
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.AppLogger
 import org.beangle.ems.app.cache.Redis
-import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
+import org.beangle.event.bus.{DataEvent, DataEventSerializer, DataEventSubscriberRegistrar, DefaultDataEventBus}
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
 object EventModule extends BindModule {
@@ -42,6 +42,7 @@ object EventModule extends BindModule {
       bind(channelBeanName, NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
     }
+    bind(classOf[DataEventSubscriberRegistrar])
   }
 }
 

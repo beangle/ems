@@ -8,7 +8,7 @@ object EmsDepends {
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.0.12"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.19"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.7"
-  val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.4"
+  val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.5"
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.8"
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.1"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.20"
