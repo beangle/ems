@@ -17,10 +17,12 @@
 
 package org.beangle.ems.ws.job
 
+import org.beangle.commons.bean.Scheduled
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.io.StringBuilderWriter
-import org.beangle.cron.{CronExpr, Scheduled, Scheduler}
+import org.beangle.cron.shell.{LocalShellRunner, RemoteShellRunner}
+import org.beangle.cron.{CronExpr, Scheduler}
 import org.beangle.data.dao.EntityDao
 import org.beangle.data.orm.AbstractDaoTask
 import org.beangle.ems.app.EmsApp
@@ -79,7 +81,7 @@ object CronTaskRefresher {
         if (task.target == "localhost") {
           new LocalShellRunner()
         } else {
-          new RemoteSshRunner(task.target, sshKeyPassphrase)
+          new RemoteShellRunner(task.target, sshKeyPassphrase)
         }
 
       var rs: (Int, String) = null

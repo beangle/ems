@@ -18,7 +18,6 @@
 package org.beangle.ems.core.security.model
 
 import org.beangle.data.orm.{IdGenerator, MappingModule}
-import org.beangle.ems.core.config.model.DefaultMapping.defaultIdGenerator
 
 object DefaultMapping extends MappingModule {
 
@@ -80,7 +79,12 @@ object DefaultMapping extends MappingModule {
       e.detail is length(1000)
     }
 
-    all.except(classOf[SessionEvent]).cacheAll()
+    bind[OAuthToken].declare { e =>
+      e.token is length(500)
+      e.scope is length(200)
+    }
+
+    all.except(classOf[SessionEvent], classOf[OAuthToken]).cacheAll()
   }
 
 }

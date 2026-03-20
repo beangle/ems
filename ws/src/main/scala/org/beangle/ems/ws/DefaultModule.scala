@@ -26,9 +26,11 @@ import org.beangle.commons.xml.Document
 import org.beangle.cron.{CronTaskRegistrar, Scheduler}
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.job.CronTaskRefresher
+import org.beangle.ems.ws.security.oauth.OAuthTokenCleaner
 import org.beangle.ems.ws.security.{data, func}
 import org.beangle.ems.ws.user.*
 import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
+import org.beangle.security.session.jdbc.DBSessionCleaner
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
 
 import java.io.FileInputStream
@@ -65,7 +67,12 @@ class DefaultModule extends BindModule, Config.Provider {
 
     bind(classOf[Scheduler])
     bind(classOf[CronTaskRegistrar]).lazyInit(false)
+
     bind(classOf[CronTaskRefresher]).constructor("0 * * * * *").lazyInit(false)
+    //每5分钟清理一遍过期token
+    bind(classOf[OAuthTokenCleaner]).constructor("0 */5 * * * *").lazyInit(false)
+    //每5分钟清理一遍过期会话
+    bind(classOf[DBSessionCleaner]).constructor("0 */5 * * * *").lazyInit(false)
 
     //绑定sms服务
     EmsApp.getAppFile foreach { file =>

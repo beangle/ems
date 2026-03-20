@@ -15,28 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.ws.job
+package org.beangle.ems.app.rule
 
-import org.beangle.commons.os.{LinuxBash, Platform, WinCmd}
+import org.beangle.commons.bean.Factory
+import org.beangle.commons.script.ExpressionEvaluator
 
-/** 本地执行 Shell 命令的任务。
- */
-class LocalShellRunner extends TaskRunner {
-
-  /** 执行 Shell 命令
-   *
-   * @param command 要执行的命令（通过系统 shell 执行，支持管道、重定向等）
-   * @return
-   */
-  override def execute(command: String): (Int, String) = {
-    if (Platform.isLinux) {
-      val rs = LinuxBash.exec(command)
-      (rs._1, rs._2.mkString("\n"))
-    } else if (Platform.isWin) {
-      val rs = WinCmd.exec(command)
-      (rs._1, rs._2.mkString("\n"))
-    } else {
-      throw new RuntimeException(s"Cannot support platform ${Platform.osName}")
-    }
+class ExpressionEvaluatorFactory(engineName: String) extends Factory[ExpressionEvaluator] {
+  def getObject: ExpressionEvaluator = {
+    ExpressionEvaluator.get(engineName)
   }
+
 }

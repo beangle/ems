@@ -42,6 +42,7 @@ object EventModule extends BindModule {
       bind(channelBeanName, NullChannelQueue)
       bind(classOf[DefaultDataEventBus])
     }
+    //绑定数据事件订阅注册表
     bind(classOf[DataEventSubscriberRegistrar])
   }
 }

@@ -50,7 +50,7 @@ lazy val core = (project in file("core"))
   .settings(
     name := "beangle-ems-core",
     common,
-    libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress, jexl3)
+    libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress)
   ).dependsOn(app)
 
 lazy val cas = (project in file("cas"))

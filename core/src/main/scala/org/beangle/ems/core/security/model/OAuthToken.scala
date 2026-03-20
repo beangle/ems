@@ -15,16 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.model
+package org.beangle.ems.core.security.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Named, Updated}
+import org.beangle.ems.core.config.model.ThirdPartyApp
+import org.beangle.ems.core.user.model.User
 
-/** 第三方APP
- */
-class ThirdPartyApp extends LongId, Coded, Named, Updated {
+import java.time.Instant
 
-  var domain: Domain = _
-  var secret: String = _
-  var redirectUri: String = _
+class OAuthToken extends LongId {
+
+  /** oauth */
+  var token: String = _
+
+  /** 客户端ID (ThirdPartyApp) */
+  var client: ThirdPartyApp = _
+
+  /** 授权用户ID (User.code) */
+  var user: User = _
+
+  /** 授权范围，如 "read write profile"，多个用空格分隔 */
+  var scope: String = _
+
+  /** 颁发时间 */
+  var issuedAt: Instant = _
+
+  /** 过期时间 */
+  var expiresAt: Instant = _
 }

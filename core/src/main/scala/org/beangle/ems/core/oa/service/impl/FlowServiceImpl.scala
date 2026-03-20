@@ -21,7 +21,6 @@ import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.app.oa.Flows
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.*
@@ -51,6 +50,7 @@ class FlowServiceImpl extends FlowService {
   var entityDao: EntityDao = _
   var todoService: TodoService = _
   var messageService: MessageService = _
+  var expressionEvaluator: ExpressionEvaluator = _
 
   override def getFlows(businessCode: String, profileId: String): Seq[Flow] = {
     val query = OqlBuilder.from(classOf[Flow], "flow")
@@ -125,7 +125,7 @@ class FlowServiceImpl extends FlowService {
       process.status = FlowStatus.Rejected
     }
     entityDao.saveOrUpdate(process)
-    if(process.status == FlowStatus.Completed){
+    if (process.status == FlowStatus.Completed) {
       messageService.newMessage(process.initiator.get, process.flow, process)
     }
     process
@@ -167,9 +167,7 @@ class FlowServiceImpl extends FlowService {
   private def matchable(activity: FlowActivity, process: FlowProcess): Boolean = {
     activity.guard match {
       case None => true
-      case Some(g) =>
-        val ee = ExpressionEvaluator.get("jexl3")
-        ee.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
+      case Some(g) => expressionEvaluator.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
     }
   }
 

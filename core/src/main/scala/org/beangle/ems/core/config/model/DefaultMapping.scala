@@ -127,6 +127,7 @@ object DefaultMapping extends MappingModule {
       e.code is length(50)
       e.name is length(100)
       e.secret is length(100)
+      e.redirectUri is length(500)
     }
     all.cacheAll()
   }
