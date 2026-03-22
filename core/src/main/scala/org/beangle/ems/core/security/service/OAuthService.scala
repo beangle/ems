@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -17,11 +17,18 @@
 
 package org.beangle.ems.core.security.service
 
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
+
+import java.time.Duration
+
 trait OAuthService {
 
   /** 生成授权码并存入 Redis，强制要求 PKCE */
   def generateAuthCode(clientId: String, userId: String, scope: String, codeChallenge: String): String
 
   /** 验证授权码并生成 access token，强制要求 PKCE */
-  def exchangeCode(code: String, clientId: String, codeVerifier: String): (Boolean, String)
+  def exchangeCode(code: String, clientId: String, codeVerifier: String)
+                  (request: HttpServletRequest, response: HttpServletResponse): (Boolean, String)
+
+  def tokenTTL: Duration
 }

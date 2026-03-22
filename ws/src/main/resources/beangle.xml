@@ -11,6 +11,7 @@
     <module class="org.beangle.ems.app.cache.DefaultModule"/>
 
     <module class="org.beangle.ems.ws.DefaultModule"/>
+    <module class="org.beangle.ems.ws.WSModule"/>
     <module class="org.beangle.ems.core.EventModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>

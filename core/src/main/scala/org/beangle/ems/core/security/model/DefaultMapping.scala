@@ -81,7 +81,7 @@ object DefaultMapping extends MappingModule {
 
     bind[OAuthToken].declare { e =>
       e.token is length(500)
-      e.scope is length(200)
+      e.scope is(length(200), column("scope_"))
     }
 
     all.except(classOf[SessionEvent], classOf[OAuthToken]).cacheAll()

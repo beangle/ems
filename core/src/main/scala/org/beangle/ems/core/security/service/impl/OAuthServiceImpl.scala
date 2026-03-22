@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -17,6 +17,7 @@
 
 package org.beangle.ems.core.security.service.impl
 
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.beangle.cache.redis.RedisCacheManager
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.cache.Cache
@@ -29,7 +30,10 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{OAuthCode, OAuthToken}
 import org.beangle.ems.core.security.service.OAuthService
 import org.beangle.ems.core.user.model.User
+import org.beangle.security.authc.PreauthToken
 import org.beangle.security.realm.jwt.{JwtDigest, Jwts}
+import org.beangle.security.session.SessionProfile
+import org.beangle.security.web.WebSecurityManager
 import redis.clients.jedis.RedisClient
 
 import java.nio.charset.StandardCharsets
@@ -37,7 +41,7 @@ import java.security.MessageDigest
 import java.time.{Duration, Instant}
 import java.util.{Base64, UUID}
 
-class OAuthServiceImpl extends OAuthService with Initializing {
+class OAuthServiceImpl extends OAuthService, Initializing {
 
   var codeTTL: Duration = Duration.ofMinutes(5)
   var tokenTTL: Duration = Duration.ofHours(1)
@@ -45,9 +49,10 @@ class OAuthServiceImpl extends OAuthService with Initializing {
   private[this] var codes: Cache[String, String] = _
   var domainService: DomainService = _
   var entityDao: EntityDao = _
+  var securityManager: WebSecurityManager = _
 
   override def init(): Unit = {
-    val s = EmsApp.properties.getOrElse("openapi.secret", "org.beangle.ems:ems-ws.openapi.secret").toString
+    val s = EmsApp.properties.getOrElse("oauth.secret", "org.beangle.ems:oauth.secret.not.specified").toString
     this.digest = Jwts.digest(s)
   }
 
@@ -88,7 +93,8 @@ class OAuthServiceImpl extends OAuthService with Initializing {
    * @param codeVerifier PKCE 的 code_verifier，必传
    * @return (成功, token或错误信息)
    */
-  def exchangeCode(code: String, clientId: String, codeVerifier: String): (Boolean, String) = {
+  override def exchangeCode(code: String, clientId: String, codeVerifier: String)
+                           (request: HttpServletRequest, response: HttpServletResponse): (Boolean, String) = {
     if (code == null || code.isEmpty || clientId == null || codeVerifier == null || codeVerifier.isEmpty)
       return (false, "Invalid parameters")
     val jsonOpt = codes.get(code)
@@ -112,21 +118,31 @@ class OAuthServiceImpl extends OAuthService with Initializing {
     if (user.isEmpty) {
       return (false, "User not found")
     }
+    //我们把token放到credential中
+    val authToken = new PreauthToken(user.get.code, code)
+
+    authToken.addDetail("authorities", oauthCode.scope)
+    authToken.addDetail("session_profile", SessionProfile.tti(tokenTTL))
+    request.setAttribute("beangle.web.disable_cookie", true)
+
+    val session = securityManager.login(request, response, authToken)
+
     val tokenData = new JsonObject()
-    tokenData.add("userId", oauthCode.userId)
-    tokenData.add("clientId", oauthCode.clientId)
+    tokenData.add("user_id", oauthCode.userId)
+    tokenData.add("client_id", oauthCode.clientId)
     tokenData.add("scope", oauthCode.scope)
-    val token = digest.generateToken(tokenData, tokenTTL)
+    tokenData.add("jti", session.id)
+    val jwtToken = digest.generateToken(tokenData, tokenTTL)
 
     val otoken = new OAuthToken
-    otoken.token = token
+    otoken.token = jwtToken
     otoken.user = user.get
     otoken.client = app.get
     otoken.scope = oauthCode.scope
     otoken.issuedAt = Instant.now()
-    otoken.expiresAt = Instant.now().plusSeconds(tokenTTL.getSeconds)
+    otoken.expiredAt = Instant.now().plusSeconds(tokenTTL.getSeconds)
     entityDao.saveOrUpdate(otoken)
-    (true, token)
+    (true, jwtToken)
   }
 
   private def verifyPkceS256(verifier: String, challenge: String): Boolean = {

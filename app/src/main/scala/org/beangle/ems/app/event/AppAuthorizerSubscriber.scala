@@ -17,21 +17,16 @@
 
 package org.beangle.ems.app.event
 
-import org.beangle.commons.bean.Initializing
 import org.beangle.ems.app.EmsApp
-import org.beangle.event.bus.{DataEvent, DataEventBus}
-import org.beangle.event.mq.EventSubscriber
+import org.beangle.event.bus.{DataEvent, DataEventBus, DataEventSubscriber}
 import org.beangle.security.authz.{Authority, Authorizer}
 
-class RemoteAuthorizerRefresher(databus: DataEventBus)
-  extends EventSubscriber[DataEvent], Initializing {
+class AppAuthorizerSubscriber(databus: DataEventBus) extends DataEventSubscriber {
 
   var authorizer: Option[Authorizer] = None
 
-  override def init(): Unit = {
-    authorizer foreach { a =>
-      databus.subscribe(classOf[Authority].getPackageName, this)
-    }
+  override def pattern: String = {
+    classOf[Authority].getPackageName
   }
 
   override def process(event: DataEvent): Unit = {

@@ -31,10 +31,3 @@ class CasHttpSessionRepo(casConfig: CasConfig, cacheManager: CacheManager, seria
   this.findUrl =  casConfig.casServer + "/session/{principal}/ids"
   this.expireUrl =  casConfig.casServer + "/session/{id}/expire"
 }
-
-object CasHttpSessionRepo {
-  def main(args: Array[String]): Unit = {
-    println("dd")
-    println(BeanInfos.of(classOf[DBSessionRegistry]))
-  }
-}

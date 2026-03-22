@@ -41,5 +41,5 @@ class OAuthToken extends LongId {
   var issuedAt: Instant = _
 
   /** 过期时间 */
-  var expiresAt: Instant = _
+  var expiredAt: Instant = _
 }

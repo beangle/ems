@@ -22,15 +22,15 @@ import org.beangle.ems.core.security.model.SessionConfig
 import org.beangle.security.authc.Account
 import org.beangle.security.session.{SessionProfile, SessionProfileProvider}
 
+import java.time.Duration
+
 class CategorySessionProfileImpl extends SessionProfileProvider {
   var entityDao: EntityDao = _
+  //default 1 hours
+  private val defaultProfile = SessionProfile.tti(Duration.ofHours(1))
 
   override def getProfile(account: Account): SessionProfile = {
     getCategoryProfile(account.categoryId)
-  }
-
-  private def getDefaultProfile: SessionProfile = {
-    SessionProfile(30 * 60, 1, Int.MaxValue, checkConcurrent = false, checkCapacity = false)
   }
 
   private def getCategoryProfile(categoryId: Int): SessionProfile = {
@@ -38,7 +38,7 @@ class CategorySessionProfileImpl extends SessionProfileProvider {
       .cacheable(true)
     val rs = entityDao.search(builder)
     if (rs.isEmpty) {
-      getDefaultProfile
+      defaultProfile
     } else {
       val p = rs.head
       SessionProfile(p.ttiMinutes * 60, p.concurrent, p.capacity, p.checkConcurrent, p.checkCapacity)

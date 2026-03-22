@@ -32,7 +32,7 @@ import java.time.Instant
  * @param userId        用户编码 (User.code)
  * @param scope         授权范围，如 "read write profile"，多个用空格分隔
  * @param codeChallenge PKCE 的 code_challenge，token 交换时用于验证 code_verifier；非 PKCE 流程可传空字符串
- * @param expiresAt     授权码过期时间
+ * @param expiresAt     授权码过期时间(以秒为单位)
  */
 class OAuthCode(val code: String, val clientId: String, val userId: String, val scope: String,
                 val codeChallenge: String, val expiresAt: Instant) extends Serializable {

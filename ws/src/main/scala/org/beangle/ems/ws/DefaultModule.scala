@@ -22,13 +22,13 @@ import org.beangle.commons.bean.{Initializing, Properties}
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
 import org.beangle.commons.lang.reflect.Reflections
+import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.commons.xml.Document
 import org.beangle.cron.{CronTaskRegistrar, Scheduler}
+import org.beangle.ems.app.rule.ExpressionEvaluatorFactory
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.job.CronTaskRefresher
 import org.beangle.ems.ws.security.oauth.OAuthTokenCleaner
-import org.beangle.ems.ws.security.{data, func}
-import org.beangle.ems.ws.user.*
 import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
 import org.beangle.security.session.jdbc.DBSessionCleaner
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
@@ -39,23 +39,6 @@ class DefaultModule extends BindModule, Config.Provider {
 
   protected override def binding(): Unit = {
     AppLogger.info("Ems Home:" + Ems.home)
-    bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
-    bind(classOf[config.DomainWS], classOf[config.ThemeWS])
-    bind(classOf[config.TextBundleWS], classOf[config.RedisWS])
-    bind(classOf[config.RuleWS])
-
-    bind(classOf[oa.NoticeWS], classOf[oa.DocWS], classOf[oa.FlowWS])
-    bind(classOf[oa.SignatureWS], classOf[oa.SmsWS])
-
-    bind(classOf[func.MenuWS])
-    bind(classOf[func.ResourceWS], classOf[func.PermissionWS])
-    bind(classOf[data.PermissionWS], classOf[data.ResourceWS])
-
-    bind(classOf[log.PushWS], classOf[log.ListWS])
-
-    bind(classOf[AccountWS], classOf[AppWS], classOf[DimensionWS], classOf[AvatarWS])
-    bind(classOf[RootWS], classOf[ProfileWS], classOf[CredentialWS], classOf[UserWS])
-
     // response cache is only 3 minutes
     val cm = new CaffeineCacheManager(true)
     cm.ttl = 3 * 60
@@ -63,16 +46,15 @@ class DefaultModule extends BindModule, Config.Provider {
     val responseCache = cm.getCache("mvc.response", classOf[String], classOf[CacheResult])
     bind("mvc.ResponseCache.caffeine", classOf[DefaultResponseCache]).constructor(responseCache)
 
-    bind(classOf[oauth.LoginWS])
-
     bind(classOf[Scheduler])
     bind(classOf[CronTaskRegistrar]).lazyInit(false)
 
     bind(classOf[CronTaskRefresher]).constructor("0 * * * * *").lazyInit(false)
     //每5分钟清理一遍过期token
     bind(classOf[OAuthTokenCleaner]).constructor("0 */5 * * * *").lazyInit(false)
-    //每5分钟清理一遍过期会话
-    bind(classOf[DBSessionCleaner]).constructor("0 */5 * * * *").lazyInit(false)
+
+    //表达式引擎
+    bind("expressionEvaluator", classOf[ExpressionEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExpressionEvaluator])
 
     //绑定sms服务
     EmsApp.getAppFile foreach { file =>

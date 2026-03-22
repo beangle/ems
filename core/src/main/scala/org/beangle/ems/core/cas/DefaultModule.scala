@@ -22,6 +22,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.commons.config.Config
 import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.ems.core.security.service.impl.OAuthServiceImpl
 import org.beangle.ids.cas.CasSetting
 import org.beangle.security.authz.PublicAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
@@ -109,6 +110,7 @@ class DefaultModule extends BindModule, Config.Provider {
       setting.property("remoteLoginUrl", config.loginUrl)
       setting.property("remoteLogoutUrl", config.logoutUrl)
     }
+    bind(classOf[OAuthServiceImpl]).constructor(ref("redis.Factory"))
   }
 
   private def readAppFile(): Unit = {

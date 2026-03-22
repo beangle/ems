@@ -30,6 +30,14 @@ class ThirdPartyAppAction extends RestfulAction[ThirdPartyApp], DomainSupport {
 
   override protected def simpleEntityName = "app"
 
+  override protected def editSetting(app: ThirdPartyApp): Unit = {
+    val name =
+      if (app.domain != null) app.domain.name
+      else domainService.getDomain.name
+    put("domainDisplayName", name)
+    super.editSetting(app)
+  }
+
   override protected def getQueryBuilder: OqlBuilder[ThirdPartyApp] = {
     val builder = super.getQueryBuilder
     builder.where("app.domain=:domain", domainService.getDomain)

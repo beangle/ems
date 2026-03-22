@@ -19,7 +19,7 @@ package org.beangle.ems.core.cas
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.security.authc.{DefaultAccount, Profile}
-import org.beangle.security.session.jdbc.DBSessionRegistry
+import org.beangle.security.session.jdbc.{DBSessionCleaner, DBSessionRegistry}
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
 import org.beangle.security.session.{DefaultSession, Session}
 import org.beangle.serializer.protobuf.ProtobufSerializer
@@ -38,9 +38,11 @@ class SessionModule extends BindModule {
     bind("security.SessionRegistry.db", classOf[DBSessionRegistry])
       .constructor(ref("domainProvider"), ?, ref("cache.Caffeine"), protobuf)
       .property("sessionTable", "ems.se_session_infoes")
-      .wiredEagerly(false)
 
     bind("security.SessionIdPolicy.ems", classOf[DefaultEmsSessionIdPolicy])
       .property("base", $("login.origin"))
+
+    //每5分钟清理一遍过期会话
+    bind(classOf[DBSessionCleaner]).constructor(?, "0 */5 * * * *").lazyInit(false)
   }
 }

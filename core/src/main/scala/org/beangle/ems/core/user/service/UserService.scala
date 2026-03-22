@@ -17,7 +17,8 @@
 
 package org.beangle.ems.core.user.service
 
-import org.beangle.ems.core.user.model.{Category, MemberShip, RoleMember, User}
+import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.user.model.{Category, MemberShip, Role, RoleMember, User}
 import org.beangle.security.authc.{CredentialAge, DefaultAccount}
 
 trait UserService {
@@ -29,6 +30,8 @@ trait UserService {
   def get(id: Long): User
 
   def getRoles(user: User, ship: MemberShip): collection.Seq[RoleMember]
+
+  def getRoles(user: User, domain: Domain): Seq[Role]
 
   def isManagedBy(manager: User, user: User): Boolean
 

@@ -32,6 +32,5 @@ class DefaultModule extends BindModule {
     bind(classOf[LoginEventTracker])
     bind(classOf[LogoutEventTracker])
     bind(classOf[OverTypeLoginEventTracker])
-    bind(classOf[OAuthServiceImpl]).constructor(ref("redis.Factory"))
   }
 }

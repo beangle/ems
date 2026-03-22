@@ -17,6 +17,7 @@
 
 package org.beangle.ems.portal.action.admin.user
 
+import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.user.model.Root
 import org.beangle.ems.core.user.service.UserService

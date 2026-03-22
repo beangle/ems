@@ -19,8 +19,10 @@ package org.beangle.ems.app.cas
 
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
+import org.beangle.ems.app.event.AppAuthorizerSubscriber
 import org.beangle.ems.app.security.RemoteAuthorizer
 import org.beangle.security.authc.{DefaultAccount, Profile, RealmAuthenticator}
+import org.beangle.security.authz.AuthorizerRefresher
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint}
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
 import org.beangle.security.session.{DefaultSession, Session}
@@ -61,5 +63,7 @@ class DefaultModule extends BindModule {
 
     //authorizer and manager
     bind("security.Authorizer.remote", classOf[RemoteAuthorizer])
+    bind("security.Authorizer.refresher", classOf[AuthorizerRefresher]).constructor(?, "0 */5 * * * *")
+      .onMissing(classOf[AppAuthorizerSubscriber])
   }
 }

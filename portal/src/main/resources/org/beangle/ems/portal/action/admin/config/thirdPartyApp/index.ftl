@@ -4,7 +4,7 @@
 <div class="search-container">
  <div class="search-panel">
     [@b.form name="dataSourceAppSearchForm" action="!search" target="dataSourceApplist" title="ui.searchForm" theme="search"]
-      [@b.textfields names="app.name;名称,app.title;标题"/]
+      [@b.textfields names="app.code;代码,app.name;名称,app.redirectUri;回调地址"/]
       <input type="hidden" name="orderBy" value="app.code"/>
     [/@]
  </div>

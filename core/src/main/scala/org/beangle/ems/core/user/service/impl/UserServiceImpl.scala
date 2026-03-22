@@ -124,6 +124,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         val upQuery = OqlBuilder.from(classOf[Profile], "up")
           .where("up.user=:user", user)
           .where("up.domain=:domain", domain)
+
         val ups = entityDao.search(upQuery)
 
         if (ups.nonEmpty) {
@@ -139,7 +140,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     }
   }
 
-  private def getRoles(user: User, domain: Domain): Seq[Role] = {
+  override def getRoles(user: User, domain: Domain): Seq[Role] = {
     val roles = user.roles.filter(m => m.member && m.role.domain == domain).map { m => m.role }
     user.group foreach { g =>
       roles.addAll(g.roles filter (r => r.domain == domain))

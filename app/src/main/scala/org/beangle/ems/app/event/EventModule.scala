@@ -36,7 +36,7 @@ object EventModule extends BindModule {
       bind(channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
       bind(classOf[CacheEvictor])
       bind(classOf[DefaultDataEventBus]).constructor(ref(channelBeanName))
-      bind(classOf[RemoteAuthorizerRefresher])
+      bind(classOf[AppAuthorizerSubscriber])
     } else {
       AppLogger.warn(s"Disable databus due to missing redis config.")
       bind(channelBeanName, NullChannelQueue)
@@ -48,6 +48,7 @@ object EventModule extends BindModule {
 }
 
 /** It only bind publishing channel.
+ * 为了让Ems通知app，如果app之间发送消息，ems不接收
  */
 object EventPublishModule extends BindModule {
   protected override def binding(): Unit = {

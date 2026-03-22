@@ -17,6 +17,7 @@
 
 package org.beangle.ems.portal.action.admin.user
 
+import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
@@ -165,4 +166,10 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     redirect("search", "info.remove.success")
   }
 
+  def list(): View = {
+    val query = getQueryBuilder
+    query.limit(null)
+    val roles = entityDao.search(query)
+    ok(roles.map(r => new Properties(r, "id", "name")))
+  }
 }
