@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.ws.security.oauth
+package org.beangle.ems.core.cas.service
 
 import org.beangle.commons.bean.Scheduled
 import org.beangle.data.orm.AbstractDaoTask
+import org.beangle.ems.core.CoreLogger
 import org.beangle.ems.core.security.model.OAuthToken
-import org.beangle.ems.ws.WsLogger
 
 import java.time.Instant
 
@@ -32,7 +32,7 @@ class OAuthTokenCleaner(val expression: String) extends AbstractDaoTask, Schedul
   def execute(): Unit = {
     val removed = entityDao.executeUpdate(s"delete from ${classOf[OAuthToken].getName} token where token.expiredAt <= ?1", Instant.now)
     if (removed > 0) {
-      WsLogger.info(s"Evict ${removed} expired oauth access tokens")
+      CoreLogger.info(s"Evict ${removed} expired oauth access tokens")
     }
   }
 }

@@ -28,7 +28,6 @@ import org.beangle.cron.{CronTaskRegistrar, Scheduler}
 import org.beangle.ems.app.rule.ExpressionEvaluatorFactory
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.job.CronTaskRefresher
-import org.beangle.ems.ws.security.oauth.OAuthTokenCleaner
 import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
 import org.beangle.security.session.jdbc.DBSessionCleaner
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
@@ -50,8 +49,6 @@ class DefaultModule extends BindModule, Config.Provider {
     bind(classOf[CronTaskRegistrar]).lazyInit(false)
 
     bind(classOf[CronTaskRefresher]).constructor("0 * * * * *").lazyInit(false)
-    //每5分钟清理一遍过期token
-    bind(classOf[OAuthTokenCleaner]).constructor("0 */5 * * * *").lazyInit(false)
 
     //表达式引擎
     bind("expressionEvaluator", classOf[ExpressionEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExpressionEvaluator])

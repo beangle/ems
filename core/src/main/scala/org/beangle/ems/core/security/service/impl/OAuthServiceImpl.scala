@@ -34,6 +34,7 @@ import org.beangle.security.authc.PreauthToken
 import org.beangle.security.realm.jwt.{JwtDigest, Jwts}
 import org.beangle.security.session.SessionProfile
 import org.beangle.security.web.WebSecurityManager
+import org.beangle.web.servlet.util.CookieUtils
 import redis.clients.jedis.RedisClient
 
 import java.nio.charset.StandardCharsets
@@ -123,7 +124,7 @@ class OAuthServiceImpl extends OAuthService, Initializing {
 
     authToken.addDetail("authorities", oauthCode.scope)
     authToken.addDetail("session_profile", SessionProfile.tti(tokenTTL))
-    request.setAttribute("beangle.web.disable_cookie", true)
+    request.setAttribute(CookieUtils.DisableCookie, true)
 
     val session = securityManager.login(request, response, authToken)
 

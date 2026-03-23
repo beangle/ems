@@ -24,7 +24,7 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.OAuthService
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
-import org.beangle.security.realm.oauth.{OAuthConfig, OAuthHelper}
+import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.webmvc.annotation.{action, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -40,6 +40,10 @@ class OAuthAction extends ActionSupport with ServletSupport {
 
   /** GET: 展示授权页面 */
   def authorize(@param("client_id") clientId: String): View = {
+    if (Securities.session.isEmpty) {
+      val service = UrlBuilder(ActionContext.current.request).buildUrl()
+      return redirect(to("/login", Map("service" -> service)))
+    }
     if (clientId == null || clientId.isEmpty) {
       put("error", "client_id is required")
       return forward("error")
@@ -144,29 +148,28 @@ class OAuthAction extends ActionSupport with ServletSupport {
     }
   }
 
-  var verifyCode: String = _
-
-  def testSendAuthorize(): View = {
-    val config = new OAuthConfig("http://local.openurp.net/cas", "myself")
-    val helper = new OAuthHelper(config)
-    val req = helper.buildAuthorizeUrl("http://local.openurp.net/cas/oauth/test", Some("test"))
-    verifyCode = req.codeVerifier
-    redirect(to(req.url), "")
-  }
-
-  /** 测试：假装 OAuth2 code 消费方
-   *
-   * 支持两种模式：
-   * 1) 直接用已有 authorization code 换 token：传 client_id/code/code_verifier
-   * 2) 若不传 code，则用 code_challenge 直接生成 code：传 client_id/code_verifier/code_challenge(+scope可选)
-   */
-  def test(): View = {
-    val config = new OAuthConfig("http://local.openurp.net/cas", "myself")
-    val helper = new OAuthHelper(config)
-    println(("state", get("state")))
-    val codeFromClient = get("code").orNull
-    val response = helper.getToken(codeFromClient, verifyCode)
-    ActionContext.current.response.getWriter.println(response.getText)
-    null
-  }
+  //  var verifyCode: String = _
+  //
+  //  def testSendAuthorize(): View = {
+  //    val config = new OAuthConfig("http://local.openurp.net/cas", "myself")
+  //    val helper = new OAuthHelper(config)
+  //    val req = helper.buildAuthorizeUrl("http://local.openurp.net/cas/oauth/test", Some("test"))
+  //    verifyCode = req.codeVerifier
+  //    redirect(to(req.url), "")
+  //  }
+  //
+  //  /** 测试：假装 OAuth2 code 消费方
+  //   *
+  //   * 支持两种模式：
+  //   * 1) 直接用已有 authorization code 换 token：传 client_id/code/code_verifier
+  //   * 2) 若不传 code，则用 code_challenge 直接生成 code：传 client_id/code_verifier/code_challenge(+scope可选)
+  //   */
+  //  def test(): View = {
+  //    val config = new OAuthConfig("http://local.openurp.net/cas", "myself")
+  //    val helper = new OAuthHelper(config)
+  //    val codeFromClient = get("code").orNull
+  //    val response = helper.getToken(codeFromClient, verifyCode)
+  //    ActionContext.current.response.getWriter.println(response.getText)
+  //    null
+  //  }
 }

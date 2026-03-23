@@ -23,7 +23,7 @@ import org.beangle.security.session.jdbc.{DBSessionCleaner, DBSessionRegistry}
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
 import org.beangle.security.session.{DefaultSession, Session}
 import org.beangle.serializer.protobuf.ProtobufSerializer
-import org.beangle.ems.core.cas.service.{DefaultDomainProvider, DefaultEmsSessionIdPolicy}
+import org.beangle.ems.core.cas.service.{DefaultDomainProvider, DefaultEmsSessionIdPolicy, OAuthTokenCleaner}
 
 class SessionModule extends BindModule {
   override def binding(): Unit = {
@@ -44,5 +44,7 @@ class SessionModule extends BindModule {
 
     //每5分钟清理一遍过期会话
     bind(classOf[DBSessionCleaner]).constructor(?, "0 */5 * * * *").lazyInit(false)
+    //每10分钟清理一遍过期token
+    bind(classOf[OAuthTokenCleaner]).constructor("0 */10 * * * *").lazyInit(false)
   }
 }

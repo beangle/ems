@@ -26,8 +26,8 @@ import org.beangle.ems.core.user.service.{DataResolver, DimensionService, UserSe
 import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
-import org.beangle.webmvc.annotation.ignore
 import org.beangle.she.webmvc.RestfulAction
+import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
 
 /**
@@ -70,10 +70,10 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
       if (profile.persisted) {
         entityDao.remove(profile)
       }
-      redirect("index", s"&profile.user.id=${profile.user.id}", "info.save.success")
+      redirect("index", Map("profile.user.id" -> profile.user.id), "info.save.success")
     } else {
       entityDao.saveOrUpdate(profile)
-      redirect("index", s"&profile.user.id=${profile.user.id}", "info.save.success")
+      redirect("index", Map("profile.user.id" -> profile.user.id), "info.save.success")
     }
   }
 
@@ -82,11 +82,11 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
     val profile = entities.head
     try {
       entityDao.remove(entities)
-      redirect("index", s"&profile.user.id=${profile.user.id}", "info.remove.success")
+      redirect("index", Map("profile.user.id" -> profile.user.id), "info.remove.success")
     } catch {
       case e: Exception =>
         PortalLogger.error("removeAndForwad failure", e)
-        redirect("appinfo", s"&profile.user.id=${profile.user.id}", "info.delete.failure")
+        redirect("appinfo",Map("profile.user.id" -> profile.user.id), "info.delete.failure")
     }
   }
 
