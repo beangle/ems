@@ -17,7 +17,8 @@
 
 package org.beangle.ems.core.security.service
 
-import org.beangle.commons.event.{Event, EventListener}
+import org.beangle.commons.cdi.CdiEventListener
+import org.beangle.commons.event.Event
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.SessionEvent
@@ -26,7 +27,7 @@ import org.beangle.security.session.{EventType, LoginEvent}
 
 import java.time.Instant
 
-class LoginEventTracker extends EventListener[LoginEvent] {
+class LoginEventTracker extends CdiEventListener[LoginEvent] {
   var entityDao: EntityDao = _
 
   var domainService: DomainService = _

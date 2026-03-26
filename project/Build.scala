@@ -5,7 +5,7 @@ object EmsDepends {
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.1.5"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.1.5"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.2"
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.0.14"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.0.15"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.19"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.7"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.6"
@@ -18,7 +18,7 @@ object EmsDepends {
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.25"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.5"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.6"
-  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.14.2"
+  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.14.3"
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.4"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.17.1"
 
