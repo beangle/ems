@@ -17,13 +17,11 @@
 
 package org.beangle.ems.cas.action
 
-import org.beangle.commons.bean.{Initializing, Properties}
 import org.beangle.commons.cdi.BindModule
-import org.beangle.commons.lang.reflect.Reflections
 import org.beangle.commons.xml.Document
 import org.beangle.ems.app.EmsApp
 import org.beangle.ids.cas.web.action.SmsLoginAction
-import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
+import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSenderFactory}
 
 import java.io.FileInputStream
 
@@ -36,15 +34,7 @@ class SmsModule extends BindModule {
       (app \\ "sms") foreach { e =>
         bind(classOf[SmsLoginAction])
         bind(classOf[DefaultSmsCodeService])
-        val sender = Reflections.newInstance[SmsSender](e("class"))
-        e.attrs foreach { (k, v) =>
-          if k != "class" then Properties.copy(sender, k, v)
-        }
-        sender match
-          case i: Initializing => i.init()
-          case _ =>
-
-        bind("smsSender", sender)
+        bind("smsSender", SmsSenderFactory.createSender(e.attrs))
       }
     }
   }

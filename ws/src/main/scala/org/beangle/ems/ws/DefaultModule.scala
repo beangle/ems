@@ -28,8 +28,7 @@ import org.beangle.cron.{CronTaskRegistrar, Scheduler}
 import org.beangle.ems.app.rule.ExpressionEvaluatorFactory
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.ems.ws.job.CronTaskRefresher
-import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender}
-import org.beangle.security.session.jdbc.DBSessionCleaner
+import org.beangle.notify.sms.{DefaultSmsCodeService, SmsSender, SmsSenderFactory}
 import org.beangle.webmvc.execution.{CacheResult, DefaultResponseCache}
 
 import java.io.FileInputStream
@@ -59,14 +58,7 @@ class DefaultModule extends BindModule, Config.Provider {
       val app = Document.parse(is)
       (app \\ "sms") foreach { e =>
         bind(classOf[DefaultSmsCodeService])
-        val sender = Reflections.newInstance[SmsSender](e("class"))
-        e.attrs foreach { (k, v) =>
-          if k != "class" then Properties.copy(sender, k, v)
-        }
-        sender match
-          case i: Initializing => i.init()
-          case _ =>
-        bind("smsSender", sender)
+        bind("smsSender", SmsSenderFactory.createSender(e.attrs))
       }
     }
   }
