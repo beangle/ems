@@ -21,8 +21,8 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
 import org.beangle.ems.core.config.model.Domain
 
-class BlobMeta extends LongId with Updated {
-  var domain:Domain=_
+class BlobMeta extends LongId, Updated {
+  var domain: Domain = _
   var owner: String = _
   var name: String = _
   var fileSize: Long = _

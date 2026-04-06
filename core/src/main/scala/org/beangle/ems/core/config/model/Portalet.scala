@@ -25,9 +25,9 @@ import org.beangle.ems.core.user.model.Category
 import scala.collection.mutable
 
 /**
-  * 小部件
-  */
-class Portalet extends IntId with Named with Enabled {
+ * 小部件
+ */
+class Portalet extends IntId, Named, Enabled {
 
   var domain: Domain = _
 

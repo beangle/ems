@@ -96,6 +96,6 @@ class FileAction extends RestfulAction[File], ExportSupport[File] {
     val response = ActionContext.current.response
     val template = entityDao.get(classOf[File], id.toLong)
     val repo = EmsApp.getBlobRepository()
-    redirect(to(repo.path(template.filePath)), "")
+    redirect(to(repo.uri(template.filePath).toString), "")
   }
 }

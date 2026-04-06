@@ -21,7 +21,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Named, Updated}
 
-class File extends LongId with Named with Updated {
+class File extends LongId, Named, Updated {
   var app: App = _
   var mediaType: String = _
   var fileSize: Int = _

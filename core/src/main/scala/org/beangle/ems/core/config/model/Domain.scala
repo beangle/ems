@@ -22,7 +22,7 @@ import org.beangle.data.model.pojo.Named
 
 /** 业务系统
  */
-class Domain extends IntId with Named with LocaleTitle {
+class Domain extends IntId, Named, LocaleTitle {
   var title: String = _
   var enTitle: String = _
   var hostname: String = _

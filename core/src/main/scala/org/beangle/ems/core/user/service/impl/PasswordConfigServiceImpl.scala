@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.PasswordConfig
 import org.beangle.ems.core.user.service.PasswordConfigService
 
-class PasswordConfigServiceImpl extends PasswordConfigService with Initializing {
+class PasswordConfigServiceImpl extends PasswordConfigService, Initializing {
 
   var domainService: DomainService = _
 

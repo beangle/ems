@@ -47,7 +47,6 @@
   </div>
 [/@]
 [@b.radios name="app.enabled" label="是否可用"  value=app.enabled required="true" /]
-[@b.textfield name="app.secret" label="密钥" value="${app.secret!}" maxlength="200" required="true"/]
 [@b.textarea name="app.remark" label="备注" value="${app.remark!}" maxlength="200"/]
 [@b.formfoot]
   [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit" onsubmit="beforeSubmit"/]

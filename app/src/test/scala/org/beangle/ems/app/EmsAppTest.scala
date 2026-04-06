@@ -17,13 +17,13 @@
 
 package org.beangle.ems.app
 
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * @author chaostone
  */
-class EmsAppTest extends AnyFunSpec with Matchers {
+class EmsAppTest extends AnyFunSpec, Matchers {
   describe("EmsApp") {
     it("init") {
       assert(EmsApp.name == "platform-testwebapp")

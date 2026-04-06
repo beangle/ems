@@ -17,16 +17,16 @@
 
 package org.beangle.ems.core.security.model
 
+import org.beangle.data.model.pojo.{Named, Remark}
+import org.beangle.data.model.{IntId, LongId}
+import org.beangle.ems.core.config.model.{App, Domain}
+import org.beangle.ems.core.user.model.Role
+import org.beangle.security.authz.{Permission, Resource, Scope}
+
 import java.security.Principal
 import java.time.Instant
 
-import org.beangle.data.model.{ IntId, LongId }
-import org.beangle.data.model.pojo.{ Named, Remark }
-import org.beangle.security.authz.{ Permission, Resource, Scope }
-import org.beangle.ems.core.config.model.{ App, Domain }
-import org.beangle.ems.core.user.model.Role
-
-class DataPermission extends LongId  with Permission with Remark {
+class DataPermission extends LongId, Permission, Remark {
   var domain: Domain = _
   var app: Option[App] = None
   var resource: DataResource = _
@@ -38,16 +38,18 @@ class DataPermission extends LongId  with Permission with Remark {
   var restrictions: Option[String] = None
   var role: Option[Role] = None
 
-  var beginAt:Instant=_
-  var endAt:Option[Instant]=None
+  var beginAt: Instant = _
+  var endAt: Option[Instant] = None
+
   def principal: Principal = role.orNull
 }
 
-class DataResource extends IntId with Named with Resource with Remark {
+class DataResource extends IntId, Named, Resource, Remark {
   var domain: Domain = _
   var scope = Scope.Public
   var typeName: String = _
   var title: String = _
   var actions: Option[String] = None
+
   def enabled = true
 }

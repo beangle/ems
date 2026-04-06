@@ -17,10 +17,10 @@
 
 package org.beangle.ems.app.security
 
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class RemoteServiceTest extends AnyFunSpec with Matchers {
+class RemoteServiceTest extends AnyFunSpec, Matchers {
   describe("RemoteService") {
     it("toAuthorities") {
       val content = """[{"roles":[],"scope":"Public","name":"/index","id":363,"title":"首页"}]"""
@@ -42,7 +42,7 @@ class RemoteServiceTest extends AnyFunSpec with Matchers {
       authorities4.size should be(0)
     }
 
-    it("parse missing"){
+    it("parse missing") {
       val content = """[{"scope":"Public","name":"/index","id":363,"title":"首页"}]"""
       val authorities = RemoteService.toAuthorities(content)
       authorities.size should be(1)

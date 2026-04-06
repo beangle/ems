@@ -25,6 +25,6 @@ object AppType {
   val Webservice = "web-service"
 }
 
-class AppType extends IntId with Named {
+class AppType extends IntId, Named {
   var title: String = _
 }

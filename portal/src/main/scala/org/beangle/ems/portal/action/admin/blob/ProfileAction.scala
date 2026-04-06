@@ -29,30 +29,12 @@ class ProfileAction extends RestfulAction[Profile] {
 
   var domainService: DomainService = _
 
-  override def editSetting(profile: Profile): Unit = {
-    val query = OqlBuilder.from(classOf[App], "app").orderBy("indexno")
-    query.where("app.domain=:domain", domainService.getDomain)
-    val apps = entityDao.search(query)
-
-    val users = Strings.split(profile.users.getOrElse("")).toSet
-    val profileApps = apps.filter(x => users.contains(x.name))
-    put("profileApps", profileApps);
-    put("apps", apps)
-  }
-
   override protected def getQueryBuilder: OqlBuilder[Profile] = {
     val builder = super.getQueryBuilder
     builder.where("profile.domain=:domain", domainService.getDomain)
   }
 
   override def saveAndRedirect(entity: Profile): View = {
-    val ids = getIntIds("app")
-    if (ids.isEmpty) {
-      entity.users = None
-    } else {
-      val apps = entityDao.find(classOf[App], ids)
-      entity.users = Some(apps.map(_.name).mkString(","))
-    }
     entity.domain = domainService.getDomain
     super.saveAndRedirect(entity)
   }

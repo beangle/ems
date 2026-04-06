@@ -21,10 +21,7 @@ import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 import org.beangle.ems.core.config.model.Domain
 
-class Profile extends IntId with Named {
+class Profile extends IntId, Named {
   var domain: Domain = _
   var base: String = _
-  var namedBySha: Boolean = _
-  var users: Option[String] = None
-  var publicDownload: Boolean = _
 }

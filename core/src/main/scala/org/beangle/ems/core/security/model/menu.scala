@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.model.App
 
 import scala.collection.mutable
 
-class Menu extends IntId with Named with Enabled with Hierarchical[Menu] with Remark {
+class Menu extends IntId, Named, Enabled, Hierarchical[Menu], Remark {
   var app: App = _
   var enName: String = _
   var entry: Option[FuncResource] = None

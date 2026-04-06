@@ -22,13 +22,13 @@ import org.beangle.data.model.pojo.{Named, Remark}
 
 /** 应用数据源
  * */
-class DataSource extends IntId with Named with Remark {
+class DataSource extends IntId, Named, Remark {
   /** 应用 */
   var app: App = _
   /** 数据库 */
   var db: Db = _
   /** 凭证 */
   var credential: Credential = _
-  /** 最大活动连接数   */
+  /** 最大活动连接数 */
   var maximumPoolSize: Int = _
 }

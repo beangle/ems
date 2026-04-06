@@ -41,5 +41,7 @@ class WSModule extends BindModule {
     bind(classOf[user.RootWS], classOf[user.ProfileWS], classOf[user.CredentialWS], classOf[user.UserWS])
 
     bind(classOf[oauth.LoginWS])
+
+    bind(classOf[blob.FileWS])
   }
 }

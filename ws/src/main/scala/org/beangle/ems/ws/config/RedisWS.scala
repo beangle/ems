@@ -19,9 +19,11 @@ package org.beangle.ems.ws.config
 
 import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.bean.Initializing
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.Networks
+import org.beangle.ems.app.Ems
 import org.beangle.ems.app.cache.Redis
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.web.servlet.util.RequestUtils
@@ -52,8 +54,6 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
   @mapping(value = "{app}")
   @response
   def index(@param("app") app: String): AnyRef = {
-    val secret = get("secret", "")
-
     val ip = RequestUtils.getIpAddr(request)
     val gateway = Strings.substringBeforeLast(ip, ".")
     val matched = ips exists { i => ip == i || Strings.substringBeforeLast(i, ".") == gateway }
@@ -62,7 +62,9 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
       val apps = appService.getApp(app)
       if (apps.isEmpty) return reportError("error:error_app_name")
       val exist = apps.head
-      if (exist.secret != secret) return reportError("error:error_secret")
+      val digest = Digests.md5Hex(Ems.key + exist.name)
+
+      if (!get("digest").contains(digest)) return reportError("error:bad_digest")
       val properties = new Properties
       properties.put("host", host)
       properties.put("port", port)

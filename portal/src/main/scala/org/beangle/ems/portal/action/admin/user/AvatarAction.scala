@@ -80,7 +80,7 @@ class AvatarAction extends ActionSupport, ServletSupport {
             if (null == avatar.filePath) {
               Status.NotFound
             } else {
-              val url = EmsApp.getBlobRepository().path(avatar.filePath)
+              val url = EmsApp.getBlobRepository().uri(avatar.filePath).toString
               redirect(to(url), "")
             }
         }

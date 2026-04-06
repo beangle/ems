@@ -31,7 +31,6 @@ object DefaultMapping extends MappingModule {
 
     bind[Profile].declare { e =>
       e.base & e.name are length(100)
-      e.users is length(200)
     }.generator(IdGenerator.AutoIncrement)
 
     bind[BlobMeta].declare { e =>

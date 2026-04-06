@@ -17,16 +17,14 @@
 
 package org.beangle.ems.core.config.model
 
-import java.security.Principal
-
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Enabled, Named, Remark}
 
+import java.security.Principal
 import scala.collection.mutable
 
-class App extends IntId with Named with Enabled with Ordered[App] with Principal with Remark with LocaleTitle {
-  var secret: String = _
+class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, LocaleTitle {
   var title: String = _
   var enTitle: String = _
   var datasources: mutable.Buffer[DataSource] = Collections.newBuffer[DataSource]

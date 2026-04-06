@@ -68,6 +68,6 @@ class DefaultModule extends BindModule, Config.Provider {
   }
 
   override def processors: Seq[Config.Processor] = {
-    EmsApp.encryptor.toList
+    List(Ems.decryptor)
   }
 }

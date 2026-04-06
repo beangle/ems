@@ -18,15 +18,15 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{Coded, Named, Remark, TemporalOn, Updated}
+import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
 
 /**
-  * 用户分类
-  *
-  * @author chaostone
-  */
-class Category extends IntId with Coded with TemporalOn with Named with Updated with Remark {
+ * 用户分类
+ *
+ * @author chaostone
+ */
+class Category extends IntId, Coded, TemporalOn, Named, Updated, Remark {
   var enName: String = _
   var org: Org = _
 

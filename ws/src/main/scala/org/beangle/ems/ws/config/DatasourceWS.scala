@@ -18,8 +18,10 @@
 package org.beangle.ems.ws.config
 
 import jakarta.servlet.http.HttpServletResponse
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.DataSource
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.annotation.{mapping, param, response}
@@ -37,12 +39,11 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
   @mapping(value = "{app}/{name}")
   @response
   def index(@param("app") app: String, @param("name") name: String): AnyRef = {
-    val secret = get("secret", "")
-
     val apps = appService.getApp(app)
     if (apps.isEmpty) return reportError("error:error_app_name")
     val exist = apps.head
-    if (exist.secret != secret) return reportError("error:error_secret")
+    val digest = Digests.md5Hex(Ems.key + exist.name)
+    if (!get("digest").contains(digest)) return reportError("error:error_secret")
 
     val query = OqlBuilder.from(classOf[DataSource], "ds")
     query.where("ds.app=:app and ds.name=:key", exist, name)
@@ -50,11 +51,12 @@ class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
     if (set != null && set.nonEmpty) {
       val rs = set.head
       val ds = new Properties
-      ds.put("user", rs.credential.username)
-      ds.put("password", "?" + rs.credential.password)
+      val decryptor = Ems.decryptor
+      ds.put("user", decryptor.encrypt(rs.credential.username))
+      ds.put("password", decryptor.encrypt(rs.credential.password))
       ds.put("driver", rs.db.driver)
       if (rs.db.url.isDefined) {
-        ds.put("url", rs.db.url.get)
+        ds.put("url", decryptor.encrypt(rs.db.url.get))
       } else {
         ds.put("serverName", rs.db.serverName)
         ds.put("databaseName", rs.db.databaseName)

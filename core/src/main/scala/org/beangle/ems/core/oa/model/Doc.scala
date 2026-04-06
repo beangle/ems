@@ -26,6 +26,7 @@ import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.{Category, User}
 
+import java.net.URI
 import scala.collection.mutable
 
 class Doc extends LongId, Updated {
@@ -50,5 +51,5 @@ class Doc extends LongId, Updated {
       case Some(mt) => mt.primaryType == "image"
   }
 
-  def url: String = EmsApp.getBlobRepository().path(this.filePath)
+  def uri: URI = EmsApp.getBlobRepository().uri(this.filePath)
 }

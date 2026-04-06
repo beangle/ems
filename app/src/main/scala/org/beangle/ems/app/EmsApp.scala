@@ -18,16 +18,14 @@
 package org.beangle.ems.app
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.config.{Config, ConfigFactory, XmlConfigs}
-import org.beangle.commons.io.IOs
+import org.beangle.commons.config.{Config, XmlConfigs}
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.commons.xml.{Document, Node}
-import org.beangle.ems.app.Ems.env
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 
-import java.io.{File, FileInputStream}
+import java.io.File
 import java.net.URL
 
 object EmsApp {
@@ -38,12 +36,9 @@ object EmsApp {
 
   def getBlobRepository(remote: Boolean = true): Repository = {
     val dir = "/" + Strings.substringBefore(name, "-")
-    if remote then new RemoteRepository(env.blob, dir, name, secret)
+    //不要使用Ems.innerEnv，这里需要域名作为桶名
+    if remote then new RemoteRepository(Ems.blob, dir, name, Ems.key)
     else new LocalRepository(Ems.home + "/micdn/blob", dir)
-  }
-
-  def secret: String = {
-    properties.getOrElse("secret", name)
   }
 
   def getAppFile: Option[File] = {
@@ -91,10 +86,8 @@ object EmsApp {
           result.put((pNode \ "@key").text.trim, pNode.text.trim())
         }
       }
-      EmsApp.encryptor match {
-        case None => result.toMap
-        case Some(encryptor) => result.map(kv => (kv._1, encryptor.process(kv._1, kv._2))).toMap
-      }
+      val decryptor = Ems.decryptor
+      result.map(kv => (kv._1, decryptor.process(kv._1, kv._2))).toMap
     } catch {
       case e: Throwable => e.printStackTrace(); System.exit(1); Map.empty
     }
@@ -120,14 +113,5 @@ object EmsApp {
         val status = HttpUtils.access(url)
         if status.isOk then Some(Networks.url(url)) else None
       case a@Some(url) => a
-  }
-
-  def encryptor: Option[Config.Processor] = {
-    val key = "beangle.encryptor.password"
-    var pwd = System.getProperty(key)
-    if (null == pwd) {
-      pwd = ConfigFactory.SystemEnvironment.get(key, null).asInstanceOf[String]
-    }
-    if (null == pwd) None else Some(Config.pbe(pwd))
   }
 }

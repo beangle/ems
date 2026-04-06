@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app
 
+import org.beangle.commons.config.Config
 import org.beangle.commons.lang.Strings
 
 import java.io.File
@@ -85,6 +86,17 @@ object Ems {
   def getResourceFile: Option[File] = {
     val resfile = new File(home + "/resources.xml")
     if (resfile.exists) Some(resfile) else None
+  }
+
+  def generateKey(): String = {
+    val random = new java.security.SecureRandom()
+    val bytes = new Array[Byte](32)
+    random.nextBytes(bytes)
+    java.util.Base64.getUrlEncoder.withoutPadding().encodeToString(bytes)
+  }
+
+  def decryptor: Config.PBEProcessor = {
+    Config.pbe(env.key).asInstanceOf[Config.PBEProcessor]
   }
 
   class Org {

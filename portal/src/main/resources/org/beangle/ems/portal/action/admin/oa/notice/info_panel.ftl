@@ -13,7 +13,7 @@
       <ul>附件列表
       [#list notice.docs as doc]
         [#if doc.image]
-          <li><img src="${doc.url}" style="height:300px"/></li>
+          <li><img src="${doc.uri}" style="height:300px"/></li>
         [#else]
           <li>[@b.a href="doc!download?id="+doc.id target="_new"]${doc.name}[/@]</li>
         [/#if]

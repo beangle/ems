@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers
 /**
  * @author chaostone
  */
-class EmsEnvTest extends AnyFunSpec with Matchers {
+class EmsEnvTest extends AnyFunSpec, Matchers {
   describe("EmsEnv") {
     it("init") {
       val env = EmsEnv("/tmp/ems", Map("base" -> "localhost"))

@@ -18,19 +18,19 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.StringId
-import java.time.LocalDate
-import java.time.LocalDateTime
 import org.beangle.data.model.pojo.Updated
+
+import java.time.{LocalDate, LocalDateTime}
 
 object Avatar {
   var MaxSize = 500 * 1024 //500k
 }
 
-class Avatar extends StringId with Updated {
+class Avatar extends StringId, Updated {
 
   var user: User = _
 
-  var filePath:String = _
+  var filePath: String = _
 
   var fileName: String = _
 

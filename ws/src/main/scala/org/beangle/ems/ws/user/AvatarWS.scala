@@ -26,8 +26,7 @@ import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Stream, View}
 
-class AvatarWS(entityDao: EntityDao)
-  extends ActionSupport with ServletSupport {
+class AvatarWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   var expireMinutes: Int = 60 * 24 * 7
 
@@ -41,7 +40,7 @@ class AvatarWS(entityDao: EntityDao)
   def info(@param("avatarId") avatarId: String): View = {
     val avatar = entityDao.get(classOf[Avatar], avatarId)
     if null == avatar then this.redirect("defaultAvatar")
-    else redirect(to(EmsApp.getBlobRepository().path(avatar.filePath)), "")
+    else redirect(to(EmsApp.getBlobRepository().uri(avatar.filePath).toString), "")
   }
 
 }

@@ -23,7 +23,7 @@ import org.beangle.commons.io.Dirs
 import org.beangle.commons.lang.Charsets
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
-import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.{Ems, EmsApp}
 
 import java.io.*
 
@@ -75,7 +75,7 @@ class RemoteAppender(val url: String) extends Appender {
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
         val bytes = os.toByteArray
-        val upload = url + "?type=business&digest=" + digest(bytes, EmsApp.secret)
+        val upload = url + "?type=business&digest=" + digest(bytes, Ems.key)
         HttpUtils.post(upload, bytes, "application/x-protobuf")
       case ee: ErrorLogEvent =>
         val b = Proto.ErrorLogEvent.newBuilder()
@@ -90,7 +90,7 @@ class RemoteAppender(val url: String) extends Appender {
         val os = new ByteArrayOutputStream()
         b.build().writeTo(os)
         val bytes = os.toByteArray
-        val upload = url + "?type=error&digest=" + digest(bytes, EmsApp.secret)
+        val upload = url + "?type=error&digest=" + digest(bytes, Ems.key)
         HttpUtils.post(upload, bytes, "application/x-protobuf")
     }
 

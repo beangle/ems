@@ -20,7 +20,7 @@ package org.beangle.ems.app.oa
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-class FlowsTest extends AnyFunSpec with Matchers {
+class FlowsTest extends AnyFunSpec, Matchers {
   describe("Flows") {
     it("convert") {
       val rs = Flows.convertFlow(

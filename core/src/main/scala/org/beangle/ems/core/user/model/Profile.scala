@@ -27,7 +27,7 @@ import scala.collection.mutable
 /**
  * 用户在某个App上的配置
  */
-class Profile extends LongId with IProfile with Named {
+class Profile extends LongId, IProfile, Named {
   var user: User = _
   var domain: Domain = _
   var properties: mutable.Map[Dimension, String] = Collections.newMap[Dimension, String]

@@ -17,8 +17,10 @@
 
 package org.beangle.ems.ws.oa
 
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.json.Json
 import org.beangle.data.dao.EntityDao
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.notify.sms.{Receiver, SmsCodeService}
 import org.beangle.webmvc.annotation.{action, mapping, param}
@@ -33,19 +35,20 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   @mapping("send/{mobile}")
   def send(@param("mobile") mobile: String): View = {
     val appName = get("appName", "missing")
-    val appSecret = get("secret", "none")
-    val name = get("name", "")
+    val userName = get("name", "")
     val template = get("template", "")
-    if (appName.isEmpty || appSecret.isEmpty || name.isEmpty) {
+    val digest = Digests.md5Hex(Ems.key + s"&appName=${EmsApp.name}&name=${userName}&template=${template}")
+
+    if (appName.isEmpty || userName.isEmpty || !get("digest").contains(digest)) {
       Status.BadRequest
     } else {
-      appService.getApp(appName, appSecret) match {
+      appService.getApp(appName) match {
         case None => Status.Forbidden
         case Some(app) =>
           smsCodeService match {
             case None => raw(Json.toJson(Map("code" -> 500, "msg" -> "Platform 未配置SMS发生接口")))
             case Some(s) =>
-              val rs = s.send(Receiver(mobile, name), template)
+              val rs = s.send(Receiver(mobile, userName), template)
               val json = Json.toJson(Map("code" -> (if rs._1 then 200 else 500), "msg" -> rs._2))
               raw(json)
           }

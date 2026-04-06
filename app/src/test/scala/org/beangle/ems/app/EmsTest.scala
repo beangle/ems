@@ -15,26 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.security.model
+package org.beangle.ems.app
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.ems.core.config.model.Domain
-import org.beangle.security.session.EventType
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-@log
-class SessionEvent extends LongId, Updated, Named {
+class EmsTest extends AnyFunSpec, Matchers {
+  describe("Ems") {
+    it("generateKey") {
+      val key = Ems.generateKey()
+      println(key)
+      assert(key.length >= 32)
+    }
+  }
 
-  var domain: Domain = _
-
-  var eventType: EventType = _
-
-  var principal: String = _
-
-  var username: String = _
-
-  var detail: String = _
-
-  var ip: String = _
 }

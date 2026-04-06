@@ -31,7 +31,7 @@ import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.View
 
 @action("/oauth")
-class OAuthAction extends ActionSupport with ServletSupport {
+class OAuthAction extends ActionSupport, ServletSupport {
 
   var entityDao: EntityDao = _
   var domainService: DomainService = _

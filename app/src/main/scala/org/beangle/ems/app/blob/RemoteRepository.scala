@@ -18,13 +18,17 @@
 package org.beangle.ems.app.blob
 
 import org.beangle.commons.codec.digest.Digests
+import org.beangle.commons.json.{Json, JsonObject}
+import org.beangle.commons.lang.Charsets
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.{HttpUtils, Request}
+import org.beangle.ems.app.Ems
 
 import java.io.*
 import java.net.URI
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
+import scala.concurrent.Future
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository {
 
@@ -33,37 +37,62 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
 
   override def remove(path: String): Boolean = {
     require(path.startsWith("/"))
-    val load = Request.asJson("{}").auth(user, key)
+    val load = Request.asJson("{}").bearer(Ems.key)
     val response = HttpUtils.delete(s"$base$dir${path}", load)
-    if (response.status >= 300) {
+    if (response.status >= 500) {
       throw new Exception("Remove Failed,Response is " + response.getText)
     } else {
-      response.status == 200
+      val removed = response.status == 200
+      import scala.concurrent.ExecutionContext.Implicits.global
+      Future {
+        val jb = new JsonObject
+        jb.add("profile", dir)
+        jb.add("appName", user)
+        jb.add("filePath", path)
+        val body = jb.toString
+        val digests = Digests.md5Hex(key + body)
+        val notifyUrl = Ems.innerApi + "/platform/blob/files/unregister?digest=" + digests
+        HttpUtils.post(notifyUrl, Request.asJson(body))
+      }
+      removed
     }
-  }
-
-  override def path(p: String): String = {
-    require(p.startsWith("/"))
-    s"$base$dir${p}"
   }
 
   override def uri(path: String): URI = {
     require(path.startsWith("/"))
-    val now = LocalDateTime.now.format(formatter)
-    val token = Digests.sha1Hex(s"$dir${path}$user$key$now")
-    Networks.uri(s"$base$dir${path}?token=$token&u=$user&t=$now")
+    val now = LocalDateTime.now(ZoneId.of("UTC")).format(formatter)
+    val token = Digests.sha1Hex(s"$dir$path$key$now")
+    Networks.uri(s"$base$dir${path}?token=$token&t=$now")
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val folderUrl = if (folder.endsWith("/")) folder else folder + "/"
     val params = Map("owner" -> owner, "file" -> (fileName, is))
-    val response = HttpUtils.post(s"$base$dir$folderUrl", Request.asForm(params).auth(user, key))
+    val response = HttpUtils.post(s"$base$dir$folderUrl", Request.asForm(params).bearer(Ems.key))
     if (response.status == 200) {
-      BlobMeta.fromJson(response.getText)
+      val res = response.getText
+      val meta = BlobMeta.fromJson(res)
+      meta.filePath = meta.filePath.substring(dir.length)
+      import scala.concurrent.ExecutionContext.Implicits.global
+      Future {
+        val jb = Json.parseObject(res)
+        jb.add("owner", owner)
+        jb.add("profile", dir)
+        jb.add("appName", user)
+        jb.add("filePath", meta.filePath)
+        val body = jb.toString
+        val digests = Digests.md5Hex(key + body)
+        val notifyUrl = Ems.innerApi + "/platform/blob/files/register?digest=" + digests
+        HttpUtils.post(notifyUrl, Request.asJson(body))
+      }
+      meta
     } else {
       throw new RuntimeException("Upload failed,response code is " + response.status + " and response body:" + response.getText)
     }
   }
 
+  private def digest(bytes: Array[Byte], secret: String): String = {
+    Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
+  }
 }

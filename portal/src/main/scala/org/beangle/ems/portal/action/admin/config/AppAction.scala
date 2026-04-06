@@ -36,7 +36,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
   }
 
   protected override def indexSetting(): Unit = {
-    put("groups", appService.getGroups())
+    put("groups", appService.getGroups)
     put("appTypes", entityDao.getAll(classOf[AppType]))
   }
 
@@ -44,9 +44,9 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
     if (!entity.persisted) {
       entity.enabled = true
     }
-    put("groups", appService.getGroups())
+    put("groups", appService.getGroups)
     put("appTypes", entityDao.getAll(classOf[AppType]))
-    put("credentials", appService.getCredentials())
+    put("credentials", appService.getCredentials)
   }
 
   override protected def getQueryBuilder: OqlBuilder[App] = {

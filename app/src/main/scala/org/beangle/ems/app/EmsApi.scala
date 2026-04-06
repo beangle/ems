@@ -17,17 +17,20 @@
 
 package org.beangle.ems.app
 
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.security.Securities
 import org.beangle.webmvc.context.ActionContext
 
 object EmsApi {
 
   def getDatasourceUrl(resourceKey: String): String = {
-    Ems.innerApi + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?secret=" + EmsApp.secret
+    val digest = Digests.md5Hex(Ems.key + EmsApp.name)
+    Ems.innerApi + "/platform/config/datasources/" + EmsApp.name + "/" + resourceKey + ".xml?digest=" + digest
   }
 
   def getRedisUrl: String = {
-    Ems.innerApi + "/platform/config/rediss/" + EmsApp.name + ".xml?secret=" + EmsApp.secret
+    val digest = Digests.md5Hex(Ems.key + EmsApp.name)
+    Ems.innerApi + "/platform/config/rediss/" + EmsApp.name + ".xml?digest=" + digest
   }
 
   /** 构造一个完整url

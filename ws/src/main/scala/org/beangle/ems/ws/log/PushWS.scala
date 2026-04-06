@@ -22,6 +22,7 @@ import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.io.IOs
 import org.beangle.commons.lang.Charsets
 import org.beangle.data.dao.EntityDao
+import org.beangle.ems.app.Ems
 import org.beangle.ems.app.log.Proto
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.annotation.{action, mapping}
@@ -63,7 +64,7 @@ class PushWS extends ActionSupport, ServletSupport, Initializing, Disposable {
     } else {
       appService.getApp(appName) match {
         case Some(app) =>
-          if (validate(bytes, app.secret)) {
+          if (validate(bytes, Ems.key)) {
             buffer.push(event)
             Status.Ok
           } else {

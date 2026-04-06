@@ -17,13 +17,13 @@
 
 package org.beangle.ems.app.blob
 
-import java.io.FileInputStream
-import java.time.ZoneId
-
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-class RemoteRepositoryTest extends AnyFunSpec with Matchers {
+import java.io.FileInputStream
+import java.time.ZoneId
+
+class RemoteRepositoryTest extends AnyFunSpec, Matchers {
   describe("RemoteRepository") {
     val serviceReady = false
     if (serviceReady) {

@@ -44,6 +44,6 @@ class MetaAction extends RestfulAction[BlobMeta], ExportSupport[BlobMeta], Servl
   @mapping(value = "{id}")
   override def info(id: String): View = {
     val meta = entityDao.get(classOf[BlobMeta], id.toLong)
-    redirect(to(EmsApp.getBlobRepository().path(meta.filePath)), "")
+    redirect(to(EmsApp.getBlobRepository().uri(meta.filePath).toString), "")
   }
 }

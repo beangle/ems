@@ -22,7 +22,7 @@ import org.beangle.data.model.pojo.{Named, Remark}
 
 /** 组织信息
  */
-class Org extends IntId with Named with Remark {
+class Org extends IntId, Named, Remark {
   /** 组织编号 */
   var code: String = _
   /** 简称 */

@@ -38,16 +38,9 @@ class LocalRepository(val base: String, val dir: String) extends Repository {
     }
   }
 
-  override def path(p: String): String = {
-    require(p.startsWith("/"))
-    val file = new File(s"$base$dir${p}")
-    file.getAbsolutePath
-  }
-
   override def uri(path: String): URI = {
     require(path.startsWith("/"))
-    val file = new File(s"$base$dir${path}")
-    file.toURI
+    new File(s"$base$dir${path}").toURI
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {

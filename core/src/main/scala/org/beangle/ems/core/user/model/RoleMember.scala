@@ -25,7 +25,7 @@ import java.time.Instant
 /**
  * @author chaostone
  */
-class RoleMember extends LongId with Updated {
+class RoleMember extends LongId, Updated {
   var user: User = _
   var role: Role = _
   var member: Boolean = _

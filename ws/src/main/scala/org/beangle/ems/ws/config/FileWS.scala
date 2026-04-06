@@ -75,7 +75,7 @@ class FileWS extends ActionSupport {
       getFile(app, path) match {
         case Some(template) =>
           val repo = EmsApp.getBlobRepository()
-          redirect(to(repo.path(template.filePath)), "")
+          redirect(to(repo.uri(template.filePath).toString), "")
         case None => Status.NotFound
       }
     }

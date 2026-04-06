@@ -18,8 +18,8 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.IntId
-import org.beangle.security.authc.PasswordPolicy
 import org.beangle.ems.core.config.model.Domain
+import org.beangle.security.authc.PasswordPolicy
 
 object PasswordConfig {
   def apply(policy: PasswordPolicy): PasswordConfig = {
@@ -39,7 +39,7 @@ object PasswordConfig {
 /** 密码配置
  *
  */
-class PasswordConfig extends IntId with PasswordPolicy {
+class PasswordConfig extends IntId, PasswordPolicy {
 
   var domain: Domain = _
   /** 密码的最小长度 */

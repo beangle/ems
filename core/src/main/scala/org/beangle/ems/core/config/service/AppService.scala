@@ -24,8 +24,6 @@ import org.beangle.ems.core.config.model.*
  */
 trait AppService {
 
-  def getApp(name: String, secret: String): Option[App]
-
   def getApp(name: String): Option[App]
 
   def getAppType(typeName: String): AppType
@@ -34,8 +32,8 @@ trait AppService {
 
   def getApps: Seq[App]
 
-  def getGroups(): Seq[AppGroup]
+  def getGroups: Seq[AppGroup]
 
-  def getCredentials(): Seq[Credential]
+  def getCredentials: Seq[Credential]
 
 }

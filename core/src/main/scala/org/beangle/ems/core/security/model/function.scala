@@ -17,21 +17,16 @@
 
 package org.beangle.ems.core.security.model
 
-import java.security.Principal
-
-import org.beangle.security.authz.{ Permission, Resource, Scope }
+import org.beangle.data.model.pojo.{Enabled, Named, Remark, TemporalAt}
+import org.beangle.data.model.{IntId, LongId}
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.Role
-import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Named
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Remark
-import org.beangle.data.model.pojo.TemporalAt
-import org.beangle.data.model.pojo.Enabled
-import java.time.ZonedDateTime
-import java.time.Instant
+import org.beangle.security.authz.{Permission, Resource, Scope}
 
-class FuncResource extends IntId with Named with Enabled with Resource with Remark {
+import java.security.Principal
+import java.time.{Instant, ZonedDateTime}
+
+class FuncResource extends IntId, Named, Enabled, Resource, Remark {
   var app: App = _
   var scope = Scope.Public
   var title: String = _
@@ -42,7 +37,7 @@ class FuncResource extends IntId with Named with Enabled with Resource with Rema
   }
 }
 
-class FuncPermission extends LongId with Permission with TemporalAt with Remark {
+class FuncPermission extends LongId, Permission, TemporalAt, Remark {
   var role: Role = _
   var resource: FuncResource = _
   var actions: Option[String] = None
@@ -58,10 +53,11 @@ class FuncPermission extends LongId with Permission with TemporalAt with Remark 
   def principal: Principal = role
 }
 
-class AppPermission extends IntId with Permission with TemporalAt {
+class AppPermission extends IntId, Permission, TemporalAt {
   var app: App = _
   var resource: FuncResource = _
   var actions: Option[String] = None
   var restrictions: Option[String] = None
+
   def principal = app
 }

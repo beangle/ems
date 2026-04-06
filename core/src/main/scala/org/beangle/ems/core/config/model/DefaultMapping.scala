@@ -35,7 +35,6 @@ object DefaultMapping extends MappingModule {
     bind[App].declare { e =>
       e.getName is length(100)
       e.title is length(100)
-      e.secret is length(200)
       e.url is length(200)
       e.navStyle is length(50)
       e.remark is length(200)

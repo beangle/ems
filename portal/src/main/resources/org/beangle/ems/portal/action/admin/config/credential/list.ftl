@@ -10,7 +10,14 @@
     [@b.boxcol /]
     [@b.col width="15%" property="name" title="名称"/]
     [@b.col width="10%" property="username" title="用户名"]${credential.username!}[/@]
-    [@b.col property="password" title="密文"]${credential.password!}[/@]
+    [@b.col property="password" title="密文"]
+      [#if credential.password?? && credential.password?length>3]
+        ${credential.password[0..2]}${""?left_pad(credential.password?length - 3, "*")}
+      [#else]
+        ${(credential.password)!"--"}
+      [/#if]
+
+    [/@]
     [@b.col width="15%" property="expiredAt" title="过期日期"]${credential.expiredAt?string('yy-MM-dd HH:mm')}[/@]
     [@b.col width="15%" property="updatedAt" title="更新时间"]${credential.updatedAt?string('yy-MM-dd HH:mm')}[/@]
   [/@]

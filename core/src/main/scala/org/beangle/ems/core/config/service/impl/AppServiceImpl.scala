@@ -26,7 +26,7 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 /**
  * @author chaostone
  */
-class AppServiceImpl(entityDao: EntityDao) extends AppService with Initializing {
+class AppServiceImpl(entityDao: EntityDao) extends AppService, Initializing {
 
   private var appTypes: Map[String, AppType] = _
   var domainService: DomainService = _
@@ -40,24 +40,16 @@ class AppServiceImpl(entityDao: EntityDao) extends AppService with Initializing 
     appTypes(typeName)
   }
 
-  override def getGroups(): Seq[AppGroup] = {
+  override def getGroups: Seq[AppGroup] = {
     val query = OqlBuilder.from(classOf[AppGroup], "ag")
     query.where("ag.domain=:domain", domainService.getDomain)
     entityDao.search(query)
   }
 
-  override def getCredentials(): Seq[Credential] = {
+  override def getCredentials: Seq[Credential] = {
     val query = OqlBuilder.from(classOf[Credential], "c")
     query.where("c.domain=:domain", domainService.getDomain)
     entityDao.search(query)
-  }
-
-  override def getApp(name: String, secret: String): Option[App] = {
-    val query = OqlBuilder.from(classOf[App], "app")
-      .where("app.name=:name and app.secret=:secret", name, secret)
-      .where("app.domain=:domain", domainService.getDomain)
-      .cacheable()
-    entityDao.search(query).headOption
   }
 
   override def getApp(name: String): Option[App] = {

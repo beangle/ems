@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app.oa
 
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.http.{HttpUtils, Request}
@@ -24,15 +25,13 @@ import org.beangle.ems.app.{Ems, EmsApp}
 
 object Sms {
 
-  def send(name: String, mobile: String, template: String): String = {
+  def send(userName: String, mobile: String, template: Option[String]): String = {
     val url = Ems.innerApi + s"/platform/oa/sms/send/${mobile}"
     val params = Collections.newMap[String, String]
-    params.put("name", name)
-    if (Strings.isNotBlank(template)) {
-      params.put("template", template)
-    }
+    params.put("name", userName)
+    val t = template.getOrElse("").trim
     params.put("appName", EmsApp.name)
-    params.put("secret", EmsApp.secret)
+    params.put("digest", Digests.md5Hex(Ems.key + s"&appName=${EmsApp.name}&name=${userName}&template=${t}"))
 
     val res = HttpUtils.post(url, Request.asForm(params))
     res.getText

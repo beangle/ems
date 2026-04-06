@@ -21,7 +21,7 @@ import org.beangle.commons.bean.Initializing
 import org.beangle.ems.core.user.service.PasswordConfigService
 import org.beangle.security.authc.{PasswordPolicy, PasswordPolicyProvider}
 
-class DefaultPasswordPolicyProvider extends PasswordPolicyProvider with Initializing {
+class DefaultPasswordPolicyProvider extends PasswordPolicyProvider, Initializing {
   var passwordConfigService: PasswordConfigService = _
   private var policy: PasswordPolicy = _
 

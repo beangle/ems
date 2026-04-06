@@ -24,7 +24,7 @@ import org.beangle.ems.core.config.model.Domain
 /**
  * @author chaostone
  */
-class Dimension extends IntId with Named {
+class Dimension extends IntId, Named {
   var domain: Domain = _
   var title: String = _
   var source: String = _

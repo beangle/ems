@@ -17,15 +17,15 @@
 
 package org.beangle.ems.core.config.model
 
-import java.time.Instant
-
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Named, Updated}
+
+import java.time.Instant
 
 /** 凭证
  * 用于数据源认证
  */
-class Credential extends IntId with Named with Updated {
+class Credential extends IntId, Named, Updated {
   var domain: Domain = _
   var username: String = _
   var password: String = _
