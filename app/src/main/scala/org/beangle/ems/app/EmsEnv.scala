@@ -33,12 +33,17 @@ object EmsEnv {
         SystemInfo.properties.get("ems.profile") match {
           case None =>
             val profiles = Dirs.on(base).ls()
-            if (profiles.size == 1) {
-              System.setProperty("ems.profile",profiles.head)
-              base + / + profiles.head
-            } else {
-              throw new RuntimeException(s"Cannot find ems.profile from ${profiles},using -Dems.profile=xx to select one.")
-            }
+            val profile =
+              if (profiles.isEmpty) {
+                AppLogger.warn(s"Cannot find ems.profile in ${base},using local")
+                "local"
+              } else if (profiles.size == 1) {
+                profiles.head
+              } else {
+                AppLogger.warn(s"Choose first of ${profiles},using -Dems.profile=xx to select one.")
+                profiles.head
+              }
+            base + / + profile
           case Some(profile) => base + / + profile
         }
     }
@@ -63,7 +68,8 @@ object EmsEnv {
     val webapp = reader.find("webapp", "{base}")
     val static = reader.find("static", "{base}/static")
     val key = reader.readKey()
-    val profile: String = Strings.substringAfterLast(home, Files./)
+    val profile = Strings.substringAfterLast(home, Files./)
+    System.setProperty("ems.profile", profile)
     EmsEnv(home, profile, base, cas, portal, index, api, blob, webapp, static, key, properties)
   }
 
