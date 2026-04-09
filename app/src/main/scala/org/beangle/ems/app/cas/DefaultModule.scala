@@ -44,8 +44,6 @@ class DefaultModule extends BindModule {
     bind("web.Interceptor.security", classOf[SecurityInterceptor]).property(
       "filters", List(ref("security.Filter.authorization")))
 
-    bind("security.Authenticator", classOf[RealmAuthenticator])
-
     bind("security.SessionIdReader.ems", classOf[CookieSessionIdReader]).constructor(Ems.sid.name)
 
     val protobuf = new ProtobufSerializer

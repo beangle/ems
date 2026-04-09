@@ -6,14 +6,24 @@
   <ems app-name="platform-portal"/>
 
   <cdi>
+    <module class="org.beangle.ems.DefaultModule"/> <!--check again-->
     <module class="org.beangle.she.hibernate.OrmModule"/>
 
-    <module class="org.beangle.ems.app.dao.DataSourceModule"/>
-    <module class="org.beangle.ems.app.web.DefaultModule"/>
-    <module class="org.beangle.ems.app.cache.DefaultModule"/>
+    <module class="org.beangle.ems.core.CacheModule"/>
+    <module class="org.beangle.ems.core.SmsModule"/>
+    <module class="org.beangle.ems.core.CronModule"/>
+    <module class="org.beangle.ems.core.WebReconfigModule"/>
+    <module class="org.beangle.ems.core.EventModule"/>
+    <module class="org.beangle.ems.core.LogModule"/>
 
-    <module class="org.beangle.ems.app.cas.DefaultModule"/>
-    <module class="org.beangle.ems.app.event.EventPublishModule"/>
+    <module class="org.beangle.ems.index.action.DefaultModule"/>
+    <module class="org.beangle.ems.ws.WSModule"/>
+    <module class="org.beangle.ems.cas.action.DefaultModule"/>
+
+    <module class="org.beangle.ems.core.cas.DefaultModule"/>
+    <module class="org.beangle.ems.core.cas.TicketModule"/>
+    <module class="org.beangle.ems.core.cas.SeurityModule"/>
+    <module class="org.beangle.ems.core.cas.CredentialModule"/>
 
     <module class="org.beangle.ems.portal.action.admin.ConfigModule"/>
     <module class="org.beangle.ems.portal.action.admin.SecurityModule"/>
@@ -24,8 +34,6 @@
     <module class="org.beangle.ems.portal.action.user.DefaultModule"/>
     <module class="org.beangle.ems.portal.action.DefaultModule"/>
 
-    <module class="org.beangle.ems.core.WebReconfigModule"/>
-    <module class="org.beangle.ems.core.EventModule"/>
     <module class="org.beangle.ems.core.user.service.DefaultModule"/>
     <module class="org.beangle.ems.core.config.service.DefaultModule"/>
     <module class="org.beangle.ems.core.security.service.DefaultModule"/>
@@ -34,15 +42,71 @@
     <module class="org.beangle.webmvc.view.freemarker.DefaultModule"/>
   </cdi>
 
+  <jpa>
+    <mapping class="org.beangle.ems.core.oa.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.config.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.security.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.user.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.blob.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.log.model.DefaultMapping"/>
+    <mapping class="org.beangle.ems.core.job.model.DefaultMapping"/>
+    <naming>
+      <profile package = "org.beangle.ems.core" schema="ems" pluralize="true">
+        <profile package = "config" prefix="cfg_"/>
+        <profile package = "user" prefix="usr_"/>
+        <profile package = "oa" prefix="oa_"/>
+        <profile package = "job" prefix="jb_"/>
+        <profile package = "security"  prefix="se_">
+          <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" schema="log" prefix="ems_"/>
+        </profile>
+        <profile package = "blob" prefix="blb_"/>
+        <profile package = "log" prefix="log_">
+          <annotation class="org.beangle.data.model.annotation.log"  pluralize="true" schema="log" prefix="ems_"/>
+        </profile>
+        <profile package = "job" prefix="jb_"/>
+      </profile>
+    </naming>
+  </jpa>
+
   <mvc>
-    <profile package="org.beangle.ems.portal.*.action">
+    <!--index-->
+    <profile package="org.beangle.ems.index.action">
       <url path="/" suffix="" style="seo"/>
+    </profile>
+
+    <!--ws-->
+    <profile package="org.beangle.ems.ws">
+      <action suffix="WS" defaultMethod="index"/>
+      <url path="/api/platform" suffix="" style="plur-seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+      <interceptor name="web.Interceptor.cors"/>
+    </profile>
+
+    <!--cas-->
+    <profile package="org.beangle.ems.cas.action">
+      <url path="/cas" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.cas"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+    <profile package="org.beangle.ids.cas.web.action">
+      <url path="/cas" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.cas"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+    <profile package="org.beangle.ids.cas.web.ws">
+      <url path="/cas" suffix="" style="seo"/>
+      <interceptor name="web.Interceptor.hibernate"/>
+    </profile>
+
+    <!--portal-->
+    <profile package="org.beangle.ems.portal.*.action">
+      <url path="/portal" suffix="" style="seo"/>
       <interceptor name="web.Interceptor.hibernate"/>
       <interceptor name="web.Interceptor.security"/>
     </profile>
 
     <profile package="org.beangle.ems.portal.action">
-      <url path="/" suffix="" style="seo"/>
+      <url path="/portal" suffix="" style="seo"/>
       <interceptor name="web.Interceptor.hibernate"/>
       <interceptor name="web.Interceptor.security"/>
     </profile>

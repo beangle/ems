@@ -18,12 +18,12 @@
 package org.beangle.ems.portal.action.admin.user
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.EmsLogger
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.Profile
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
 import org.beangle.ems.core.user.service.{DataResolver, DimensionService, UserService}
-import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.she.webmvc.RestfulAction
@@ -85,7 +85,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[Profil
       redirect("index", Map("profile.user.id" -> profile.user.id), "info.remove.success")
     } catch {
       case e: Exception =>
-        PortalLogger.error("removeAndForwad failure", e)
+        EmsLogger.error("removeAndForwad failure", e)
         redirect("appinfo",Map("profile.user.id" -> profile.user.id), "info.delete.failure")
     }
   }

@@ -52,13 +52,13 @@ class FileAppender(val fileName: String, layout: Layout) extends Appender, Initi
     if null != fos then fos.close()
   }
 
-  def append(event: LogEvent): Unit = {
+  override def append(event: LogEvent): Unit = {
     fos.write(layout.mkString(event).getBytes(Charsets.UTF_8))
   }
 }
 
 class RemoteAppender(val url: String) extends Appender {
-  def append(event: LogEvent): Unit = {
+  override def append(event: LogEvent): Unit = {
     event match {
       case be: BusinessLogEvent =>
         val b = Proto.BusinessLogEvent.newBuilder()

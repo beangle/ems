@@ -27,11 +27,11 @@ import org.beangle.commons.io.{Files, IOs}
 import org.beangle.commons.lang.{Strings, SystemInfo, Throwables}
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.EmsLogger
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Avatar, User}
 import org.beangle.ems.core.user.service.{AvatarService, UserService}
-import org.beangle.ems.portal.PortalLogger
 import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -114,14 +114,14 @@ class AvatarAction extends ActionSupport, ServletSupport {
     dir.list() foreach { name =>
       val file = new File(dir.getAbsolutePath + "/" + name)
       if (name.indexOf(".") < 1) {
-        PortalLogger.warn(name + " without suffix,skipped")
+        EmsLogger.warn(name + " without suffix,skipped")
       } else if (file.isDirectory) {
-        PortalLogger.info(name + " is dir,skipped")
+        EmsLogger.info(name + " is dir,skipped")
       } else {
         val usercode = Strings.substringBeforeLast(name, ".")
         val users = userService.getIgnoreCase(usercode)
         if (users.isEmpty) {
-          PortalLogger.warn("Cannot find user info of " + usercode)
+          EmsLogger.warn("Cannot find user info of " + usercode)
         } else {
           i += 1
           avatarService.save(users.head, name, new FileInputStream(dir.getAbsolutePath + "/" + name))
@@ -144,12 +144,12 @@ class AvatarAction extends ActionSupport, ServletSupport {
         if (!ze.isDirectory) {
           val photoname = if (ze.getName.contains("/")) Strings.substringAfterLast(ze.getName, "/") else ze.getName
           if (photoname.indexOf(".") < 1) {
-            PortalLogger.warn(photoname + " format is error")
+            EmsLogger.warn(photoname + " format is error")
           } else {
             val usercode = Strings.substringBeforeLast(photoname, ".")
             val users = userService.getIgnoreCase(usercode)
             if (users.isEmpty) {
-              PortalLogger.warn("Cannot find user info of " + usercode)
+              EmsLogger.warn("Cannot find user info of " + usercode)
             } else {
               avatarService.save(users.head, photoname, file.getInputStream(ze))
             }

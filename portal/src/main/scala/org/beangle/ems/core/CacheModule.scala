@@ -15,30 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.security
+package org.beangle.ems.core
 
-import org.beangle.security.authz.{AbstractRoleBasedAuthorizer, AuthorityDomain}
+import org.beangle.cache.caffeine.CaffeineCacheManager
+import org.beangle.cache.redis.RedisClientFactory
+import org.beangle.commons.cdi.BindModule
+import org.beangle.ems.app.cache.Redis
 
-import scala.concurrent.Future
+class CacheModule extends BindModule {
 
-/**
- * @author chaostone
- */
-class RemoteAuthorizer extends AbstractRoleBasedAuthorizer {
+  protected override def binding(): Unit = {
+    bind("cache.Caffeine", classOf[CaffeineCacheManager]).constructor(true)
 
-  override def fetchDomain(): AuthorityDomain = {
-    val roots = RemoteService.roots
-    val resources = RemoteService.getAuthorities
-    AuthorityDomain(roots.getOrElse(Set.empty), resources)
-  }
-
-  /**
-   * 此处重载是为了加快启动速度
-   */
-  override def init(): Unit = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-    Future {
-      refresh()
+    val redis = Redis.conf
+    if (redis.nonEmpty) {
+      bind("redis.Factory", classOf[RedisClientFactory]).constructor(redis)
     }
   }
 }

@@ -29,7 +29,7 @@ lazy val root = (project in file("."))
   .settings(
     common
   )
-  .aggregate(static, app, core, cas, portal, index, ws)
+  .aggregate(static, app, portal)
 
 lazy val static = (project in file("static"))
   .settings(
@@ -46,46 +46,15 @@ lazy val app = (project in file("app"))
     libraryDependencies ++= Seq(beangle_webmvc % "optional", beangle_bui_tag % "optional")
   )
 
-lazy val core = (project in file("core"))
-  .settings(
-    name := "beangle-ems-core",
-    common,
-    libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress)
-  ).dependsOn(app)
-
-lazy val cas = (project in file("cas"))
-  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
-  .settings(
-    name := "beangle-ems-cas",
-    common,
-    libraryDependencies ++= webAppDepends,
-    libraryDependencies ++= Seq(beangle_bui_bootstrap)
-  ).dependsOn(core)
-
-lazy val ws = (project in file("ws"))
-  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
-  .settings(
-    name := "beangle-ems-ws",
-    common,
-    libraryDependencies ++= webAppDepends,
-    libraryDependencies ++= Seq(sshd_core, slf4j_jcl)
-  ).dependsOn(core)
-
 lazy val portal = (project in file("portal"))
-  .enablePlugins(WarPlugin, TomcatPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
+    libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress),
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
+    libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
     libraryDependencies ++= webAppDepends
-  ).dependsOn(core)
-
-lazy val index = (project in file("index"))
-  .enablePlugins(WarPlugin)
-  .settings(
-    name := "beangle-ems-index",
-    common,
-    libraryDependencies ++= webAppDepends
-  ).dependsOn(core)
+  ).dependsOn(app)
 
 publish / skip := true

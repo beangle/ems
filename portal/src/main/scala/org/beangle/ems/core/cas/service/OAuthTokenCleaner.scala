@@ -15,30 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.security
+package org.beangle.ems.core.cas.service
 
-import org.beangle.security.authz.{AbstractRoleBasedAuthorizer, AuthorityDomain}
+import org.beangle.commons.bean.Scheduled
+import org.beangle.data.orm.AbstractDaoTask
+import org.beangle.ems.EmsLogger
+import org.beangle.ems.core.security.model.OAuthToken
 
-import scala.concurrent.Future
+import java.time.Instant
 
 /**
- * @author chaostone
+ * 清理过期的Token
  */
-class RemoteAuthorizer extends AbstractRoleBasedAuthorizer {
+class OAuthTokenCleaner(val expression: String) extends AbstractDaoTask, Scheduled {
 
-  override def fetchDomain(): AuthorityDomain = {
-    val roots = RemoteService.roots
-    val resources = RemoteService.getAuthorities
-    AuthorityDomain(roots.getOrElse(Set.empty), resources)
-  }
-
-  /**
-   * 此处重载是为了加快启动速度
-   */
-  override def init(): Unit = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-    Future {
-      refresh()
+  def execute(): Unit = {
+    val removed = entityDao.executeUpdate(s"delete from ${classOf[OAuthToken].getName} token where token.expiredAt <= ?1", Instant.now)
+    if (removed > 0) {
+      EmsLogger.info(s"Evict ${removed} expired oauth access tokens")
     }
   }
 }

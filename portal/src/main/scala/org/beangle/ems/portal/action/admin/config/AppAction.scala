@@ -18,13 +18,13 @@
 package org.beangle.ems.portal.action.admin.config
 
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.EmsLogger
 import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.DbService
-import org.beangle.ems.portal.PortalLogger
 import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
-import org.beangle.she.webmvc.RestfulAction
 
 class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport {
 
@@ -85,7 +85,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
       redirect("search", "info.save.success")
     } catch {
       case e: Exception =>
-        PortalLogger.error("saveAndForwad failure", e)
+        EmsLogger.error("saveAndForwad failure", e)
         redirect("search", "info.save.failure")
     }
   }

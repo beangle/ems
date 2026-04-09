@@ -15,33 +15,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.event
+package org.beangle.ems.core
 
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.app.AppLogger
 import org.beangle.ems.app.cache.Redis
-import org.beangle.event.bus.{DataEvent, DataEventSerializer, DataEventSubscriberRegistrar, DefaultDataEventBus}
+import org.beangle.ems.app.event.CacheEvictor
+import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
+import org.beangle.event.mq.ChannelQueue
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
-object EventModule extends BindModule {
+class EventModule extends BindModule {
 
   protected override def binding(): Unit = {
     wiredEagerly(true)
+    //using redis as pubsub
+    val queueBean = "channelQueue"
+    bind(queueBean, classOf[RedisChannelQueue[DataEvent]])
+      .constructor("ems_platform", ref("redis.Factory"), new DataEventSerializer)
+      .primaryOf(classOf[ChannelQueue[_]])
+
+    bind(classOf[CacheEvictor]).constructor(?, ref(queueBean))
+    bind("databus", classOf[DefaultDataEventBus]).constructor(ref(queueBean))
+
+    bindingPublic()
+  }
+
+  /** It only bind publishing channel.
+   * 为了让Ems通知app，如果app之间发送消息，ems不接收
+   */
+  private def bindingPublic(): Unit = {
+    //不要改名字，这个publicChannel在PermissionAction中局名使用
     val channelBeanName = "publicChannel"
     val queueName = "ems_public"
     val redis = Redis.conf
     if (redis.nonEmpty) {
-      AppLogger.info(s"Using redis on ${queueName} to notify data evict event.")
       bind(channelBeanName, classOf[RedisChannelQueue[DataEvent]]).constructor(queueName, ?, new DataEventSerializer)
-      bind(classOf[CacheEvictor])
-      bind(classOf[DefaultDataEventBus]).constructor(ref(channelBeanName))
-      bind(classOf[AppAuthorizerSubscriber])
+        .property("publishOnly", true)
     } else {
-      AppLogger.warn(s"Disable databus due to missing redis config.")
       bind(channelBeanName, NullChannelQueue)
-      bind(classOf[DefaultDataEventBus])
     }
-    //绑定数据事件订阅注册表
-    bind(classOf[DataEventSubscriberRegistrar])
   }
 }

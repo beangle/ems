@@ -15,30 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.security
+package org.beangle.ems
 
-import org.beangle.security.authz.{AbstractRoleBasedAuthorizer, AuthorityDomain}
+import org.beangle.commons.logging.{Logger, slf4j}
 
-import scala.concurrent.Future
-
-/**
- * @author chaostone
- */
-class RemoteAuthorizer extends AbstractRoleBasedAuthorizer {
-
-  override def fetchDomain(): AuthorityDomain = {
-    val roots = RemoteService.roots
-    val resources = RemoteService.getAuthorities
-    AuthorityDomain(roots.getOrElse(Set.empty), resources)
-  }
-
-  /**
-   * 此处重载是为了加快启动速度
-   */
-  override def init(): Unit = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-    Future {
-      refresh()
-    }
-  }
-}
+private[ems] object EmsLogger extends Logger(slf4j("org.beangle.ems"))
