@@ -41,29 +41,19 @@ object Ems {
     }
   }
 
-  def base: String = {
-    env.base
-  }
+  def base: String = env.base
 
-  def blob: String = {
-    env.blob
-  }
+  def profile: String = env.profile
 
-  def webapp: String = {
-    env.webapp
-  }
+  def blob: String = env.blob
 
-  def static: String = {
-    env.static
-  }
+  def webapp: String = env.webapp
 
-  def key: String = {
-    env.key
-  }
+  def static: String = env.static
 
-  def properties: Map[String, String] = {
-    env.properties
-  }
+  def key: String = env.key
+
+  def properties: Map[String, String] = env.properties
 
   def isPlatform(contextPath: String): Boolean = {
     cas.endsWith(contextPath) || (api + "/platform").endsWith(contextPath) || portal.endsWith(contextPath)

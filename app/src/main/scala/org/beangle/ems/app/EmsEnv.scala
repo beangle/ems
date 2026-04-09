@@ -18,21 +18,28 @@
 package org.beangle.ems.app
 
 import org.beangle.commons.io.Files./
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.SystemInfo
+import org.beangle.commons.io.{Dirs, Files, IOs}
+import org.beangle.commons.lang.{Strings, SystemInfo}
 
 import java.io.File
 
 object EmsEnv {
 
   def findHome(): String = {
-    SystemInfo.properties.get("ems.base") match {
+    SystemInfo.properties.get("ems.home") match {
       case Some(base) => base
       case None =>
-        val home = SystemInfo.properties.getOrElse("ems.home", SystemInfo.user.home + / + ".ems")
+        val base = SystemInfo.properties.getOrElse("ems.base", SystemInfo.user.home + / + ".ems")
         SystemInfo.properties.get("ems.profile") match {
-          case Some(p) => home + / + p
-          case None => home
+          case None =>
+            val profiles = Dirs.on(base).ls()
+            if (profiles.size == 1) {
+              System.setProperty("ems.profile",profiles.head)
+              base + / + profiles.head
+            } else {
+              throw new RuntimeException(s"Cannot find ems.profile from ${profiles},using -Dems.profile=xx to select one.")
+            }
+          case Some(profile) => base + / + profile
         }
     }
   }
@@ -56,7 +63,8 @@ object EmsEnv {
     val webapp = reader.find("webapp", "{base}")
     val static = reader.find("static", "{base}/static")
     val key = reader.readKey()
-    EmsEnv(home, base, cas, portal, index, api, blob, webapp, static, key, properties)
+    val profile: String = Strings.substringAfterLast(home, Files./)
+    EmsEnv(home, profile, base, cas, portal, index, api, blob, webapp, static, key, properties)
   }
 
   def apply(home: String, properties: Map[String, String]): EmsEnv = {
@@ -104,7 +112,7 @@ class PropertyReader(base: String, properties: Map[String, String]) {
   }
 }
 
-case class EmsEnv(home: String, base: String, cas: String, portal: String,
+case class EmsEnv(home: String, profile: String, base: String, cas: String, portal: String,
                   index: String, api: String, blob: String, webapp: String,
                   static: String, key: String, properties: Map[String, String]) {
 }
