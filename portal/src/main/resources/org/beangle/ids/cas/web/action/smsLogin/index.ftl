@@ -25,7 +25,7 @@
     </div>
     <div class="login">
      <img style="width:200px;height:35px;margin-top:20px;margin-bottom:23px" src="${b.static_url('local','images/system.jpg')}"/>
-     <form name="loginForm" action="${b.base}/sms-login" target="_top" method="post">
+     <form name="loginForm" action="${b.base}/cas/sms-login" target="_top" method="post">
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
         <div style="text-align:center;color:red;margin-top: -24px;max-width:210px;" id="error_msg">${error!'&nbsp;'}</div>
@@ -112,7 +112,7 @@
       document.getElementById("error_msg").innerHTML=msg;
     }
     function changeLogin(){
-      form.action="${b.base}/login";
+      form.action="${b.base}/cas/login";
       addHidden(form,"local","1");
       form.submit();
     }

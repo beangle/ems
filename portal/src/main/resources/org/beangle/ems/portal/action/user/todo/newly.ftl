@@ -12,7 +12,7 @@
     <div class="dropdown-divider"></div>
   [/#list]
   <div>
-    <a  class="float-right text-sm text-muted" href="${ems.webapp}${b.base}/user/todo" target="_blank">
+    <a  class="float-right text-sm text-muted" href="${ems.webapp}${b.base}/portal/user/todo" target="_blank">
      <span>查看所有代办</span>
     </a>
   </div>

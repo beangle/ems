@@ -155,7 +155,7 @@ ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
         document.getElementById("error_msg").innerHTML=msg;
     }
     function changeLogin(){
-      form.action="${b.base}/sms-login";
+      form.action="${b.base}/cas/sms-login";
       addHidden(form,"local","1");
       form.submit();
     }
