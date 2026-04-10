@@ -26,8 +26,8 @@ import org.beangle.ems.app.Ems
 
 import java.io.*
 import java.net.URI
-import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class RemoteRepository(val base: String, val dir: String, user: String, key: String) extends Repository {
@@ -38,7 +38,7 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
   override def remove(path: String): Boolean = {
     require(path.startsWith("/"))
     val load = Request.asJson("{}").bearer(Ems.key)
-    val response = HttpUtils.delete(s"$base$dir${path}", load)
+    val response = HttpUtils.delete(url(path), load)
     if (response.status >= 500) {
       throw new Exception("Remove Failed,Response is " + response.getText)
     } else {
@@ -61,19 +61,19 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
   override def uri(path: String): URI = {
     require(path.startsWith("/"))
     val now = LocalDateTime.now(ZoneId.of("UTC")).format(formatter)
-    val token = Digests.sha1Hex(s"$dir$path$key$now")
-    Networks.uri(s"$base$dir${path}?token=$token&t=$now")
+    val token = Digests.sha1Hex(s"/${Ems.profile}$dir$path$key$now")
+    Networks.uri(url(s"${path}?token=$token&t=$now"))
   }
 
   override def upload(folder: String, is: InputStream, fileName: String, owner: String): BlobMeta = {
     require(folder.startsWith("/"))
     val folderUrl = if (folder.endsWith("/")) folder else folder + "/"
     val params = Map("owner" -> owner, "file" -> (fileName, is))
-    val response = HttpUtils.post(s"$base$dir$folderUrl", Request.asForm(params).bearer(Ems.key))
+    val response = HttpUtils.post(url(folderUrl), Request.asForm(params).bearer(Ems.key))
     if (response.status == 200) {
       val res = response.getText
       val meta = BlobMeta.fromJson(res)
-      meta.filePath = meta.filePath.substring(dir.length)
+      meta.filePath = subdir(meta.filePath)
       import scala.concurrent.ExecutionContext.Implicits.global
       Future {
         val jb = Json.parseObject(res)
@@ -89,6 +89,21 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
       meta
     } else {
       throw new RuntimeException("Upload failed,response code is " + response.status + " and response body:" + response.getText)
+    }
+  }
+
+  private def url(path: String): String = {
+    s"${base}/${Ems.profile}${dir}${path}"
+  }
+
+  private def subdir(fullPath: String): String = {
+    val bucketAndDir = s"/${Ems.profile}${dir}"
+    if (fullPath.startsWith(bucketAndDir)) {
+      fullPath.substring(bucketAndDir.length)
+    } else if(fullPath.startsWith (dir)) {
+      fullPath.substring(dir.length)
+    }else {
+      fullPath
     }
   }
 

@@ -36,7 +36,6 @@ object EmsApp {
 
   def getBlobRepository(remote: Boolean = true): Repository = {
     val dir = "/" + Strings.substringBefore(name, "-")
-    //不要使用Ems.innerEnv，这里需要域名作为桶名
     if remote then new RemoteRepository(Ems.blob, dir, name, Ems.key)
     else new LocalRepository(Ems.home + "/micdn/blob", dir)
   }
