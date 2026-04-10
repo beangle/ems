@@ -80,7 +80,7 @@ class DefaultModule extends BindModule, Config.Provider {
     val filters = Collections.newBuffer[Binder.Reference]
     if remoteOpenidServer.isDefined then filters.addOne(ref("security.Filter.OpenidPreauth"))
     if remoteCasServer.isDefined || remoteLtpa.isDefined then filters.addOne(ref("security.Filter.Preauth"))
-    bind("security.Filter.authorization_cas", new AuthorizationFilter(ProtectedAuthorizer))
+    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin))))
     filters.addOne(ref("security.Filter.authorization_cas"))
     interceptor.property("filters", filters.toList)
 

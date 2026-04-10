@@ -67,8 +67,6 @@
               <div class="input-group mb-1">
                     [#if setting.enableSmsLogin]
                     <div style="padding-top: 5px;margin-right: 40px;"><a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;">短信登录</a></div>
-                    [#else]
-                    <div style="padding-top: 5px;margin-right: 40px;"><a href="safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
                     [/#if]
                     <input type="submit" name="submitBtn" tabindex="6" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
               </div>
@@ -77,7 +75,9 @@
         </form>
         <table class="foottable">
             <tr>
-                <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px"></td>
+                <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px">
+                   <div style="padding-top: 5px;"><a href="${b.base}/cas/safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
+                </td>
             </tr>
         </table>
    </div>

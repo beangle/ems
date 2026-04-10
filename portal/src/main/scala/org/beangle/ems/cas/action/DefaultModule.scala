@@ -27,6 +27,7 @@ import org.beangle.notify.sms.SmsCodeService
 
 class DefaultModule extends BindModule {
   override def binding(): Unit = {
+    bind(classOf[IndexAction])
     //standard cas action
     bind(classOf[LoginAction])
     bind(classOf[SmsLoginAction]).onExist(classOf[SmsCodeService])
