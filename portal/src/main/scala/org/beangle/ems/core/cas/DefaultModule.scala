@@ -24,10 +24,11 @@ import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.security.service.impl.OAuthServiceImpl
 import org.beangle.ids.cas.CasSetting
+import org.beangle.security.authz.ProtectedAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
 import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
 import org.beangle.security.realm.openid.OpenidPreauthFilter
-import org.beangle.security.web.access.{DefaultAccessDeniedHandler, SecurityInterceptor}
+import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, SecurityInterceptor}
 import org.beangle.security.web.{EntryPoint, UrlEntryPoint}
 
 import java.io.FileInputStream
@@ -79,6 +80,8 @@ class DefaultModule extends BindModule, Config.Provider {
     val filters = Collections.newBuffer[Binder.Reference]
     if remoteOpenidServer.isDefined then filters.addOne(ref("security.Filter.OpenidPreauth"))
     if remoteCasServer.isDefined || remoteLtpa.isDefined then filters.addOne(ref("security.Filter.Preauth"))
+    bind("security.Filter.authorization_cas", new AuthorizationFilter(ProtectedAuthorizer))
+    filters.addOne(ref("security.Filter.authorization_cas"))
     interceptor.property("filters", filters.toList)
 
     //业务模块使用
