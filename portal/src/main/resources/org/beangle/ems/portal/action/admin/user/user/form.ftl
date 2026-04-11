@@ -63,7 +63,7 @@
 [/@]
   [#if user.persisted]
   [@b.tab label="全局数据权限" ]
-  [@b.div href="/admin/user/profile?forEdit=1&profile.user.id=${user.id}" /]
+  [@b.div href="/portal/admin/user/profile?forEdit=1&profile.user.id=${user.id}" /]
   [/@]
   [/#if]
 [/@]

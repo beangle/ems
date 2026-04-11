@@ -18,8 +18,8 @@
 package org.beangle.ems.app.rule
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.{JsonObject, Json}
-import org.beangle.commons.lang.Strings
+import org.beangle.commons.json.{Json, JsonObject}
+import org.beangle.commons.lang.{ScopedContext, Strings}
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.ems.app.Ems
 
@@ -44,22 +44,16 @@ class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 }
 
 object RuleEngine {
-  private val cache = new ThreadLocal[mutable.Map[String, RuleEngine]]
-
-  def clearLocalCache(): Unit = {
-    cache.remove()
-  }
+  private val engineKey = ScopedContext.Key[mutable.Map[String, RuleEngine]]("beangle.ems.rule-engine")
 
   def get(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
-    if (cache.get == null) {
-      cache.set(Collections.newMap[String, RuleEngine])
-    }
+    val cache = ScopedContext.getOrElseUpdate(engineKey, Collections.newMap[String, RuleEngine])
     val key = ruleIds + stopWhenFail
-    cache.get.get(key) match {
+    cache.get(key) match {
       case Some(engine) => engine
       case None =>
         val ng = of(ruleIds, stopWhenFail)
-        cache.get.put(key, ng)
+        cache.put(key, ng)
         ng
     }
   }

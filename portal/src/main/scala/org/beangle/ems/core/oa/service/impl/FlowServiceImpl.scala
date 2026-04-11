@@ -208,7 +208,7 @@ class FlowServiceImpl extends FlowService {
       at.assignees.addAll(users)
     }
     entityDao.saveOrUpdate(at)
-    //create task synchronized
+    //create task
     val task = p.newTask(at)
     //update initiator as first task assignees
     if (p.initiator.isEmpty && p.tasks.size == 1 && at.assignees.size == 1) {

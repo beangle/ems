@@ -67,7 +67,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val memberMap = new collection.mutable.HashMap[Role, RoleMember]
     for (gm <- userMembers) {
       if (gm.role.domain == domainService.getDomain) {
-        memberMap.put(gm.role, gm.asInstanceOf[RoleMember])
+        memberMap.put(gm.role, gm)
       }
     }
     val newMembers = Collections.newBuffer[RoleMember]
