@@ -46,6 +46,7 @@ class DefaultModule extends BindModule, Config.Provider {
   override def binding(): Unit = {
     readAppFile()
     val localLogin = "/cas/login"
+    val smsLogin = "/cas/sms-login"
     //1.如果有配置CAS方式的SSO
     if (remoteCasServer.isDefined) {
       bind(classOf[CasConfig]).constructor($("remote.cas.server"))
@@ -80,7 +81,7 @@ class DefaultModule extends BindModule, Config.Provider {
     val filters = Collections.newBuffer[Binder.Reference]
     if remoteOpenidServer.isDefined then filters.addOne(ref("security.Filter.OpenidPreauth"))
     if remoteCasServer.isDefined || remoteLtpa.isDefined then filters.addOne(ref("security.Filter.Preauth"))
-    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin))))
+    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin, smsLogin))))
     filters.addOne(ref("security.Filter.authorization_cas"))
     interceptor.property("filters", filters.toList)
 

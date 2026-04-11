@@ -21,66 +21,65 @@
 <body>
 
 <div class="logindiv">
-    <div class="bulletin">
-        <img style="width:100%;height:80px" src="${b.static_url('local','images/banner.jpg')}"/>
-        <table style="width:100%;"><tr><td><img style="width:100%;height:230px" src="${b.static_url('local','images/bg.jpg')}"/></td></tr></table>
-    </div>
-    <div class="login">
-     <img style="width:200px;height:35px;margin-top:20px;margin-bottom:23px" src="${b.static_url('local','images/system.png')}"/>
-     <form name="loginForm" action="${b.base}/cas/login" target="_top" method="post">
+  <div class="bulletin">
+    <img style="width:100%;height:80px" src="${b.static_url('local','images/banner.jpg')}"/>
+    <table style="width:100%;"><tr><td><img style="width:100%;height:230px" src="${b.static_url('local','images/bg.jpg')}"/></td></tr></table>
+  </div>
+  <div class="login">
+    <img style="width:200px;height:35px;margin-top:20px;margin-bottom:23px" src="${b.static_url('local','images/system.png')}"/>
+    <form name="loginForm" action="${b.base}/cas/login" target="_top" method="post">
      [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
      [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
      [#if Parameters['keyboard']??]<input type="hidden" name="keyboard" value="${Parameters['keyboard']?html}">[/#if]
-        <div style="color:red;margin: -24px auto 0 auto;max-width: 220px;" id="error_msg">${error!'&nbsp;'}</div>
-        <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
-            [#if setting.remoteLogoutUrl?? && (setting.displayLoginSwitch!false)]
-            <div>
-                  <input type="radio" name="loginType" value="local" checked="checked" id="local_login"><label for="local_login">本地登录</label>
-                  <input type="radio" name="loginType"  onchange="remoteLogin(this,this.form)" value="remote" id="remote_login"><label for="remote_login">统一身份认证</label>
-            </div>
+      <div style="color:red;margin: -24px auto 0 auto;max-width: 220px;" id="error_msg">${error!'&nbsp;'}</div>
+      <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
+        [#if setting.remoteLogoutUrl?? && (setting.displayLoginSwitch!false)]
+        <div>
+          <input type="radio" name="loginType" value="local" checked="checked" id="local_login"><label for="local_login">本地登录</label>
+          <input type="radio" name="loginType"  onchange="remoteLogin(this,this.form)" value="remote" id="remote_login"><label for="remote_login">统一身份认证</label>
+        </div>
+        [/#if]
+        <div class="col-auto">
+          <div class="input-group mb-1">
+            <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
+            <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="${b.text('ui.login.username.tip')}" type="text" value="">
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="input-group mb-1">
+            <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
+            <input name="password_text" id="password_text" tabindex="2" autocomplete="off" class="form-control" placeholder="[#if setting.passwordReadOnly && setting.remoteLogoutUrl??]统一身份认证密码[#else]密码[/#if]" type="password" value="">
+            <input name="password" type="hidden"/>
+          </div>
+        </div>
+        [#if setting.enableCaptcha]
+        <div class="col-auto">
+          <div class="input-group mb-1">
+            <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
+            <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码">
+            <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
+              <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
+            </div></div>
+          </div>
+        </div>
+        [/#if]
+        <div class="col-auto">
+          <div class="input-group mb-1" style="justify-content:center;gap:20px;">
+            [#if setting.enableSmsLogin]
+            <a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;margin-top: auto;">短信登录</a>
             [/#if]
-                  <div class="col-auto">
-                    <div class="input-group mb-1">
-                      <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
-                      <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="${b.text('ui.login.username.tip')}" type="text" value="">
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <div class="input-group mb-1">
-                      <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
-                      <input name="password_text" id="password_text" tabindex="2" autocomplete="off" class="form-control" placeholder="[#if setting.passwordReadOnly && setting.remoteLogoutUrl??]统一身份认证密码[#else]密码[/#if]" type="password" value="">
-                      <input name="password" type="hidden"/>
-                    </div>
-                  </div>
-            [#if setting.enableCaptcha]
-                  <div class="col-auto">
-                    <div class="input-group mb-1">
-                      <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
-                      <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码">
-                      <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
-                        <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
-                      </div></div>
-                    </div>
-                  </div>
-            [/#if]
-            <div class="col-auto">
-              <div class="input-group mb-1">
-                    [#if setting.enableSmsLogin]
-                    <div style="padding-top: 5px;margin-right: 40px;"><a href="javascript:void(0)" onclick="changeLogin()" style="font-size:0.8em;color:#515151;">短信登录</a></div>
-                    [/#if]
-                    <input type="submit" name="submitBtn" tabindex="6" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
-              </div>
-            </div>
-         </div>
-        </form>
-        <table class="foottable">
-            <tr>
-                <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px">
-                   <div style="padding-top: 5px;"><a href="${b.base}/cas/safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></div>
-                </td>
-            </tr>
-        </table>
-   </div>
+            <input type="submit" name="submitBtn" tabindex="6" class="btn btn-primary btn-sm"  onclick="return checkLogin(this.form)" value="登录"/>
+          </div>
+        </div>
+      </div>
+    </form>
+    <table class="foottable">
+      <tr>
+        <td><img src="${b.static_url('local','images/weixin.jpg')}" height="75px"></td>
+        <td><a href="${b.base}/cas/safety.html" target="_blank" style="font-size:0.8em;color:#515151;">隐私安全</a></td>
+      </tr>
+    </table>
+  </div>
 </div>
 ${b.script("cryptojs","rollups/aes.js")}
 ${b.script("cryptojs","components/mode-ecb.js")}
