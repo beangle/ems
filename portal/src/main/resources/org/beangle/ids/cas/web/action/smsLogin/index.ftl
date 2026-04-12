@@ -28,6 +28,7 @@
     <form name="loginForm" action="${b.base}/cas/sms-login" target="_top" method="post">
       [#if Parameters['sid_name']??]<input type="hidden" name="sid_name" value="${Parameters['sid_name']?html}">[/#if]
       [#if Parameters['service']??]<input type="hidden" name="service" value="${Parameters['service']?html}">[/#if]
+      [#if Parameters['local']??]<input type="hidden" name="local" value="1">[/#if]
       <div style="text-align:center;color:red;margin-top: -24px;max-width:210px;" id="error_msg">${error!'&nbsp;'}</div>
       <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
         <div class="col-auto">
@@ -47,7 +48,7 @@
         <div class="col-auto">
           <div class="input-group mb-1">
             <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
-            <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码">
+            <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码" onblur="validate_captcha(this.value)">
             <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
               <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
             </div></div>
@@ -99,7 +100,18 @@
     }
 [#if setting.enableCaptcha]
     function change_captcha(){
-       document.getElementById('captcha_image').src="${captcha_url}?t="+(new Date()).getTime();
+      document.getElementById('captcha_image').src="${captcha_url}?t="+(new Date()).getTime();
+    }
+    function validate_captcha(response){
+      if(response){
+        $.get("${captcha_check_url}".replace("{response}",response),function(data,status){
+          if(data.code==200){
+            displayInfo("验证码正确");
+          }else{
+            displayError("验证码不正确");
+          }
+        });
+      }
     }
 [/#if]
     function addHidden(form,name,value){
@@ -111,6 +123,11 @@
     }
     function displayError(msg){
       document.getElementById("error_msg").innerHTML=msg;
+      document.getElementById("error_msg").style.color="red";
+    }
+    function displayInfo(msg){
+      document.getElementById("error_msg").innerHTML=msg;
+      document.getElementById("error_msg").style.color="green";
     }
     function changeLogin(){
       form.action="${b.base}/cas/login";
