@@ -223,7 +223,7 @@
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="${b.base}" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsnav.clearNavState();return true;">
+    <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsnav.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
