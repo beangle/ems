@@ -18,7 +18,6 @@
 package org.beangle.ems.app.dao
 
 import org.beangle.commons.io.IOs
-import org.beangle.ems.app.util.AesEncryptor
 import org.beangle.ems.app.{Ems, EmsApi, EmsApp}
 import org.beangle.jdbc.ds.DataSourceFactory
 
@@ -60,10 +59,11 @@ class AppDataSourceFactory extends DataSourceFactory {
   protected override def postInit(): Unit = {
     //针对敏感信息进行解密
     val decryptor = Ems.decryptor
-    this.url = decryptor.process(null, this.url)
+    this.props.get("url") foreach { jdbcUrl =>
+      this.props.put("url", decryptor.process(null, jdbcUrl))
+    }
     this.user = decryptor.process(null, this.user)
     this.password = decryptor.process(null, this.password)
-
     setApplicationName(EmsApp.name)
     setPoolName(EmsApp.name + ":" + this.name)
   }
