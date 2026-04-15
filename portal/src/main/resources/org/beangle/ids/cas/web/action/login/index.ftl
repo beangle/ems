@@ -86,7 +86,6 @@
 ${b.script("cryptojs","rollups/aes.js")}
 ${b.script("cryptojs","components/mode-ecb.js")}
 [#if Parameters['keyboard']??]
-${b.script("jquery","jquery.min.js")}
 ${b.script("virtual-keyboard","dist/js/jquery.keyboard.min.js")}
 [/#if]
 <script type="text/javascript">
