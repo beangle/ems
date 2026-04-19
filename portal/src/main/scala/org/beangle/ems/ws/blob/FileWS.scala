@@ -86,18 +86,23 @@ class FileWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     } else {
       val app = appOpt.get
       if (get("digest").contains(Digests.md5Hex(Ems.key + jsonBody))) {
-        val meta = new BlobMeta
-        meta.domain = domainService.getDomain
-        meta.profile = getProfile(meta.domain, jo.getString("profile"))
+        val domain = domainService.getDomain
+        val profile = getProfile(domain, jo.getString("profile"))
+        val filePath = jo.getString("filePath")
+
+        val meta = entityDao.findBy(classOf[BlobMeta], "profile" -> profile, "filePath" -> filePath).headOption.getOrElse(new BlobMeta)
+        meta.domain = domain
+        meta.profile = profile
 
         meta.owner = jo.getString("owner")
         meta.name = jo.getString("name")
         meta.fileSize = jo.getInt("fileSize")
         meta.sha = jo.getString("sha")
         meta.mediaType = jo.getString("mediaType")
-        meta.filePath = jo.getString("filePath")
+        meta.filePath = filePath
         meta.updatedAt = jo.getInstant("updatedAt")
         entityDao.saveOrUpdate(meta)
+
         rs.add("code", 200)
         rs.add("msg", "ok")
       } else {

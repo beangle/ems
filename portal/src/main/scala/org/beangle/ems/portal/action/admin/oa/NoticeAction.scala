@@ -18,8 +18,10 @@
 package org.beangle.ems.portal.action.admin.oa
 
 import jakarta.servlet.http.Part
+import org.beangle.commons.collection.Properties
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.oa.model.*
 import org.beangle.ems.core.oa.service.DocService
 import org.beangle.ems.core.user.model.{Category, User}
@@ -27,9 +29,9 @@ import org.beangle.ems.core.user.service.UserService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.event.bus.DataEvent
 import org.beangle.security.Securities
-import org.beangle.webmvc.annotation.ignore
-import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import org.beangle.webmvc.annotation.{ignore, response}
+import org.beangle.webmvc.view.View
 
 import java.time.{Instant, LocalDate}
 
@@ -37,6 +39,8 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
 
   var docService: DocService = _
   var userService: UserService = _
+
+  private val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar", "jpg", "png")
 
   override protected def indexSetting(): Unit = {
     put("categories", userService.getCategories())
@@ -76,6 +80,40 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
     builder
   }
 
+  @response
+  def uploadImage(): Properties = {
+    val rs = new Properties()
+    get("imgFile", classOf[Part]) match
+      case Some(part) =>
+        val blob = EmsApp.getBlobRepository(true)
+        val notice = entityDao.find(classOf[Notice], getLongId("notice")).head
+        val doc = new Doc
+        doc.app = notice.app
+        doc.uploadBy = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+        doc.updatedAt = Instant.now
+        if (allowExts.contains(Strings.substringAfterLast(part.getSubmittedFileName, "."))) {
+          doc.embedded = true
+          docService.save(doc, part.getSubmittedFileName, part.getInputStream)
+          notice.docs += doc
+          entityDao.saveOrUpdate(notice)
+          var url = blob.uri(doc.filePath).toString
+          if (url.contains("?")) {
+            url = Strings.substringBefore(url, "?")
+          }
+          rs.put("error",0)
+          rs.put("url", url)
+          rs.put("message", "上传成功d")
+        } else {
+          rs.put("error", 1)
+          rs.put("message", "不支持的附件类型")
+        }
+      case None =>
+        rs.put("error", 1)
+        rs.put("message", "图片不能为空")
+
+    rs
+  }
+
   @ignore
   override protected def saveAndRedirect(notice: Notice): View = {
     notice.updatedAt = Instant.now
@@ -91,7 +129,6 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
     notice.operator = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
     notice.categories.clear()
     notice.categories ++= entityDao.find(classOf[Category], getIntIds("category"))
-    val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar", "jpg", "png")
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
       val doc = new Doc
@@ -100,6 +137,7 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
       doc.categories ++= notice.categories
       doc.updatedAt = Instant.now
       if (allowExts.contains(Strings.substringAfterLast(docFile.getSubmittedFileName, "."))) {
+        doc.embedded = true
         docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
         notice.docs += doc
       } else {

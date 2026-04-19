@@ -14,8 +14,11 @@
   [@b.radios name="notice.sticky" label="是否置顶" value=notice.sticky required="true" /]
   [@b.radios name="notice.popup" label="是否弹窗" value=notice.popup required="true" /]
   [@b.startend label="有效期限" name="notice.beginOn,notice.endOn" required="true,true" start=notice.beginOn end=notice.endOn format="date"/]
-  [@b.editor name="notice.contents" id="notice_content" label="内容" rows="20" cols="80" value=notice.contents maxlength="30000" required="true"/]
-
+  [#if notice.persisted]
+    [@b.editor name="notice.contents" id="notice_content" theme="mini" label="内容" rows="20" cols="80" value=notice.contents maxlength="30000" required="true" uploadJson="!uploadImage.json?notice.id=${notice.id}"/]
+  [#else]
+    [@b.editor name="notice.contents" id="notice_content" theme="mini" label="内容" rows="20" cols="80" value=notice.contents maxlength="30000" required="true"/]
+  [/#if]
   [#list notice.docs as d]
   [@b.field label="附件"]${d.name}[/@]
   [/#list]

@@ -46,6 +46,7 @@ class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
 
   override protected def getQueryBuilder: OqlBuilder[Doc] = {
     val builder = super.getQueryBuilder
+    builder.where("doc.embedded=false")
     builder.where("doc.app.domain=:domain", domainService.getDomain)
     getInt("category.id") foreach { categoryId =>
       builder.join("doc.categories", "uc")

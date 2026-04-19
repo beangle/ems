@@ -43,6 +43,9 @@ class Doc extends LongId, Updated {
 
   var categories: mutable.Set[Category] = Collections.newSet
 
+  /** 是否嵌入式到公告 */
+  var embedded: Boolean = _
+
   var archived: Boolean = _
 
   def image: Boolean = {
