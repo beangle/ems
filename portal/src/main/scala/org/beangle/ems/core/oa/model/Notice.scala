@@ -59,4 +59,9 @@ class Notice extends LongId, DateRange {
   var docs: mutable.Buffer[Doc] = Collections.newBuffer[Doc]
 
   var status: NoticeStatus = NoticeStatus.Draft
+
+  def addDoc(doc: Doc): Unit = {
+    doc.notice = Some(this)
+    docs.addOne(doc)
+  }
 }

@@ -92,15 +92,14 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
         doc.uploadBy = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
         doc.updatedAt = Instant.now
         if (allowExts.contains(Strings.substringAfterLast(part.getSubmittedFileName, "."))) {
-          doc.embedded = true
           docService.save(doc, part.getSubmittedFileName, part.getInputStream)
-          notice.docs += doc
+          notice.addDoc(doc)
           entityDao.saveOrUpdate(notice)
           var url = blob.uri(doc.filePath).toString
           if (url.contains("?")) {
             url = Strings.substringBefore(url, "?")
           }
-          rs.put("error",0)
+          rs.put("error", 0)
           rs.put("url", url)
           rs.put("message", "上传成功d")
         } else {
@@ -137,9 +136,8 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
       doc.categories ++= notice.categories
       doc.updatedAt = Instant.now
       if (allowExts.contains(Strings.substringAfterLast(docFile.getSubmittedFileName, "."))) {
-        doc.embedded = true
         docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
-        notice.docs += doc
+        notice.addDoc(doc)
       } else {
         disallowed = true
       }
