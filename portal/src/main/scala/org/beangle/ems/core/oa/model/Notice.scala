@@ -56,12 +56,16 @@ class Notice extends LongId, DateRange {
 
   var popup: Boolean = _
 
-  var docs: mutable.Buffer[Doc] = Collections.newBuffer[Doc]
+  var attachments: mutable.Buffer[NoticeAttachment] = Collections.newBuffer[NoticeAttachment]
 
   var status: NoticeStatus = NoticeStatus.Draft
 
-  def addDoc(doc: Doc): Unit = {
-    doc.notice = Some(this)
-    docs.addOne(doc)
+  def addAttachment(a: NoticeAttachment): Unit = {
+    a.notice = this
+    attachments.addOne(a)
+  }
+
+  def docs: Seq[NoticeAttachment] = {
+    attachments.filter(x => !x.embedded).toSeq
   }
 }

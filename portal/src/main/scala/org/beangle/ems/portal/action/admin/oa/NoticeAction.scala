@@ -33,11 +33,11 @@ import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.{ignore, response}
 import org.beangle.webmvc.view.View
 
-import java.time.{Instant, LocalDate}
+import java.io.InputStream
+import java.time.{Instant, LocalDate, ZoneId}
 
 class NoticeAction extends RestfulAction[Notice], DomainSupport {
 
-  var docService: DocService = _
   var userService: UserService = _
 
   private val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar", "jpg", "png")
@@ -56,10 +56,13 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
   }
 
   override protected def removeAndRedirect(notices: Seq[Notice]): View = {
-    val docs = notices.flatMap(_.docs)
-    entityDao.remove(notices, docs)
+    val attachments = notices.flatMap(_.attachments)
+    entityDao.remove(notices, attachments)
     databus.publish(DataEvent.remove(notices))
-    if (docs.nonEmpty) databus.publish(DataEvent.remove(docs))
+    val blob = EmsApp.getBlobRepository(true)
+    attachments foreach { a =>
+      blob.remove(a.filePath)
+    }
     redirect("search", "info.remove.success")
   }
 
@@ -80,6 +83,19 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
     builder
   }
 
+  def saveAttachment(notice: Notice, filename: String, is: InputStream): NoticeAttachment = {
+    val repo = EmsApp.getBlobRepository()
+
+    val meta = repo.upload(s"/notice/${notice.updatedAt.atZone(ZoneId.systemDefault()).getYear}", is, filename, notice.operator.code + " " + notice.operator.name)
+    val attachment = new NoticeAttachment
+    attachment.name = filename
+    attachment.filePath = meta.filePath
+    attachment.fileSize = meta.fileSize
+    attachment.embedded = false
+    attachment.notice = notice
+    attachment
+  }
+
   @response
   def uploadImage(): Properties = {
     val rs = new Properties()
@@ -87,15 +103,13 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
       case Some(part) =>
         val blob = EmsApp.getBlobRepository(true)
         val notice = entityDao.find(classOf[Notice], getLongId("notice")).head
-        val doc = new Doc
-        doc.app = notice.app
-        doc.uploadBy = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-        doc.updatedAt = Instant.now
+        val a = new NoticeAttachment
         if (allowExts.contains(Strings.substringAfterLast(part.getSubmittedFileName, "."))) {
-          docService.save(doc, part.getSubmittedFileName, part.getInputStream)
-          notice.addDoc(doc)
+          val attachment = saveAttachment(notice, part.getSubmittedFileName, part.getInputStream)
+          attachment.embedded = true
+          notice.addAttachment(attachment)
           entityDao.saveOrUpdate(notice)
-          var url = blob.uri(doc.filePath).toString
+          var url = blob.uri(attachment.filePath).toString
           if (url.contains("?")) {
             url = Strings.substringBefore(url, "?")
           }
@@ -130,14 +144,9 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
     notice.categories ++= entityDao.find(classOf[Category], getIntIds("category"))
     var disallowed = false
     getAll("notice_doc", classOf[Part]) foreach { docFile =>
-      val doc = new Doc
-      doc.app = notice.app
-      doc.uploadBy = notice.operator
-      doc.categories ++= notice.categories
-      doc.updatedAt = Instant.now
       if (allowExts.contains(Strings.substringAfterLast(docFile.getSubmittedFileName, "."))) {
-        docService.save(doc, docFile.getSubmittedFileName, docFile.getInputStream)
-        notice.addDoc(doc)
+        val a = saveAttachment(notice, docFile.getSubmittedFileName, docFile.getInputStream)
+        notice.addAttachment(a)
       } else {
         disallowed = true
       }

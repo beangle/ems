@@ -58,7 +58,6 @@ class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   private def buildQuery(category: String): OqlBuilder[Doc] = {
     val query = OqlBuilder.from(classOf[Doc], "doc")
-    query.where("doc.notice is null")
     query.join("doc.categories", "uc")
     query.where("uc.id=:categoryId", category.toInt)
     query.where("doc.archived=false")

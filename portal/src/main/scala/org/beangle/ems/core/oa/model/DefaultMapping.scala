@@ -31,10 +31,12 @@ object DefaultMapping extends MappingModule {
       e.contents is lob
     }.cacheable()
 
+    bind[NoticeAttachment].cacheable()
+
     bind[Notice].declare { e =>
       e.contents is lob
       e.issuer is length(40)
-      e.docs is one2many("notice")
+      e.attachments is depends("notice")
     }.cacheable()
 
     bind[SensitiveWord].declare { e =>
