@@ -20,7 +20,7 @@ package org.beangle.ems.core
 import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.cache.redis.RedisClientFactory
 import org.beangle.commons.cdi.BindModule
-import org.beangle.ems.app.cache.Redis
+import org.beangle.ems.core.cache.Redis
 
 class CacheModule extends BindModule {
 

@@ -20,18 +20,16 @@ package org.beangle.ems.ws.config
 import jakarta.servlet.http.HttpServletResponse
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.collection.{Collections, Properties}
+import org.beangle.commons.collection.Properties
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.Networks
 import org.beangle.ems.app.Ems
-import org.beangle.ems.app.cache.Redis
+import org.beangle.ems.core.cache.Redis
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
-
-import java.net.{Inet4Address, NetworkInterface}
 
 /** 应用查询redis服务的配置信息
  */
@@ -41,6 +39,7 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
 
   private var host: String = "127.0.0.1"
   private var port: Int = 6379
+  private var password: Option[String] = None
 
   private val ips: Set[String] = Networks.addresses(1)
 
@@ -49,6 +48,7 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
     if conf.nonEmpty then
       this.host = conf("host")
       this.port = conf("port").toInt
+      this.password = conf.get("password")
   }
 
   @mapping(value = "{app}")
@@ -68,6 +68,10 @@ class RedisWS extends ActionSupport, ServletSupport, Initializing {
       val properties = new Properties
       properties.put("host", host)
       properties.put("port", port)
+      password foreach { p =>
+        val decryptor = Ems.decryptor
+        properties.put("password", decryptor.encrypt(p))
+      }
 
       val ds = new Properties()
       ds.put("redis", properties)

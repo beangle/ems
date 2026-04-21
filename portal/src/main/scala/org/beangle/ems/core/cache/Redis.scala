@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.app.cache
+package org.beangle.ems.core.cache
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.net.http.HttpUtils
 import org.beangle.commons.xml.{Document, Node}
-import org.beangle.ems.app.{EmsApi, EmsApp}
+import org.beangle.ems.app.{Ems, EmsApp}
 
 import java.io.FileInputStream
 
@@ -47,17 +46,16 @@ object Redis {
       val is = new FileInputStream(file)
       (Document.parse(is) \\ "redis") foreach { e => elem = e }
     }
-    if (null == elem) {
-      val res = HttpUtils.get(EmsApi.getRedisUrl)
-      if (res.isOk) {
-        (Document.parse(res.getText) \\ "redis") foreach { e => elem = e }
-      }
-    }
-
     if (null != elem) {
       val props = Collections.newMap[String, String]
       elem \ "_" foreach { n =>
-        props.put(n.label, n.text.trim())
+        val k = n.label
+        var v = n.text.trim()
+        if (k == "password") {
+          val decryptor = Ems.decryptor
+          v = decryptor.process(k, v)
+        }
+        props.put(k, v)
       }
       props.toMap
     } else {

@@ -85,8 +85,15 @@ object Ems {
     java.util.Base64.getUrlEncoder.withoutPadding().encodeToString(bytes)
   }
 
-  def decryptor: Config.PBEProcessor = {
-    Config.pbe(env.key).asInstanceOf[Config.PBEProcessor]
+  val decryptor: Config.PBEProcessor = Config.pbe(env.key)
+
+  def main(args: Array[String]): Unit = {
+    if (args.length != 2) {
+      println("Usage: Ems key plain")
+      return
+    }
+    val e = Config.pbe(args(0))
+    println(e.encrypt(args(1)))
   }
 
   class Org {

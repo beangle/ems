@@ -18,14 +18,14 @@
 package org.beangle.ems.app
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.config.{Config, XmlConfigs}
+import org.beangle.commons.config.XmlConfigs
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
 import org.beangle.commons.xml.{Document, Node}
 import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 
-import java.io.File
+import java.io.{File, FileInputStream}
 import java.net.URL
 
 object EmsApp {
@@ -34,10 +34,53 @@ object EmsApp {
   val name: String = properties("name")
   val path: String = properties("path")
 
+  private var redisConfig: Map[String, String] = _
+
   def getBlobRepository(remote: Boolean = true): Repository = {
     val dir = "/" + Strings.substringBefore(name, "-")
     if remote then new RemoteRepository(Ems.blob, dir, name, Ems.key)
     else new LocalRepository(Ems.home + "/micdn/blob", dir)
+  }
+
+  def redisConf: Map[String, String] = {
+    if (null == redisConfig) {
+      redisConfig = readResisConf
+    }
+    redisConfig
+  }
+
+  /** 获取Redis配置
+   *
+   * @return
+   */
+  private def readResisConf: Map[String, String] = {
+    var elem: Node = null
+    EmsApp.getAppFile foreach { file =>
+      val is = new FileInputStream(file)
+      (Document.parse(is) \\ "redis") foreach { e => elem = e }
+    }
+    if (null == elem) {
+      val res = HttpUtils.get(EmsApi.getRedisUrl)
+      if (res.isOk) {
+        (Document.parse(res.getText) \\ "redis") foreach { e => elem = e }
+      }
+    }
+
+    if (null != elem) {
+      val props = Collections.newMap[String, String]
+      elem \ "_" foreach { n =>
+        val k = n.label
+        var v = n.text.trim()
+        if (k == "password") {
+          val decryptor = Ems.decryptor
+          v = decryptor.process(k, v)
+        }
+        props.put(k, v)
+      }
+      props.toMap
+    } else {
+      Map.empty
+    }
   }
 
   def getAppFile: Option[File] = {
