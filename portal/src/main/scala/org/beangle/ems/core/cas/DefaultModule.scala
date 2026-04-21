@@ -24,6 +24,7 @@ import org.beangle.commons.xml.Document
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.security.service.impl.OAuthServiceImpl
 import org.beangle.ids.cas.CasSetting
+import org.beangle.ids.cas.web.helper.CasLocalEntryPoint
 import org.beangle.security.authz.ProtectedAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
 import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
