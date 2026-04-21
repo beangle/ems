@@ -348,8 +348,11 @@
       }, 1000);
       emsnav.enableSearch('menu_searcher');
       window.emsnav=emsnav;
+
       [#if Parameters['group.id']?? && Parameters['group.id']?length>0]
-      emsnav.changeGroup(document.getElementById("group_${Parameters['group.id']}"));
+      setTimeout(function(){
+        emsnav.changeGroup(document.getElementById("group_${Parameters['group.id']}"));
+      }, 500);
       [/#if]
     });
   });
