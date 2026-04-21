@@ -61,11 +61,11 @@ class DefaultModule extends BindModule, Config.Provider {
         bind("ltpaTokenGenerator", classOf[LtpaTokenGenerator]).constructor(config.key, config.usernameDns)
         bind("security.Filter.Preauth", classOf[LtpaPreauthFilter])
         // entry point
-        bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor(localLogin).primaryOf(classOf[EntryPoint])
+        bind("security.EntryPoint.url", classOf[CasLocalEntryPoint]).constructor(localLogin).primaryOf(classOf[EntryPoint])
       }
     } else {
       // entry point
-      bind("security.EntryPoint.url", classOf[UrlEntryPoint]).constructor(localLogin).primaryOf(classOf[EntryPoint])
+      bind("security.EntryPoint.url", classOf[CasLocalEntryPoint]).constructor(localLogin).primaryOf(classOf[EntryPoint])
     }
 
     remoteOpenidServer foreach { serverUrl =>

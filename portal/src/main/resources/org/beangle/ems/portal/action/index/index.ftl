@@ -345,12 +345,12 @@
       emsnav.setup(theme,params);
       setTimeout(function(){
         jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");
-        [#if Parameters['group.id']?? && Parameters['group.id']?length>0]
-        emsnav.changeGroup(document.getElementById("group_${Parameters['group.id']}"));
-        [/#if]
       }, 1000);
       emsnav.enableSearch('menu_searcher');
       window.emsnav=emsnav;
+      [#if Parameters['group.id']?? && Parameters['group.id']?length>0]
+      emsnav.changeGroup(document.getElementById("group_${Parameters['group.id']}"));
+      [/#if]
     });
   });
 
