@@ -19,7 +19,6 @@ package org.beangle.ems.app.oa
 
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.lang.Strings
 import org.beangle.commons.net.http.{HttpUtils, Request}
 import org.beangle.ems.app.{Ems, EmsApp}
 
@@ -35,6 +34,11 @@ object Sms {
 
     val res = HttpUtils.post(url, Request.asForm(params))
     res.getText
+  }
+
+  def available: Boolean = {
+    val url = Ems.innerApi + s"/platform/oa/sms/available"
+    HttpUtils.get(url).getText.equals("true")
   }
 
   def verify(mobile: String, code: String): Boolean = {
