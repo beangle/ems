@@ -57,7 +57,7 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
   }
 
   def available(): View = {
-    ok(String.valueOf(smsCodeService.nonEmpty))
+    raw(String.valueOf(smsCodeService.nonEmpty))
   }
 
   @mapping("verify/{mobile}/{code}")

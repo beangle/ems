@@ -38,7 +38,7 @@ object Sms {
 
   def available: Boolean = {
     val url = Ems.innerApi + s"/platform/oa/sms/available"
-    HttpUtils.get(url).getText.equals("true")
+    HttpUtils.get(url).getText.contains("true")
   }
 
   def verify(mobile: String, code: String): Boolean = {
