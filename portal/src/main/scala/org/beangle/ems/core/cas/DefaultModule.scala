@@ -29,8 +29,8 @@ import org.beangle.security.authz.ProtectedAuthorizer
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint, CasPreauthFilter, DefaultTicketValidator}
 import org.beangle.security.realm.ltpa.{LtpaConfig, LtpaPreauthFilter, LtpaTokenGenerator}
 import org.beangle.security.realm.openid.OpenidPreauthFilter
+import org.beangle.security.web.EntryPoint
 import org.beangle.security.web.access.{AuthorizationFilter, DefaultAccessDeniedHandler, SecurityInterceptor}
-import org.beangle.security.web.{EntryPoint, UrlEntryPoint}
 
 import java.io.FileInputStream
 
@@ -48,6 +48,8 @@ class DefaultModule extends BindModule, Config.Provider {
     readAppFile()
     val localLogin = "/cas/login"
     val smsLogin = "/cas/sms-login"
+    val authLogin = "/cas/auth"
+
     //1.如果有配置CAS方式的SSO
     if (remoteCasServer.isDefined) {
       bind(classOf[CasConfig]).constructor($("remote.cas.server"))
@@ -82,7 +84,7 @@ class DefaultModule extends BindModule, Config.Provider {
     val filters = Collections.newBuffer[Binder.Reference]
     if remoteOpenidServer.isDefined then filters.addOne(ref("security.Filter.OpenidPreauth"))
     if remoteCasServer.isDefined || remoteLtpa.isDefined then filters.addOne(ref("security.Filter.Preauth"))
-    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin, smsLogin))))
+    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin, smsLogin, authLogin))))
     filters.addOne(ref("security.Filter.authorization_cas"))
     interceptor.property("filters", filters.toList)
 
