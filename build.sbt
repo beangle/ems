@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.18.24-SNAPSHOT"
+ThisBuild / version := "4.19.0-SNAPSHOT"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -35,7 +35,7 @@ lazy val static = (project in file("static"))
   .settings(
     name := "beangle-ems-static",
     common,
-    crossPaths := false,
+    crossPaths := false
   )
 
 lazy val app = (project in file("app"))
@@ -55,6 +55,7 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
     libraryDependencies ++= webAppDepends
-  ).dependsOn(app)
+  )
+  .dependsOn(app)
 
 publish / skip := true

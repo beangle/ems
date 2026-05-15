@@ -91,7 +91,7 @@
 [/#macro]
 <script>
      jQuery(document).ready(function(){
-       beangle.load(["chosen"],function(){
+       beangle.require(["chosen"],function(){
          jQuery("#activity_table select").each(function(i,e){
            jQuery(e).chosen({placeholder_text_single:"...",no_results_text: "没有找到结果！",search_contains:true,allow_single_deselect:true,width:'150px'});
          });

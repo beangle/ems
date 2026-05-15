@@ -3,7 +3,8 @@
     [#if Parameters['updated']??]
     bar.addItem("退出","logout()")
     function logout(){
-      document.location="${b.url('logout')}"
+      sessionStorage.clear();
+      document.location="${b.url('logout')}";
     }
    [/#if]
     bar.addClose();

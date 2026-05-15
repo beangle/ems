@@ -30,8 +30,8 @@ import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
 import org.beangle.event.bus.DataEvent
-import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.she.webmvc.RestfulAction
+import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.webmvc.view.View
 
 class MenuAction extends RestfulAction[Menu], DomainSupport {
@@ -133,11 +133,8 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
       for (one <- family) one.enabled = false
       entityDao.saveOrUpdate(family)
     }
-
     //refresh all app menus and their children relationships
-    menuService.getMenus(menu.app) foreach { m =>
-      entityDao.refresh(m)
-    }
+    entityDao.evict(classOf[Menu])
     databus.publish(DataEvent.update(menu))
     redirect("search", "info.save.success")
   }

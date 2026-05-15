@@ -209,7 +209,7 @@
               </div>
               [/#if]
               <div class="float-sm-right">
-                <a href="${b.url('!logout')}" onclick="emsnav.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
+                <a href="${b.url('!logout')}" onclick="ems.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
               </div>
@@ -223,7 +223,7 @@
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsnav.clearNavState();return true;">
+    <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="ems.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
@@ -261,9 +261,9 @@
           <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2">
             导航风格:
-            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_light">浅白</label>
-            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="emsnav.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_dark">暗黑</label>
           </div>
           <div class="mb-2">
@@ -299,7 +299,7 @@
               <li class="mb-2">查询区背景：<input type="color" id="theme_searchBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">工具栏背景：<input type="color" id="theme_gridbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">表格边框颜色：<input type="color" id="theme_gridBorderColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
-              <li><button class="btn btn-outline-primary btn-sm" onclick="emsnav.changeTheme(null,true)">恢复默认值</button>
+              <li><button class="btn btn-outline-primary btn-sm" onclick="ems.changeTheme(null,true)">恢复默认值</button>
             </ul>
           </div>
         </div>
@@ -315,13 +315,24 @@
   <div class="control-sidebar-bg"></div>
 </div>
 <script type="text/javascript">
-  beangle.load(["adminlte","ems","ems-nav"],function(adminlte,ems,emsnav){
+  beangle.require(["wujie"], function (wujie) {
+    if (wujie) window.wujie = wujie;
+  });
+
+  beangle.require(["adminlte","ems"], function (adminlte, ems) {
     ems.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}',"title":'${nav.domain.title}','base':'${nav.app.base}','url':'${b.url('!index')}','navStyle':'adminlte'}
     var params={}
     [#list nav.params as k,v]
     params['${k}']='${v}';
     [/#list]
+    if (!params['wujieIframeSrc']) {
+      params['wujieIframeSrc'] = '${b.base}/index?about=1';
+    }
+    [#-- 嵌入工作台默认多标签（multiTab 省略或为 true）；单槽模式传 params['multiTab']='false'（隐藏标签条、每次 iframe/微前端替换）。上限见 ems.js Nav.workspace.maxTabCount --]
+    [#if Parameters['group.id']?? && Parameters['group.id']?length>0]
+    params['initialGroupId']='${Parameters['group.id']}';
+    [/#if]
     [#if nav.profiles??]
     ems.init(${nav.profiles},${nav.cookie!'null'});
     if(ems.config.profiles.length>0 && ems.config.profile){
@@ -332,28 +343,24 @@
       params['maxTopItem']=8;
     }
     [/#if]
+    [#-- 调试：强制 wujieAlive=false；验完后可删
+    params['wujieAlive'] = 'false';--]
 
     jQuery(document).ready(function(){
-      emsnav.createNav(app,app,${nav.menusJson},params,true);
+      /* 左侧分组由 restoreNav 阶段二渲染（结合快照/hash/group.id），此处不预先 displayFirstGroup */
+      ems.createNav(app,app,${nav.menusJson},params,false);
       [#if nav.profiles??]
-      emsnav.createProfileNav();
+      ems.createProfileNav();
       [/#if]
       [#if mainHref?? && mainHref?length>0 ]
-      emsnav.setWelcomeUrl('${b.url(mainHref)}');
+      ems.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
       var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
-      emsnav.setup(theme,params);
+      ems.setup(theme,params);
       setTimeout(function(){
         jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");
       }, 1000);
-      emsnav.enableSearch('menu_searcher');
-      window.emsnav=emsnav;
-
-      [#if Parameters['group.id']?? && Parameters['group.id']?length>0]
-      setTimeout(function(){
-        emsnav.changeGroup(document.getElementById("group_${Parameters['group.id']}"));
-      }, 500);
-      [/#if]
+      ems.enableSearch('menu_searcher');
     });
   });
 
@@ -384,7 +391,7 @@
     theme.searchBgColor=jQuery("#theme_searchBgColor").val();
     theme.gridbarBgColor=jQuery("#theme_gridbarBgColor").val();
     theme.gridBorderColor=jQuery("#theme_gridBorderColor").val();
-    emsnav.changeTheme(theme)
+    ems.changeTheme(theme)
   }
 </script>
 [/#macro]

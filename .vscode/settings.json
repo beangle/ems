@@ -1,16 +1,44 @@
 {
-  "editor.rulers": [
-    120
-  ],
-  "editor.wordWrap": "off",
-  "files.trimTrailingWhitespace": true,
-  "editor.formatOnSave": true,
-  "files.insertFinalNewline": true,
-  "workbench.tree.indent": 16,
-  "workbench.tree.renderIndentGuides": "onHover",
-  "explorer.compactFolders": true,
-  "d.overrideDfmtEditorconfig": false,
-  "dfmt.braceStyle": "otbs",
+  // 与仓库根目录 .editorconfig 一致；关闭按内容猜测缩进，避免保存时被格式化成 4 空格
+  "editor.editorConfig.enabled": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[scala]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[java]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[xml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
+  "[ftl]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+  },
   "files.watcherExclude": {
     "**/target/**": true
   },

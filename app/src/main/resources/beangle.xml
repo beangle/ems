@@ -5,9 +5,8 @@
   <mvc>
     <static>
       <bundle name="local" version="${ems.profile}"/>
-      <bundle name="ems" version="4.11.0">
-        <module name="ems" js="js/ems.js"/>
-        <module name="ems-nav" js="js/nav.js" css="css/nav.css" depends="adminlte,ems"/>
+      <bundle name="ems" version="4.19.0">
+        <module name="ems" js="js/ems.js" css="css/nav.css" depends="adminlte,wujie"/>
       </bundle>
     </static>
   </mvc>

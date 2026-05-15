@@ -20,7 +20,7 @@ package org.beangle.ems.core
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.event.CacheEvictor
 import org.beangle.ems.core.cache.Redis
-import org.beangle.event.bus.{DataEvent, DataEventSerializer, DefaultDataEventBus}
+import org.beangle.event.bus.{DataEvent, DataEventSerializer, DataEventSubscriberRegistrar, DefaultDataEventBus}
 import org.beangle.event.mq.ChannelQueue
 import org.beangle.event.mq.impl.{NullChannelQueue, RedisChannelQueue}
 
@@ -36,7 +36,8 @@ class EventModule extends BindModule {
 
     bind(classOf[CacheEvictor]).constructor(?, ref(queueBean))
     bind("databus", classOf[DefaultDataEventBus]).constructor(ref(queueBean))
-
+    //绑定数据事件订阅注册表
+    bind(classOf[DataEventSubscriberRegistrar])
     bindingPublic()
   }
 

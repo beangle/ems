@@ -1,6 +1,5 @@
 [#ftl]
 [@b.head/]
-<div id="restrict_metas">
 [@b.grid items=dimensions var="dimension"]
   [@b.gridbar ]
     bar.addItem("${b.text("action.new")}",action.add());
@@ -19,5 +18,4 @@
     [@b.col property="properties" width="10%"][#if dimension.keyName??]${dimension.keyName},[/#if]${dimension.properties!}[/@]
   [/@]
 [/@]
-</div>
 [@b.foot/]

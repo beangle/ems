@@ -29,12 +29,12 @@ ${tag.body}
 [#if localChosen || tag.href??]
 <script type="text/javascript">
 [#if localChosen]
-  beangle.load(["chosen"],function(){
+  beangle.require(["chosen"],function(){
     $("#${tag.id}").chosen({placeholder_text_single:"${tag.empty!'...'}",no_results_text: "没有找到结果！",search_contains:true,allow_single_deselect:true[#if tag.width??],width:'${tag.width}'[/#if]});
   });
 [#elseif tag.href??]
   [#if remoteSearch]
-  beangle.load(["chosen","bui-ajaxchosen"],function(){
+  beangle.require(["chosen","bui-ajaxchosen"],function(){
     $("#${tag.id}").ajaxchosen(
     { method:"GET",
       url:"${tag.href}"
@@ -70,7 +70,7 @@ ${tag.body}
       select.val("${tag.value}")
       [/#if]
       if( cnt >= ${tag.chosenMin}){
-        beangle.load(["chosen"],function(){
+        beangle.require(["chosen"],function(){
           $("#${tag.id}").chosen({placeholder_text_single:"${tag.empty!'...'}",no_results_text: "没有找到结果！",search_contains:true,allow_single_deselect:true[#if tag.width??],width:'${tag.width}'[/#if]});
         });
       }

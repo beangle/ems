@@ -29,3 +29,206 @@
   }
 
 }
+
+/* —— 嵌入工作台页签：近似 Chrome 的矮弧形顶角标签（重叠 + 激活页与白内容区对齐） —— */
+.ems-nav-workspace .ems-nav-card {
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* 去掉 header/body 分界灰线，激活页签与白内容区视觉上连成一块 */
+.ems-nav-workspace .ems-nav-card > .card-header.ems-nav-toolbar-strip {
+  border-bottom: none !important;
+}
+
+.ems-nav-workspace .ems-nav-card > .ems-nav-body {
+  border-top: none !important;
+}
+
+.ems-nav-workspace .ems-nav-toolbar-strip {
+  align-items: flex-end;
+  min-height: 0;
+  padding-bottom: 0;
+  background: #dfe1e6;
+  border-bottom: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* multiTab=false（.ems-nav--single-tab-mode）：单嵌入槽，不展示标签条与批量关闭按钮 */
+.ems-nav-workspace.ems-nav--single-tab-mode .ems-nav-toolbar {
+  display: none !important;
+}
+
+.ems-nav-workspace .ems-nav-toolbar-actions {
+  align-self: center;
+  background: transparent !important;
+  border-left-color: #c4c7cc !important;
+}
+
+.ems-nav-workspace .ems-nav-toolbar-actions .btn-default {
+  padding: 0.15rem 0.45rem;
+  border-color: #bdc1c8;
+  background: #f1f3f4;
+  color: #3c4043;
+}
+
+.ems-nav-workspace .ems-nav-toolbar-actions .btn-default:hover {
+  background: #fff;
+  border-color: #9aa0a6;
+}
+
+.ems-nav-workspace .ems-nav-tabs-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: 0.25rem 0.45rem 0 0.35rem;
+  display: flex;
+  align-items: flex-end;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace {
+  flex-wrap: nowrap;
+  gap: 0;
+  align-items: flex-end;
+  overflow: visible;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab {
+  flex: 0 0 auto;
+  position: relative;
+  overflow: visible;
+  z-index: 0;
+}
+
+/* 分隔：短竖段（不顶天立地）；高亮 tab 左右不露分隔线 */
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+  bottom: 0.45rem;
+  width: 1px;
+  background: rgba(95, 99, 104, 0.26);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab--active:not(:last-child)::after {
+  display: none;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab:has(+ .ems-nav-tab--active)::after {
+  display: none;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab--active {
+  z-index: 2;
+}
+
+/* 未选中：与标签栏底色融为一体，无边框、无「方块」感 */
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link {
+  position: relative;
+  max-width: 14rem;
+  margin-bottom: 0 !important;
+  padding: 0.35rem 0.55rem !important;
+  color: #5f6368;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link:hover {
+  color: #202124;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 选中：仅上方圆角；底边贴内容区；下方两侧向外圆弧（猫耳，克制尺寸） */
+.ems-nav-workspace .ems-nav-tab--active .ems-nav-tab-link,
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link.active {
+  --ems-tab-fill: #fff;
+
+  color: var(--primary-color, #1a73e8);
+  font-weight: 600;
+  background: #fff !important;
+  border: 1px solid #babfc7 !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding-bottom: 0.4rem !important;
+  box-shadow: none;
+}
+
+.ems-nav-workspace .ems-nav-tab--active .ems-nav-tab-link::before,
+.ems-nav-workspace .ems-nav-tab--active .ems-nav-tab-link::after,
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link.active::before,
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ems-nav-workspace .ems-nav-tab--active .ems-nav-tab-link::before,
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link.active::before {
+  left: -7px;
+  border-bottom-right-radius: 7px;
+  box-shadow: 2px 2px 0 2px var(--ems-tab-fill);
+}
+
+.ems-nav-workspace .ems-nav-tab--active .ems-nav-tab-link::after,
+.ems-nav-workspace .ems-nav-tabs--workspace .ems-nav-tab-link.active::after {
+  right: -7px;
+  border-bottom-left-radius: 7px;
+  box-shadow: -2px 2px 0 2px var(--ems-tab-fill);
+}
+
+.ems-nav-workspace .ems-nav-tab-title {
+  min-width: 0;
+  max-width: 11rem;
+}
+
+.ems-nav-workspace .ems-nav-tab-close {
+  line-height: 1;
+  padding: 0 0.2rem;
+  margin-left: 0.2rem;
+  border-radius: 999px;
+  opacity: 0.45;
+}
+
+.ems-nav-workspace .ems-nav-tab-close:hover {
+  opacity: 1;
+  color: #d93025 !important;
+  background: rgba(217, 48, 37, 0.08);
+}
+
+.ems-nav-workspace .ems-nav-body {
+  background: #fff;
+  flex: 1 1 auto;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ems-nav-workspace .ems-nav-tab-panel {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 50vh;
+  position: relative;
+}
+
+/* 子应用根节点（wujie web component / iframe）需占位高度 */
+.ems-nav-workspace .ems-nav-tab-panel > * {
+  display: block;
+  width: 100%;
+  min-height: 48vh;
+}
+
+.content-wrapper #ems_nav_workspace {
+  width: 100%;
+}

@@ -6,7 +6,7 @@
 [@b.select name="app.group.id" label="分组" value=app.group! option="id,title" required="true" items=groups?sort_by('indexno')/]
 [@b.textfield name="app.base" label="上下文地址" value="${app.base!}" required="true" maxlength="200" style="width:300px"/]
 [@b.textfield name="app.url" label="入口" value="${app.url!}" required="true" maxlength="200" style="width:300px"/]
-[@b.textfield name="app.navStyle" label="导航风格" value=app.navStyle required="false" /]
+[@b.textfield name="app.navStyle" label="导航风格" value=app.navStyle required="false" comment="ajax内嵌/wujie微前端/iframe" /]
 
 [@b.field label="引用资源"]
   <div style="margin-left:120px;">

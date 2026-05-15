@@ -26,6 +26,9 @@ class IndexAction extends ActionSupport {
 
   @mapping("")
   def index(): View = {
-    redirect(to(Ems.index), "")
+    getBoolean("about") match {
+      case Some(about) => raw("ems")
+      case None => redirect(to(Ems.index), "")
+    }
   }
 }
