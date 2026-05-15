@@ -19,13 +19,14 @@ package org.beangle.ems.app.oa
 
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.Json
 import org.beangle.commons.net.http.{HttpUtils, Request}
 import org.beangle.ems.app.{Ems, EmsApp}
 
 object Sms {
 
-  def send(userName: String, mobile: String, template: Option[String]): String = {
-    val url = Ems.innerApi + s"/platform/oa/sms/send/${mobile}"
+  def send(userName: String, mobile: String, template: Option[String]): (Boolean, String) = {
+    val url = Ems.innerApi + s"/platform/oa/sms/send/${mobile}.json"
     val params = Collections.newMap[String, String]
     params.put("name", userName)
     val t = template.getOrElse("").trim
@@ -33,7 +34,12 @@ object Sms {
     params.put("digest", Digests.md5Hex(Ems.key + s"&appName=${EmsApp.name}&name=${userName}&template=${t}"))
 
     val res = HttpUtils.post(url, Request.asForm(params))
-    res.getText
+    if (res.isOk) {
+      val json = Json.parseObject(res.getText)
+      (json.getString("code") == "200", json.getString("msg"))
+    } else {
+      (false, res.getText)
+    }
   }
 
   def available: Boolean = {
@@ -41,8 +47,8 @@ object Sms {
     HttpUtils.get(url).getText.contains("true")
   }
 
-  def verify(mobile: String, code: String): Boolean = {
-    val url = Ems.innerApi + s"/platform/oa/sms/verify/${mobile}/${code}"
+  def verify(mobile: String, code: String, destroy: Boolean): Boolean = {
+    val url = Ems.innerApi + s"/platform/oa/sms/verify/${mobile}/${code}?destroy=${destroy}"
     HttpUtils.get(url).getText == "true"
   }
 }

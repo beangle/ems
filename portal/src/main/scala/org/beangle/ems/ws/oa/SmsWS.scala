@@ -18,9 +18,9 @@
 package org.beangle.ems.ws.oa
 
 import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.json.Json
+import org.beangle.commons.json.JsonObject
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.notify.sms.{Receiver, SmsCodeService}
 import org.beangle.webmvc.annotation.{action, mapping, param}
@@ -37,8 +37,8 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     val appName = get("appName", "missing")
     val userName = get("name", "")
     val template = get("template", "")
-    val digest = Digests.md5Hex(Ems.key + s"&appName=${EmsApp.name}&name=${userName}&template=${template}")
 
+    val digest = Digests.md5Hex(Ems.key + s"&appName=${appName}&name=${userName}&template=${template}")
     if (appName.isEmpty || userName.isEmpty || !get("digest").contains(digest)) {
       Status.BadRequest
     } else {
@@ -46,11 +46,12 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
         case None => Status.Forbidden
         case Some(app) =>
           smsCodeService match {
-            case None => raw(Json.toJson(Map("code" -> 500, "msg" -> "Platform 未配置SMS发生接口")))
+            case None => ok(500, JsonObject("code" -> 500, "msg" -> "Platform 未配置SMS发生接口"))
             case Some(s) =>
               val rs = s.send(Receiver(mobile, userName), template)
-              val json = Json.toJson(Map("code" -> (if rs._1 then 200 else 500), "msg" -> rs._2))
-              raw(json)
+              val status = if rs._1 then 200 else 500
+              val json = JsonObject("code" -> status, "msg" -> rs._2)
+              ok(status, json)
           }
       }
     }
@@ -62,9 +63,10 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   @mapping("verify/{mobile}/{code}")
   def verify(@param("mobile") mobile: String, @param("code") code: String): View = {
+    val destroy = getBoolean("destroy", true)
     smsCodeService match {
       case None => raw("false")
-      case Some(s) => if s.verify(mobile, code) then raw("true") else raw("false")
+      case Some(s) => if s.verify(mobile, code, destroy) then raw("true") else raw("false")
     }
   }
 }
