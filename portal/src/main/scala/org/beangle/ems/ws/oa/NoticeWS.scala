@@ -83,14 +83,14 @@ class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
   private def convert(notices: Iterable[Notice]): JsonObject = {
     given context: Context = JsonAPI.context(ActionContext.current.params)
 
-    context.filters.include(classOf[Notice], "id", "title", "createdAt", "popup", "sticky", "docs")
+    context.filters.include(classOf[Notice], "id", "title", "createdAt", "popup", "sticky", "docs", "issuer")
     context.filters.include(classOf[Doc], "id", "name", "url")
-    val resources = notices.map { g => JsonAPI.create(g, "").linkSelf(url("!info?id=" + g.id)) }
+    val resources = notices.map { g => JsonAPI.create(g, "").linkSelf(url("!info?id=" + g.id) + ".json") }
     JsonAPI.newJson(resources)
   }
 
   private def convert(notice: Notice): Properties = {
-    val not = new Properties(notice, "id", "title", "createdAt", "popup", "sticky", "contents")
+    val not = new Properties(notice, "id", "title", "createdAt", "popup", "sticky", "contents", "issuer")
     val docs = notice.docs map { doc =>
       new Properties(doc, "id", "name", "url")
     }

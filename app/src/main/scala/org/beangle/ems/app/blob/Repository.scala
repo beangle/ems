@@ -30,6 +30,8 @@ trait Repository {
 
   def remove(p: String): Boolean
 
+  def uri(baseDir: String, path: String): URI
+
   def uri(path: String): URI
 
   def upload(folder: String, file: InputStream, fileName: String, owner: String): BlobMeta

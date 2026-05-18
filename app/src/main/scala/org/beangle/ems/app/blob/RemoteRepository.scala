@@ -58,6 +58,14 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     }
   }
 
+  override def uri(baseDir: String, path: String): URI = {
+    require(baseDir.startsWith("/") && !baseDir.endsWith("/"))
+    require(path.startsWith("/"))
+    val now = LocalDateTime.now(ZoneId.of("UTC")).format(formatter)
+    val token = Digests.sha1Hex(s"/${Ems.profile}$baseDir$path$key$now")
+    Networks.uri(url(baseDir, s"${path}?token=$token&t=$now"))
+  }
+
   override def uri(path: String): URI = {
     require(path.startsWith("/"))
     val now = LocalDateTime.now(ZoneId.of("UTC")).format(formatter)
@@ -96,13 +104,17 @@ class RemoteRepository(val base: String, val dir: String, user: String, key: Str
     s"${base}/${Ems.profile}${dir}${path}"
   }
 
+  private def url(baseDir: String, path: String): String = {
+    s"${base}/${Ems.profile}${baseDir}${path}"
+  }
+
   private def subdir(fullPath: String): String = {
     val bucketAndDir = s"/${Ems.profile}${dir}"
     if (fullPath.startsWith(bucketAndDir)) {
       fullPath.substring(bucketAndDir.length)
-    } else if(fullPath.startsWith (dir)) {
+    } else if (fullPath.startsWith(dir)) {
       fullPath.substring(dir.length)
-    }else {
+    } else {
       fullPath
     }
   }

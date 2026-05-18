@@ -22,7 +22,7 @@ import org.beangle.commons.file.digest.Sha1
 import org.beangle.commons.io.IOs
 
 import java.io.{File, FileOutputStream, InputStream}
-import java.net.{URI, URL}
+import java.net.URI
 import java.time.Instant
 
 class LocalRepository(val base: String, val dir: String) extends Repository {
@@ -36,6 +36,12 @@ class LocalRepository(val base: String, val dir: String) extends Repository {
     } else {
       false
     }
+  }
+
+  override def uri(baseDir: String, path: String): URI = {
+    require(baseDir.startsWith("/") && !baseDir.endsWith("/"))
+    require(path.startsWith("/"))
+    new File(s"$base$baseDir${path}").toURI
   }
 
   override def uri(path: String): URI = {
