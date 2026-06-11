@@ -28,7 +28,7 @@ import scala.collection.mutable
 /**
  * @author chaostone
  */
-class Group extends IntId, Named, Coded, Updated, Enabled, Hierarchical[Group], Remark {
+class Group extends IntId, Named, Coded, Updatable, Enabled, Hierarchical[Group], Remark {
   var org: Org = _
   var manager: Option[User] = None
   var roles: mutable.Set[Role] = Collections.newSet[Role]

@@ -20,7 +20,7 @@ package org.beangle.ems.core.oa.model
 import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.app.EmsApp
 
 import java.net.URI

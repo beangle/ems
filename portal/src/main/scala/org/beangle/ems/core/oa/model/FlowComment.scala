@@ -18,14 +18,14 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 
 /** 流程实例-审批意见
  */
-class FlowComment extends LongId, Updated {
+class FlowComment extends LongId, Updatable {
   var task: FlowTask = _
   var user: User = _
   var messages: String = _

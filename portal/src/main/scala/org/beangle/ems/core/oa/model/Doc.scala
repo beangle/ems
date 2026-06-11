@@ -21,7 +21,7 @@ import org.beangle.commons.activation.MediaTypes
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.user.model.{Category, User}
@@ -29,7 +29,7 @@ import org.beangle.ems.core.user.model.{Category, User}
 import java.net.URI
 import scala.collection.mutable
 
-class Doc extends LongId, Updated {
+class Doc extends LongId, Updatable {
 
   var app: App = _
 

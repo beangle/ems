@@ -18,14 +18,14 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 
 import java.time.Instant
 
 /**
  * @author chaostone
  */
-class RoleMember extends LongId, Updated {
+class RoleMember extends LongId, Updatable {
   var user: User = _
   var role: Role = _
   var member: Boolean = _

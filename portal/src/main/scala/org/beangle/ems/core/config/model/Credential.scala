@@ -18,14 +18,14 @@
 package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.{Named, Updated}
+import org.beangle.data.model.pojo.{Named, Updatable}
 
 import java.time.Instant
 
 /** 凭证
  * 用于数据源认证
  */
-class Credential extends IntId, Named, Updated {
+class Credential extends IntId, Named, Updatable {
   var domain: Domain = _
   var username: String = _
   var password: String = _

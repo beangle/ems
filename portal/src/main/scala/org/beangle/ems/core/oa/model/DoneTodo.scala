@@ -18,14 +18,14 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.config.model.{Business, Domain}
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 
 /** 代办 */
-class DoneTodo extends LongId, Updated {
+class DoneTodo extends LongId, Updatable {
   /** 用户 */
   var user: User = _
   /** 领域 */

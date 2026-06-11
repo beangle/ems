@@ -18,7 +18,7 @@
 package org.beangle.ems.app.blob
 
 import org.beangle.commons.json.Json
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 
 object BlobMeta {
   def fromJson(json: String): BlobMeta = {
@@ -34,7 +34,7 @@ object BlobMeta {
   }
 }
 
-class BlobMeta extends Updated {
+class BlobMeta extends Updatable {
   var name: String = _
 
   var fileSize: Int = _

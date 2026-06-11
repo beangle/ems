@@ -18,11 +18,11 @@
 package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Named, Updated}
+import org.beangle.data.model.pojo.{Coded, Named, Updatable}
 
 /** 第三方APP
  */
-class ThirdPartyApp extends LongId, Coded, Named, Updated {
+class ThirdPartyApp extends LongId, Coded, Named, Updatable {
 
   var domain: Domain = _
   var secret: String = _

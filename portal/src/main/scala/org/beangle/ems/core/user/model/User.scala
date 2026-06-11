@@ -30,7 +30,7 @@ import java.time.{Instant, LocalDate}
  * @author chaostone
  */
 
-class User extends LongId, Coded, Named, Updated, TemporalOn, Principal, Remark, Enabled {
+class User extends LongId, Coded, Named, Updatable, TemporalOn, Principal, Remark, Enabled {
   /** 组织 */
   var org: Org = _
   /** 所属部门 */

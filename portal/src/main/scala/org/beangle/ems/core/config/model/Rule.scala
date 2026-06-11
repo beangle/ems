@@ -19,11 +19,11 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Enabled, Named, Updated}
+import org.beangle.data.model.pojo.{Enabled, Named, Updatable}
 
 import scala.collection.mutable
 
-class Rule extends LongId, Enabled, Named, Updated {
+class Rule extends LongId, Enabled, Named, Updatable {
 
   var domain: Domain = _
 

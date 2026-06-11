@@ -18,13 +18,13 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.config.model.App
 
 /**
  * @author chaostone
  */
-class Root extends IntId, Updated {
+class Root extends IntId, Updatable {
   var app: App = _
   var user: User = _
 }

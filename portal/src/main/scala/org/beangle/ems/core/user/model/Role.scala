@@ -28,7 +28,7 @@ import java.security.Principal
  * @author chaostone
  */
 
-class Role extends IntId, Named, Updated, Enabled, Hierarchical[Role], IProfile, Principal, Remark {
+class Role extends IntId, Named, Updatable, Enabled, Hierarchical[Role], IProfile, Principal, Remark {
   var properties: collection.mutable.Map[Dimension, String] = new collection.mutable.HashMap[Dimension, String]
   var creator: User = _
   var members: collection.mutable.Seq[RoleMember] = new collection.mutable.ListBuffer[RoleMember]

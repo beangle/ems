@@ -18,12 +18,12 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 
 /**
  * @author chaostone
  */
-class GroupMember extends LongId, Updated {
+class GroupMember extends LongId, Updatable {
   var user: User = _
   var group: Group = _
 

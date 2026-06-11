@@ -18,10 +18,10 @@
 package org.beangle.ems.core.blob.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.config.model.Domain
 
-class BlobMeta extends LongId, Updated {
+class BlobMeta extends LongId, Updatable {
   var domain: Domain = _
   var owner: String = _
   var name: String = _

@@ -78,8 +78,8 @@
     <profile package="org.beangle.ems.ws">
       <action suffix="WS" defaultMethod="index"/>
       <url path="/api/platform" suffix="" style="plur-seo"/>
-      <interceptor name="web.Interceptor.hibernate"/>
       <interceptor name="web.Interceptor.cors"/>
+      <interceptor name="web.Interceptor.hibernate"/>
     </profile>
 
     <!--cas-->

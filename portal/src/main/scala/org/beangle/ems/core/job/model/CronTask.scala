@@ -18,17 +18,15 @@
 package org.beangle.ems.core.job.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Named
+import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Domain
 
-import java.time.Instant
-import java.time.Duration
-import org.beangle.data.model.pojo.Updated
+import java.time.{Duration, Instant}
 
 /** 计划任务
  *
  */
-class CronTask extends LongId, Named,Updated {
+class CronTask extends LongId, Named, Updatable {
   /** 所属域 */
   var domain: Domain = _
   /** 目标（执行目标类或地址） */

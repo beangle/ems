@@ -18,7 +18,7 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.StringId
-import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.pojo.Updatable
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -26,7 +26,7 @@ object Avatar {
   var MaxSize = 500 * 1024 //500k
 }
 
-class Avatar extends StringId, Updated {
+class Avatar extends StringId, Updatable {
 
   var user: User = _
 

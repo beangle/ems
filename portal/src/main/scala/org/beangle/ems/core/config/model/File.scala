@@ -19,9 +19,9 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Named, Updated}
+import org.beangle.data.model.pojo.{Named, Updatable}
 
-class File extends LongId, Named, Updated {
+class File extends LongId, Named, Updatable {
   var app: App = _
   var mediaType: String = _
   var fileSize: Int = _
