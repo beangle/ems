@@ -53,7 +53,7 @@ class AvatarAction extends ActionSupport, ServletSupport {
   def index(): View = {
     val query = OqlBuilder.from(classOf[User], "user")
     query.where("user.org=:org", domainService.getOrg)
-    new QueryHelper(entityDao.domain).populate(query)
+    QueryHelper.populate(entityDao, query)
     get("user") foreach { u =>
       query.where("user.code like :u or user.name like :u", "%" + u + "%")
     }
