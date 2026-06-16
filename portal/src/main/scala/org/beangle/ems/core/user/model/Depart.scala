@@ -23,7 +23,7 @@ import org.beangle.ems.core.config.model.Org
 
 /** 部门
  */
-class Depart extends IntId, Coded, Named, Updated, TemporalOn, Hierarchical[Depart] {
+class Depart extends IntId, Coded, Named, Updatable, TemporalOn, Hierarchical[Depart] {
   var org: Org = _
   var shortName: Option[String] = None
 }

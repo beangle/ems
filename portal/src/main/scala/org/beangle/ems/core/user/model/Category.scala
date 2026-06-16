@@ -26,7 +26,7 @@ import org.beangle.ems.core.config.model.Org
  *
  * @author chaostone
  */
-class Category extends IntId, Coded, TemporalOn, Named, Updated, Remark {
+class Category extends IntId, Coded, TemporalOn, Named, Updatable, Remark {
   var enName: String = _
   var org: Org = _
 

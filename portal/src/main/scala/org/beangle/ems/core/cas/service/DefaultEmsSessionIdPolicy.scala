@@ -18,6 +18,7 @@
 package org.beangle.ems.core.cas.service
 
 import jakarta.servlet.http.HttpServletRequest
+import org.beangle.commons.bean.Initializing
 import org.beangle.ems.app.Ems
 import org.beangle.ids.cas.id.impl.DefaultIdGenerator
 import org.beangle.security.web.session.CookieSessionIdPolicy
@@ -25,7 +26,7 @@ import org.beangle.security.web.session.CookieSessionIdPolicy
 /**
  * @author chaostone
  */
-class DefaultEmsSessionIdPolicy extends CookieSessionIdPolicy(Ems.sid.name) {
+class DefaultEmsSessionIdPolicy extends CookieSessionIdPolicy(Ems.sid.name), Initializing {
   private val sessionIdGenerator = new DefaultIdGenerator(Ems.sid.prefix, 35)
 
   override def init(): Unit = {

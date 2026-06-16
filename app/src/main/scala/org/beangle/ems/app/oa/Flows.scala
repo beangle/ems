@@ -185,7 +185,7 @@ object Flows {
   }
 
   private def toBase64(is: InputStream, fileName: String): String = {
-    val contentType = MediaTypes.get(Strings.substringAfterLast(fileName, ".")).map(_.toString).getOrElse("image/png")
+    val contentType = MediaTypes.Defaults.get(Strings.substringAfterLast(fileName, ".")).map(_.toString).getOrElse("image/png")
     val data = Base64.encode(IOs.readBytes(is))
     s"data:${contentType};base64,${data}"
   }

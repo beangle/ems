@@ -18,7 +18,7 @@
 package org.beangle.ems.app
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.config.XmlConfigs
+import org.beangle.commons.config.{XmlConfigs, XmlDocs}
 import org.beangle.commons.lang.{ClassLoaders, Strings}
 import org.beangle.commons.net.Networks
 import org.beangle.commons.net.http.HttpUtils
@@ -99,8 +99,8 @@ object EmsApp {
 
   private def readProperties(): Map[String, String] = {
     try {
-      val configLocation = "classpath*:beangle.xml"
-      val doc = XmlConfigs.load(configLocation)
+      val configLocation = "classpath:beangle.xml"
+      val doc = XmlDocs.load(configLocation).get
       var appManifest: Map[String, String] = null
       (doc \ "ems").headOption foreach { ems =>
         appManifest = parseEmsXml(ems)

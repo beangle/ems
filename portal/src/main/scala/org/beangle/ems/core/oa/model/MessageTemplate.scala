@@ -18,12 +18,12 @@
 package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Named, Updated}
+import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Business
 
 /** 消息模板
  */
-class MessageTemplate extends LongId, Updated, Named {
+class MessageTemplate extends LongId, Updatable, Named {
   /** 业务类型 */
   var business: Business = _
   /** 标题模板 */

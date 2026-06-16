@@ -82,7 +82,7 @@ class SignatureAction extends RestfulAction[Signature] {
     val rs = blob.upload("/oa/signature/",
       is, user.code + "_" + LocalDate.now().toString + s".${ext}", user.code + " " + user.name)
     if (Strings.isEmpty(rs.mediaType)) {
-      rs.mediaType = MediaTypes.get(ext, MediaTypes.png).toString
+      rs.mediaType = MediaTypes.Defaults.getOrElse(ext, MediaTypes.png).toString
     } else {
       rs.mediaType = rs.mediaType
     }

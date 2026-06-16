@@ -20,14 +20,14 @@ package org.beangle.ems.core.oa.model
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Named, Remark, Updated}
+import org.beangle.data.model.pojo.{Coded, Named, Remark, Updatable}
 import org.beangle.ems.core.config.model.{Business, Domain}
 
 import scala.collection.mutable
 
 /** 工作流定义
  */
-class Flow extends LongId, Coded, Updated, Named, Remark {
+class Flow extends LongId, Coded, Updatable, Named, Remark {
   /** 业务系统 */
   var domain: Domain = _
   /** 环境配置 */

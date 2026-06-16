@@ -19,12 +19,12 @@ package org.beangle.ems.core.security.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.annotation.log
-import org.beangle.data.model.pojo.{Named, Updated}
+import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.security.session.EventType
 
 @log
-class SessionEvent extends LongId, Updated, Named {
+class SessionEvent extends LongId, Updatable, Named {
 
   var domain: Domain = _
 

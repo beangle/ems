@@ -19,9 +19,7 @@ package org.beangle.ems.core
 
 import org.beangle.commons.cdi.ReconfigModule
 import org.beangle.commons.io.Files
-import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
-import org.beangle.webmvc.view.Static
 
 import java.io.File
 
@@ -44,9 +42,6 @@ class WebReconfigModule extends ReconfigModule {
 
     //3.spring配置个性化
     this.configUrl = s"file://${Ems.home + EmsApp.path}/spring-config.xml"
-
-    //4. 静态文件配置
-    Static.Default.base = Ems.static
   }
 
 }

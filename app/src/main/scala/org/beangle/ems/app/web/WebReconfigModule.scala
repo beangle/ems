@@ -18,9 +18,7 @@
 package org.beangle.ems.app.web
 
 import org.beangle.commons.cdi.ReconfigModule
-import org.beangle.commons.text.i18n.TextBundleLoader
 import org.beangle.ems.app.{Ems, EmsApp}
-import org.beangle.webmvc.view.Static
 
 class WebReconfigModule extends ReconfigModule {
   override protected def config(): Unit = {
@@ -31,8 +29,5 @@ class WebReconfigModule extends ReconfigModule {
 
     //2.spring配置个性化
     this.configUrl = s"${Ems.innerApi}/platform/config/files/${EmsApp.name}/spring-config.xml"
-
-    //3. 静态文件配置
-    Static.Default.base = Ems.static
   }
 }

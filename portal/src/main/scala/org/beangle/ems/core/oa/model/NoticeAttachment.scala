@@ -41,7 +41,7 @@ class NoticeAttachment extends LongId {
   var embedded: Boolean = _
 
   def image: Boolean = {
-    MediaTypes.get(Strings.substringAfterLast(filePath, ".")) match
+    MediaTypes.Defaults.get(Strings.substringAfterLast(filePath, ".")) match
       case None => false
       case Some(mt) => mt.primaryType == "image"
   }

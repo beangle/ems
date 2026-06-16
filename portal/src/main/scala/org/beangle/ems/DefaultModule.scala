@@ -20,9 +20,9 @@ package org.beangle.ems
 import org.beangle.cache.caffeine.CaffeineCacheManager
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
-import org.beangle.commons.script.ExpressionEvaluator
+import org.beangle.commons.script.ExprEvaluator
 import org.beangle.ems.app.dao.AppDataSourceFactory
-import org.beangle.ems.app.rule.ExpressionEvaluatorFactory
+import org.beangle.ems.app.rule.ExprEvaluatorFactory
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.security.authz.Authorizer
@@ -46,11 +46,11 @@ class DefaultModule extends BindModule, Config.Provider {
     bind("mvc.TagLibrary.ems", classOf[EmsTagLibrary]).onExist(classOf[Authorizer])
 
     //表达式引擎
-    bind("expressionEvaluator", classOf[ExpressionEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExpressionEvaluator])
+    bind("expressionEvaluator", classOf[ExprEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExprEvaluator])
   }
 
   override def properties: collection.Map[String, String] = {
-    EmsApp.properties
+    EmsApp.properties ++ Map("beangle.webmvc.static_base" -> Ems.static)
   }
 
   override def processors: Seq[Config.Processor] = {

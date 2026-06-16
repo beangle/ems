@@ -20,11 +20,11 @@ package org.beangle.ems.app.web
 import org.beangle.commons.cdi.BindModule
 import org.beangle.commons.config.Config
 import org.beangle.commons.lang.ClassLoaders
-import org.beangle.commons.script.ExpressionEvaluator
+import org.beangle.commons.script.ExprEvaluator
 import org.beangle.commons.text.i18n.{HttpTextBundleLoader, TextBundleLoader}
 import org.beangle.cron.CronTaskRegistrar
 import org.beangle.ems.app.log.{AsyncAppLogger, LogExceptionHandler, RemoteAppender, WebBusinessLogger}
-import org.beangle.ems.app.rule.ExpressionEvaluatorFactory
+import org.beangle.ems.app.rule.ExprEvaluatorFactory
 import org.beangle.ems.app.web.tag.EmsTagLibrary
 import org.beangle.ems.app.{AppLogger, Ems, EmsApp}
 import org.beangle.security.authz.Authorizer
@@ -58,12 +58,12 @@ class DefaultModule extends BindModule, Config.Provider {
 
     //DefaultExpressionEvaluator
     if (ClassLoaders.get("org.apache.commons.jexl3.JexlBuilder").nonEmpty) {
-      bind("expressionEvaluator", classOf[ExpressionEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExpressionEvaluator])
+      bind("exprEvaluator", classOf[ExprEvaluatorFactory]).constructor("jexl3").onMissing(classOf[ExprEvaluator])
     }
   }
 
   override def properties: collection.Map[String, String] = {
-    EmsApp.properties
+    EmsApp.properties ++ Map("beangle.webmvc.static_base" -> Ems.static)
   }
 
   override def processors: Seq[Config.Processor] = {

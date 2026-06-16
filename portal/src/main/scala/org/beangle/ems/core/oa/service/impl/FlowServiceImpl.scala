@@ -19,7 +19,7 @@ package org.beangle.ems.core.oa.service.impl
 
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.script.ExpressionEvaluator
+import org.beangle.commons.script.ExprEvaluator
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.oa.Flows.Payload
 import org.beangle.ems.core.config.service.DomainService
@@ -50,7 +50,7 @@ class FlowServiceImpl extends FlowService {
   var entityDao: EntityDao = _
   var todoService: TodoService = _
   var messageService: MessageService = _
-  var expressionEvaluator: ExpressionEvaluator = _
+  var exprEvaluator: ExprEvaluator = _
 
   override def getFlows(businessCode: String, profileId: String): Seq[Flow] = {
     val query = OqlBuilder.from(classOf[Flow], "flow")
@@ -167,7 +167,7 @@ class FlowServiceImpl extends FlowService {
   private def matchable(activity: FlowActivity, process: FlowProcess): Boolean = {
     activity.guard match {
       case None => true
-      case Some(g) => expressionEvaluator.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
+      case Some(g) => exprEvaluator.eval(g, Json.parseObject(process.envJson), classOf[Boolean])
     }
   }
 

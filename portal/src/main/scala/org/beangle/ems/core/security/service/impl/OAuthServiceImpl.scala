@@ -59,7 +59,7 @@ class OAuthServiceImpl extends OAuthService, Initializing {
 
   def this(client: RedisClient) = {
     this()
-    val cacheManager = new RedisCacheManager(client, DefaultBinarySerializer, true)
+    val cacheManager = new RedisCacheManager(client, new DefaultBinarySerializer, true)
     cacheManager.ttl = codeTTL.getSeconds.toInt
     codes = cacheManager.getCache("oauth2_code", classOf[String], classOf[String])
   }

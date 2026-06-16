@@ -18,11 +18,11 @@
 package org.beangle.ems.app.rule
 
 import org.beangle.commons.bean.Factory
-import org.beangle.commons.script.ExpressionEvaluator
+import org.beangle.commons.script.ExprEvaluator
 
-class ExpressionEvaluatorFactory(engineName: String) extends Factory[ExpressionEvaluator] {
-  def getObject: ExpressionEvaluator = {
-    ExpressionEvaluator.get(engineName)
+class ExprEvaluatorFactory(engineName: String) extends Factory[ExprEvaluator] {
+  def getObject: ExprEvaluator = {
+    ExprEvaluator.get(engineName)
   }
 
 }
