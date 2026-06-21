@@ -1,4 +1,4 @@
-      [@b.card class="card-info card-primary card-outline"]
+      [@b.card class="card-primary card-outline"]
         [#assign title]<i class="fas fa-file-pdf"></i> 文档下载[/#assign]
         [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
         <a href="${b.base}/portal/user/doc" target="_blank" class="float-right">更多...</a>

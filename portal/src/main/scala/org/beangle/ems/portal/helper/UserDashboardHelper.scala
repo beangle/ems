@@ -21,6 +21,7 @@ import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
+import org.beangle.ems.core.config.model.AppType
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.SessionEvent
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService, SessionInfoService}
@@ -29,8 +30,8 @@ import org.beangle.ems.core.user.service.DimensionService
 import org.beangle.webmvc.context.ActionContext
 
 /**
-  * @author chaostone
-  */
+ * @author chaostone
+ */
 class UserDashboardHelper {
 
   var entityDao: EntityDao = _
@@ -51,10 +52,10 @@ class UserDashboardHelper {
     ActionContext.current.attribute("user", user)
     ActionContext.current.attribute("sessioninfoes", sessionInfoService.find(Some(user.code), new PageLimit(1, 20), None))
     val myProfiles = entityDao.findBy(classOf[Profile], "user", List(user))
-    val menus = menuService.getDomainMenus(user, false)
+    val menus = menuService.getDomainMenus(user, new AppType(AppType.WebappId, AppType.Webapp), false)
     ActionContext.current.attribute("menus", menus)
 
-    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(user.code)+"?t="+System.currentTimeMillis())
+    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(user.code) + "?t=" + System.currentTimeMillis())
 
     val seQuery = OqlBuilder.from(classOf[SessionEvent], "se")
     seQuery.where("se.domain=:domain and se.principal=:principal", domainService.getDomain, user.code)

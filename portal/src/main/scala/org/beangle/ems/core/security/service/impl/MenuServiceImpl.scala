@@ -22,7 +22,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.xml.Node
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.core.config.model.App
+import org.beangle.ems.core.config.model.{App, AppType}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
@@ -51,18 +51,18 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   }
 
   def getTopMenus(app: App, user: User): collection.Seq[Menu] = {
-    getTopMenus(Some(app), getRoles(user))
+    getTopMenus(Some(app), app.appType, getRoles(user))
   }
 
-  def getTopMenus(user: User): collection.Seq[Menu] = {
-    getTopMenus(None, getRoles(user))
+  def getTopMenus(user: User, appType: AppType): collection.Seq[Menu] = {
+    getTopMenus(None, appType, getRoles(user))
   }
 
   def getTopMenus(app: App, role: Role): collection.Seq[Menu] = {
-    getTopMenus(Some(app), List(role))
+    getTopMenus(Some(app), app.appType, List(role))
   }
 
-  private def getTopMenus(app: Option[App], roles: Iterable[Role]): collection.Seq[Menu] = {
+  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role]): collection.Seq[Menu] = {
     val menuSet = Collections.newSet[Menu]
     roles foreach { role =>
       val query = OqlBuilder.from[Menu](classOf[Menu].getName + " menu," + classOf[FuncPermission].getName + " fp")
@@ -72,6 +72,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         .select("menu")
 
       app foreach { p => query.where("menu.app=:app", p) }
+      query.where("menu.app.appType=:appType", appType)
       query.where("menu.app.domain =:domain and menu.app.enabled=true", domainService.getDomain)
 
       query.cacheable()
@@ -179,8 +180,8 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     parseMenu(app, None, xml)
   }
 
-  override def getDomainMenus(user: User, isEnName: Boolean): DomainMenus = {
-    val menus = getTopMenus(user)
+  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean): DomainMenus = {
+    val menus = getTopMenus(user, appType)
     val appsMenus = menus.groupBy(_.app)
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {
@@ -188,7 +189,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         val group = new Properties(oned, "id", "name", "indexno")
         group.put("title", if isEnName then oned.enTitle else oned.title)
         val appMenus = groupApps(oned).toBuffer.sorted map { app =>
-          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
           appProps.put("title", if isEnName then app.enTitle else app.title)
           AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
         }

@@ -18,13 +18,7 @@
   </tr>
   <tr>
     <td class="title">上下文地址</td>
-    <td>${app.base}</td>
-    <td class="title">入口</td>
-    <td>${app.url}</td>
-  </tr>
-  <tr>
-    <td class="title">导航风格</td>
-    <td>${app.navStyle!}</td>
+    <td>${app.base} 导航风格:${app.navStyle!}</td>
     <td class="title">logoUrl</td>
     <td>${app.logoUrl!}</td>
   </tr>

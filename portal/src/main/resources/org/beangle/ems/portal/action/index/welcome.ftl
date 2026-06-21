@@ -1,4 +1,6 @@
-[@b.head/]
+[@b.head]
+  ${b.static.load(["ems"])}
+[/@]
 
 <div class="content-header">
   <div class="container-fluid">

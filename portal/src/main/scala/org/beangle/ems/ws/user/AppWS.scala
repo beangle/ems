@@ -66,7 +66,7 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
           appBuffer = appBuffer.filter(a => a.title.contains(q))
         }
         appBuffer.map { app =>
-          val p = new Properties(app, "id", "name", "title", "base", "url", "logoUrl", "navStyle")
+          val p = new Properties(app, "id", "name", "title", "base", "logoUrl", "navStyle")
           p.add("group", app.group, "id", "name", "title")
           p
         }

@@ -29,7 +29,6 @@ class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, Locale
   var enTitle: String = _
   var datasources: mutable.Buffer[DataSource] = Collections.newBuffer[DataSource]
   var appType: AppType = _
-  var url: String = _
   var base: String = _
   var logoUrl: Option[String] = None
   var indexno: String = _

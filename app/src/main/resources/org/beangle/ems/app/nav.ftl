@@ -1,160 +1,10 @@
 [#macro displayFrame mainHref=""]
-<style>
-[#--这一段定制的css，在app模块中的nav.ftl也有一份--]
-[#assign sidebar_width=156/]
-[#--限定宽度为sidebar_widthpx,这两个宽度的css定义要放在一个文件里面,仅仅重置768px,一定要保留991.98px那一段--]
-  @media (min-width: 768px) {
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    transition:margin-left .3s ease-in-out;
-    margin-left:${sidebar_width}px;
-   }
-  }
-  @media (max-width:991.98px) {
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
-   body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
-    margin-left:0
-   }
-  }
-
-  .sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
-    width:${sidebar_width}px;
-  }
-
-  .layout-navbar-fixed .wrapper.sidebar-collapse .main-sidebar:hover .brand-link {
-    transition: width 0.3s ease-in-out;
-    width: ${sidebar_width}px;
-  }
-
-  .main-sidebar, .main-sidebar::before {
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    width: ${sidebar_width}px;
-  }
-
-  @media (max-width:767.98px) {
-   .main-sidebar, .main-sidebar::before {
-    box-shadow:none!important;
-    margin-left:-${sidebar_width}px
-   }
-   .sidebar-open .main-sidebar,
-   .sidebar-open .main-sidebar::before {
-    margin-left:0
-   }
-  }
-  .layout-fixed .brand-link {
-   width:${sidebar_width}px
-  }
-  .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused,
-  .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover {
-    width:${sidebar_width}px
-  }
-  [#--字体紧凑 靠左--]
-  .nav-legacy {
-      line-height:1.1;
-      width:${sidebar_width}px;
-      font-size:0.875rem;
-  }
-  .nav-legacy.nav-sidebar .nav-item > .nav-link{
-    border-radius: 0;
-    margin-bottom: 0;
-    padding-left:0;
-  }
-  [#--图标小一点--]
-  .nav-sidebar > .nav-item .nav-icon{
-    font-size: 0.7rem;
-  }
-  .nav-sidebar > .nav-item .nav-icon.fa, .nav-sidebar > .nav-item .nav-icon.fas, .nav-sidebar > .nav-item .nav-icon.far, .nav-sidebar > .nav-item .nav-icon.fab, .nav-sidebar > .nav-item .nav-icon.fal, .nav-sidebar > .nav-item .nav-icon.fad, .nav-sidebar > .nav-item .nav-icon.svg-inline--fa, .nav-sidebar > .nav-item .nav-icon.ion {
-    font-size: 0.7rem;
-  }
-  [#--靠左边一点--]
-  .text-sm .nav-legacy.nav-sidebar > .nav-item > .nav-link.active > .nav-icon {
-    margin-left: 3px;
-  }
-  [#--层级之间的缩进小一点--]
- .text-sm .nav-legacy.nav-sidebar .nav-item > .nav-link > .nav-icon {
-    margin-left: 3px;
-  }
-  .nav-sidebar .nav-treeview > .nav-item > .nav-link > .nav-icon{
-    width: 1.3rem;
-  }
-  [#--图标窄一点--]
-  .nav-sidebar .nav-treeview > .nav-item  .nav-icon {
-    width: 1.3rem;
-  }
-  [#--每个连接的宽度窄一些--]
-  .sidebar-mini .main-sidebar .nav-legacy .nav-link, .sidebar-mini-md .main-sidebar .nav-legacy .nav-link, .sidebar-mini-xs .main-sidebar .nav-legacy .nav-link {
-    width: ${sidebar_width}px;
-  }
-  [#--文件夹的箭头靠右一些--]
-  .nav-sidebar .nav-link > .right, .nav-sidebar .nav-link > p > .right {
-    position: absolute;
-    right: 0.1rem;
-    top: .7rem;
-  }
-  [#--缩小时宽度变为3rem--]
-  @media (min-width: 992px){
-    .sidebar-mini.sidebar-collapse.layout-fixed .brand-link {
-      width: 3rem;
-    }
-    .sidebar-mini.sidebar-collapse .main-sidebar, .sidebar-mini.sidebar-collapse .main-sidebar::before {
-      margin-left: 0;
-      width: 3rem;
-    }
-    .sidebar-mini.sidebar-collapse .content-wrapper, .sidebar-mini.sidebar-collapse .main-footer, .sidebar-mini.sidebar-collapse .main-header {
-      margin-left: 3rem !important;
-    }
-  }
-  #navbar-setting .nav-link{
-    padding:0.3125rem 0.5rem;
-  }
-  .control-sidebar, .control-sidebar::before {
-    width:13rem;
-  }
-  [#--override bootstrap--]
-  .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-  .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-  a {
-    color: var(--primary-color);
-  }
-  .btn-primary {
-    color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-  .sidebar.nav-legacy > .nav-item > .nav-link.active {
-    border-color: var(--primary-color);
-  }
-  .sidebar-dark-lightblue .nav-sidebar.nav-legacy > .nav-item > .nav-link.active, .sidebar-light-lightblue .nav-sidebar.nav-legacy > .nav-item > .nav-link.active {
-    border-color: var(--primary-color);
-  }
-  .card-primary.card-outline {
-    border-top: 3px solid var(--primary-color);
-  }
-  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: #fff;
-    background-color: var(--primary-color);
-  }
-  .btn-primary:focus, .btn-primary.focus {
-    background-color: var(--primary-color);
-  }
-  .btn-outline-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-</style>
+${b.static.load(["ems"])}
 <div class="wrapper">
     <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--navbar-bg-color)">
       <ul class="nav navbar-nav">
          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu"  title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
+            <a class="nav-link" data-ems-pushmenu title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
          </li>
       </ul>
       <ul class="nav navbar-nav" id="top_nav_bar"></ul>
@@ -177,7 +27,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <a class="nav-link" data-ems-fullscreen href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
@@ -208,7 +58,7 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#" style="padding:0.3125rem 0.35rem" class="nav-link" data-slide="true" data-widget="control-sidebar"><i class="fa fa-cog"></i></a>
+          <a href="#" style="padding:0.3125rem 0.35rem" class="nav-link" data-ems-control-sidebar><i class="fa fa-cog"></i></a>
         </li>
       </ul>
     </nav>
@@ -220,11 +70,10 @@
     </a>
     <div class="form-inline" style="display:none">
       <div class="input-group">
-        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" id="menu_searcher"
-               style="height: 29px;font-size: 12px;border:0px;border-radius: 0px;">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" id="menu_searcher">
         <div class="input-group-append">
-          <button class="btn btn-sidebar" style="border:0px;padding-top: 0px;padding-bottom: 0px;border-radius: 0px;">
-            <i class="fas fa-search fa-fw" style="width: 0.6rem;"></i>
+          <button type="button" class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
           </button>
         </div>
       </div>
@@ -232,7 +81,7 @@
     </div>
     <div class="sidebar" style="padding-right:0px">
       <nav class="mt-2">
-        <ul id="menu_ul" class="nav nav-pills nav-sidebar flex-column nav-legacy nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"></ul>
+        <ul id="menu_ul" class="nav nav-pills nav-sidebar flex-column nav-child-indent ems-sidebar-menu" role="menu"></ul>
       </nav>
     </div>
   </aside>
@@ -240,7 +89,7 @@
     [@b.div id="main"/]
   </div>
 
-  <aside id="control_sidebar" class="control-sidebar control-sidebar-light control-sidebar-open" style="display: block;">
+  <aside id="control_sidebar" class="control-sidebar control-sidebar-light">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li class="nav-item"><a class="nav-link active" style="padding: .4rem .8rem;" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
       <li class="nav-item"><a class="nav-link" style="padding: .4rem .8rem;" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
@@ -297,7 +146,7 @@
       </div>
       <div class="tab-pane" id="control-sidebar-home-tab" style="padding: 10px 15px;">
         <h6 class="control-sidebar-heading">近期活动</h6>
-        <ul class="control-sidebar-menu" style="padding-left: 20px;">
+        <ul class="control-sidebar-menu">
           <li>时间 <div id="clock" style="display:inline"></div></li>
         </ul>
       </div>
@@ -306,10 +155,10 @@
   <div class="control-sidebar-bg"></div>
 </div>
 <script type="text/javascript">
-  beangle.require(["adminlte","ems"],function(adminlte,ems){
+  beangle.require(["ems"],function(ems){
     ems.config.api='${nav.ems.api}';
-    var app = {'name':'${nav.app.name}','base':'${nav.app.base}','url':'${nav.app.base}','navStyle':'adminlte'}
-    var portal={"name":'platform-portal','url':'${nav.ems.portal}','title':'首页'}
+    var app = {'name':'${nav.app.name}','base':'${nav.app.base}'}
+    var portal={"name":'platform-portal','base':'${nav.ems.portal}','title':'首页'}
     var params={}
     params['sysName']='${nav.domain.title}';
     [#list nav.params as k,v]

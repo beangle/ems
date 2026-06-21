@@ -14,6 +14,8 @@
   /** localStorage 键：导航栏与外观偏好 */
   var NAV_STICKY_HEADER_STORAGE_KEY = "beangle.ems.nav_sticky_header";
   var NAV_SIDEBAR_THEME_STORAGE_KEY = "beangle.ems.nav_sidebar_theme";
+  /** localStorage：工作台多标签（true）/ 单槽（false）；缺省为多标签 */
+  var NAV_MULTI_TAB_STORAGE_KEY = "beangle.ems.multi_tab";
   var ROOT_FONT_SIZE_STORAGE_KEY = "beangle.ems.root_font_size";
   var THEME_STORAGE_KEY = "beangle.ems.theme";
 
@@ -24,6 +26,26 @@
 
   /** 多标签工作台：常驻首页标签（welcomeUrl ajax），不可关闭、不参与 URL 去重、不入快照 tabs 数组 */
   var NAV_WORKSPACE_HOME_TAB_ID = "ems_tab_home";
+
+  /**
+   * 规范化无界运行时（wujie 2.x 经 ESM import 时未必挂 window.wujie）。
+   * 解析成功后写回 window.wujie，供 startApp / destroyApp 与 beangle.Go 子应用 jump 共用。
+   */
+  function resolveWujieRuntime() {
+    if (typeof window !== "undefined" && window.wujie && typeof window.wujie.startApp === "function") {
+      return window.wujie;
+    }
+    try {
+      if (typeof beangle !== "undefined" && beangle.amd && typeof beangle.amd.pickModuleExport === "function") {
+        var picked = beangle.amd.pickModuleExport("wujie");
+        if (picked && typeof picked.startApp === "function") {
+          window.wujie = picked;
+          return picked;
+        }
+      }
+    } catch (ePick) { /* ignore */ }
+    return null;
+  }
 
   var config = { profiles: [], profile: {}, api: "" };
 
@@ -56,6 +78,8 @@
   }
 
   function hostName(u1) {
+    if (u1 == null || u1 === "") return "";
+    u1 = String(u1);
     var slashIdx = u1.indexOf('//');
     if (-1 == slashIdx) {
       slashIdx = 0;
@@ -72,8 +96,17 @@
     return u1.substring(slashIdx, endIdx);
   }
 
+  /** 相对路径 base（如 /portal）视为当前页同源，便于与 shell 完整 URL 比较 */
   function sameDomain(u1, u2) {
-    return hostName(u1) == hostName(u2);
+    var h1 = hostName(u1);
+    var h2 = hostName(u2);
+    if (h1 === "" && u1 && String(u1).charAt(0) === "/") {
+      h1 = hostName(window.location.href);
+    }
+    if (h2 === "" && u2 && String(u2).charAt(0) === "/") {
+      h2 = hostName(window.location.href);
+    }
+    return h1 === h2;
   }
 
   /**
@@ -106,8 +139,8 @@
       maxTabCount: 30
     };
     /**
-     * multiTab=true（默认）：工作台可多标签 iframe/wujie；ajax 走主区 #main。
-     * multiTab=false：单嵌入槽（隐藏标签条、每次 iframe/wujie 先清空再开）；ajax 仍走 #main。门户传 params.multiTab=false。
+     * multiTab=true（默认）：ajax / iframe / wujie 均在工作台多标签；#main 作占位隐藏。
+     * multiTab=false：单嵌入槽（隐藏标签条）；ajax 走 #main，iframe/wujie 每次先清空再开。
      */
     this.multiTab = true;
     this.initialGroupId = null;
@@ -163,19 +196,16 @@
         return "far fa-circle";
       }
     }
-    this.menuTempalte = '<li class="nav-item"><a class="nav-link" href="{menu.entry}" target="{menu.target}" data-open-mode="{menu.openMode}" data-nav-group="{menu.navGroupAttr}" onclick="return ems.openMenu(this)"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
+    this.menuTempalte = '<li class="nav-item"><a class="nav-link" href="{menu.entry}" target="{menu.target}" data-open-mode="{menu.openMode}" data-nav-group="{menu.navGroupAttr}"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
     this.foldTemplate = '<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{menu.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu{menu.id}"></ul></li>'
-    this.appFoldTemplate = '<li class="nav-item has_treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{app.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu_app{app.id}"></ul></li>'
+    this.appFoldTemplate = '<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{app.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu_app{app.id}"></ul></li>'
 
     this.groupTemplate = '<li class="nav-item"><a class="nav-link {active_class}" href="javascript:void(0)" id="group_{group.id}">{group.title}</a></li>';
     this.dropdownGroupNavTemplate = '<a href="javascript:void(0)"  class="dropdown-item {active_class}" id="group_{group.id}">{group.title}</a>'
-    if (!this.app.navStyle) {
-      this.app.navStyle = "unknown";
-    }
     this.collectApps();
     this.processMenus();
     if (!this.sysName) {
-      this.sysName = this.app.title;
+      this.sysName = this.portal.title;
     }
     jQuery("#" + this.menuDomId).addClass("sidebar-menu");
   }
@@ -195,6 +225,10 @@
      * 收集domain中的apps，以及每个app对应的菜单
      */
     collectApps: function () {
+      var shellAppBase = this.app.base;
+      if (!this.portal.base && this.portal.url) {
+        this.portal.base = this.portal.url;
+      }
       for (var p = 0; p < this.groupMenus.length; p++) {
         var childrenApps = this.groupMenus[p].appMenus; // a group contain many app
         var group = this.groupMenus[p].group;
@@ -208,31 +242,44 @@
               this.portal.title = app.title;
             }
             this.portal.group = group;
-            this.portal.url = app.url;
-          } else if (app.name == this.app.name) {
-            app.base = this.app.base;
+            if (this.portal !== this.app) {
+              this.portal.base = app.base;
+            }
+          }else{
+            this.apps.push(app);
+          }
+          /* 当前壳应用始终用页面传入的 base（完整 URL），不被 JSON 中相对路径覆盖 */
+          if (app.name == this.app.name) {
+            app.base = shellAppBase;
             this.app.group = group;
-            this.app.title = app.title;
+            if (!this.app.title) {
+              this.app.title = app.title;
+            }
             this.app.id = app.id;
-            this.apps.push(app);
-          } else {
-            this.apps.push(app);
+            if (this.apps.indexOf(app) < 0) {
+              this.apps.push(app);
+            }
           }
           //去除appbase的结尾斜线，因为资源的形式为/path/to/uri
-          if (app.base.endsWith("/")) {
+          if (app.base && app.base.endsWith("/")) {
             app.base = app.base.substring(0, app.base.length - 1);
           }
-          app.base = this.processUrl(app.base);
-          /* openMode 由 navStyle 与宿主对照推导（后台仍只输出 navStyle）；等同原 app.iframe */
+          app.base = this.processUrl(app.base || shellAppBase);
+          /* openMode：仅 wujie 走微前端，其余（含空、iframe、历史 ajax/adminlte 等）均 iframe */
           if (app.navStyle == NAV_OPENMODE_WUJIE) {
             app.openMode = NAV_OPENMODE_WUJIE;
-          } else if (app.navStyle != this.app.navStyle) {
-            app.openMode = NAV_OPENMODE_IFRAME;
           } else {
-            app.openMode = NAV_OPENMODE_AJAX;
+            app.openMode = NAV_OPENMODE_IFRAME;
           }
-          app.embeddable = sameDomain(this.app.base, app.base);
+          app.embeddable = sameDomain(shellAppBase, app.base);
         }
+      }
+      if (shellAppBase) {
+        var trimmed = shellAppBase;
+        if (trimmed.endsWith("/")) {
+          trimmed = trimmed.substring(0, trimmed.length - 1);
+        }
+        this.app.base = this.processUrl(trimmed);
       }
     },
 
@@ -256,7 +303,7 @@
         if (menu.entry && (menu.title.includes(name) || menu.entry.toLowerCase().includes(name))) {
           var resultPath = path.slice();
           resultPath.push(menu.title);
-          var result = { 'name': menu.title, 'link': menu.entry, 'path': resultPath, 'target': menu.target, 'openMode': menu.openMode || NAV_OPENMODE_AJAX, 'navGroupAttr': this.formatNavGroupAttr(menu.navAppId, menu.navGroupId) }
+          var result = { 'name': menu.title, 'link': menu.entry, 'path': resultPath, 'target': menu.target, 'openMode': menu.openMode || NAV_OPENMODE_IFRAME, 'navGroupAttr': this.formatNavGroupAttr(menu.navAppId, menu.navGroupId) }
           results.push(result);
           if (results.length >= limit) break;
         } else {
@@ -310,13 +357,15 @@
       }
     },
 
-    /** 将 menu.openMode 规范为 ajax | iframe | wujie；未指定或非法时采用 fallbackOpenMode，再默认 ajax */
+    /** 将 menu.openMode 规范为 iframe | wujie；ajax 等历史值归并为 iframe */
     normalizeMenuOpenMode: function (menu, fallbackOpenMode) {
       var raw = menu.openMode != null && String(menu.openMode) !== "" ? String(menu.openMode).toLowerCase() : "";
-      if (raw === NAV_OPENMODE_WUJIE || raw === NAV_OPENMODE_IFRAME || raw === NAV_OPENMODE_AJAX) {
-        menu.openMode = raw;
+      if (raw === NAV_OPENMODE_WUJIE) {
+        menu.openMode = NAV_OPENMODE_WUJIE;
+      } else if (raw === NAV_OPENMODE_IFRAME || raw === NAV_OPENMODE_AJAX) {
+        menu.openMode = NAV_OPENMODE_IFRAME;
       } else {
-        menu.openMode = fallbackOpenMode || NAV_OPENMODE_AJAX;
+        menu.openMode = (fallbackOpenMode === NAV_OPENMODE_WUJIE) ? NAV_OPENMODE_WUJIE : NAV_OPENMODE_IFRAME;
       }
     },
 
@@ -335,7 +384,7 @@
           menu.entry = this.processUrl(app.base + menu.entry);
           this.normalizeMenuOpenMode(menu, app.openMode);
         } else if (menu.entry) {
-          this.normalizeMenuOpenMode(menu, NAV_OPENMODE_AJAX);
+          this.normalizeMenuOpenMode(menu, NAV_OPENMODE_IFRAME);
         }
         if (menu.children) this.processMenuEntry(app, menu.children, navGroupId);
       }
@@ -375,45 +424,75 @@
           menuItem = menuItem.replace('{icon_class}', fonticon);
           menuItem = menuItem.replace('{menu.entry}', menu.entry);
           menuItem = menuItem.replace(/\{menu\.target\}/g, menu.target);
-          menuItem = menuItem.replace('{menu.openMode}', menu.openMode ? String(menu.openMode) : NAV_OPENMODE_AJAX);
+          menuItem = menuItem.replace('{menu.openMode}', menu.openMode ? String(menu.openMode) : NAV_OPENMODE_IFRAME);
           menuItem = menuItem.replace('{menu.navGroupAttr}', this.formatNavGroupAttr(menu.navAppId, menu.navGroupId));
           jqueryElem.append(menuItem);
         }
       }
     },
     activate: function () {
-      var that = this;
-      jQuery("#" + this.menuDomId + " li a").click(function () {
-        if (this.href == "javascript:void(0)") {
-          var jThis = jQuery(this);
-          jThis.parent('li').siblings().each(function (i, li) {
-            jQuery(li).removeClass('menu-open menu-is-opening');
-            jQuery(li).children('ul').hide();
-            jQuery(li).children('a').removeClass('active');
-          }
-          );
-          if (jThis.hasClass("active")) {
-            jThis.removeClass("active");
-          } else {
-            jThis.addClass("active");
-          }
-        } else {
-          jQuery(this).parent('li').siblings().each(function (i, li) { jQuery(li).children('a').removeClass('active') });
-          jQuery(this).addClass('active');
+      var menuDomId = this.menuDomId;
+      var navSelf = this;
+      jQuery("#" + menuDomId).off("click.emsTree").on("click.emsTree", "li a", function (e) {
+        var target = (this.getAttribute("target") || "").trim();
+        if (target === "_blank") {
+          return;
         }
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var href = this.getAttribute("href") || "";
+        var jThis = jQuery(this);
+        var li = jThis.parent("li");
+        if (href === "javascript:void(0)" || href.indexOf("javascript:void") === 0) {
+          if (li.hasClass("has-treeview")) {
+            var opening = !li.hasClass("menu-open");
+            li.siblings(".has-treeview").removeClass("menu-open menu-is-opening");
+            li.siblings(".has-treeview").children("a").removeClass("active");
+            if (opening) {
+              li.addClass("menu-open");
+              jThis.addClass("active");
+            } else {
+              li.removeClass("menu-open menu-is-opening");
+              jThis.removeClass("active");
+            }
+            return;
+          }
+          li.siblings().each(function (i, sli) {
+            jQuery(sli).removeClass("menu-open menu-is-opening");
+            jQuery(sli).children("ul").removeAttr("style");
+            jQuery(sli).children("a").removeClass("active");
+          });
+          jThis.toggleClass("active");
+          return;
+        }
+        li.siblings().each(function (i, sli) {
+          jQuery(sli).children("a").removeClass("active");
+        });
+        jThis.addClass("active");
+        navSelf.openMenu(this);
       });
-      var navMenuDomId = this.menuDomId;
-      setTimeout(function () {
-        //FIXME treeview sometimes missing domcument onloading events
-        if (!jQuery("#" + navMenuDomId).data("lte.treeview")) {
-          jQuery.fn.Treeview.call(jQuery("#" + navMenuDomId), "init");
-        }
-      }, 1000);
+    },
+    /** 顶栏分组：事件委托，只绑定一次 */
+    bindTopGroupNav: function () {
+      jQuery("#" + this.navDomId).off("click.emsGroup").on("click.emsGroup", "a[id^='group_']", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        changeGroup(this);
+      });
+    },
+    /** 侧栏搜索结果菜单打开 */
+    bindSearchMenuOpen: function () {
+      var navSelf = this;
+      jQuery("#main_siderbar").off("click.emsSearchOpen").on("click.emsSearchOpen", ".sidebar-search-results a.list-group-item[data-open-mode]", function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        navSelf.openMenu(this);
+      });
     },
     /**
      * 保证嵌入导航工作台 DOM（多标签 + 工具栏 + 内容区）已挂载。
      * 若工作台根节点（this.workspace.rootId，如 #ems_nav_workspace）已存在：按需写入 session 快照、同步壳层可见性后返回该节点。
-     * 否则：在 mainWrapper 下创建整块结构、可选恢复 targetEle 显示、绑定「关其他 / 关全部」一次，再持久化与同步。
+     * 否则：在 mainWrapper 下创建整块结构、可选恢复 targetEle 显示、绑定标签右键菜单一次，再持久化与同步。
      * @param {HTMLElement} mainWrapper 工作台根节点挂载的父元素
      * @param {HTMLElement|null} targetEle 与 iframe 并列的宿主区域（创建时会 display=""，一般为 #main）
      * @param {{skipPersist?:boolean}} [opts] skipPersist 为 true 时不调用 persistNavTabsSession
@@ -445,12 +524,7 @@
         '<div class="card-header ems-nav-toolbar p-0 d-flex align-items-stretch ems-nav-toolbar-strip">' +
         '<div class="ems-nav-tabs-scroll flex-grow-1 overflow-auto">' +
         '<ul class="nav ems-nav-tabs ems-nav-tabs--workspace flex-nowrap align-items-center" id="' + this.workspace.listId + '" role="tablist"></ul>' +
-        '</div>' +
-        '<div class="ems-nav-toolbar-actions d-flex align-items-center border-left px-1 bg-white">' +
-        '<div class="btn-group btn-group-sm" role="group">' +
-        '<button type="button" class="btn btn-default ems-nav-close-others" title="关闭除当前外的标签（无界 / iframe 通用）">关其他</button>' +
-        '<button type="button" class="btn btn-default ems-nav-close-all" title="关闭全部标签（无界 / iframe 通用）">关全部</button>' +
-        '</div></div></div>' +
+        '</div></div>' +
         '<div class="' + bodyCls + '" id="' + this.workspace.bodyId + '"' + bodyMinAttr + '></div>' +
         '</div>';
       mainWrapper.appendChild(rootEl);
@@ -461,18 +535,7 @@
       rootEl.setAttribute("data-ems-nav-target", tgtId);
       if (!rootEl.getAttribute("data-ems-toolbar-bound")) {
         rootEl.setAttribute("data-ems-toolbar-bound", "1");
-        var oBtn = rootEl.querySelector(".ems-nav-close-others");
-        var aBtn = rootEl.querySelector(".ems-nav-close-all");
-        if (oBtn) oBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          var el = document.getElementById(rootEl.getAttribute("data-ems-nav-target") || "main");
-          if (that.workspace.activeTabId) that.closeOtherNavTabs(that.workspace.activeTabId, el);
-        });
-        if (aBtn) aBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          var el = document.getElementById(rootEl.getAttribute("data-ems-nav-target") || "main");
-          that.teardownNavWorkspace(el);
-        });
+        that.bindWorkspaceTabContextMenu(rootEl);
       }
       if (!skipPersist) this.persistNavTabsSession();
       this.syncNavWorkspaceChrome();
@@ -593,12 +656,13 @@
       if (targetEle) this.showNavWorkspace(targetEle);
     },
     /**
-     * 嵌入工作台：多标签时只承载 iframe 与 wujie（ajax 不生成标签、不经 session 快照）。
-     * multiTab=false 时 iframe/wujie 仍用此工作台，但单实例、无多标签条；ajax 仍走 #main。
-     * 标签 openMode 仅 wujie | iframe；与菜单 data-open-mode 中嵌入类一致。按「路径 + openMode」去重，同 URL 可各挂一页。
+     * 工作台标签 openMode 规范为 ajax | iframe | wujie；按「路径 + openMode」去重。
+     * multiTab=true 时三者均在工作台开标签；multiTab=false 时 ajax 仍走 #main，iframe/wujie 单槽。
      */
     normalizeNavOpenMode: function (k) {
-      return k === NAV_OPENMODE_IFRAME ? NAV_OPENMODE_IFRAME : NAV_OPENMODE_WUJIE;
+      if (k === NAV_OPENMODE_IFRAME) return NAV_OPENMODE_IFRAME;
+      if (k === NAV_OPENMODE_AJAX) return NAV_OPENMODE_AJAX;
+      return NAV_OPENMODE_WUJIE;
     },
     navTabDedupeKey: function (urlPath, openMode) {
       return this.navUrlToPath(urlPath) + "\n" + this.normalizeNavOpenMode(openMode);
@@ -645,6 +709,8 @@
       if (typeof obj == "object" && obj.tagName && obj.tagName.toLowerCase() == "a") {
         var titleEle = obj.querySelector("p");
         if (titleEle && titleEle.textContent) return titleEle.textContent.trim();
+        var searchTitle = obj.querySelector(".search-title");
+        if (searchTitle && searchTitle.textContent) return searchTitle.textContent.trim();
       }
       return fallback || "微前端";
     },
@@ -753,9 +819,169 @@
       panel.appendChild(iframeEl);
       return iframeEl;
     },
+    buildWorkspaceAjaxMainId: function (tabId) {
+      return "ems_ajax_" + String(tabId).replace(/[^a-zA-Z0-9_-]/g, "_");
+    },
+    /** 在工作台 panel 内挂载 ajax 片段区（与首页 welcome、菜单 ajax 共用）。 */
+    mountAjaxInWorkspacePanel: function (panel, tabId, linkOrUrl) {
+      var sideBar = document.getElementById("main_siderbar");
+      var minH = sideBar ? sideBar.offsetHeight + "px" : "480px";
+      var innerId = this.buildWorkspaceAjaxMainId(tabId);
+      var inner = document.createElement("div");
+      inner.id = innerId;
+      inner.className = "ajax_container";
+      inner.style.minHeight = minH;
+      inner.style.width = "100%";
+      panel.appendChild(inner);
+      try {
+        if (typeof linkOrUrl === "object" && linkOrUrl != null && linkOrUrl.tagName) {
+          beangle.Go(linkOrUrl, innerId);
+        } else if (linkOrUrl) {
+          beangle.Go(linkOrUrl, innerId);
+        }
+      } catch (eGo) {
+        if (window.console && console.warn) console.warn("[ems] mountAjaxInWorkspacePanel Go failed", eGo);
+      }
+      return inner;
+    },
+    /** 刷新工作台标签内容：用打开标签时记录的 tab.url 重新加载 */
+    refreshNavTab: function (tabId) {
+      var tab = this.workspace.tabs[tabId];
+      if (!tab || !tab.url) return;
+      var url = this.resolveNavAbsoluteUrl(tab.url);
+      var openMode = tab.openMode || NAV_OPENMODE_IFRAME;
+      if (openMode === NAV_OPENMODE_IFRAME) {
+        if (tab.iframeEl) {
+          tab.iframeEl.src = url;
+        } else if (tab.panel) {
+          tab.panel.innerHTML = "";
+          tab.iframeEl = this.mountIframeInWorkspacePanel(tab.panel, tabId, url);
+        }
+      } else if (openMode === NAV_OPENMODE_AJAX) {
+        var targetId = tab.ajaxMainId || (tab.homeTab ? this.workspace.homeMainId : null);
+        if (targetId) {
+          try {
+            if (typeof bg !== "undefined" && bg.Go) {
+              bg.Go(url, targetId);
+            } else if (typeof beangle !== "undefined" && beangle.Go) {
+              beangle.Go(url, targetId);
+            }
+          } catch (eGo) {
+            if (window.console && console.warn) console.warn("[ems] refreshNavTab Go failed", eGo);
+          }
+        }
+      } else if (openMode === NAV_OPENMODE_WUJIE && tab.appName) {
+        var seq = (++this.workspace.openSeq);
+        tab.seq = seq;
+        this.startWujieAppForTab(this, tabId, seq, tab.appName, url);
+      }
+      this.activateNavTab(tabId, { skipHistory: true });
+    },
+    /** 工作台标签条：右键菜单（刷新 / 在新标签打开 / 关闭 / 关闭其他） */
+    bindWorkspaceTabContextMenu: function (rootEl) {
+      var navSelf = this;
+      if (rootEl && rootEl.getAttribute("data-ems-tab-ctx-bound")) {
+        return;
+      }
+      if (rootEl) rootEl.setAttribute("data-ems-tab-ctx-bound", "1");
+      var menu = document.getElementById("ems_nav_tab_context_menu");
+      if (!menu) {
+        menu = document.createElement("div");
+        menu.id = "ems_nav_tab_context_menu";
+        menu.className = "ems-nav-tab-context-menu dropdown-menu";
+        menu.setAttribute("role", "menu");
+        menu.innerHTML =
+          '<a href="#" class="dropdown-item ems-nav-ctx-refresh" role="menuitem" tabindex="-1">' +
+            '<i class="fa fa-sync-alt fa-fw" aria-hidden="true"></i>刷新' +
+          '</a>' +
+          '<a href="#" class="dropdown-item ems-nav-ctx-open-new" role="menuitem" tabindex="-1">' +
+            '<i class="fa fa-external-link-alt fa-fw" aria-hidden="true"></i>在新标签打开' +
+          '</a>' +
+          '<div class="dropdown-divider"></div>' +
+          '<a href="#" class="dropdown-item ems-nav-ctx-close" role="menuitem" tabindex="-1">' +
+            '<i class="fa fa-times fa-fw" aria-hidden="true"></i>关闭' +
+          '</a>' +
+          '<a href="#" class="dropdown-item ems-nav-ctx-close-others" role="menuitem" tabindex="-1">' +
+            '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>关闭其他' +
+          '</a>';
+        document.body.appendChild(menu);
+
+        menu.addEventListener("click", function (e) {
+          var item = e.target.closest && e.target.closest(".dropdown-item");
+          if (!item) return;
+          e.preventDefault();
+          var tabId = menu.getAttribute("data-ems-tab-id");
+          var te = navSelf.getNavWorkspaceTargetEl();
+          if (item.classList.contains("ems-nav-ctx-refresh") && tabId) {
+            navSelf.refreshNavTab(tabId);
+          } else if (item.classList.contains("ems-nav-ctx-open-new") && tabId) {
+            var tab = navSelf.workspace.tabs[tabId];
+            if (tab && tab.url) {
+              var openUrl = navSelf.resolveNavAbsoluteUrl(tab.url);
+              if (openUrl) window.open(openUrl, "_blank", "noopener,noreferrer");
+            }
+          } else if (item.classList.contains("ems-nav-ctx-close-others") && tabId) {
+            navSelf.closeOtherNavTabs(tabId, te);
+          } else if (item.classList.contains("ems-nav-ctx-close") && tabId && tabId !== NAV_WORKSPACE_HOME_TAB_ID) {
+            navSelf.closeNavTab(tabId, te);
+          }
+          menu.style.display = "none";
+          menu.removeAttribute("data-ems-tab-id");
+        });
+
+        document.addEventListener("click", function () {
+          menu.style.display = "none";
+          menu.removeAttribute("data-ems-tab-id");
+        });
+        document.addEventListener("scroll", function () {
+          menu.style.display = "none";
+          menu.removeAttribute("data-ems-tab-id");
+        }, true);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            menu.style.display = "none";
+            menu.removeAttribute("data-ems-tab-id");
+          }
+        });
+      }
+
+      var hideMenu = function () {
+        menu.style.display = "none";
+        menu.removeAttribute("data-ems-tab-id");
+      };
+
+      var navBar = document.getElementById(this.workspace.listId);
+      if (!navBar || navBar.getAttribute("data-ems-tab-ctx-bound")) return;
+      navBar.setAttribute("data-ems-tab-ctx-bound", "1");
+
+      navBar.addEventListener("contextmenu", function (e) {
+        if (!navSelf.multiTab) return;
+        var tabItem = e.target.closest && e.target.closest(".ems-nav-tab");
+        if (!tabItem) return;
+        var tabId = tabItem.getAttribute("data-ems-tab-id");
+        if (!tabId) return;
+        e.preventDefault();
+        menu.setAttribute("data-ems-tab-id", tabId);
+        var isHome = tabId === NAV_WORKSPACE_HOME_TAB_ID;
+        var closeItem = menu.querySelector(".ems-nav-ctx-close");
+        var closeOthersItem = menu.querySelector(".ems-nav-ctx-close-others");
+        var otherCount = Object.keys(navSelf.workspace.tabs).filter(function (id) {
+          return id !== tabId && id !== NAV_WORKSPACE_HOME_TAB_ID;
+        }).length;
+        if (closeItem) closeItem.style.display = isHome ? "none" : "";
+        if (closeOthersItem) closeOthersItem.style.display = otherCount > 0 ? "" : "none";
+        navSelf.activateNavTab(tabId, { skipHistory: true });
+        menu.style.display = "block";
+        menu.style.left = e.clientX + "px";
+        menu.style.top = e.clientY + "px";
+      });
+    },
     /** 工作台标签条 Shell（标题行 + panel 容器）上的切换 / 关闭交互。 */
     bindWorkspaceTabShellEvents: function (tabId, targetEle, navLink, closeBtn) {
       var navSelf = this;
+      if (navLink.parentElement) {
+        navLink.parentElement.setAttribute("data-ems-tab-id", tabId);
+      }
       navLink.addEventListener("click", function (e) {
         if (e.target.closest && e.target.closest(".ems-nav-tab-close")) return;
         navSelf.activateNavTab(tabId);
@@ -849,6 +1075,18 @@
       if (href == null || href === "") return "";
       var s = String(href).trim();
       if (!s) return "";
+      var hashIdx = s.indexOf("#");
+      if (hashIdx >= 0) {
+        var frag = s.substring(hashIdx + 1);
+        if (frag.charAt(0) === "/") {
+          try {
+            var uFrag = new URL(frag, window.location.origin);
+            return (uFrag.pathname || "/") + uFrag.search;
+          } catch (eFrag) {
+            return frag;
+          }
+        }
+      }
       try {
         var u = new URL(s, window.location.href);
         return (u.pathname || "/") + u.search;
@@ -861,7 +1099,7 @@
     resolveNavAbsoluteUrl: function (pathOrUrl) {
       if (!pathOrUrl) return "";
       try {
-        return new URL(pathOrUrl, window.location.origin).href;
+        return new URL(pathOrUrl, window.location.href).href;
       } catch (e) {
         return pathOrUrl;
       }
@@ -965,7 +1203,7 @@
       var initMenu = initMenuLoc ? initMenuLoc.menu : null;
       var menuHighlightOnly = false;
 
-      if (initMenu && initMenu.entry && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME)) {
+      if (initMenu && initMenu.entry && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME || initMenu.openMode === NAV_OPENMODE_AJAX)) {
         var tid = this.findSnapshotTabIdForUrl({ tabs: data.tabs }, initMenu.entry, initMenu.openMode);
         if (tid) {
           if (data.activeTabId !== tid) {
@@ -987,7 +1225,7 @@
             id: newId,
             url: this.navUrlToPath(initMenu.entry),
             title: initMenu.title || "",
-            openMode: initMenu.openMode === NAV_OPENMODE_IFRAME ? NAV_OPENMODE_IFRAME : NAV_OPENMODE_WUJIE
+            openMode: this.normalizeNavOpenMode(initMenu.openMode)
           };
           var seedNg = this.formatNavGroupAttr(initMenu.navAppId, initMenu.navGroupId);
           if (seedNg) seedRow.navGroup = seedNg;
@@ -1010,7 +1248,7 @@
         } else if (initMenuLoc) {
           initialGroupId = initMenuLoc.group.id;
         }
-        if (initMenu && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME)) menuHighlightOnly = true;
+        if (initMenu && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME || initMenu.openMode === NAV_OPENMODE_AJAX)) menuHighlightOnly = true;
       } else if (!initMenuLoc && data.tabs.length === 1) {
         var one = data.tabs[0];
         if (initialGroupId == null || initialGroupId === "") {
@@ -1052,7 +1290,7 @@
         menuHref: menuHref
       };
     },
-    /** 写入 sessionStorage（模块内 NAV_TABS_SESSION_KEY；多标签工作台快照；仅 iframe/wujie） */
+    /** 写入 sessionStorage（模块内 NAV_TABS_SESSION_KEY；多标签工作台快照） */
     persistNavTabsSession: function () {
       try {
         if (!window.sessionStorage) return;
@@ -1078,7 +1316,7 @@
             id: tid,
             url: t.url,
             title: t.title || "",
-            openMode: t.openMode === NAV_OPENMODE_IFRAME ? NAV_OPENMODE_IFRAME : NAV_OPENMODE_WUJIE
+            openMode: this.normalizeNavOpenMode(t.openMode)
           };
           if (t.navGroup) row.navGroup = t.navGroup;
           tabs.push(row);
@@ -1100,6 +1338,8 @@
       var tabList = document.getElementById(this.workspace.listId);
       var body = document.getElementById(this.workspace.bodyId);
       if (tabList && body) {
+        var teShow = this.getNavWorkspaceTargetEl() || document.getElementById("main");
+        if (teShow) this.showNavWorkspace(teShow);
         var tabIds = Object.keys(this.workspace.tabs);
         for (var ai = 0; ai < tabIds.length; ai++) {
           var id = tabIds[ai];
@@ -1132,8 +1372,9 @@
       var tab = this.workspace.tabs[tabId];
       if (!tab) return;
       var te = targetEle || this.getNavWorkspaceTargetEl();
-      if (tab.openMode !== NAV_OPENMODE_IFRAME && tab.appName && window.wujie) {
-        try { window.wujie.destroyApp(tab.appName); } catch (e) { console.warn('[ems] wujie destroyApp', e); }
+      var wujieRtClose = resolveWujieRuntime();
+      if (tab.openMode !== NAV_OPENMODE_IFRAME && tab.appName && wujieRtClose && wujieRtClose.destroyApp) {
+        try { wujieRtClose.destroyApp(tab.appName); } catch (e) { console.warn('[ems] wujie destroyApp', e); }
       }
       var liRm = tab.navLink && tab.navLink.parentElement;
       if (liRm && liRm.parentNode) liRm.parentNode.removeChild(liRm);
@@ -1221,13 +1462,13 @@
           return href;
         }
       }
-      var W = typeof window !== 'undefined' ? window.wujie : null;
+      var W = resolveWujieRuntime();
       var current = that.workspace.tabs[tabId];
       if (!W || !W.startApp) {
         var errMissing = new Error('无界运行时未就绪：请确保页面已加载无界并在 window.wujie 上提供 startApp。');
         console.error("[ems] wujie startApp", errMissing);
         if (current && current.panel) {
-          current.panel.innerHTML = '<div class="p-3 text-danger">子应用加载失败（无界）：' + errMissing.message + '</div>';
+          current.panel.innerHTML = '<div class="p-3 text-danger">子应用加载失败：' + errMissing.message + '</div>';
         }
         return Promise.reject(errMissing);
       }
@@ -1358,12 +1599,12 @@
           if (/NetworkError|Failed to fetch|fetch/i.test(msg)) {
             hint = '<p class="small text-muted mt-2 mb-0">跨域时无界会用 fetch 拉取子应用 HTML/资源，子应用需对门户 Origin 返回 CORS；使用 Cookie 时须 Access-Control-Allow-Credentials: true 且 Allow-Origin 不能为 *。门户固定先按 credentials=include 请求，失败后会自动用 omit 重试一次。</p>';
           }
-          curErr.panel.innerHTML = '<div class="p-3 text-danger">子应用加载失败（无界）：' + msg + hint + '</div>';
+          curErr.panel.innerHTML = '<div class="p-3 text-danger">子应用加载失败：' + msg + hint + '</div>';
         }
       });
     },
     /**
-     * 刷新后根据 sessionStorage（NAV_TABS_SESSION_KEY）重建多标签工作台（仅 iframe/wujie）；最后激活上次选中标签。
+     * 刷新后根据 sessionStorage（NAV_TABS_SESSION_KEY）重建多标签工作台；最后激活上次选中标签。
      * @param prefetched 若已由 restoreNav 解析好则可传入，避免重复读取；省略或传 null 时再读 sessionStorage。
      * @param opts.preferredTabId 若地址栏 hash 已指向某标签内容，可指定优先激活的标签 id（须在快照 tabs 内）。
      * @param opts.skipSidebarInFinalize 为 true 时不根据激活标签改左侧分组（由 restoreNav 阶段二统一 displayGroupMenus）。
@@ -1460,12 +1701,15 @@
         };
         if (om === NAV_OPENMODE_IFRAME) {
           tab.iframeEl = that.mountIframeInWorkspacePanel(panel, tabId, absoluteUrl);
+        } else if (om === NAV_OPENMODE_AJAX) {
+          tab.ajaxMainId = that.buildWorkspaceAjaxMainId(tabId);
+          that.mountAjaxInWorkspacePanel(panel, tabId, absoluteUrl);
         } else {
           tab.appName = tabAppName;
         }
         that.workspace.tabs[tabId] = tab;
         that.bindWorkspaceTabShellEvents(tabId, targetEle, navLink, closeBtn);
-        if (om === NAV_OPENMODE_IFRAME) {
+        if (om === NAV_OPENMODE_IFRAME || om === NAV_OPENMODE_AJAX) {
           return Promise.resolve();
         }
         return that.startWujieAppForTab(that, tabId, seq, tabAppName, absoluteUrl);
@@ -1548,12 +1792,10 @@
       });
     },
     /**
-     * 左侧/顶部菜单：<a data-open-mode="ajax|iframe|wujie">，缺省或非合法值按 ajax。
-     * - multiTab=true（默认）：工作台可并列多条 iframe / wujie；ajax 在目标容器（多为 #main）片段加载并隐藏工作台。
-     * - multiTab=false：三种 openMode 均可——ajax 同上；iframe/wujie 进工作台但每次只保留一条（先 clear 再开），标签条隐藏。
-     * - ajax（默认）：beangle.Go / ajax_container 等片段加载。
-     * - iframe / wujie：共用工作台 UI；多标签时多条并列，单栏时单实例。
-     * openMode 由 normalizeMenuOpenMode / collectApps 推导，默认同宿主应用为 ajax。
+     * 左侧/顶部菜单：<a data-open-mode="iframe|wujie">，缺省或非合法值按 iframe。
+     * - multiTab=true（默认）：iframe / wujie 在工作台开标签；ajax 仅用于内部首页 welcome。
+     * - multiTab=false：iframe/wujie 进工作台单槽；#main 供内部 ajax 片段。
+     * openMode 由 collectApps 推导：navStyle=wujie 否则 iframe。
      */
     openMenu: function (obj) {
       try {
@@ -1578,8 +1820,8 @@
           console.warn('[ems] openMenu: missing container #' + target);
           return false;
         }
-        if (openMode !== NAV_OPENMODE_WUJIE && openMode !== NAV_OPENMODE_IFRAME && openMode !== NAV_OPENMODE_AJAX) {
-          openMode = NAV_OPENMODE_AJAX;
+        if (openMode !== NAV_OPENMODE_WUJIE && openMode !== NAV_OPENMODE_IFRAME) {
+          openMode = NAV_OPENMODE_IFRAME;
         }
 
         var mainWrapper = targetEle.parentNode;
@@ -1659,19 +1901,56 @@
           return false;
         }
         if (openMode === NAV_OPENMODE_AJAX) {
-          this.hideNavWorkspace(targetEle);
-          if (targetEle.tagName == 'DIV') {
-            beangle.Go(obj, target);
-          } else if (targetEle.tagName == 'IFRAME') {
-            mainWrapper.removeChild(targetEle);
-            var f = document.createElement('div')
-            f.setAttribute("width", "100%");
-            f.setAttribute("height", "100%");
-            f.setAttribute("class", "ajax_container");
-            f.id = target;
-            mainWrapper.appendChild(f);
-            beangle.Go(obj, target);
+          if (!this.multiTab) {
+            this.hideNavWorkspace(targetEle);
+            if (targetEle.tagName == 'DIV') {
+              beangle.Go(obj, target);
+            } else if (targetEle.tagName == 'IFRAME') {
+              mainWrapper.removeChild(targetEle);
+              var f = document.createElement('div')
+              f.setAttribute("width", "100%");
+              f.setAttribute("height", "100%");
+              f.setAttribute("class", "ajax_container");
+              f.id = target;
+              mainWrapper.appendChild(f);
+              beangle.Go(obj, target);
+            }
+            return false;
           }
+          var rawHrefAjax = (typeof obj == "object" && obj != null && obj.href) ? String(obj.href) : "";
+          if (!rawHrefAjax) {
+            console.warn('[ems] openMenu: ajax 需要带 href 的 <a> 菜单链接');
+            return false;
+          }
+          var urlAjax = this.navUrlToPath(rawHrefAjax);
+          this.ensureNavWorkspace(mainWrapper, targetEle);
+          this.showNavWorkspace(targetEle);
+          this.syncNavWorkspaceChrome();
+          if (this.tryActivateExistingWorkspaceTab(urlAjax, NAV_OPENMODE_AJAX)) return false;
+          var slotA = this.prepareNewWorkspaceTabSlot(targetEle, urlAjax, NAV_OPENMODE_AJAX);
+          if (!slotA) {
+            console.error('[ems] openMenu: ajax 多标签工作台 DOM 未就绪');
+            return false;
+          }
+          var titleA = this.getNavTabTitle(obj, rawHrefAjax || urlAjax);
+          var shellA = this.appendWorkspaceTabShell(slotA.navBar, slotA.tabBody, titleA, slotA.absoluteUrl);
+          var ajaxInner = this.mountAjaxInWorkspacePanel(shellA.panel, slotA.tabId, obj);
+          var seqA = (++this.workspace.openSeq);
+          var tabA = {
+            id: slotA.tabId,
+            url: urlAjax,
+            title: titleA,
+            openMode: NAV_OPENMODE_AJAX,
+            navGroup: this.formatNavGroupAttr(navAppIdFromLink, navGroupIdFromLink),
+            navLink: shellA.navLink,
+            panel: shellA.panel,
+            ajaxMainId: ajaxInner.id,
+            seq: seqA
+          };
+          this.workspace.tabs[slotA.tabId] = tabA;
+          this.bindWorkspaceTabShellEvents(slotA.tabId, targetEle, shellA.navLink, shellA.closeBtn);
+          this.activateNavTab(slotA.tabId);
+          this.persistNavTabsSession();
           return false;
         }
       } catch (eOm) {
@@ -1714,7 +1993,6 @@
         appItem = appItem.replace('{group.name}', group.name);
         appItem = appItem.replace('{active_class}', (i == 0) ? "active" : "");
         jqueryElem.append(appItem);
-        jQuery("#group_" + group.id).click(function () { changeGroup(this); return false });
       }
     },
 
@@ -1741,24 +2019,29 @@
     /**显示指定group的menu；navOpts.highlightOnly 为 true 时对 menuObj 仅展开父级并高亮，不 trigger 打开（用于已从快照恢复的无界标签）。*/
     displayGroupMenus: function (groupId, appId, menuObj, navOpts) {
       navOpts = navOpts || {};
+      var gid = String(groupId);
+      var aid = appId != null && appId !== "" ? String(appId) : "";
+      var sameGroup = this._displayedGroupId === gid && this._displayedAppId === aid && !menuObj;
       switchNavActive("#group_" + groupId);
       for (var i = 0; i < this.groupMenus.length; i++) {
         var groupMenu = this.groupMenus[i];
         if (groupMenu.group.id == groupId) {
           document.title = groupMenu.group.title;
-          var openMenuId = appId;
-          if (groupMenu.appMenus.length > 0 && !openMenuId) {
-            openMenuId = groupMenu.appMenus[0].app.id;
+          if (!sameGroup) {
+            var openMenuId = appId;
+            if (groupMenu.appMenus.length > 0 && !openMenuId) {
+              openMenuId = groupMenu.appMenus[0].app.id;
+            }
+            if (groupMenu.appMenus.length == 1) {
+              var onlyOneAppMenu = groupMenu.appMenus[0]
+              if (onlyOneAppMenu.menus.length > 0) openMenuId = onlyOneAppMenu.menus[0].id;
+              this.createMenus(jQuery('#' + this.menuDomId), onlyOneAppMenu.menus, openMenuId);
+            } else {
+              this.createMenus(jQuery('#' + this.menuDomId), groupMenu.appMenus, openMenuId);
+            }
+            this._displayedGroupId = gid;
+            this._displayedAppId = aid;
           }
-          //当仅有一个app的时候，就忽略展现app的名字
-          if (groupMenu.appMenus.length == 1) {
-            var onlyOneAppMenu = groupMenu.appMenus[0]
-            if (onlyOneAppMenu.menus.length > 0) openMenuId = onlyOneAppMenu.menus[0].id;
-            this.createMenus(jQuery('#' + this.menuDomId), onlyOneAppMenu.menus, openMenuId);
-          } else {
-            this.createMenus(jQuery('#' + this.menuDomId), groupMenu.appMenus, openMenuId);
-          }
-          this.activate();
           break;
         }
       }
@@ -1768,7 +2051,7 @@
           jQuery(li).addClass('menu-open');
           jQuery(li).siblings().each(function (i, sli) {
             jQuery(sli).removeClass('menu-open menu-is-opening');
-            jQuery(sli).children('ul').hide();
+            jQuery(sli).children('ul').removeAttr('style');
           }
           );
         });
@@ -1777,7 +2060,7 @@
           menu.parent('li').siblings().each(function (i, li) { jQuery(li).children('a').removeClass('active'); });
           menu.addClass('active');
         } else {
-          menu.trigger("click");
+          this.openMenu(menu[0]);
         }
       }
     },
@@ -1823,12 +2106,11 @@
     renderSearchItem: function (searchRegExp, result) {
       var pathStr = result.path.join(" -> ");
       var name = result.name.replace(searchRegExp, function (str) {
-        return "<strong class=\"text-light\">" + str + "</strong>";
+        return "<strong>" + str + "</strong>";
       });
       var item = null;
       if (result.link != '#') {
-        var onclickFunc = "return ems.openMenu(this)";
-        item = jQuery('<a/>', { href: decodeURIComponent(result.link), class: 'list-group-item', target: result.target, onclick: onclickFunc });
+        item = jQuery('<a/>', { href: decodeURIComponent(result.link), class: 'list-group-item', target: result.target });
         var som = result.openMode || NAV_OPENMODE_AJAX;
         item.attr('data-open-mode', som);
         item.attr('data-nav-group', result.navGroupAttr || '');
@@ -1863,7 +2145,7 @@
       '<a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle {autohide}" role="button" title="应用" aria-haspopup="true" aria-expanded="true"><i class="fas fa-th"></i></a>' +
       '<div id="app_drop_bar" class="dropdown-menu columns-3"></div>' +
       '</li></ul>';
-    var appTemplate = '<a href="{app.url}" class="dropdown-item {active_class}" target="_top">{app.title}</a>';
+    var appTemplate = '<a href="{app.base}" class="dropdown-item {active_class}" target="_top">{app.title}</a>';
     jqueryElem.before(appDropNav.replace("{autohide}", autohide ? "app-toggle" : ""));
     var appDropBarID = "#app_drop_bar";
     jqueryElem = jQuery(appDropBarID);
@@ -1897,7 +2179,7 @@
         if (app.name == nav.app.name) {//添加左侧的标题
           columnDiv += '<a  class="dropdown-item active" href="#">' + app.title + '</a>';
         } else {
-          var appendHtml = appTemplate.replace('{app.url}', nav.processUrl(app.url));
+          var appendHtml = appTemplate.replace('{app.base}', nav.processUrl(app.base));
           appendHtml = appendHtml.replace('{app.title}', app.title);
           appendHtml = appendHtml.replace('{active_class}', "");
           columnDiv += appendHtml;
@@ -1916,6 +2198,9 @@
     nav = new Nav(app, portal, domainMenus, params);
     nav.ensureNavTabHistoryListener();
     nav.addTopGroups(jQuery('#' + nav.navDomId));
+    nav.bindTopGroupNav();
+    nav.activate();
+    nav.bindSearchMenuOpen();
     var resolvedInitialGroup = false;
     var wantGid = nav.initialGroupId;
     if (wantGid != null && wantGid !== "") {
@@ -2009,26 +2294,94 @@
     }
   }
 
+  /** 读本地 multiTab 偏好；无记录时默认 true（多标签）。 */
+  function getMultiTabPreference() {
+    var v = getLocal(NAV_MULTI_TAB_STORAGE_KEY, "1");
+    return v !== "0" && v !== "false";
+  }
+
+  function setMultiTabPreference(enabled) {
+    setLocal(NAV_MULTI_TAB_STORAGE_KEY, enabled ? "1" : "0");
+  }
+
+  /**
+   * 合并服务端/门户 params.multiTab 与 localStorage；params 已有合法值时优先 params。
+   * @returns {"true"|"false"} 供 createNav params 使用
+   */
+  function resolveMultiTabParam(explicit) {
+    if (explicit !== undefined && explicit !== null && String(explicit).trim() !== "") {
+      var s = String(explicit).trim().toLowerCase();
+      if (s === "false" || s === "0") return "false";
+      if (s === "true" || s === "1") return "true";
+      return explicit;
+    }
+    return getMultiTabPreference() ? "true" : "false";
+  }
+
+  function shell() {
+    return jQuery(".wrapper").first();
+  }
+
+  function initShellLayout() {
+    jQuery(document).off("click.emsShell");
+    jQuery(document).on("click.emsShell", "[data-ems-pushmenu]", function (e) {
+      e.preventDefault();
+      if (window.innerWidth <= 991.98) {
+        shell().toggleClass("sidebar-open");
+      } else {
+        shell().toggleClass("sidebar-collapse");
+      }
+    });
+    jQuery(document).on("click.emsShell", "[data-ems-control-sidebar]", function (e) {
+      e.preventDefault();
+      shell().toggleClass("control-sidebar-slide-open");
+    });
+    jQuery(document).on("click.emsShell", "[data-ems-fullscreen]", function (e) {
+      e.preventDefault();
+      var docEl = document.documentElement;
+      if (!document.fullscreenElement && docEl.requestFullscreen) {
+        docEl.requestFullscreen();
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    });
+    jQuery(document).on("click.emsShell", ".control-sidebar-bg", function (e) {
+      e.preventDefault();
+      shell().removeClass("control-sidebar-slide-open");
+    });
+  }
+
+  function applyStickyHeader(enabled) {
+    if (enabled) {
+      shell().addClass("layout-navbar-fixed");
+    } else {
+      shell().removeClass("layout-navbar-fixed");
+    }
+  }
+
   function setup(theme, params) {
     nav.theme = theme;
-    jQuery("body").addClass("sidebar-mini layout-fixed text-sm");
+    initShellLayout();
+    shell().addClass("sidebar-mini layout-fixed");
+    jQuery("body").addClass("text-sm");
     document.documentElement.style.setProperty("scrollbar-width", "thin");
     fetchMessages(params);
     var stickyHeader = getLocal(NAV_STICKY_HEADER_STORAGE_KEY, "1")
     if (stickyHeader == "1") {
-      jQuery('#main_header').addClass("sticky-top")
+      applyStickyHeader(true);
       jQuery("#sticky_header").prop("checked", true);
     }
 
     jQuery("#control_sidebar input[name=root_font_size]").on("click", function (e) { changeFontSize(jQuery(e.target).val()) });
     jQuery("#sticky_header").on("click", function (event) {
-      if (this.checked) {
-        jQuery('#main_header').addClass("sticky-top");
-        if (localStorage) localStorage.setItem(NAV_STICKY_HEADER_STORAGE_KEY, "1");
-      } else {
-        jQuery('#main_header').removeClass("sticky-top");
-        if (localStorage) localStorage.setItem(NAV_STICKY_HEADER_STORAGE_KEY, "0");
-      }
+      applyStickyHeader(!!this.checked);
+      if (localStorage) localStorage.setItem(NAV_STICKY_HEADER_STORAGE_KEY, this.checked ? "1" : "0");
+    });
+
+    var multiTabPref = getMultiTabPreference();
+    jQuery("#nav_multi_tab").prop("checked", multiTabPref);
+    jQuery("#nav_multi_tab").on("click", function () {
+      setMultiTabPreference(!!this.checked);
     });
 
     changeNavSidebarTheme(getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, "--"));
@@ -2136,10 +2489,10 @@
         openAppId = ae && ae.id != null ? ae.id : undefined;
       }
       var menuObj = boot.initMenuLoc ? boot.initMenuLoc.menu : null;
-      if (boot.navTabsSnapshot.tabs.length > 0 && menuObj && menuObj.openMode !== NAV_OPENMODE_WUJIE && menuObj.openMode !== NAV_OPENMODE_IFRAME) {
+      if (boot.navTabsSnapshot.tabs.length > 0 && menuObj && menuObj.openMode === NAV_OPENMODE_AJAX && !boot.menuHighlightOnly) {
         menuObj = null;
       }
-      var hlOnly = !!(boot.menuHighlightOnly && menuObj && (menuObj.openMode === NAV_OPENMODE_WUJIE || menuObj.openMode === NAV_OPENMODE_IFRAME));
+      var hlOnly = !!(boot.menuHighlightOnly && menuObj && (menuObj.openMode === NAV_OPENMODE_WUJIE || menuObj.openMode === NAV_OPENMODE_IFRAME || menuObj.openMode === NAV_OPENMODE_AJAX));
 
       function syncHashHistory() {
         if (!boot.menuHref || !boot.navTabsSnapshot.activeTabId) return;
@@ -2214,8 +2567,12 @@
     exports.changeFontSize = changeFontSize;
     exports.clearNavState = clearNavState;
     exports.setWelcomeUrl = function (url) { nav.setWelcomeUrl(url); };
+    exports.ensureWujieRuntime = resolveWujieRuntime;
     exports.getNav = function () { return nav; };
     exports.changeTheme = changeTheme;
+    exports.getMultiTabPreference = getMultiTabPreference;
+    exports.setMultiTabPreference = setMultiTabPreference;
+    exports.resolveMultiTabParam = resolveMultiTabParam;
     exports.messageCallBack = function (c) {
       jQuery('#newly-message-count').text(c);
     };

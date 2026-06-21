@@ -18,6 +18,7 @@
 package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
+import org.beangle.ems.core.config.model.AppType
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
@@ -55,12 +56,14 @@ class MenuWS extends ActionSupport {
     val u = user.get
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
+    val appTypeId = getInt("appType.id", AppType.WebappId)
+    val appType = new AppType(appTypeId, "appTypeName")
     app match {
       case Some(app) =>
         if (forDomain) {
-          menuService.getDomainMenus(u, isEnName)
+          menuService.getDomainMenus(u, appType, isEnName)
         } else {
-          val appProps = new Properties(app, "id", "name", "base", "url", "logoUrl", "navStyle")
+          val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
           appProps.put("title", app.getTitle(isEnName))
           val menus = menuService.getTopMenus(app, u) map (m => menuService.convert(m, isEnName))
           val domain = new Properties(app.domain, "id", "name")
@@ -70,7 +73,7 @@ class MenuWS extends ActionSupport {
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
-        menuService.getDomainMenus(u, isEnName)
+        menuService.getDomainMenus(u, appType, isEnName)
     }
   }
 }

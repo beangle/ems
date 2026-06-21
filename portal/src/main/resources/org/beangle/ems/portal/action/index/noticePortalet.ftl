@@ -1,4 +1,4 @@
-  [@b.card class="card-info card-primary card-outline"]
+  [@b.card class="card-primary card-outline"]
     [#assign title]<i class="far fa-bell"></i> 通知公告[/#assign]
     [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
     <a href="${b.base}/portal/user/notice" target="_blank" class="float-right">更多...</a>

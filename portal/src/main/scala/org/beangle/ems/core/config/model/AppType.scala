@@ -23,8 +23,19 @@ import org.beangle.data.model.pojo.Named
 object AppType {
   val Webapp = "web-app"
   val Webservice = "web-service"
+  val MobileApp = "mobile-app"
+
+  val WebappId =1
+  val WebserviceId = 2
+  val MobileAppId = 3
 }
 
 class AppType extends IntId, Named {
   var title: String = _
+
+  def this(id: Int, name: String) = {
+    this()
+    this.id = id
+    this.name = name
+  }
 }
