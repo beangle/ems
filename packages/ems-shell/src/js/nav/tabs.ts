@@ -841,6 +841,10 @@ export const tabsProto = {
       opts = opts || {};
       var tab = this.workspace.tabs[tabId];
       if (!tab) return;
+      /** 已激活标签再次激活：无 replaceState 时不写 history、不重复刷侧栏/session */
+      if (tabId === this.workspace.activeTabId && !opts.replaceState) {
+        return;
+      }
       var tabList = document.getElementById(this.workspace.listId);
       var body = document.getElementById(this.workspace.bodyId);
       if (tabList && body) {
