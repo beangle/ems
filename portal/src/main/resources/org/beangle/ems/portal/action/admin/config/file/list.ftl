@@ -20,7 +20,7 @@
        ${(file.fileSize/1024.0)?string(".##")}K
     [/@]
     [@b.col  width="10%" property="mediaType" title="类型"]
-      <image src="${b.static_url("ems","images/file/"+extMap[file.filePath?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
+      <image src="${b.static_url("ems-shell","images/file/"+extMap[file.filePath?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
     [/@]
     [@b.col  width="10%" property="updatedAt" title="更新时间"]
       ${file.updatedAt?string("yy-MM-dd HH:mm")}

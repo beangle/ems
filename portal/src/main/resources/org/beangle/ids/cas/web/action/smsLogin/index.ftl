@@ -12,7 +12,7 @@
     <title>Login</title>
     ${b.css("bootstrap","css/bootstrap.min.css")}
     ${b.css("font-awesome","css/all.min.css")}
-    ${b.css("ems","css/login.css")}
+    ${b.css("ems-shell","css/login.css")}
     <base href="${b.base}/"/>
     ${b.static.load(["jquery"])}
   </head>

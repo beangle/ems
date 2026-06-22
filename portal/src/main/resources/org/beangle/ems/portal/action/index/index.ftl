@@ -1,5 +1,5 @@
 [@b.head title="首页"]
-  ${b.static.load(["ems"])}
+  ${b.static.load(["ems-shell"])}
 [/@]
 [#macro displayFrame mainHref=""]
 <div class="wrapper">
@@ -60,7 +60,7 @@
               </div>
               [/#if]
               <div class="float-sm-right">
-                <a href="${b.url('!logout')}" onclick="ems.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
+                <a href="${b.url('!logout')}" onclick="emsShell.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
               </div>
@@ -74,7 +74,7 @@
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="ems.clearNavState();return true;">
+    <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsShell.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
@@ -113,9 +113,9 @@
           <p class="small text-muted mb-2" style="margin-top:-0.25rem;">关闭后为单槽模式；变更后请刷新页面生效。</p>
           <div class="mb-2">
             导航风格:
-            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="emsShell.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_light">浅白</label>
-            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="emsShell.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_dark">暗黑</label>
           </div>
           <div class="mb-2">
@@ -151,7 +151,7 @@
               <li class="mb-2">查询区背景：<input type="color" id="theme_searchBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">工具栏背景：<input type="color" id="theme_gridbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">表格边框颜色：<input type="color" id="theme_gridBorderColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
-              <li><button class="btn btn-outline-primary btn-sm" onclick="ems.changeTheme(null,true)">恢复默认值</button>
+              <li><button class="btn btn-outline-primary btn-sm" onclick="emsShell.changeTheme(null,true)">恢复默认值</button>
             </ul>
           </div>
         </div>
@@ -167,13 +167,13 @@
   <div class="control-sidebar-bg"></div>
 </div>
 <script type="text/javascript">
-  beangle.require(["wujie","ems"], function (wujie, ems) {
+  beangle.require(["wujie","ems-shell"], function (wujie, emsShell) {
     if (wujie && typeof wujie.startApp === "function") {
       window.wujie = wujie;
-    } else if (ems.ensureWujieRuntime) {
-      ems.ensureWujieRuntime();
+    } else if (emsShell.ensureWujieRuntime) {
+      emsShell.ensureWujieRuntime();
     }
-    ems.config.api='${nav.ems.api}';
+    emsShell.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}',"title":'${nav.domain.title}','base':'${nav.app.base}'}
     var portal = {'name':'${nav.app.name}',"title":'${nav.domain.title}','base':'${nav.app.base}'}
     var params={}
@@ -188,32 +188,29 @@
     params['initialGroupId']='${Parameters['group.id']}';
     [/#if]
     [#if nav.profiles??]
-    ems.init(${nav.profiles},${nav.cookie!'null'});
-    if(ems.config.profiles.length>0 && ems.config.profile){
-      var default_p = ems.config.profile
+    emsShell.init(${nav.profiles},${nav.cookie!'null'});
+    if(emsShell.config.profiles.length>0 && emsShell.config.profile){
+      var default_p = emsShell.config.profile
       for(var i in default_p){
         if(i != "id") params[i] = default_p[i];
       }
       params['maxTopItem']=8;
     }
     [/#if]
-    params['multiTab'] = ems.resolveMultiTabParam(params['multiTab']);
+    params['multiTab'] = emsShell.resolveMultiTabParam(params['multiTab']);
 
     jQuery(document).ready(function(){
       /* 左侧分组由 restoreNav 阶段二渲染（结合快照/hash/group.id），此处不预先 displayFirstGroup */
-      ems.createNav(app,portal,${nav.menusJson},params,false);
+      emsShell.createNav(app,portal,${nav.menusJson},params,false);
       [#if nav.profiles??]
-      ems.createProfileNav();
+      emsShell.createProfileNav();
       [/#if]
       [#if mainHref?? && mainHref?length>0 ]
-      ems.setWelcomeUrl('${b.url(mainHref)}');
+      emsShell.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
       var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
-      ems.setup(theme,params);
-      setTimeout(function(){
-        jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");
-      }, 1000);
-      ems.enableSearch('menu_searcher');
+      emsShell.setup(theme,params);
+      emsShell.enableSearch('menu_searcher');
     });
   });
 
@@ -244,7 +241,7 @@
     theme.searchBgColor=jQuery("#theme_searchBgColor").val();
     theme.gridbarBgColor=jQuery("#theme_gridbarBgColor").val();
     theme.gridBorderColor=jQuery("#theme_gridBorderColor").val();
-    ems.changeTheme(theme)
+    emsShell.changeTheme(theme)
   }
 </script>
 [/#macro]

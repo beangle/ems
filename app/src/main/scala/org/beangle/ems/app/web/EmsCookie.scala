@@ -79,7 +79,7 @@ object EmsCookie {
     }
   }
 
-  private val CookieName = "URP_PROFILE"
+  private val CookieName = "beangle.ems.profile"
   private val COOKIE_AGE = 60 * 60 * 24 * 7 // 7 days
 
   private def parse(cookieValue: String): EmsCookie = {

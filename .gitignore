@@ -1,7 +1,18 @@
 *~
-.*
 
-# Build output directies
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+*.ipr
+*.iws
+.bloop/
+.metals/
+.vscode/
+.cursor/
+
+# Build output directories
 target
 
 # Eclipse specific files/directories
@@ -12,11 +23,6 @@ target
 
 *.class
 *.log
-
-#idea
-*.iml
-*.ipr
-*.iws
 
 # sbt specific
 dist/*
@@ -33,3 +39,16 @@ project/metals.sbt
 test-output
 stale_outputs_checked
 
+# npm / frontend (packages/ems-shell 等)
+packages/**/node_modules/
+packages/**/dist/
+packages/**/release/
+packages/**/*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+.bsp
+.prettierrc.json
+.scalafmt.conf

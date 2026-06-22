@@ -1,0 +1,60 @@
+{
+  "name": "@beangle/ems-shell",
+  "version": "0.0.1",
+  "description": "Beangle EMS portal shell — navigation, workspace tabs, layout, and static assets (JS/CSS/images)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beangle/ems.git",
+    "directory": "packages/ems-shell"
+  },
+  "bugs": {
+    "url": "https://github.com/beangle/ems/issues"
+  },
+  "homepage": "https://github.com/beangle/ems/tree/master/packages/ems-shell",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist",
+    "src",
+    "test",
+    "build.mjs",
+    "package.mjs",
+    "tsconfig.json"
+  ],
+  "main": "dist/js/ems-shell-min.js",
+  "exports": {
+    ".": "./dist/js/ems-shell-min.js",
+    "./js": "./dist/js/ems-shell-min.js",
+    "./js/dev": "./dist/js/ems-shell.js",
+    "./css": "./dist/css/ems-shell-min.css",
+    "./css/dev": "./dist/css/ems-shell.css",
+    "./css/login": "./dist/css/login.css"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "package": "node package.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/**/*.test.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.0"
+  },
+  "keywords": [
+    "beangle",
+    "ems",
+    "portal",
+    "shell",
+    "navigation"
+  ]
+}

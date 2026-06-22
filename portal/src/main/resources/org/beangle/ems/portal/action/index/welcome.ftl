@@ -1,7 +1,3 @@
-[@b.head]
-  ${b.static.load(["ems"])}
-[/@]
-
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -37,5 +33,3 @@
     [/#list]
   </div>
 [/#list]
-
-[@b.foot/]

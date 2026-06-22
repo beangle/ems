@@ -12,7 +12,7 @@
     <title>Login</title>
     ${b.css("bootstrap","css/bootstrap.min.css")}
     ${b.css("font-awesome","css/all.min.css")}
-    ${b.css("ems","css/login.css")}
+    ${b.css("ems-shell","css/login.css")}
     [#if Parameters['keyboard']??]
     ${b.css("virtual-keyboard","dist/css/keyboard.min.css")}
     ${b.css("virtual-keyboard","dist/css/keyboard-basic.min.css")}

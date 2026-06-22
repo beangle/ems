@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.19.1-SNAPSHOT"
+ThisBuild / version := "4.19.1"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -29,14 +29,7 @@ lazy val root = (project in file("."))
   .settings(
     common
   )
-  .aggregate(static, app, portal)
-
-lazy val static = (project in file("static"))
-  .settings(
-    name := "beangle-ems-static",
-    common,
-    crossPaths := false
-  )
+  .aggregate(app, portal)
 
 lazy val app = (project in file("app"))
   .settings(

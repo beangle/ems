@@ -53,7 +53,7 @@
               [#list docs as doc]
               <tr>
                 <td>
-                  <image src="${b.static_url("ems","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
+                  <image src="${b.static_url("ems-shell","images/file/"+extMap[doc.name?keep_after_last(".")]?default("generic.gif"))}">&nbsp;
                   <a href="${b.base}/portal/user/doc/${doc.id}" target="_blank">${doc.name}</a>
                 </td>
                 <td><span class="text-muted">${doc.updatedAt?string('MM-dd')}</span></td>

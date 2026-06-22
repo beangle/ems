@@ -1,0 +1,7 @@
+# 构建与依赖（根目录 .gitignore 亦有 packages/** 规则；此处便于单独打开本子目录）
+node_modules/
+dist/
+release/
+*.tgz
+npm-debug.log*
+*.tsbuildinfo

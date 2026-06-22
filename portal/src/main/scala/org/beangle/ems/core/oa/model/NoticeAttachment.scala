@@ -47,4 +47,8 @@ class NoticeAttachment extends LongId {
   }
 
   def uri: URI = EmsApp.getBlobRepository().uri(this.filePath)
+
+  def url: String = {
+    uri.toString
+  }
 }

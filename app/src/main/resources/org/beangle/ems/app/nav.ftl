@@ -1,5 +1,5 @@
 [#macro displayFrame mainHref=""]
-${b.static.load(["ems"])}
+${b.static.load(["ems-shell"])}
 <div class="wrapper">
     <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--navbar-bg-color)">
       <ul class="nav navbar-nav">
@@ -50,7 +50,7 @@ ${b.static.load(["ems"])}
               </div>
               [/#if]
               <div class="float-sm-right">
-                <a href="${b.url('!logout')}" onclick="ems.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
+                <a href="${b.url('!logout')}" onclick="emsShell.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
               </div>
@@ -64,7 +64,7 @@ ${b.static.load(["ems"])}
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="${b.base}" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="ems.clearNavState();return true;">
+    <a href="${b.base}" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsShell.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="font-size: 1rem;color: rgba(255,255,255,.8);"></span>
     </a>
@@ -101,9 +101,9 @@ ${b.static.load(["ems"])}
           <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2">
             导航风格:
-            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="light" checked="checked" id="nav_siderbar_theme_light" type="radio" onclick="emsShell.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_light">浅白</label>
-            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="ems.changeNavSidebarTheme(this.value)">
+            <input name="nav_siderbar_theme" value="dark" id="nav_siderbar_theme_dark" type="radio" onclick="emsShell.changeNavSidebarTheme(this.value)">
               <label for="nav_siderbar_theme_dark">暗黑</label>
           </div>
           <div class="mb-2">
@@ -139,7 +139,7 @@ ${b.static.load(["ems"])}
               <li class="mb-2">查询区背景：<input type="color" id="theme_searchBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">工具栏背景：<input type="color" id="theme_gridbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">表格边框颜色：<input type="color" id="theme_gridBorderColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
-              <li><button class="btn btn-outline-primary btn-sm" onclick="ems.changeTheme(null,true)">恢复默认值</button>
+              <li><button class="btn btn-outline-primary btn-sm" onclick="emsShell.changeTheme(null,true)">恢复默认值</button>
             </ul>
           </div>
         </div>
@@ -155,8 +155,8 @@ ${b.static.load(["ems"])}
   <div class="control-sidebar-bg"></div>
 </div>
 <script type="text/javascript">
-  beangle.require(["ems"],function(ems){
-    ems.config.api='${nav.ems.api}';
+  beangle.require(["ems-shell"],function(emsShell){
+    emsShell.config.api='${nav.ems.api}';
     var app = {'name':'${nav.app.name}','base':'${nav.app.base}'}
     var portal={"name":'platform-portal','base':'${nav.ems.portal}','title':'首页'}
     var params={}
@@ -165,9 +165,9 @@ ${b.static.load(["ems"])}
     params['${k}']='${v}';
     [/#list]
     [#if nav.profiles??]
-    ems.init(${nav.profiles},${nav.cookie!'null'});
-    if(ems.config.profiles.length>0 && ems.config.profile){
-      var default_p = ems.config.profile
+    emsShell.init(${nav.profiles},${nav.cookie!'null'});
+    if(emsShell.config.profiles.length>0 && emsShell.config.profile){
+      var default_p = emsShell.config.profile
       for(var i in default_p){
         if(i != "id") params[i] = default_p[i];
       }
@@ -176,18 +176,17 @@ ${b.static.load(["ems"])}
     [/#if]
 
     jQuery(document).ready(function(){
-      var navMenu = ems.createNav(app,portal,${nav.menusJson},params,false);
+      var navMenu = emsShell.createNav(app,portal,${nav.menusJson},params,false);
       navMenu.displayAppMenus('${nav.app.name}');
       [#if nav.profiles??]
-      ems.createProfileNav();
+      emsShell.createProfileNav();
       [/#if]
       [#if mainHref?? && mainHref?length>0 ]
-      ems.setWelcomeUrl('${b.url(mainHref)}');
+      emsShell.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
       var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
-      ems.setup(theme,params);
-      setTimeout(function(){jQuery("#main_siderbar .brand-link").css("height",jQuery("#main_header").outerHeight()+"px");}, 1500);
-      ems.enableSearch('menu_searcher');
+      emsShell.setup(theme,params);
+      emsShell.enableSearch('menu_searcher');
     });
   });
 
@@ -218,7 +217,7 @@ ${b.static.load(["ems"])}
     theme.searchBgColor=jQuery("#theme_searchBgColor").val();
     theme.gridbarBgColor=jQuery("#theme_gridbarBgColor").val();
     theme.gridBorderColor=jQuery("#theme_gridBorderColor").val();
-    ems.changeTheme(theme)
+    emsShell.changeTheme(theme)
   }
 </script>
 [/#macro]
