@@ -50,18 +50,14 @@ export const workspaceProto = {
         this.upgradeNavWorkspaceToolbar(rootEl);
         return rootEl;
       }
-      var sideH = document.getElementById("main_siderbar");
-      var minH = sideH ? sideH.offsetHeight + "px" : "480px";
       rootEl = document.createElement("div");
       rootEl.id = this.workspace.rootId;
       rootEl.className = "ems-nav-workspace";
       rootEl.style.display = "none";
       rootEl.style.width = "100%";
-      rootEl.style.minHeight = minH;
       var cardCls = "card card-outline card-secondary ems-nav-card mb-0 border-top-0 rounded-0 shadow-none";
       var bodyCls = "card-body p-0 ems-nav-body";
-      var bodyMinAttr = ' style="min-height:' + minH + ';"';
-      rootEl.innerHTML = '<div class="' + cardCls + '"><div class="card-header ems-nav-toolbar p-0 d-flex align-items-stretch ems-nav-toolbar-strip"><div class="ems-nav-tabs-scroll overflow-auto" id="' + this.workspace.scrollId + '"><ul class="nav ems-nav-tabs ems-nav-tabs--workspace flex-nowrap" id="' + this.workspace.listId + '" role="tablist" aria-orientation="horizontal"></ul></div><div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-right" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div></div><div class="' + bodyCls + '" id="' + this.workspace.bodyId + '"' + bodyMinAttr + "></div></div>";
+      rootEl.innerHTML = '<div class="' + cardCls + '"><div class="card-header ems-nav-toolbar p-0 d-flex align-items-stretch ems-nav-toolbar-strip"><div class="ems-nav-tabs-scroll overflow-auto" id="' + this.workspace.scrollId + '"><ul class="nav ems-nav-tabs ems-nav-tabs--workspace flex-nowrap" id="' + this.workspace.listId + '" role="tablist" aria-orientation="horizontal"></ul></div><div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-right" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div></div><div class="' + bodyCls + '" id="' + this.workspace.bodyId + '"></div></div>';
       mainWrapper.appendChild(rootEl);
       if (targetEle) targetEle.style.display = "";
       var that = this;
@@ -75,6 +71,9 @@ export const workspaceProto = {
       if (!skipPersist) this.persistNavTabsSession();
       this.syncNavWorkspaceChrome();
       this.ensureWorkspaceHomeTab(targetEle);
+      if (typeof this.syncNavWorkspaceLayout === "function") {
+        this.syncNavWorkspaceLayout();
+      }
       return rootEl;
     },
 
@@ -163,9 +162,6 @@ export const workspaceProto = {
       var panel = document.createElement("div");
       panel.className = "ems-nav-tab-panel";
       if (shellOpts.homeTab) panel.classList.add("ems-nav-tab-panel--home");
-      var sideBar = document.getElementById("main_siderbar");
-      var minH = sideBar ? sideBar.offsetHeight + "px" : "480px";
-      panel.style.minHeight = minH;
       panel.style.width = "100%";
       panel.style.display = "none";
       if (shellOpts.prepend && tabBody.firstChild) {
@@ -179,17 +175,12 @@ export const workspaceProto = {
     /** 在 panel 内挂载 iframe 子页面（与快照恢复、菜单打开共用）。
      * tab.url / 标题不随 iframe 内跳转更新，见 docs/workspace-tabs.md */
     mountIframeInWorkspacePanel: function(panel, tabId, absoluteUrl) {
-      var sideBar = document.getElementById("main_siderbar");
-      var minH = sideBar ? sideBar.offsetHeight + "px" : "480px";
       var iframeEl = document.createElement("iframe");
-      iframeEl.classList.add("autoadapt");
+      iframeEl.className = "ems-nav-tab-iframe";
       iframeEl.setAttribute("width", "100%");
       iframeEl.setAttribute("height", "100%");
       iframeEl.setAttribute("scrolling", "auto");
       iframeEl.setAttribute("frameborder", "0");
-      iframeEl.style.minHeight = minH;
-      iframeEl.style.width = "100%";
-      iframeEl.style.border = "0";
       iframeEl.setAttribute("name", tabId);
       iframeEl.src = absoluteUrl;
       panel.appendChild(iframeEl);
@@ -201,13 +192,10 @@ export const workspaceProto = {
     },
     /** 在工作台 panel 内挂载 ajax 片段区（与首页 welcome、菜单 ajax 共用）。 */
     mountAjaxInWorkspacePanel: function(panel, tabId, linkOrUrl) {
-      var sideBar = document.getElementById("main_siderbar");
-      var minH = sideBar ? sideBar.offsetHeight + "px" : "480px";
       var innerId = this.buildWorkspaceAjaxMainId(tabId);
       var inner = document.createElement("div");
       inner.id = innerId;
-      inner.className = "ajax_container";
-      inner.style.minHeight = minH;
+      inner.className = "ajax_container ems-nav-tab-ajax";
       inner.style.width = "100%";
       panel.appendChild(inner);
       try {
@@ -244,12 +232,9 @@ export const workspaceProto = {
         omitClose: true,
         homeTab: true
       });
-      var sideBar = document.getElementById("main_siderbar");
-      var minH = sideBar ? sideBar.offsetHeight + "px" : "480px";
       var inner = document.createElement("div");
       inner.id = this.workspace.homeMainId;
-      inner.className = "ajax_container";
-      inner.style.minHeight = minH;
+      inner.className = "ajax_container ems-nav-tab-ajax";
       inner.style.width = "100%";
       shell2.panel.appendChild(inner);
       var seq = ++this.workspace.openSeq;
@@ -299,6 +284,9 @@ export const workspaceProto = {
       var rootEl = document.getElementById(this.workspace.rootId);
       if (rootEl) rootEl.style.display = "";
       if (targetEle) targetEle.style.display = "none";
+      if (typeof this.syncNavWorkspaceLayout === "function") {
+        this.syncNavWorkspaceLayout();
+      }
     },
 
     /** 隐藏嵌入工作台、恢复 #main 宿主区 */

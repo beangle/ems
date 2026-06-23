@@ -54,6 +54,16 @@ export const tabsProto = {
       }
     },
 
+    /** 工作台内容区高度对齐视口剩余空间（避免仅 min-height 导致下方空白、iframe 过小） */
+    syncNavWorkspaceLayout: function() {
+      var root = document.getElementById(this.workspace.rootId);
+      if (!root || root.style.display === "none") return;
+      var top = root.getBoundingClientRect().top;
+      if (!(top >= 0)) top = 0;
+      var avail = Math.max(320, window.innerHeight - top);
+      root.style.minHeight = avail + "px";
+    },
+
     // --- 标签容量与溢出腾位 ---
 
     /** 标签栏最右一个 tab 的 id（溢出腾位）；DOM 对不上时用 seq 最大兜底。
@@ -447,6 +457,17 @@ export const tabsProto = {
         });
       }
       navSelf.bindWorkspaceTabListKeyboard();
+      if (!window.__emsNavWorkspaceLayoutBound) {
+        window.__emsNavWorkspaceLayoutBound = true;
+        var layoutTimer = null;
+        window.addEventListener("resize", function() {
+          if (layoutTimer) clearTimeout(layoutTimer);
+          layoutTimer = setTimeout(function() {
+            navSelf.syncNavWorkspaceLayout();
+          }, 100);
+        });
+      }
+      navSelf.syncNavWorkspaceLayout();
     },
 
     /** 标签栏方向键切换、Enter/Space 激活（WAI-ARIA tabs 模式） */
@@ -531,6 +552,16 @@ export const tabsProto = {
       });
     },
 
+    openNavTabContextMenu: function(menu, tabId, clientX, clientY) {
+      if (!menu || !tabId || !this.workspace.tabs[tabId]) return;
+      menu.setAttribute("data-ems-tab-id", tabId);
+      this.syncNavTabActionMenu(menu, tabId);
+      this.activateNavTab(tabId, { skipHistory: true });
+      menu.style.display = "block";
+      menu.style.left = clientX + "px";
+      menu.style.top = clientY + "px";
+    },
+
     /** 工作台标签条：右键菜单（刷新 / 在新标签打开 / 关闭 / 关闭其他） */
     bindWorkspaceTabContextMenu: function(rootEl) {
       var navSelf = this;
@@ -570,28 +601,18 @@ export const tabsProto = {
         var wsRoot = document.getElementById(this.workspace.rootId);
         tabStripEl = wsRoot && wsRoot.querySelector(".ems-nav-tabs-scroll");
       }
-      if (!tabStripEl || tabStripEl.getAttribute("data-ems-tab-ctx-bound")) return;
-      tabStripEl.setAttribute("data-ems-tab-ctx-bound", "1");
-      tabStripEl.addEventListener("contextmenu", function(e) {
-        if (!navSelf.multiTab) return;
-        e.preventDefault();
-        var tabItem = e.target.closest && e.target.closest(".ems-nav-tab");
-        if (!tabItem) {
-          hideMenu();
-          return;
-        }
-        var tabId = tabItem.getAttribute("data-ems-tab-id");
-        if (!tabId) {
-          hideMenu();
-          return;
-        }
-        menu.setAttribute("data-ems-tab-id", tabId);
-        navSelf.syncNavTabActionMenu(menu, tabId);
-        navSelf.activateNavTab(tabId, { skipHistory: true });
-        menu.style.display = "block";
-        menu.style.left = e.clientX + "px";
-        menu.style.top = e.clientY + "px";
-      });
+      if (tabStripEl && !tabStripEl.getAttribute("data-ems-tab-strip-ctx-bound")) {
+        tabStripEl.setAttribute("data-ems-tab-strip-ctx-bound", "1");
+        tabStripEl.addEventListener("contextmenu", function(e) {
+          if (!navSelf.multiTab) return;
+          var tabItem = e.target.closest && e.target.closest(".ems-nav-tab");
+          if (!tabItem) return;
+          var tabId = tabItem.getAttribute("data-ems-tab-id");
+          if (!tabId) return;
+          e.preventDefault();
+          navSelf.openNavTabContextMenu(menu, tabId, e.clientX, e.clientY);
+        });
+      }
     },
     /** 工作台标签条 Shell（标题行 + panel 容器）上的切换 / 关闭 / 双击刷新交互。 */
     bindWorkspaceTabShellEvents: function(tabId, targetEle, navLink, closeBtn) {
@@ -859,9 +880,10 @@ export const tabsProto = {
           t.navLink.classList.toggle("active", on);
           var liAct = t.navLink && t.navLink.parentElement;
           if (liAct) liAct.classList.toggle("ems-nav-tab--active", on);
-          t.panel.style.display = on ? "" : "none";
+          t.panel.style.display = on ? "flex" : "none";
         }
         this.syncNavTabsA11y(tabId);
+        this.syncNavWorkspaceLayout();
       }
       this.workspace.activeTabId = tabId;
       var liScroll = tab.navLink && tab.navLink.parentElement;
@@ -1113,10 +1135,7 @@ export const tabsProto = {
       current.wujieStartOpts = startOpts;
       return W.startApp(startOpts).then(function() {
         try {
-          if (current.panel && current.panel.getBoundingClientRect().height < 8) {
-            var sbMin = document.getElementById("main_siderbar");
-            current.panel.style.minHeight = sbMin ? sbMin.offsetHeight + "px" : "480px";
-          }
+          that.syncNavWorkspaceLayout();
           window.dispatchEvent(new Event("resize"));
         } catch (eR) {
         }
