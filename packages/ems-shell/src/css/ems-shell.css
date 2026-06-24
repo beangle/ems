@@ -7,6 +7,8 @@
   --ems-sidebar-collapsed: 3rem;
   --ems-control-width: 13rem;
   --ems-header-nav-height: 1.93725rem;
+  /* 顶栏 nav 链接：0.875rem = 14px（html 16px）；覆盖 Bootstrap .nav-link 默认 1rem */
+  --ems-header-nav-font-size: 0.875rem;
   --ems-header-padding-y: 0.5rem;
   /* 与 .main-header.navbar（padding 0.5rem + nav-link 1.93725rem）一致；顶栏 index 使用 border-bottom-0 */
   --ems-header-height: calc(var(--ems-header-padding-y) * 2 + var(--ems-header-nav-height));
@@ -97,7 +99,8 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 1034;
+  z-index: 1040;
+  overflow: visible;
 }
 
 @media (min-width: 768px) {
@@ -160,13 +163,45 @@
 .main-header {
   border-bottom: 1px solid #dee2e6;
   z-index: 1040;
+  overflow: visible;
 }
 
-/* AdminLTE 内嵌 Bootstrap：navbar 水平 padding 为 8px，而非独立 Bootstrap 的 16px */
 .main-header.navbar {
   padding: var(--ems-header-padding-y) 0.5rem;
   box-sizing: border-box;
   min-height: var(--ems-header-height);
+  overflow: visible;
+}
+
+#navbar-setting,
+#navbar-setting > .nav-item,
+.main-header .navbar-nav .user-menu {
+  overflow: visible;
+}
+
+.main-header .navbar-nav .user-menu {
+  position: relative;
+  margin-right: 0;
+}
+
+.main-header .user-menu > .nav-link {
+  padding-left: 0.3125rem;
+  padding-right: 0;
+}
+
+.main-header .user-menu > .dropdown-menu {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding: 0;
+  width: 280px;
+  min-width: 280px;
+  left: auto !important;
+  right: 0 !important;
+  top: 100%;
+  margin-top: 0;
+  transform: none !important;
+  z-index: 1050;
+  overflow: visible;
 }
 
 .main-header .nav-link {
@@ -189,6 +224,11 @@
 
 #navbar-setting .nav-link {
   padding: 0.3125rem 0.5rem;
+  font-size: var(--ems-header-nav-font-size);
+}
+
+#profile_switcher + .dropdown-menu .dropdown-item {
+  font-size: var(--ems-header-nav-font-size);
 }
 
 .navbar-badge {
@@ -209,24 +249,19 @@
   content: none;
 }
 
-.main-header .user-menu > .dropdown-menu {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  padding: 0;
-  width: 280px;
-  min-width: 280px;
-}
-
-.main-header .user-header {
+.main-header .user-menu > .dropdown-menu > .user-header {
   padding: 0.75rem;
   text-align: center;
-  background: var(--navbar-bg-color, #3c8dbc);
-  color: #fff;
+  background: transparent;
+  color: #334155;
+  overflow: visible;
 }
 
 .main-header .user-header .img-circle {
+  display: block;
   width: 4rem;
   height: 4rem;
+  margin: 0 auto;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -234,12 +269,29 @@
 .main-header .user-header p {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.main-header .user-header p small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #64748b;
 }
 
 .main-header .user-footer {
   padding: 0.5rem 0.75rem;
-  background: #f8f9fa;
+  background: transparent;
   border-top: 1px solid #dee2e6;
+  overflow: visible;
+  display: flow-root;
+}
+
+.main-header .user-footer .btn {
+  font-size: var(--ems-header-nav-font-size);
+  line-height: 1.5;
+  padding: 0.25rem 0.5rem;
 }
 
 .main-header .user-footer .btn-default {
@@ -646,7 +698,7 @@
 /* 顶栏分组 tab 间距 */
 #top_nav_bar .nav-link {
   padding: 0.5rem 0.85rem;
-  font-size: 0.875rem;
+  font-size: var(--ems-header-nav-font-size);
   white-space: nowrap;
 }
 
@@ -912,36 +964,6 @@
   color: #fff;
   background-color: var(--primary-color, #0076ff);
 }
-
-
-.content-header {
-  padding: 15px 0.5rem;
-}
-
-.text-sm .content-header {
-  padding: 10px 0.5rem;
-}
-
-.content-header h1 {
-  font-size: 1.8rem;
-  margin: 0;
-}
-
-.content-header .breadcrumb {
-  background-color: transparent;
-  line-height: 1.8rem;
-  margin-bottom: 0;
-  padding: 0;
-}
-
-.text-sm .content-header h1 {
-  font-size: 1.5rem;
-}
-
-.text-sm .content-header .breadcrumb {
-  line-height: 1.5rem;
-}
-
 
 /* ========== 工作台多标签（.ems-nav-*，与侧栏 .nav-sidebar 隔离） ========== */
 .ems-nav-workspace .ems-nav-card {

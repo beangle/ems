@@ -2,22 +2,22 @@
 [@b.head/]
 [#assign boxnames={'1':'收件箱','2':'已读消息','3':'垃圾箱'}/]
 <div class="card card-primary card-outline">
-   [@b.form name="messageListForm" id="messageListForm" action="!search"]
-   [#list Parameters as k,v]
-   [#if k!="message.id" && k!="message.title" ]
-   <input name="${k}" value="${v}" type="hidden"/>
-   [/#if]
-   [/#list]
     <div class="card-header">
       <h3 class="card-title">${boxnames[Parameters['message.status']]}</h3>
       <div class="card-tools">
+       [@b.form name="messageListForm" id="messageListForm" action="!search"]
+       [#list Parameters as k,v]
+       [#if k!="message.id" && k!="message.title" ]
+       <input name="${k}" value="${v}" type="hidden"/>
+       [/#if]
+       [/#list]
         <div class="input-group input-group-sm">
           <input type="text" id="messageSearchBox" name="message.title" value="${Parameters['message.title']!}" class="form-control input-sm" placeholder="查询消息" >
           <div class="input-group-append"><div class="btn btn-primary"><i class="fas fa-search" onclick="bg.form.submit(document.messageListForm);"></i></div></div>
         </div>
       </div>
+       [/@]
     </div>
-   [/@]
 
     <div class="card-body">
       <div class="mailbox-controls">

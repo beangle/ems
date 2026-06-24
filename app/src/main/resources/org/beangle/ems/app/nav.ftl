@@ -31,11 +31,11 @@ ${b.static.load(["ems-shell"])}
           <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
-        <li class="nav-item dropdown user user-menu" style="margin-right: -5px;">
-          <a href="#" class="nav-link" data-toggle="dropdown" title="${nav.principal.description}" style="padding-left: 5px;padding-right: 0px;">
+        <li class="nav-item dropdown user user-menu">
+          <a href="#" class="nav-link" data-toggle="dropdown" title="${nav.principal.description}">
             <img src="${nav.avatarUrl}" class="user-image">
           </a>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu dropdown-menu-right">
             <li class="user-header">
               <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
               <p>
