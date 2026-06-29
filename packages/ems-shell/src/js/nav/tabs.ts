@@ -64,6 +64,22 @@ export const tabsProto = {
       root.style.minHeight = avail + "px";
     },
 
+    /** 标签项滚入横向滚动区视口；已在视口内或无法滚动时不操作（behavior: auto，无 smooth 动画） */
+    scrollNavTabIntoView: function(tabLi) {
+      if (!tabLi || !tabLi.scrollIntoView) return;
+      var scrollEl = document.getElementById(this.workspace.scrollId);
+      if (scrollEl) {
+        var liRect = tabLi.getBoundingClientRect();
+        var scrollRect = scrollEl.getBoundingClientRect();
+        if (liRect.left >= scrollRect.left && liRect.right <= scrollRect.right) return;
+      }
+      try {
+        tabLi.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+      } catch (err) {
+        tabLi.scrollIntoView(false);
+      }
+    },
+
     // --- 标签容量与溢出腾位 ---
 
     /** 标签栏最右一个 tab 的 id（溢出腾位）；DOM 对不上时用 seq 最大兜底。
@@ -620,22 +636,15 @@ export const tabsProto = {
       if (navLink.parentElement) {
         navLink.parentElement.setAttribute("data-ems-tab-id", tabId);
       }
-      var clickTimer = null;
       navLink.addEventListener("click", function(e) {
         if (e.target.closest && (e.target.closest(".ems-nav-tab-close") || e.target.closest(".ems-nav-tab-pin"))) return;
-        if (clickTimer) clearTimeout(clickTimer);
-        clickTimer = setTimeout(function() {
-          clickTimer = null;
-          navSelf.activateNavTab(tabId);
-        }, 250);
+        /* 双击时第二下 click(detail=2) 跳过，由 dblclick 处理刷新；单击立即切换，不再等待 250ms */
+        if (e.detail > 1) return;
+        navSelf.activateNavTab(tabId);
       });
       navLink.addEventListener("dblclick", function(e) {
         if (e.target.closest && (e.target.closest(".ems-nav-tab-close") || e.target.closest(".ems-nav-tab-pin"))) return;
         e.preventDefault();
-        if (clickTimer) {
-          clearTimeout(clickTimer);
-          clickTimer = null;
-        }
         navSelf.refreshNavTab(tabId);
       });
       if (closeBtn) {
@@ -887,13 +896,7 @@ export const tabsProto = {
       }
       this.workspace.activeTabId = tabId;
       var liScroll = tab.navLink && tab.navLink.parentElement;
-      if (liScroll && liScroll.scrollIntoView) {
-        try {
-          liScroll.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
-        } catch (err) {
-          liScroll.scrollIntoView(false);
-        }
-      }
+      if (liScroll) this.scrollNavTabIntoView(liScroll);
       var hostUrl = this.menuEntryToHostUrl(tab.url);
       if (!opts.skipHistory && hostUrl) {
         try {

@@ -372,7 +372,9 @@ export const menuProto = {
       navOpts = navOpts || {};
       var gid = String(groupId);
       var aid = appId != null && appId !== "" ? String(appId) : "";
-      var sameGroup = this._displayedGroupId === gid && this._displayedAppId === aid && !menuObj;
+      var sameGroupApp = this._displayedGroupId === gid && this._displayedAppId === aid;
+      /** highlightOnly（标签切换）：同 group/app 仅改高亮；否则保持原逻辑（有 menuObj 时仍重建侧栏） */
+      var sameGroup = navOpts.highlightOnly ? sameGroupApp : sameGroupApp && !menuObj;
       switchNavActive("#group_" + groupId);
       for (var i = 0; i < this.groupMenus.length; i++) {
         var groupMenu = this.groupMenus[i];
