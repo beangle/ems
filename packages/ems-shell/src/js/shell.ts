@@ -6,10 +6,18 @@ import {
   NAV_SIDEBAR_THEME_STORAGE_KEY,
   NAV_STICKY_HEADER_STORAGE_KEY,
   ROOT_FONT_SIZE_STORAGE_KEY,
-  THEME_STORAGE_KEY,
 } from './constants.js';
 import { config } from './config.js';
-import { getLocal, getMultiTabPreference, setLocal, setMultiTabPreference } from './storage.js';
+import {
+  clearAllLocalStorage,
+  clearThemeFromLocal,
+  getLocal,
+  getMultiTabPreference,
+  loadThemeFromLocal,
+  saveThemeToLocal,
+  setMultiTabPreference,
+} from './storage.js';
+import { applyThemeVars } from './theme.js';
 import { sameDomain } from './url.js';
 import { nav } from './nav/factory.js';
 import type { NavInstance, NavTheme } from './types.js';
@@ -153,30 +161,24 @@ export function changeTheme(theme?: NavTheme | string | null): void {
   if (theme) {
     const parsed = typeof theme === 'string' ? (JSON.parse(theme) as NavTheme) : theme;
     applyTheme(parsed);
-    setLocal(THEME_STORAGE_KEY, JSON.stringify(parsed));
+    saveThemeToLocal(parsed);
   } else if (nav.theme) {
     applyTheme(nav.theme);
-    setLocal(THEME_STORAGE_KEY, null);
+    clearThemeFromLocal();
   }
 }
 
 export function applyTheme(theme: NavTheme | string): void {
   const t = typeof theme === 'string' ? (JSON.parse(theme) as NavTheme) : theme;
-  const r = document.documentElement;
-  r.style.setProperty('--primary-color', t.primaryColor);
-  r.style.setProperty('--navbar-bg-color', t.navbarBgColor);
-  r.style.setProperty('--search-bg-color', t.searchBgColor);
-  r.style.setProperty('--gridbar-bg-color', t.gridbarBgColor);
-  r.style.setProperty('--grid-border-color', t.gridBorderColor);
-  if (t.primaryColor) {
-    r.style.setProperty('--ems-tab-active-tint', 'color-mix(in srgb, ' + t.primaryColor + ' 12%, #ffffff)');
-  }
+  applyThemeVars(t);
   jQuery('#theme_primaryColor').val(t.primaryColor);
   jQuery('#theme_navbarBgColor').val(t.navbarBgColor);
   jQuery('#theme_searchBgColor').val(t.searchBgColor);
   jQuery('#theme_gridbarBgColor').val(t.gridbarBgColor);
   jQuery('#theme_gridBorderColor').val(t.gridBorderColor);
 }
+
+export { applyStoredThemeIfPresent, applyThemeVars } from './theme.js';
 
 // --- 初始化 ---
 
@@ -209,7 +211,9 @@ export function setup(theme: NavTheme, params: Record<string, string>): void {
 
   changeNavSidebarTheme(getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, '--'));
   changeFontSize(getLocal(ROOT_FONT_SIZE_STORAGE_KEY, '--'));
-  applyTheme(getLocal(THEME_STORAGE_KEY, theme));
+  const resolvedTheme = loadThemeFromLocal(theme);
+  applyTheme(resolvedTheme);
+  saveThemeToLocal(resolvedTheme);
 
   const pageSize = beangle.cookie?.get('pageSize');
   if (pageSize) jQuery('#page_size_selector').val(pageSize);
@@ -346,4 +350,10 @@ export function restoreNav(): void {
 export function clearNavState(): void {
   nav.teardownNavWorkspace(document.getElementById('main'));
   sessionStorage.clear();
+}
+
+/** 退出登录：清工作台会话 + 同源 localStorage / sessionStorage 全部数据 */
+export function clearNavStateOnLogout(): void {
+  clearNavState();
+  clearAllLocalStorage();
 }

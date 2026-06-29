@@ -1,4 +1,15 @@
-import { NAV_MULTI_TAB_STORAGE_KEY } from './constants.js';
+import { NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from './constants.js';
+import type { NavTheme } from './types.js';
+
+/** 退出登录：清空当前源下全部 localStorage（含各业务查询条件与缓存） */
+export function clearAllLocalStorage(): void {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.clear();
+  } catch {
+    /* ignore */
+  }
+}
 
 export function setLocal(name: string, value: string | null | undefined): void {
   if (typeof localStorage === 'undefined') return;
@@ -37,4 +48,43 @@ export function resolveMultiTabParam(explicit: unknown): string {
     return String(explicit);
   }
   return getMultiTabPreference() ? 'true' : 'false';
+}
+
+/** 从 localStorage（beangle.ui.theme）读取主题色；无效或缺失时用 fallback */
+export function loadThemeFromLocal(fallback: NavTheme): NavTheme {
+  const raw = getLocal(THEME_STORAGE_KEY, '');
+  if (!raw) return fallback;
+  try {
+    return normalizeNavTheme(JSON.parse(raw) as Partial<NavTheme>, fallback);
+  } catch {
+    return fallback;
+  }
+}
+
+/** 将五个主题色写入 localStorage（beangle.ui.theme） */
+export function saveThemeToLocal(theme: NavTheme): void {
+  setLocal(
+    THEME_STORAGE_KEY,
+    JSON.stringify({
+      primaryColor: theme.primaryColor,
+      navbarBgColor: theme.navbarBgColor,
+      searchBgColor: theme.searchBgColor,
+      gridbarBgColor: theme.gridbarBgColor,
+      gridBorderColor: theme.gridBorderColor,
+    })
+  );
+}
+
+export function clearThemeFromLocal(): void {
+  setLocal(THEME_STORAGE_KEY, null);
+}
+
+function normalizeNavTheme(raw: Partial<NavTheme> | null | undefined, fallback: NavTheme): NavTheme {
+  return {
+    primaryColor: raw?.primaryColor ?? fallback.primaryColor,
+    navbarBgColor: raw?.navbarBgColor ?? fallback.navbarBgColor,
+    searchBgColor: raw?.searchBgColor ?? fallback.searchBgColor,
+    gridbarBgColor: raw?.gridbarBgColor ?? fallback.gridbarBgColor,
+    gridBorderColor: raw?.gridBorderColor ?? fallback.gridBorderColor,
+  };
 }

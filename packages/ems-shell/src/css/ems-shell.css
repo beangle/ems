@@ -546,6 +546,11 @@
   box-shadow: none;
 }
 
+/* AdminLTE text-sm：侧栏 nav-link 上下 0.4rem（Bootstrap 默认 0.5rem）；左右 0.8rem，左侧仍归零 */
+.text-sm .nav-sidebar .nav-item > .nav-link {
+  padding: 0.4rem 0.8rem 0.4rem 0;
+}
+
 .nav-sidebar .nav-link p {
   display: inline;
   margin: 0;

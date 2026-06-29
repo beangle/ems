@@ -7,7 +7,7 @@ export const NAV_SIDEBAR_THEME_STORAGE_KEY = 'beangle.ems.nav_sidebar_theme';
 /** localStorage：工作台多标签（true）/ 单槽（false）；缺省为多标签 */
 export const NAV_MULTI_TAB_STORAGE_KEY = 'beangle.ems.multi_tab';
 export const ROOT_FONT_SIZE_STORAGE_KEY = 'beangle.ems.root_font_size';
-export const THEME_STORAGE_KEY = 'beangle.ems.theme';
+export const THEME_STORAGE_KEY = 'beangle.ui.theme';
 
 /** 菜单 data-open-mode / 工作台快照 tab.openMode */
 export const NAV_OPENMODE_AJAX = 'ajax';

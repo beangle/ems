@@ -5,7 +5,7 @@
   <mvc>
     <static>
       <bundle name="local" version="${ems.profile}"/>
-      <bundle name="ems-shell" version="0.0.3">
+      <bundle name="ems-shell" version="0.0.4">
         <module name="ems-shell" js="js/ems-shell-min.js" css="css/ems-shell-min.css" depends="wujie"/>
       </bundle>
     </static>

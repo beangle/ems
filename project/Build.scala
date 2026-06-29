@@ -3,9 +3,9 @@ import sbt.*
 
 object EmsDepends {
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.2.1"
-  val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.5"
-  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.2.2"
-  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.2.2"
+  val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.6"
+  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.2.3"
+  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.2.3"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.20"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.9"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.9"
@@ -14,7 +14,7 @@ object EmsDepends {
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.25"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.9"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.13"
-  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.15"
+  val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.17"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.27"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.8"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.7"

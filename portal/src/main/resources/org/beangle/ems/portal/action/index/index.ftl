@@ -60,7 +60,7 @@
               </div>
               [/#if]
               <div class="float-sm-right">
-                <a href="${b.url('!logout')}" onclick="emsShell.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
+                <a href="${b.url('!logout')}" onclick="emsShell.clearNavStateOnLogout();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
               </div>
@@ -182,6 +182,9 @@
     [/#list]
     if (!params['wujieIframeSrc']) {
       params['wujieIframeSrc'] = '${b.base}/index?about=1';
+    }
+    if (!params['wujieFetchNoStore']) {
+      params['wujieFetchNoStore'] = 'true';
     }
     [#-- multiTab：服务端 nav.params 可传；否则读 localStorage beangle.ems.multi_tab；再默认多标签。侧栏「布局选项」可改本地偏好。 --]
     [#if Parameters['group.id']?? && Parameters['group.id']?length>0]

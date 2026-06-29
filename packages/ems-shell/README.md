@@ -86,6 +86,13 @@ npm test
 npm run package    # → release/ems-shell-{version}.zip
 ```
 
+## 文档
+
+| 文档 | 说明 |
+|------|------|
+| [docs/tabs-user-guide.md](./docs/tabs-user-guide.md) | **工作台标签页使用说明**（面向门户用户：打开、刷新、固定、关闭等） |
+| [docs/workspace-tabs.md](./docs/workspace-tabs.md) | 多标签工作台 **设计说明**（面向开发者：行为约定与刻意不实现项） |
+
 ## 多标签工作台设计说明
 
 工作台标签的行为约定与**刻意不实现**的增强见 [docs/workspace-tabs.md](./docs/workspace-tabs.md)。
@@ -95,7 +102,7 @@ npm run package    # → release/ems-shell-{version}.zip
 - **iframe 标签的 URL 与标题**保持打开时的原值，不跟随 iframe 内页内跳转更新。
 - **标签过多时不做** chevron 滚动、「全部标签」列表等扩展；仅横向滚动，不鼓励多开标签。
 
-详见 [docs/workspace-tabs.md](./docs/workspace-tabs.md)。
+用户操作说明见 [docs/tabs-user-guide.md](./docs/tabs-user-guide.md)。
 
 ## 许可证
 

@@ -18,6 +18,9 @@ import {
   changeFontSize,
   changeTheme,
   clearNavState,
+  clearNavStateOnLogout,
+  applyStoredThemeIfPresent,
+  applyThemeVars,
 } from './shell.js';
 
 export interface EmsShellApi {
@@ -35,10 +38,13 @@ export interface EmsShellApi {
   changeNavSidebarTheme: typeof changeNavSidebarTheme;
   changeFontSize: typeof changeFontSize;
   clearNavState: typeof clearNavState;
+  clearNavStateOnLogout: typeof clearNavStateOnLogout;
   setWelcomeUrl: (url: string) => void;
   ensureWujieRuntime: typeof resolveWujieRuntime;
   getNav: () => typeof nav;
   changeTheme: typeof changeTheme;
+  applyStoredThemeIfPresent: typeof applyStoredThemeIfPresent;
+  applyThemeVars: typeof applyThemeVars;
   getMultiTabPreference: typeof getMultiTabPreference;
   setMultiTabPreference: typeof setMultiTabPreference;
   resolveMultiTabParam: typeof resolveMultiTabParam;
@@ -62,6 +68,7 @@ export function createApi(): EmsShellApi {
     changeNavSidebarTheme,
     changeFontSize,
     clearNavState,
+    clearNavStateOnLogout,
     setWelcomeUrl(url: string) {
       nav.setWelcomeUrl(url);
     },
@@ -70,6 +77,8 @@ export function createApi(): EmsShellApi {
       return nav;
     },
     changeTheme,
+    applyStoredThemeIfPresent,
+    applyThemeVars,
     getMultiTabPreference,
     setMultiTabPreference,
     resolveMultiTabParam,

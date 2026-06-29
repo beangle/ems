@@ -50,7 +50,7 @@ ${b.static.load(["ems-shell"])}
               </div>
               [/#if]
               <div class="float-sm-right">
-                <a href="${b.url('!logout')}" onclick="emsShell.clearNavState();return true;" class="btn btn-default btn-flat" target="_top">
+                <a href="${b.url('!logout')}" onclick="emsShell.clearNavStateOnLogout();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
               </div>

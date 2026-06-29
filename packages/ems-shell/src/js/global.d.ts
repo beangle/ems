@@ -47,6 +47,9 @@ interface EmsShellApi {
   setup: (theme: unknown, params: Record<string, string>) => void;
   getNav: () => unknown;
   clearNavState: () => void;
+  clearNavStateOnLogout: () => void;
+  applyStoredThemeIfPresent: (fallback?: unknown) => boolean;
+  applyThemeVars: (theme: unknown) => void;
 }
 
 interface Window {
