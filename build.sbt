@@ -47,6 +47,7 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress),
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
+    snapshotRepoUrl := "https://sas.openurp.net/sas/repo/snapshot/upload/{fileName}",
     libraryDependencies ++= webAppDepends
   )
   .dependsOn(app)
