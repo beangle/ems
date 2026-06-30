@@ -4,8 +4,8 @@ import sbt.*
 object EmsDepends {
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.2.1"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.6"
-  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.2.5"
-  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.2.5"
+  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.2.6"
+  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.2.6"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.20"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.9"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.9"

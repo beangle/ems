@@ -39,7 +39,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li class="user-header">
-              <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
+              <img src="${nav.avatarUrl}" class="rounded-circle" alt="User Image">
               <p>
                 ${nav.principal.description} - (${nav.principal.name})
                 [#if nav.username != nav.principal.name]<small> 模拟${nav.username} [@b.a href="!index" onclick="removeRunAs()"]退出模拟[/@]</small>[/#if]

@@ -37,7 +37,7 @@ ${b.static.load(["ems-shell"])}
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li class="user-header">
-              <img src="${nav.avatarUrl}" class="img-circle" alt="User Image">
+              <img src="${nav.avatarUrl}" class="rounded-circle" alt="User Image">
               <p>
                 ${nav.principal.description} - (${nav.principal.name})[#if nav.username != nav.principal.name] 模拟${nav.username}[/#if]
                 <small>[#if nav.principal.remoteToken??]统一身份平台登录[#else]本地登录[/#if]</small>

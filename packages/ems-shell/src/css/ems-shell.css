@@ -257,7 +257,7 @@
   overflow: visible;
 }
 
-.main-header .user-header .img-circle {
+.main-header .user-header .rounded-circle {
   display: block;
   width: 4rem;
   height: 4rem;

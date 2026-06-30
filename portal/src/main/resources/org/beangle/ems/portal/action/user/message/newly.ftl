@@ -2,9 +2,9 @@
     <a class="dropdown-item" href="${ems.webapp}${b.base}/portal/user/message/${message.id}" target="_blank">
       <div class="media">
         [#if message.sender??]
-        <img src="${avatarUrls[message.sender.code]}" class="img-size-32 mr-3 img-circle" alt="${message.sendFrom}">
+        <img src="${avatarUrls[message.sender.code]}" class="mr-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
         [#else]
-        <img src="${defaultUrl}" class="img-size-32 mr-3 img-circle" alt="${message.sendFrom}">
+        <img src="${defaultUrl}" class="mr-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
         [/#if]
         <div class="media-body">
           <h4 class="dropdown-item-title">${message.sendFrom}

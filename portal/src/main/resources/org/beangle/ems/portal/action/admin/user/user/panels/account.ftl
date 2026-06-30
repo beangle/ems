@@ -1,7 +1,7 @@
   <div class="card card-primary card-outline">
     <div class="card-body box-profile">
       <div class="text-center">
-        <img class="profile-user-img img-fluid img-circle" src="${avatar_url}" alt="User profile picture">
+        <img class="img-fluid rounded-circle border border-secondary mx-auto d-block" style="width:100px;padding:3px" src="${avatar_url}" alt="User profile picture">
       </div>
       <h3 class="profile-username text-center">${user.name}</h3>
       <p class="text-muted text-center">${user.code}</p>
