@@ -1,5 +1,24 @@
-import { NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from './constants.js';
+import { EMS_CONTEXT_STORAGE_PREFIX, NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from './constants.js';
 import type { NavTheme } from './types.js';
+
+/** 切换 profile：清除 localStorage 中以 beangle.ems.context. 开头的业务缓存 */
+export function clearContextLocalStorage(): void {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key != null && key.startsWith(EMS_CONTEXT_STORAGE_PREFIX)) {
+        keys.push(key);
+      }
+    }
+    for (const key of keys) {
+      localStorage.removeItem(key);
+    }
+  } catch {
+    /* ignore */
+  }
+}
 
 /** 退出登录：清空当前源下全部 localStorage（含各业务查询条件与缓存） */
 export function clearAllLocalStorage(): void {

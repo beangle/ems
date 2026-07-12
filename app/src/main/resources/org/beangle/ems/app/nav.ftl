@@ -177,7 +177,6 @@ ${b.static.load(["ems-shell"])}
 
     jQuery(document).ready(function(){
       var navMenu = emsShell.createNav(app,portal,${nav.menusJson},params,false);
-      navMenu.displayAppMenus('${nav.app.name}');
       [#if nav.profiles??]
       emsShell.createProfileNav();
       [/#if]

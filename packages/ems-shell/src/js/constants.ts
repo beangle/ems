@@ -9,6 +9,9 @@ export const NAV_MULTI_TAB_STORAGE_KEY = 'beangle.ems.multi_tab';
 export const ROOT_FONT_SIZE_STORAGE_KEY = 'beangle.ems.root_font_size';
 export const THEME_STORAGE_KEY = 'beangle.ui.theme';
 
+/** localStorage 前缀：业务 context 查询条件等（切换 profile 时清除） */
+export const EMS_CONTEXT_STORAGE_PREFIX = 'beangle.ems.context.';
+
 /** 菜单 data-open-mode / 工作台快照 tab.openMode */
 export const NAV_OPENMODE_AJAX = 'ajax';
 export const NAV_OPENMODE_IFRAME = 'iframe';

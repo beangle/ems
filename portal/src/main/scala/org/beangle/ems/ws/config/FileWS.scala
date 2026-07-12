@@ -35,7 +35,7 @@ class FileWS extends ActionSupport {
 
   var entityDao: EntityDao = _
 
-  @mapping(value = "{app}/{path*}", method = "head")
+  @mapping(value = "{app}/{path*}", methods = "head")
   def info(@param("app") app: String, @param("path") path: String): View = {
     val response = ActionContext.current.response
     getFile(app, path) match {

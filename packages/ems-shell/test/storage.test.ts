@@ -2,13 +2,14 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   clearAllLocalStorage,
+  clearContextLocalStorage,
   loadThemeFromLocal,
   resolveMultiTabParam,
   getMultiTabPreference,
   saveThemeToLocal,
   setMultiTabPreference,
 } from '../src/js/storage.js';
-import { NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from '../src/js/constants.js';
+import { EMS_CONTEXT_STORAGE_PREFIX, NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from '../src/js/constants.js';
 
 describe('storage preferences', () => {
   beforeEach(() => {
@@ -52,6 +53,18 @@ describe('storage preferences', () => {
     assert.equal(getMultiTabPreference(), true);
     localStorage.setItem(NAV_MULTI_TAB_STORAGE_KEY, '0');
     assert.equal(getMultiTabPreference(), false);
+  });
+
+  it('clearContextLocalStorage removes only beangle.ems.context.* keys', () => {
+    localStorage.setItem(EMS_CONTEXT_STORAGE_PREFIX + 'edu.semester', '1');
+    localStorage.setItem(EMS_CONTEXT_STORAGE_PREFIX + 'portal.search', 'x');
+    localStorage.setItem(THEME_STORAGE_KEY, '{}');
+    localStorage.setItem('other.app', 'keep');
+    clearContextLocalStorage();
+    assert.equal(localStorage.getItem(EMS_CONTEXT_STORAGE_PREFIX + 'edu.semester'), null);
+    assert.equal(localStorage.getItem(EMS_CONTEXT_STORAGE_PREFIX + 'portal.search'), null);
+    assert.equal(localStorage.getItem(THEME_STORAGE_KEY), '{}');
+    assert.equal(localStorage.getItem('other.app'), 'keep');
   });
 
   it('clearAllLocalStorage clears entire storage', () => {

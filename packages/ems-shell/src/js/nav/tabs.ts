@@ -767,8 +767,18 @@ export const tabsProto = {
         }
       }
       if (initialGroupId == null || initialGroupId === "") {
-        if (this.groups && this.groups.length > 0) {
+        var embedTarget = this.resolveAppNavTarget();
+        if (embedTarget.groupId) {
+          initialGroupId = embedTarget.groupId;
+        } else if (this.groups && this.groups.length > 0) {
           initialGroupId = this.groups[0].id;
+        }
+      }
+      var initialAppId = null;
+      if (!initMenuLoc) {
+        var embedApp = this.resolveAppNavTarget();
+        if (embedApp.appId) {
+          initialAppId = embedApp.appId;
         }
       }
       if (this.trimNavTabsSnapshotIfSingleMode(data)) {
@@ -787,6 +797,7 @@ export const tabsProto = {
         navTabsSnapshot: data,
         snapshotMutated,
         initialGroupId,
+        initialAppId,
         initMenuLoc,
         menuHighlightOnly,
         menuHref

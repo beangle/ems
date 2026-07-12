@@ -10,6 +10,7 @@ import {
 import { config } from './config.js';
 import {
   clearAllLocalStorage,
+  clearContextLocalStorage,
   clearThemeFromLocal,
   getLocal,
   getMultiTabPreference,
@@ -129,6 +130,12 @@ export function createProfileNav(): void {
     }
     profilehtml = profilehtml.replace('{list}', list);
     jQuery('.main-header > .ml-auto').prepend(profilehtml);
+    jQuery('#profile_switcher')
+      .parent()
+      .find('.dropdown-item')
+      .on('click', () => {
+        clearContextLocalStorage();
+      });
   }
 }
 
@@ -262,6 +269,7 @@ export function restoreNav(): void {
     menuHref?: string;
     menuHighlightOnly?: boolean;
     initialGroupId: string | number;
+    initialAppId?: string | number | null;
     navTabsSnapshot: { activeTabId: string | null; tabs: unknown[] };
   };
 
@@ -273,6 +281,8 @@ export function restoreNav(): void {
           ? boot.initMenuLoc.app.app
           : boot.initMenuLoc.app;
       openAppId = ae && ae.id != null ? ae.id : undefined;
+    } else if (boot.initialAppId != null && boot.initialAppId !== '') {
+      openAppId = boot.initialAppId;
     }
     let menuObj = boot.initMenuLoc ? boot.initMenuLoc.menu : null;
     if (

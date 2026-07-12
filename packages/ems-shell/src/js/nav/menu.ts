@@ -347,25 +347,45 @@ export const menuProto = {
       }
     },
 
-    displayAppMenus: function(appName) {
+    /** 按应用名解析顶栏分组 id 与侧栏应用 id（当前壳应用或指定名） */
+    resolveAppNavTarget: function(appName) {
       var groupId = 0, appId = 0;
-      if (appName == this.portal.name) {
-        groupId = this.portal.group.id;
+      var name = appName != null && appName !== "" ? appName : (this.app ? this.app.name : null);
+      if (!name) {
+        return { groupId: groupId, appId: appId };
+      }
+      if (name == this.portal.name) {
+        if (this.portal.group) {
+          groupId = this.portal.group.id;
+        }
       } else {
         var apps = this.apps;
         for (var i = 0; i < apps.length; i++) {
-          if (apps[i].name == appName) {
+          if (apps[i].name == name) {
             appId = apps[i].id;
-            groupId = apps[i].group.id;
+            if (apps[i].group) {
+              groupId = apps[i].group.id;
+            }
             break;
           }
         }
+        if (!groupId && this.app && this.app.name == name && this.app.group) {
+          groupId = this.app.group.id;
+          if (this.app.id != null) appId = this.app.id;
+        }
       }
-      if (!groupId) {
-        console.log("error app-name " + appName);
-        groupId = this.groupMenus[0].group.id;
+      return { groupId: groupId, appId: appId };
+    },
+
+    displayAppMenus: function(appName) {
+      var t = this.resolveAppNavTarget(appName);
+      if (!t.groupId) {
+        console.log("error app-name " + (appName != null ? appName : this.app.name));
+        if (this.groupMenus.length > 0) {
+          t.groupId = this.groupMenus[0].group.id;
+        }
       }
-      this.displayGroupMenus(groupId, appId);
+      this.displayGroupMenus(t.groupId, t.appId);
     },
     /**显示指定group的menu；navOpts.highlightOnly 为 true 时对 menuObj 仅展开父级并高亮，不 trigger 打开（用于已从快照恢复的无界标签）。*/
     displayGroupMenus: function(groupId, appId, menuObj, navOpts) {

@@ -53,7 +53,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   /** 开始一个流程
    */
-  @mapping("{flowCode}/start/{businessKey}", method = "post")
+  @mapping("{flowCode}/start/{businessKey}", methods = "post")
   @response
   def start(flowCode: String, businessKey: String): JsonObject = {
     val flow = flowService.getFlow(flowCode)
@@ -67,7 +67,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     }
   }
 
-  @mapping("processes/{processId}/tasks/{taskId}/complete", method = "post")
+  @mapping("processes/{processId}/tasks/{taskId}/complete", methods = "post")
   @response
   def complete(processId: String, taskId: String): JsonObject = {
     val payload = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
@@ -76,7 +76,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     convertProcess(p)
   }
 
-  @mapping("processes/{processId}/cancel", method = "post")
+  @mapping("processes/{processId}/cancel", methods = "post")
   @response
   def cancel(processId: String): String = {
     val process = entityDao.get(classOf[FlowActiveProcess], processId.toLong)
