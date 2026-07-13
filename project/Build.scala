@@ -13,7 +13,7 @@ object EmsDepends {
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.6"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.25"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.9"
-  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.14"
+  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.15"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.4.17"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.27"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.8"
