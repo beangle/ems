@@ -19,3 +19,6 @@ export const NAV_OPENMODE_WUJIE = 'wujie';
 
 /** 多标签工作台：常驻首页标签 id */
 export const NAV_WORKSPACE_HOME_TAB_ID = 'ems_tab_home';
+
+/** 布局断点：与 ems-shell.css、pushmenu 一致，<992px 为滑出式侧栏 */
+export const EMS_LAYOUT_MOBILE_MAX_WIDTH = 991.98;

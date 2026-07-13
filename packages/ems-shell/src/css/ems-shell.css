@@ -77,18 +77,11 @@
   width: 100%;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .layout-fixed .main-header,
   .layout-fixed .content-wrapper {
     margin-left: var(--ems-sidebar-width);
     transition: margin-left 0.3s ease-in-out;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .layout-fixed .main-header,
-  .layout-fixed .content-wrapper {
-    margin-left: 0;
   }
 }
 
@@ -103,7 +96,7 @@
   overflow: visible;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .layout-navbar-fixed.layout-fixed .main-header {
     margin-left: var(--ems-sidebar-width);
     transition: margin-left 0.3s ease-in-out;
@@ -114,36 +107,32 @@
   }
 }
 
-@media (max-width: 991.98px) {
-  .layout-navbar-fixed.layout-fixed .main-header {
-    margin-left: 0;
-  }
-}
-
 .text-sm .layout-navbar-fixed .content-wrapper {
   margin-top: var(--ems-header-height);
 }
 
-.layout-navbar-fixed.layout-fixed .brand-link {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1035;
-  width: var(--ems-sidebar-width);
-  overflow: visible;
-  transition: width 0.3s ease-in-out;
-}
+@media (min-width: 992px) {
+  .layout-navbar-fixed.layout-fixed .brand-link {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1035;
+    width: var(--ems-sidebar-width);
+    overflow: visible;
+    transition: width 0.3s ease-in-out;
+  }
 
-.sidebar-mini.sidebar-collapse.layout-fixed .brand-link {
-  width: var(--ems-sidebar-collapsed);
-}
+  .layout-navbar-fixed.layout-fixed .main-sidebar {
+    padding-top: var(--ems-header-height);
+  }
 
-.sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
-  width: var(--ems-sidebar-width);
-}
+  .sidebar-mini.sidebar-collapse.layout-fixed .brand-link {
+    width: var(--ems-sidebar-collapsed);
+  }
 
-.layout-navbar-fixed.layout-fixed .main-sidebar {
-  padding-top: var(--ems-header-height);
+  .sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
+    width: var(--ems-sidebar-width);
+  }
 }
 
 .layout-navbar-fixed.layout-fixed .main-sidebar > .form-inline {
@@ -309,9 +298,45 @@
   box-shadow: none;
 }
 
-/* 顶栏分组导航（#top_nav_bar）；窄屏用 app-toggle 九宫格，宽屏用 #top_nav_bar */
+/* 顶栏分组导航（#top_nav_bar）；<992px 用 group-toggle 下拉，≥992px 用 #top_nav_bar */
 #top_nav_bar {
   display: none;
+}
+
+/* 窄屏分组下拉（#group_drop_bar）：左缘与触发按钮对齐 */
+.ems-group-toggle-nav .nav-item.dropdown {
+  position: relative;
+}
+
+#group_drop_bar.dropdown-menu {
+  padding: 0.35rem 0;
+  min-width: 10rem;
+  max-width: min(18rem, calc(100vw - 1rem));
+  font-size: var(--ems-header-nav-font-size);
+  left: 0;
+  right: auto;
+  transform: none !important;
+  top: 100%;
+  margin-top: 0;
+}
+
+#group_drop_bar .dropdown-item {
+  font-size: var(--ems-header-nav-font-size);
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.2rem;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+#group_drop_bar .dropdown-item.active {
+  margin-left: 0.35rem;
+  margin-right: 0.35rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.text-sm #group_drop_bar .dropdown-item {
+  font-size: var(--ems-header-nav-font-size);
 }
 
 .dropdown-menu.columns-3 {
@@ -346,10 +371,13 @@
   }
 }
 
-@media (min-width: 768px) {
-  /* 高于 .main-header .nav-link { display:flex }，宽屏隐藏应用九宫格 */
-  .main-header ul.navbar-nav:has(a.app-toggle) {
+@media (min-width: 992px) {
+  /* 宽屏隐藏分组下拉，显示顶栏横向分组 */
+  .main-header ul.navbar-nav.ems-group-toggle-nav {
     display: none;
+  }
+  .ems-header-brand-item {
+    display: none !important;
   }
   #top_nav_bar {
     display: flex;
@@ -377,7 +405,7 @@
   height: var(--ems-header-height);
   min-height: var(--ems-header-height);
   max-height: var(--ems-header-height);
-  padding: 0 0.75rem;
+  padding: 0 0 0 0.5rem;
   overflow: visible;
   white-space: normal;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -498,12 +526,49 @@
   }
 }
 
-@media (max-width: 767.98px) {
+/* <992px：侧栏滑出屏外，顶栏/内容区全宽；与 shell.ts pushmenu 断点一致 */
+@media (max-width: 991.98px) {
   .main-sidebar {
     margin-left: calc(-1 * var(--ems-sidebar-width));
   }
   .sidebar-open .main-sidebar {
     margin-left: 0;
+  }
+  .layout-navbar-fixed.layout-fixed .main-sidebar {
+    padding-top: 0;
+  }
+  /* 盖住内容区（含 iframe），点击收起侧栏；侧栏 z-index 1038 在其上 */
+  .ems-sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: var(--ems-header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1037;
+    background-color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+  .wrapper.sidebar-open .ems-sidebar-overlay {
+    display: block;
+  }
+  /* 侧栏滑出时顶栏汉堡左侧显示 logo（常驻，避免开关侧栏时闪动） */
+  .ems-header-brand-item {
+    display: flex;
+    align-items: center;
+  }
+  .ems-header-brand-link {
+    display: flex;
+    align-items: center;
+    height: var(--ems-header-nav-height);
+    padding: 0.25rem 0.15rem 0.25rem 0.45rem !important;
+    cursor: default;
+    pointer-events: none;
+  }
+  .ems-header-brand-image {
+    max-height: 1.75rem;
+    width: auto;
+    display: block;
   }
 }
 

@@ -22,11 +22,21 @@ import { applyThemeVars } from './theme.js';
 import { sameDomain } from './url.js';
 import { nav } from './nav/factory.js';
 import type { NavInstance, NavTheme } from './types.js';
+import {
+  closeMobileSidebar,
+  ensureMobileHeaderBrand,
+  ensureMobileSidebarOverlay,
+  isMobileSidebarLayout,
+  openMobileSidebar,
+  shellWrapper,
+} from './layout.js';
 
 // --- 布局 ---
 
+export { closeMobileSidebar, isMobileSidebarLayout, openMobileSidebar } from './layout.js';
+
 export function shell() {
-  return jQuery('.wrapper').first();
+  return shellWrapper();
 }
 
 /** 以顶栏实测高度更新 --ems-header-height，使 brand-link 与 main-header 对齐 */
@@ -37,13 +47,28 @@ export function syncBrandHeaderHeight(): void {
 }
 
 export function initShellLayout() {
+  ensureMobileSidebarOverlay();
+  ensureMobileHeaderBrand();
   jQuery(document).off('click.emsShell');
   jQuery(document).on('click.emsShell', '[data-ems-pushmenu]', function (e) {
     e.preventDefault();
-    if (window.innerWidth <= 991.98) {
+    if (isMobileSidebarLayout()) {
+      ensureMobileSidebarOverlay();
       shell().toggleClass('sidebar-open');
     } else {
       shell().toggleClass('sidebar-collapse');
+    }
+  });
+  jQuery(document).on('click.emsShell', '.main-header', function (e) {
+    if (!isMobileSidebarLayout() || !shell().hasClass('sidebar-open')) return;
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('[data-ems-pushmenu]') || target.closest('.main-sidebar')) return;
+    closeMobileSidebar();
+  });
+  jQuery(window).off('resize.emsShell').on('resize.emsShell', function () {
+    if (!isMobileSidebarLayout()) {
+      shell().removeClass('sidebar-open');
     }
   });
   jQuery(document).on('click.emsShell', '[data-ems-control-sidebar]', function (e) {

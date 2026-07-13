@@ -12,6 +12,7 @@ import {
   NAV_TABS_SESSION_KEY,
   NAV_WORKSPACE_HOME_TAB_ID,
 } from '../constants.js';
+import { closeMobileSidebar } from '../layout.js';
 import { resolveWujieRuntime } from '../wujie.js';
 
 /** 多标签生命周期、恢复、打开菜单、无界挂载 */
@@ -767,18 +768,27 @@ export const tabsProto = {
         }
       }
       if (initialGroupId == null || initialGroupId === "") {
-        var embedTarget = this.resolveAppNavTarget();
-        if (embedTarget.groupId) {
-          initialGroupId = embedTarget.groupId;
-        } else if (this.groups && this.groups.length > 0) {
-          initialGroupId = this.groups[0].id;
+        var isPortalShell = this.app && this.portal && this.app.name === this.portal.name;
+        if (!isPortalShell) {
+          var embedTarget = this.resolveAppNavTarget();
+          if (embedTarget.groupId) {
+            initialGroupId = embedTarget.groupId;
+          }
+        }
+        if (initialGroupId == null || initialGroupId === "") {
+          if (this.groups && this.groups.length > 0) {
+            initialGroupId = this.groups[0].id;
+          }
         }
       }
       var initialAppId = null;
       if (!initMenuLoc) {
-        var embedApp = this.resolveAppNavTarget();
-        if (embedApp.appId) {
-          initialAppId = embedApp.appId;
+        var isEmbedApp = this.app && this.portal && this.app.name !== this.portal.name;
+        if (isEmbedApp) {
+          var embedApp = this.resolveAppNavTarget();
+          if (embedApp.appId) {
+            initialAppId = embedApp.appId;
+          }
         }
       }
       if (this.trimNavTabsSnapshotIfSingleMode(data)) {
@@ -1336,6 +1346,7 @@ export const tabsProto = {
         }
         if (!target) target = "main";
         if (target == "_blank") return true;
+        closeMobileSidebar();
         var navGroupIdFromLink = "";
         var navAppIdFromLink = "";
         var openMode = "";

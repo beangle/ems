@@ -90,6 +90,7 @@ npm run package    # → release/ems-shell-{version}.zip
 
 | 文档 | 说明 |
 |------|------|
+| [docs/responsive-layout.md](./docs/responsive-layout.md) | **自适应布局**（断点 992px、窄屏侧栏、group toggle、遮罩与顶栏 logo） |
 | [docs/tabs-user-guide.md](./docs/tabs-user-guide.md) | **工作台标签页使用说明**（面向门户用户：打开、刷新、固定、关闭等） |
 | [docs/workspace-tabs.md](./docs/workspace-tabs.md) | 多标签工作台 **设计说明**（面向开发者：行为约定与刻意不实现项） |
 

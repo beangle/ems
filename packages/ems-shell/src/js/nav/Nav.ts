@@ -3,7 +3,15 @@
  * 并将 menu / workspace / tabs 三组 proto 挂到 Nav.prototype。
  */
 import { NAV_WORKSPACE_HOME_TAB_ID } from '../constants.js';
-import type { DomainMenus, NavApp, NavInstance, NavParams } from '../types.js';
+import type { DomainMenus, GroupMenus, NavApp, NavInstance, NavParams } from '../types.js';
+
+/** 兼容 DomainMenus、仅 groups 数组、以及缺失 groups 的响应 */
+function resolveGroupMenus(domainMenus: DomainMenus | GroupMenus[] | null | undefined): GroupMenus[] {
+  if (domainMenus == null) return [];
+  if (Array.isArray(domainMenus)) return domainMenus;
+  const groups = domainMenus.groups;
+  return Array.isArray(groups) ? groups : [];
+}
 import { menuProto } from './menu.js';
 import { workspaceProto } from './workspace.js';
 import { tabsProto } from './tabs.js';
@@ -12,7 +20,7 @@ export function Nav(
   this: NavInstance,
   app: NavApp,
   portal: NavApp,
-  domainMenus: DomainMenus,
+  domainMenus: DomainMenus | GroupMenus[] | null | undefined,
   params?: NavParams
 ): void {
   this.portal = portal;
@@ -61,7 +69,7 @@ export function Nav(
       }
     }
   }
-  this.groupMenus = domainMenus.groups;
+  this.groupMenus = resolveGroupMenus(domainMenus);
   for (let i = 0; i < this.groupMenus.length; i++) {
     this.groups.push(this.groupMenus[i].group);
   }

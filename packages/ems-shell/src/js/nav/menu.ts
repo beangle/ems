@@ -10,8 +10,9 @@ import {
   NAV_OPENMODE_IFRAME,
   NAV_OPENMODE_WUJIE,
 } from '../constants.js';
+import { closeMobileSidebar } from '../layout.js';
 import { sameDomain } from '../url.js';
-import { prependApps, switchNavActive } from './factory.js';
+import { prependGroupToggle, switchNavActive, syncGroupToggleActive } from './factory.js';
 
 export const menuProto = {
 
@@ -296,6 +297,7 @@ export const menuProto = {
         e.preventDefault();
         e.stopImmediatePropagation();
         navSelf.displayGroupMenus(this.id.substring("group_".length));
+        closeMobileSidebar();
       });
     },
     /** 侧栏搜索结果菜单打开 */
@@ -324,7 +326,7 @@ export const menuProto = {
       var topItemCount = 0;
       var topMoreHappened = false;
       this.fillAppName();
-      prependApps(jqueryElem, this, this.apps, true);
+      prependGroupToggle(jqueryElem, this);
       for (var i = 0; i < this.groups.length; i++) {
         var group = this.groups[i];
         topItemCount += 1;
@@ -381,7 +383,7 @@ export const menuProto = {
       var t = this.resolveAppNavTarget(appName);
       if (!t.groupId) {
         console.log("error app-name " + (appName != null ? appName : this.app.name));
-        if (this.groupMenus.length > 0) {
+        if (this.groupMenus && this.groupMenus.length > 0) {
           t.groupId = this.groupMenus[0].group.id;
         }
       }
@@ -396,6 +398,7 @@ export const menuProto = {
       /** highlightOnly（标签切换）：同 group/app 仅改高亮；否则保持原逻辑（有 menuObj 时仍重建侧栏） */
       var sameGroup = navOpts.highlightOnly ? sameGroupApp : sameGroupApp && !menuObj;
       switchNavActive("#group_" + groupId);
+      syncGroupToggleActive(groupId);
       for (var i = 0; i < this.groupMenus.length; i++) {
         var groupMenu = this.groupMenus[i];
         if (groupMenu.group.id == groupId) {
