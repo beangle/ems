@@ -9,36 +9,38 @@
  [#list profiles as profile]
  [@b.card style="width:50%"]
    [@b.card_header title=profile.name]
+     <div class="card-title">${profile.env.name}</div>
      [@b.card_tools]
        [@b.a href="!edit?id=" + profile.id class="btn btn-tool"]<i class="fa fa-edit"></i>修改[/@]
        [@b.a onclick="removeProfile(${profile.id});return false;" class="btn btn-tool"]<span class="text-danger"><i class="fa fa-times"></i>删除</span>[/@]
      [/@]
-     [@b.card_body]
-        <div class="table-responsive">
-          <table class="table no-margin m-0 compact">
-            <tbody>
-             [#list profile.properties?keys as field]
-            <tr>
-              <td>${field.title}</td>
-              <td>
-                [#if profile.properties.get(field)??]
-                  [#if !field.valueType && field.properties?? && profile.properties.get(field)!='*']
-                    [#list fieldMaps[profile.id?string][field.name]! as value][#list field.properties?split(",") as pName]${value[pName]!} [/#list][#if value_has_next],[/#if][/#list]
+   [/@]
+   [@b.card_body style="padding-top: 0px;"]
+      <div class="table-responsive">
+        <table class="table no-margin m-0 compact">
+          <tbody>
+           [#list profile.properties?keys as fieldName]
+           [#assign field = dimensionMap[fieldName]/]
+          <tr>
+            <td>${field.title}</td>
+            <td>
+              [#if profile.properties.get(fieldName)??]
+                [#if !field.valueType && field.properties?? && profile.properties.get(fieldName)!='*']
+                  [#list fieldMaps[profile.id?string][field.name]! as value][#list field.properties?split(",") as pName]${value[pName]!} [/#list][#if value_has_next],[/#if][/#list]
+                [#else]
+                  [#if fieldMaps[profile.id?string][field.name]?is_collection]
+                    [#list fieldMaps[profile.id?string][field.name] as d]${d}[#if d_has_next],[/#if][/#list]
                   [#else]
-                    [#if fieldMaps[profile.id?string][field.name]?is_collection]
-                      [#list fieldMaps[profile.id?string][field.name] as d]${d}[#if d_has_next],[/#if][/#list]
-                    [#else]
-                      ${fieldMaps[profile.id?string][field.name]}
-                    [/#if]
+                    ${fieldMaps[profile.id?string][field.name]}
                   [/#if]
                 [/#if]
-              </td>
-            </tr>
-            [/#list]
-            </tbody>
-          </table>
-        </div>
-     [/@]
+              [/#if]
+            </td>
+          </tr>
+          [/#list]
+          </tbody>
+        </table>
+      </div>
    [/@]
  [/@]
 [/#list]

@@ -17,42 +17,46 @@
 
 package org.beangle.ems.core.user.model
 
+import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.Strings
+import org.beangle.data.model.LongId
+import org.beangle.data.model.pojo.Named
+import org.beangle.ems.core.config.model.{Domain, Env}
+
+import scala.collection.mutable
 
 object Property {
   val All = "*"
 }
 
 /**
- * @author chaostone
+ * 用户在某个App上的配置
  */
-trait IProfile {
-
-  def name: String
-
-  def properties: collection.mutable.Map[Dimension, String]
+class EnvProfile extends LongId {
+  var user: User = _
+  var domain: Domain = _
+  var env: Env = _
+  var properties: JsonObject = Json.emptyObject
 
   def setProperty(field: Dimension, value: String): Unit = {
-    if (Strings.isNotBlank(value)) properties.put(field, value) else properties -= field
+    if (Strings.isNotBlank(value)) properties.add(field.name, value) else properties.remove( field.name)
   }
 
   def getProperty(field: Dimension): Option[String] = {
-    properties.get(field)
+    properties.get(field.name).map(_.toString)
   }
 
   def getProperty(name: String): Option[String] = {
-    properties.keys.find(k => k.name == name) match {
-      case Some(p) => properties.get(p)
-      case None => None
-    }
+    properties.get(name).map(_.toString)
   }
 
-  def matches(other: IProfile): Boolean = {
+  def matches(other: EnvProfile): Boolean = {
     if (other.properties.isEmpty) return true
     other.properties exists {
       case (field, target) =>
         val source = getProperty(field).getOrElse("")
-        (source != Property.All) && ((target == Property.All) || (Strings.split(target, ",").toSet -- Strings.split(source, ",")).isEmpty)
+        (source != Property.All) && ((target == Property.All) || (Strings.split(target.toString, ",").toSet -- Strings.split(source, ",")).isEmpty)
     }
   }
 }

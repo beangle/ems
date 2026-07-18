@@ -24,15 +24,15 @@ import org.beangle.ems.app.security.RemoteService
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authc.Account
+import org.beangle.security.context.RunAs
+import org.beangle.security.web.CookieKeys
 import org.beangle.web.servlet.url.UrlBuilder
-import org.beangle.web.servlet.util.RequestUtils
+import org.beangle.web.servlet.util.{CookieUtils, RequestUtils}
 import org.beangle.webmvc.context.ActionContext
 
 object NavContext {
   def get(request: HttpServletRequest): NavContext = {
     val ctx = new NavContext
-    ctx.menusJson = RemoteService.getDomainMenusJson(ActionContext.current.locale)
-
     ctx.domain = RemoteService.getDomain(ActionContext.current.locale)
     if null == ctx.domain.org then ctx.org = RemoteService.getOrg
     else ctx.org = ctx.domain.org
@@ -55,21 +55,33 @@ object NavContext {
           ctx.params += (k -> v.toString)
       }
     }
-    val account = Securities.session.get.principal.asInstanceOf[Account]
+    val account = Securities.session.get.principal
     if (null == account.profiles) {
       ctx.profiles = Some("[]")
     } else {
       val response = ActionContext.current.response
-      val cookie = EmsCookie.get(request, response)
-      EmsCookie.check(account.profiles, cookie)
-      EmsCookie.update(request, response, cookie, true)
-      ctx.cookie = Some(cookie.toJson)
+
+      var profiles = account.profiles.toSeq
+      val runAsJson = CookieUtils.getCookieValue(request, CookieKeys.RunAsKey)
+      if (null != runAsJson) {
+        RunAs.parseJson(runAsJson) foreach { r => profiles = r.profiles }
+      }
+
+      // cookie / URL 参数 → 校验是否在可用列表中；无则回落到第一个 profile
+      val resolvedProfileId = EmsCookie.check(profiles, EmsCookie.get(request, response).getOrElse(""))
+      resolvedProfileId foreach { pid =>
+        EmsCookie.update(request, response, pid, true)
+        ctx.profileId = pid
+      }
+
       val sb = Collections.newBuffer[String]
-      account.profiles foreach { profile =>
+
+      profiles foreach { profile =>
         sb += profile.toJson
       }
       ctx.profiles = Some("[" + sb.mkString(",") + "]")
     }
+    ctx.menusJson = RemoteService.getDomainMenusJson(ActionContext.current.locale, Option(ctx.profileId))
     ctx.theme = RemoteService.getTheme
     ctx
   }
@@ -84,7 +96,8 @@ class NavContext {
   var principal = Securities.session.get.principal
   var username = Securities.user
   var profiles: Option[String] = None
-  var cookie: Option[String] = None
+  /** 当前选中的 profile id；无可用 profile 时为 null */
+  var profileId: String = _
   var theme: Ems.Theme = _
 
   def ems = Ems

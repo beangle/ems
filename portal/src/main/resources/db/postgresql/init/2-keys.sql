@@ -7,6 +7,7 @@ alter table ems.cfg_app_types add constraint pk_tlb9nukbd5nakxiqdrb4lrrkg primar
 alter table ems.cfg_app_types add constraint uk_5qmq81gd1xna4xeynxkdueqgu unique (name);
 alter table ems.cfg_apps add constraint idx_app unique (domain_id,name);
 alter table ems.cfg_apps add constraint pk_n9cedywnexu7mm5vrohyngxhi primary key (id);
+alter table ems.cfg_apps_envs add constraint pk_apps_envs primary key (app_id,env_id);
 alter table ems.cfg_businesses add constraint pk_1gjbnmsu7g40waqd6fhqyvhg7 primary key (id);
 alter table ems.cfg_credentials add constraint idx_credential unique (domain_id,name);
 alter table ems.cfg_credentials add constraint pk_jqt3pjl6myepf89yf4vpl69lv primary key (id);
@@ -18,6 +19,8 @@ alter table ems.cfg_dbs add constraint uk_knjsj49986iis6p9nfvlrink6 unique (name
 alter table ems.cfg_dbs_properties add constraint pk_4hn9p4sx2tba0kn8c5m68bn5e primary key (db_id,value_,name);
 alter table ems.cfg_domains add constraint idx_domain unique (org_id,hostname);
 alter table ems.cfg_domains add constraint pk_endu524c1sjo6rfnwll8j7lgl primary key (id);
+alter table ems.cfg_envs add constraint idx_env unique (domain_id,name);
+alter table ems.cfg_envs add constraint pk_cfg_envs primary key (id);
 alter table ems.cfg_domains add constraint uk_4acqortg7kuo0b9i3cnefdct1 unique (name);
 alter table ems.cfg_domains add constraint uk_prodovqul9i18esekttaynh92 unique (hostname);
 alter table ems.cfg_files add constraint pk_mqdje4swyctoaf3fghs8nh2h0 primary key (id);
@@ -87,6 +90,7 @@ alter table ems.usr_profiles_properties add constraint pk_8erccmnnign5i91qbu5tpf
 alter table ems.usr_role_members add constraint pk_1vq74b9ympc9qdgjvqcghk84e primary key (id);
 alter table ems.usr_roles add constraint idx_role_name unique (domain_id,name);
 alter table ems.usr_roles add constraint pk_237n7fw14i3w0u34cwhapigb0 primary key (id);
+alter table ems.usr_roles_envs add constraint pk_roles_envs primary key (role_id,env_id);
 alter table ems.usr_roles_properties add constraint pk_59m7apft4dpohfgp900cbkkip primary key (role_id,value_,dimension_id);
 alter table ems.usr_roots add constraint pk_gpdqluxdt236rx6ft5wdoxiix primary key (id);
 alter table ems.usr_users add constraint idx_user_code unique (org_id,code);

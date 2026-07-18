@@ -51,18 +51,18 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   }
 
   def getTopMenus(app: App, user: User): collection.Seq[Menu] = {
-    getTopMenus(Some(app), app.appType, getRoles(user))
+    getTopMenus(Some(app), app.appType, getRoles(user), None)
   }
 
-  def getTopMenus(user: User, appType: AppType): collection.Seq[Menu] = {
-    getTopMenus(None, appType, getRoles(user))
+  override def getTopMenus(user: User, appType: AppType, envId: Option[Long]): collection.Seq[Menu] = {
+    getTopMenus(None, appType, getRoles(user), envId)
   }
 
   def getTopMenus(app: App, role: Role): collection.Seq[Menu] = {
-    getTopMenus(Some(app), app.appType, List(role))
+    getTopMenus(Some(app), app.appType, List(role), None)
   }
 
-  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role]): collection.Seq[Menu] = {
+  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role], envId: Option[Long]): collection.Seq[Menu] = {
     val menuSet = Collections.newSet[Menu]
     roles foreach { role =>
       val query = OqlBuilder.from[Menu](classOf[Menu].getName + " menu," + classOf[FuncPermission].getName + " fp")
@@ -74,7 +74,9 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
       app foreach { p => query.where("menu.app=:app", p) }
       query.where("menu.app.appType=:appType", appType)
       query.where("menu.app.domain =:domain and menu.app.enabled=true", domainService.getDomain)
-
+      envId foreach { id =>
+        query.where("size(menu.app.envs)=0 or exists(from menu.app.envs as env where env.id=:envId)", id)
+      }
       query.cacheable()
 
       entityDao.search(query).foreach { m =>
@@ -180,8 +182,8 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     parseMenu(app, None, xml)
   }
 
-  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean): DomainMenus = {
-    val menus = getTopMenus(user, appType)
+  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, envId: Option[Long]): DomainMenus = {
+    val menus = getTopMenus(user, appType, envId)
     val appsMenus = menus.groupBy(_.app)
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {

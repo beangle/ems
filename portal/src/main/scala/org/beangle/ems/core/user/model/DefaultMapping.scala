@@ -45,7 +45,6 @@ object DefaultMapping extends MappingModule {
       e.getName is length(100)
       e.children is depends("parent")
       e.members is depends("role")
-      e.properties is eleLength(2000)
       index("idx_role_name", true, e.domain, e.name)
     }
 
@@ -70,9 +69,8 @@ object DefaultMapping extends MappingModule {
       index("idx_user_category", true, e.org, e.name)
     }
 
-    bind[Profile].declare { e =>
-      e.properties is eleLength(2000)
-      index("idx_user_profile", false, e.user, e.domain)
+    bind[EnvProfile].declare { e =>
+      index("idx_user_profile", true, e.user, e.domain, e.env)
     }
 
     bind[GroupMember].declare { e =>
@@ -100,7 +98,7 @@ object DefaultMapping extends MappingModule {
     }
     bind[Root]
 
-    all.except(classOf[RoleMember], classOf[GroupMember], classOf[User], classOf[Profile]).cacheAll()
+    all.except(classOf[RoleMember], classOf[GroupMember], classOf[User], classOf[EnvProfile]).cacheAll()
   }
 
 }

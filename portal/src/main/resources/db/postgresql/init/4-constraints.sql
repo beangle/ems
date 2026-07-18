@@ -5,6 +5,8 @@ alter table ems.cfg_app_groups add constraint fk_is79tynyqwd3tjp6imw4waxa2 forei
 alter table ems.cfg_apps add constraint fk_63b8qir7o0ra6nvjgbdxom1xp foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_apps add constraint fk_e9dlk79vqcr6h7s4j94xd3ur2 foreign key (group_id) references ems.cfg_app_groups (id);
 alter table ems.cfg_apps add constraint fk_oyclhhl4b5hmp6irr0gcs9xbx foreign key (app_type_id) references ems.cfg_app_types (id);
+alter table ems.cfg_apps_envs add constraint fk_apps_envs_app foreign key (app_id) references ems.cfg_apps (id);
+alter table ems.cfg_apps_envs add constraint fk_apps_envs_env foreign key (env_id) references ems.cfg_envs (id);
 alter table ems.cfg_businesses add constraint fk_ex14d744riotflg8he0y5l3lw foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_credentials add constraint fk_83dcjrkal5a4f5caten4qsov0 foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_data_sources add constraint fk_bdy20umf8o7qawut9sttmynfj foreign key (db_id) references ems.cfg_dbs (id);
@@ -13,6 +15,7 @@ alter table ems.cfg_data_sources add constraint fk_rncmj0cj4iyxjolva8oviqk4w for
 alter table ems.cfg_dbs add constraint fk_tcq34ws060gnkcrmxw5ik8y19 foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_dbs_properties add constraint fk_2v5t7l6nx0rw0e4s5uqqs6nha foreign key (db_id) references ems.cfg_dbs (id);
 alter table ems.cfg_domains add constraint fk_sv9p6l4dip3iufo95oq8moq7s foreign key (org_id) references ems.cfg_orgs (id);
+alter table ems.cfg_envs add constraint fk_cfg_envs_domain foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_files add constraint fk_dol7duk700r2xmhltnqw2yac4 foreign key (app_id) references ems.cfg_apps (id);
 alter table ems.cfg_portalets add constraint fk_d7vgg4tpsjapsi0u7n9swxh4b foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_portalets_categories add constraint fk_1wyav9ml67vi1urrrm6ri1w9o foreign key (category_id) references ems.usr_categories (id);
@@ -110,6 +113,8 @@ alter table ems.usr_role_members add constraint fk_bm1ix1rci332yc9xjselvkltl for
 alter table ems.usr_roles add constraint fk_48rf6jlralqywk4om6yw478kq foreign key (parent_id) references ems.usr_roles (id);
 alter table ems.usr_roles add constraint fk_k72k7td9qiw0c42wj3cbqe1wt foreign key (creator_id) references ems.usr_users (id);
 alter table ems.usr_roles add constraint fk_s4bgp91kk8g9asdwmg60k2dwl foreign key (domain_id) references ems.cfg_domains (id);
+alter table ems.usr_roles_envs add constraint fk_roles_envs_role foreign key (role_id) references ems.usr_roles (id);
+alter table ems.usr_roles_envs add constraint fk_roles_envs_env foreign key (env_id) references ems.cfg_envs (id);
 alter table ems.usr_roles_properties add constraint fk_f66m6ftj0kpr837j9dtewnop8 foreign key (role_id) references ems.usr_roles (id);
 alter table ems.usr_roots add constraint fk_akxow8uv93shp0ukqwgnqjs99 foreign key (app_id) references ems.cfg_apps (id);
 alter table ems.usr_roots add constraint fk_o5eita87yogy8ancda49b13f0 foreign key (user_id) references ems.usr_users (id);

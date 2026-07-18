@@ -18,6 +18,7 @@
 package org.beangle.ems.core.user.service.impl
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.core.config.model.Env
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.Dimension
 import org.beangle.ems.core.user.service.DimensionService
@@ -40,5 +41,12 @@ class DimensionServiceImpl extends DimensionService {
       .where("d.domain=:domain", domainService.getDomain)
       .cacheable()
     entityDao.search(query).headOption
+  }
+
+  override def getEnvs(): Seq[Env] = {
+    val query = OqlBuilder.from(classOf[Env], "d")
+      .where("d.domain=:domain", domainService.getDomain)
+      .cacheable()
+    entityDao.search(query)
   }
 }

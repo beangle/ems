@@ -73,11 +73,11 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     true
   }
 
-  override def isRoot(user: User, appName: String): Boolean = {
-    val rootQuery = OqlBuilder.from(classOf[Root], "r")
-    rootQuery.where("r.user=:user and r.app.name=:appName", user, appName)
-    rootQuery.where("r.app.domain=:domain", domainService.getDomain)
-    entityDao.search(rootQuery).nonEmpty
+  override def isRoot(user: User): Boolean = {
+    val rootQuery = OqlBuilder.from[Long](classOf[Root].getName, "r")
+    rootQuery.where("r.domain=:domain", domainService.getDomain)
+    rootQuery.select("r.user.id").cacheable()
+    entityDao.search(rootQuery).toSet.contains(user.id)
   }
 
   def create(creator: User, user: User): Unit = {
@@ -96,7 +96,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
   def remove(manager: User, user: User): Unit = {
     if (isManagedBy(manager, user)) {
       val removed = Collections.newBuffer[Entity[_]]
-      removed ++= entityDao.findBy(classOf[Profile], "user", List(user))
+      removed ++= entityDao.findBy(classOf[EnvProfile], "user", List(user))
       entityDao.remove(removed, user)
     }
   }
@@ -112,6 +112,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     get(code) match {
       case Some(user) =>
         val account = new DefaultAccount(user.code, user.name)
+        account.isRoot = isRoot(user)
         account.accountExpired = user.accountExpired
         account.accountLocked = user.locked
         account.credentialExpired = user.passwdInactive(config.idledays)
@@ -121,17 +122,25 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         val rs = getRoles(user, domain)
         account.authorities = rs.map(_.id.toString).toArray
 
-        val upQuery = OqlBuilder.from(classOf[Profile], "up")
+        val upQuery = OqlBuilder.from(classOf[EnvProfile], "up")
           .where("up.user=:user", user)
           .where("up.domain=:domain", domain)
 
         val ups = entityDao.search(upQuery)
 
-        if (ups.nonEmpty) {
+        if (ups.isEmpty) {
+          val envs = rs.flatMap(_.envs).toSet
+          account.profiles = Array.ofDim(envs.size)
+          var i = 0
+          envs foreach { env =>
+            account.profiles(i) = ProfileData(env.id, env.name, Map.empty)
+            i += 1
+          }
+        } else {
           account.profiles = Array.ofDim(ups.size)
           var i = 0
           ups foreach { up =>
-            account.profiles(i) = ProfileData(up.id, up.name, up.properties.map(x => (x._1.name, x._2)).toMap)
+            account.profiles(i) = ProfileData(up.env.id, up.env.name, up.properties.map(x => (x._1, x._2.toString)).toMap)
             i += 1
           }
         }

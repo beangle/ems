@@ -18,6 +18,7 @@
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.JsonArray
 import org.beangle.data.dao.{EntityDao, Operation, OqlBuilder}
 import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
@@ -61,19 +62,35 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
   }
 
   def authorize(app: App, role: Role, resources: Set[FuncResource]): Unit = {
+    authorize(app, role, resources, Map.empty)
+  }
+
+  def authorize(app: App, role: Role, resources: Set[FuncResource], resourceEnvIds: Map[Int, Iterable[Long]]): Unit = {
     val resourceSet = Collections.newSet[FuncResource] ++ resources
     val permissions = getPermissions(app, role).toBuffer
     val builder = new Operation.Builder()
     for (au <- permissions) {
-      if (resources.contains(au.resource)) resourceSet.remove(au.resource)
-      else builder.remove(au)
+      if (resources.contains(au.resource)) {
+        resourceSet.remove(au.resource)
+        au.envIds = toEnvIds(resourceEnvIds.getOrElse(au.resource.id, Nil))
+        builder.saveOrUpdate(au)
+      } else {
+        builder.remove(au)
+      }
     }
 
     for (resource <- resourceSet) {
-      val authority = new FuncPermission(role, resource);
+      val authority = new FuncPermission(role, resource)
+      authority.envIds = toEnvIds(resourceEnvIds.getOrElse(resource.id, Nil))
       builder.saveOrUpdate(authority)
     }
     entityDao.execute(builder)
+  }
+
+  private def toEnvIds(ids: Iterable[Long]): JsonArray = {
+    val arr = new JsonArray()
+    ids.foreach(id => arr.add(Long.box(id)))
+    arr
   }
 
   override def removeResources(resources: Iterable[FuncResource]): Unit = {

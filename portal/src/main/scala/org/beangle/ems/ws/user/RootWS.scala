@@ -32,8 +32,7 @@ class RootWS(domainService: DomainService, entityDao: EntityDao) extends ActionS
   def index(@param("app") app: String): Seq[String] = {
     val domain = domainService.getDomain
     val query = OqlBuilder.from[String](classOf[Root].getName, "r")
-    query.where("r.app.name = :appName", app)
-      .where("r.app.domain=:domain", domain)
+    query.where("r.domain=:domain", domain)
       .select("r.user.code")
       .cacheable()
     entityDao.search(query)

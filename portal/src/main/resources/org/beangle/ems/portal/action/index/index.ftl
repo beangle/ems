@@ -42,15 +42,8 @@
               <img src="${nav.avatarUrl}" class="rounded-circle" alt="User Image">
               <p>
                 ${nav.principal.description} - (${nav.principal.name})
-                [#if nav.username != nav.principal.name]<small> 模拟${nav.username} [@b.a href="!index" onclick="removeRunAs()"]退出模拟[/@]</small>[/#if]
+                [#if nav.username != nav.principal.name]<small> 模拟${nav.username} [@b.a href="!removeRunAs" onclick="emsShell.clearNavState();return true;"]退出模拟[/@]</small>[/#if]
                 <small>[#if nav.principal.remoteToken??]统一身份平台登录[#else]本地登录[/#if]</small>
-                [#if nav.username != nav.principal.name]
-                <script>
-                  function removeRunAs(){
-                    beangle.cookie.remove("beangle.security.runAs","/");
-                  }
-                </script>
-                [/#if]
               </p>
             </li>
             <li class="user-footer">
@@ -191,7 +184,8 @@
     params['initialGroupId']='${Parameters['group.id']}';
     [/#if]
     [#if nav.profiles??]
-    emsShell.init(${nav.profiles},${nav.cookie!'null'});
+    [#assign emsProfileId = nav.profileId!Parameters['contextProfileId']!""]
+    emsShell.init(${nav.profiles},[#if emsProfileId?has_content]'${emsProfileId}'[#else]null[/#if]);
     if(emsShell.config.profiles.length>0 && emsShell.config.profile){
       var default_p = emsShell.config.profile
       for(var i in default_p){

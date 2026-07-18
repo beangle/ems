@@ -61,7 +61,7 @@ class MenuWS extends ActionSupport {
     app match {
       case Some(app) =>
         if (forDomain) {
-          menuService.getDomainMenus(u, appType, isEnName)
+          menuService.getDomainMenus(u, appType, isEnName, getLong("profileId"))
         } else {
           val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
           appProps.put("title", app.getTitle(isEnName))
@@ -73,7 +73,7 @@ class MenuWS extends ActionSupport {
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
-        menuService.getDomainMenus(u, appType, isEnName)
+        menuService.getDomainMenus(u, appType, isEnName, getLong("profileId"))
     }
   }
 }

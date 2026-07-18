@@ -41,7 +41,10 @@ interface EmsShellApi {
   config: unknown;
   hostName: (u: unknown) => string;
   sameDomain: (a: unknown, b: unknown) => boolean;
-  init: (profiles: unknown[], cookie?: unknown) => void;
+  init: (
+    profiles: unknown[],
+    profileId?: string | number | { profile?: string | number } | null
+  ) => void;
   createNav: (...args: unknown[]) => unknown;
   changeGroup: (el: HTMLElement) => void;
   setup: (theme: unknown, params: Record<string, string>) => void;

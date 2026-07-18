@@ -31,18 +31,6 @@ import java.util.Locale
  */
 object RemoteService {
 
-  def roots: Option[Set[String]] = {
-    val url = Ems.innerApi + "/platform/user/roots.json?app=" + EmsApp.name
-    val res = get(url)
-    if (res.status == 200) {
-      val resources = Collections.newSet[String]
-      resources ++= Json.parseArray(res.getText).map(_.toString)
-      Some(resources.toSet)
-    } else {
-      None
-    }
-  }
-
   def getAuthorities: collection.Seq[Authority] = {
     val url = Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/resources.json"
     toAuthorities(get(url).getOrElse(null))
@@ -66,8 +54,9 @@ object RemoteService {
     get(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?request_locale=" + locale.toString).getOrElse(null)
   }
 
-  def getDomainMenusJson(locale: Locale): String = {
-    get(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString).getOrElse(null)
+  def getDomainMenusJson(locale: Locale, profileId: Option[String]): String = {
+    val profileQuery = profileId.map(x => s"&profileId=${x}").getOrElse("")
+    get(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString + profileQuery).getOrElse(null)
   }
 
   def getAppsJson: String = {

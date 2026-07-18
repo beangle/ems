@@ -38,28 +38,14 @@ class RootAction extends RestfulAction[Root], DomainSupport {
   var userService: UserService = _
 
   override protected def indexSetting(): Unit = {
-    put("isRoot", SecurityContext.get.root)
+    put("isRoot", SecurityContext.get.isRoot)
     super.indexSetting()
   }
 
   override protected def getQueryBuilder: OqlBuilder[Root] = {
     val builder = super.getQueryBuilder
-    builder.where("root.app.domain=:domain", domainService.getDomain)
+    builder.where("root.domain=:domain", domainService.getDomain)
     builder
-  }
-
-  override protected def editSetting(root: Root): Unit = {
-    if (root.persisted) {
-      val q = OqlBuilder.from(classOf[Root], "r")
-      q.where("r.app.domain=:domain", domainService.getDomain)
-      q.where("r.user.code=:code", Securities.user)
-      val apps = appService.getApps.toBuffer.subtractAll(entityDao.search(q).map(_.app))
-      put("apps", apps)
-      apps.addOne(root.app)
-    } else {
-      put("apps", appService.getApps)
-    }
-    super.editSetting(root)
   }
 
   override protected def saveAndRedirect(root: Root): View = {

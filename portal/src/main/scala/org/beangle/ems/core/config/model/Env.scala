@@ -15,20 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.model
+package org.beangle.ems.core.config.model
 
-import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Named
-import org.beangle.ems.core.config.model.Domain
-
-import scala.collection.mutable
 
 /**
- * 用户在某个App上的配置
+ * 该域下的业务场景
  */
-class Profile extends LongId, IProfile, Named {
-  var user: User = _
+class Env extends LongId, Named {
+
   var domain: Domain = _
-  var properties: mutable.Map[Dimension, String] = Collections.newMap[Dimension, String]
 }

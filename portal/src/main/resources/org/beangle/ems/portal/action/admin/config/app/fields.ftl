@@ -6,9 +6,17 @@
 [@b.select name="app.group.id" label="分组" value=app.group! option="id,title" required="true" items=groups?sort_by('indexno')/]
 [@b.textfield name="app.base" label="上下文地址" value="${app.base!}" required="true" maxlength="200" style="width:300px"/]
 [@b.radios name="app.navStyle" label="集成方式" value=app.navStyle required="true" items="wujie:微前端,iframe:IFrame" comment="微前端 参见http://github.com/Tencent/wujie" /]
+[@b.select label="业务场景" name="env.id" multiple="true" items=envs values=app.envs style="width:400px" comment="更改业务场景后，需要重新对角色进行授权" /]
+[#if app.persisted]
+[@b.field label="已授权角色"]
+  [#if roles?? && roles?size>0]
+    [#list roles as role]${role.name}[#sep]、[/#list]
+  [#else]--[/#if]
+[/@]
+[/#if]
 
 [@b.field label="引用资源"]
-  <div style="margin-left:120px;">
+  <div style="margin-left:100px;">
     <style>.itable th, .itable td{padding:3px 5px;}</style>
     <table border="1" class="formTable itable dstable">
       <thead>

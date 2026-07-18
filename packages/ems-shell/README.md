@@ -45,7 +45,7 @@ npm 包同时包含 **TypeScript 源码** 与 **预编译静态资源**，安装
 `app/src/main/resources/beangle.xml` 中声明 bundle（版本与 `package.json` 一致）：
 
 ```xml
-<bundle name="ems-shell" version="0.0.1">
+<bundle name="ems-shell" version="0.0.8">
   <module name="ems-shell"
           js="js/ems-shell-min.js"
           css="css/ems-shell-min.css"

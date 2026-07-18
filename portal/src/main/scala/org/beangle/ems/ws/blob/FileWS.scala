@@ -47,7 +47,7 @@ class FileWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
    *
    * `jsonBody` 字段说明：
    *  - `appName`：应用名称，用于解析 `App` 与 `secret`（做 digest 等）
-   *  - `profile`：存储配置名（对应域下 `Profile.base`）
+   *  - `profile`：存储配置名（对应域下 `EnvProfile.base`）
    *  - `owner`：文件属主标识
    *  - `name`：展示名
    *  - `fileSize`：字节数

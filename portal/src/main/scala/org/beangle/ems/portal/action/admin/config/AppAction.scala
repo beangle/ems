@@ -21,6 +21,8 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.EmsLogger
 import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.DbService
+import org.beangle.ems.core.security.model.FuncPermission
+import org.beangle.ems.core.user.model.Role
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.ignore
@@ -35,6 +37,13 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
     forward()
   }
 
+  override def info(id: String): View = {
+    val app = getModel(id.toInt)
+    put("app", app)
+    put("roles", findAuthorizedRoles(app))
+    forward()
+  }
+
   protected override def indexSetting(): Unit = {
     put("groups", appService.getGroups)
     put("appTypes", entityDao.getAll(classOf[AppType]))
@@ -43,10 +52,23 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
   protected override def editSetting(entity: App): Unit = {
     if (!entity.persisted) {
       entity.enabled = true
+    } else {
+      put("roles", findAuthorizedRoles(entity))
     }
     put("groups", appService.getGroups)
     put("appTypes", entityDao.getAll(classOf[AppType]))
     put("credentials", appService.getCredentials)
+    put("envs", entityDao.search(OqlBuilder.from(classOf[Env], "env")
+      .where("env.domain=:domain", domainService.getDomain)
+      .orderBy("env.name")))
+  }
+
+  /** 查询拥有该应用功能资源授权的角色 */
+  private def findAuthorizedRoles(app: App): Seq[Role] = {
+    val roleQuery = OqlBuilder.from[Role](classOf[FuncPermission].getName + " fp")
+      .where("fp.resource.app=:app", app)
+      .select("distinct fp.role")
+    entityDao.search(roleQuery).sortBy(_.indexno)
   }
 
   override protected def getQueryBuilder: OqlBuilder[App] = {
@@ -77,6 +99,10 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
         set.app = app
         sets += set
       }
+
+      val envs = entityDao.find(classOf[Env], getLongIds("env"))
+      app.envs.clear()
+      app.envs.addAll(envs)
 
       saveOrUpdate(app)
 

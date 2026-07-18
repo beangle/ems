@@ -10,8 +10,6 @@
     [@b.boxcol/]
     [@b.col property="user.code" width="15%"/]
     [@b.col property="user.name" width="15%"/]
-    [@b.col property="app.name" width="15%"/]
-    [@b.col property="app.title" width="15%"/]
     [@b.col property="updatedAt"/]
   [/@]
 [/@]

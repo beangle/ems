@@ -19,12 +19,12 @@ package org.beangle.ems.ws.user
 
 import org.beangle.commons.collection.{Collections, Properties}
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.webmvc.support.ActionSupport
-import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
-import org.beangle.ems.core.user.model.Profile
+import org.beangle.ems.core.user.model.{Dimension, EnvProfile}
 import org.beangle.ems.core.user.service.UserService
+import org.beangle.webmvc.annotation.{mapping, param, response}
+import org.beangle.webmvc.support.ActionSupport
 
 /**
  * @author chaostone
@@ -42,25 +42,31 @@ class ProfileWS(entityDao: EntityDao) extends ActionSupport {
   def index(@param("userCode") userCode: String): Any = {
     userService.get(userCode) match {
       case Some(user) =>
-        val userProfileQuery = OqlBuilder.from(classOf[Profile], "up")
+        val domain = domainService.getDomain
+        val userProfileQuery = OqlBuilder.from(classOf[EnvProfile], "up")
           .where("up.user =:user", user)
-          .where("up.domain=:domain", domainService.getDomain)
+          .where("up.domain=:domain", domain)
           .cacheable()
 
         val profiles = entityDao.search(userProfileQuery)
+        val dquery = OqlBuilder.from(classOf[Dimension], "d")
+        dquery.where("d.domain=:domain", domain)
+        dquery.cacheable()
+        val dimensions = entityDao.search(dquery).map(x => (x.name, x)).toMap
 
         val resolved = getBoolean("resolved", defaultValue = false)
         profiles map { profile =>
           val p = new Properties()
           p.put("id", profile.id)
-          p.put("name", profile.name)
+          p.put("name", profile.env.name)
           if (resolved) {
             val properties = Collections.newBuffer[Properties]
             p.put("properties", properties)
             profile.properties foreach {
-              case (d, v) =>
+              case (dname, v) =>
                 val entry = new Properties()
                 val dimension = new Properties()
+                val d = dimensions(dname)
                 dimension.put("id", d.id)
                 dimension.put("name", d.name)
                 dimension.put("title", d.title)
@@ -68,12 +74,12 @@ class ProfileWS(entityDao: EntityDao) extends ActionSupport {
                   dimension.put("keyName", kn)
                 }
                 entry.put("dimension", dimension)
-                entry.put("value", profileService.getDimensionValues(d, v))
+                entry.put("value", profileService.getDimensionValues(d, v.toString))
                 properties += entry
             }
           } else {
             profile.properties foreach {
-              case (d, v) => p.put(d.name, v)
+              case (d, v) => p.put(d, v)
             }
           }
           p

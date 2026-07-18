@@ -58,7 +58,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())
     put("departs", entityDao.findBy(classOf[Depart], "org", domainService.getOrg))
-    put("isRoot", SecurityContext.get.root)
+    put("isRoot", SecurityContext.get.isRoot)
   }
 
   def saveRole(): View = {
@@ -73,7 +73,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val newMembers = Collections.newBuffer[RoleMember]
     val removedMembers = Collections.newBuffer[RoleMember]
     val manager = loginUser
-    val isAdmin = userService.isRoot(manager, EmsApp.name)
+    val isAdmin = userService.isRoot(manager)
     //查找用户可以授权的角色
     val members =
       if (isAdmin) {
@@ -260,7 +260,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val manager = loginUser
     val roles = new collection.mutable.HashSet[Role]
     val mngMemberMap = new collection.mutable.HashMap[Role, RoleMember]
-    val emsAdmin = userService.isRoot(manager, EmsApp.name)
+    val emsAdmin = userService.isRoot(manager)
     if (emsAdmin) {
       val roleQuery = OqlBuilder.from(classOf[Role], "r").orderBy("r.indexno")
       roleQuery.where("r.domain=:domain", domain)
@@ -297,7 +297,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   def dashboard(): View = {
     val managed = entityDao.get(classOf[User], getLongId("user"))
     userDashboardHelper.buildDashboard(managed)
-    put("isRoot", SecurityContext.get.root && managed.code != Securities.user)
+    put("isRoot", SecurityContext.get.isRoot && managed.code != Securities.user)
     put("portal_url", Ems.portal)
     forward()
   }

@@ -42,6 +42,11 @@ object DefaultMapping extends MappingModule {
       index("idx_app", true, e.domain, e.name)
     }
 
+    bind[Env].declare { e =>
+      e.name is length(100)
+      index("idx_env", true, e.domain, e.name)
+    }
+
     bind[AppGroup].declare { e =>
       e.name is length(100)
       index("idx_app_group", true, e.domain, e.name)

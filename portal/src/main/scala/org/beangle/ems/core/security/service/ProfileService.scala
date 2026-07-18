@@ -18,18 +18,18 @@
 package org.beangle.ems.core.security.service
 
 import org.beangle.ems.core.security.model.FuncResource
-import org.beangle.ems.core.user.model.{Dimension, IProfile, User, Profile}
+import org.beangle.ems.core.user.model.{Dimension, User, EnvProfile}
 
 trait ProfileService {
 
-  def getProfiles(user: User, resource: FuncResource): collection.Seq[IProfile]
+  def getProfiles(user: User, resource: FuncResource): collection.Seq[EnvProfile]
 
-  def getProfiles(usercode: String): Seq[Profile]
+  def getProfiles(usercode: String): Seq[EnvProfile]
 
   def getDimensionValues(field: Dimension, keys: String*): collection.Seq[Any]
 
   def getDimension(fieldName: String): Dimension
 
-  def get(id: java.lang.Long): IProfile
+  def get(id: java.lang.Long): EnvProfile
 
 }

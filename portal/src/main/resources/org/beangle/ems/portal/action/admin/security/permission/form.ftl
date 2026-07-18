@@ -1,11 +1,29 @@
 [#ftl]
 [@b.head/]
 [#include "../status.ftl"/]
+[#assign allowAllEnv=allowAllEnv!false /]
+[#assign showEnvPanel=allowAllEnv || (appEnvs?size>0) /]
 <script type="text/javascript">
   function getIds(){
     return(getCheckBoxValue(document.getElementsByName("menuId")));
   }
   function save(){
+    [#if showEnvPanel && !allowAllEnv]
+    var envChecked = document.querySelectorAll('input.env-choice:checked');
+    if (envChecked.length == 0) {
+      alert("请至少选择一个业务场景");
+      return;
+    }
+    [#elseif showEnvPanel && allowAllEnv]
+    var specific = document.querySelector('input[name="envScope"][value="specific"]');
+    if (specific && specific.checked) {
+      var envChecked = document.querySelectorAll('input.env-choice:checked');
+      if (envChecked.length == 0) {
+        alert("指定场景时请至少选择一个业务场景");
+        return;
+      }
+    }
+    [/#if]
     document.permissionForm.action="${b.url('!save')}";
     if(confirm("${b.text("alert.authoritySave",role.name)}")){
       document.permissionForm.submit();
@@ -21,7 +39,35 @@
       if (!resourceBoxes[i].disabled) resourceBoxes[i].checked = stats;
     }
   }
+  function toggleEnvScope(){
+    // 仅针对「全部/指定」单选；应用已限定场景时没有该单选，场景应始终可选
+    var specific = document.querySelector('input[name="envScope"][type="radio"][value="specific"]');
+    var choices = document.querySelectorAll("input.env-choice");
+    var enable = !specific || specific.checked;
+    var anyChecked = false;
+    for (var i = 0; i < choices.length; i++) {
+      choices[i].disabled = !enable;
+      if (choices[i].checked) anyChecked = true;
+    }
+    // 需要至少选一个时，若尚未勾选则帮用户全选
+    if (enable && !anyChecked) {
+      for (var i = 0; i < choices.length; i++) {
+        choices[i].checked = true;
+      }
+    }
+  }
 </script>
+<style type="text/css">
+  #envPanel label,
+  #envPanel label.form-label,
+  #envPanel .form-check-label {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+</style>
 <table width="90%" align="center" class="text-sm">
 <tr>
 <td valign="top">
@@ -57,6 +103,28 @@
     <td><input name="displayFreezen" [#if displayFreezen='1'|| displayFreezen='on'|| displayFreezen='yes']checked="checked"[/#if] onclick="this.form.submit();" id="displayFreezen" type="checkbox"><label for="displayFreezen">显示冻结菜单</label></td>
   </tr>
 </table>
+[#if showEnvPanel]
+[#assign allEnvMode=allEnvMode!allowAllEnv /]
+[#assign selectedEnvIdStrs=selectedEnvIdStrs![] /]
+<div id="envPanel" style="margin:6px 0;padding:6px 8px;background:#f7f7f7;border:1px solid #e5e5e5;">
+  <strong>业务场景：</strong>
+  [#if allowAllEnv]
+  <label style="margin-bottom:0;margin-right:10px;"><input type="radio" name="envScope" value="all" [#if allEnvMode]checked="checked"[/#if] onclick="toggleEnvScope()"/> 全部场景</label>
+  <label style="margin-bottom:0;margin-right:10px;"><input type="radio" name="envScope" value="specific" [#if !allEnvMode]checked="checked"[/#if] onclick="toggleEnvScope()"/> 指定场景</label>
+  [#else]
+  <input type="hidden" name="envScope" value="specific"/>
+  [/#if]
+  <span id="envChoices">
+    [#list appEnvs as env]
+    [#assign envChecked=selectedEnvIdStrs?seq_contains(env.id?string) /]
+    [#-- 应用限定场景且尚无选中时，默认全选，方便通过「至少选一个」校验 --]
+    [#if !allowAllEnv && selectedEnvIdStrs?size==0][#assign envChecked=true /][/#if]
+    <label style="margin-bottom:0;margin-right:10px;"><input type="checkbox" class="env-choice" name="env.id" value="${env.id}" [#if envChecked]checked="checked"[/#if] [#if allowAllEnv && allEnvMode]disabled="disabled"[/#if]/> ${env.name}</label>
+    [/#list]
+  </span>
+</div>
+<script type="text/javascript">toggleEnvScope();</script>
+[/#if]
 <table width="100%" class="grid-table"  id="meunPermissionTable">
   <thead>
     <tr class="grid-head">
@@ -68,9 +136,10 @@
   </thead>
   <tbody>
   [#list mngMenus?sort_by("indexno") as menu]
+  [#assign isParent=parentMenus?seq_contains(menu)/]
   <tr class="grayStyle [#if !menu.enabled]ui-disabled[/#if]" id="${menu.indexno}">
     <td  class="grid-select">
-      <input type="checkbox" id="checkbox_${menu_index}" onclick="beangle.ui.tabletree.select(this,checkResource)"  name="menuId" [#if parentMenus?seq_contains(menu)]checked="checked" disabled="disabled"[#else][#if (roleMenus?seq_contains(menu))]checked="checked"[/#if][/#if] value="${menu.id}">
+      <input type="checkbox" id="checkbox_${menu_index}" onclick="beangle.ui.tabletree.select(this,checkResource)"  name="menuId" [#if isParent]checked="checked" disabled="disabled"[#else][#if (roleMenus?seq_contains(menu))]checked="checked"[/#if][/#if] value="${menu.id}">
     </td>
     <td>
     <div class="tree-tier${menu.depth}">

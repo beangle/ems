@@ -17,6 +17,7 @@
 
 package org.beangle.ems.core.security.model
 
+import org.beangle.commons.json.{Json, JsonArray}
 import org.beangle.data.model.pojo.{Enabled, Named, Remark, TemporalAt}
 import org.beangle.data.model.{IntId, LongId}
 import org.beangle.ems.core.config.model.App
@@ -40,6 +41,7 @@ class FuncResource extends IntId, Named, Enabled, Resource, Remark {
 class FuncPermission extends LongId, Permission, TemporalAt, Remark {
   var role: Role = _
   var resource: FuncResource = _
+  var envIds: JsonArray = Json.emptyArray
   var actions: Option[String] = None
   var restrictions: Option[String] = None
 
@@ -51,13 +53,4 @@ class FuncPermission extends LongId, Permission, TemporalAt, Remark {
   }
 
   def principal: Principal = role
-}
-
-class AppPermission extends IntId, Permission, TemporalAt {
-  var app: App = _
-  var resource: FuncResource = _
-  var actions: Option[String] = None
-  var restrictions: Option[String] = None
-
-  def principal = app
 }

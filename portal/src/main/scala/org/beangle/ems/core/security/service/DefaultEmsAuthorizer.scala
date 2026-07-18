@@ -36,12 +36,12 @@ class DefaultEmsAuthorizer extends AbstractRoleBasedAuthorizer {
 
   override def fetchDomain(): AuthorityDomain = {
     val app = appService.getApp(EmsApp.name).get
-    AuthorityDomain(getRoots(app), getAuthorities(app))
+    AuthorityDomain(getAuthorities(app))
   }
 
   private def getRoots(app: App): Iterable[String] = {
     val query = OqlBuilder.from[String](classOf[Root].getName, "r")
-    query.where("r.app = :app", app).select("r.user.code").cacheable()
+    query.where("r.domain = :domain", app.domain).select("r.user.code").cacheable()
     entityDao.search(query)
   }
 

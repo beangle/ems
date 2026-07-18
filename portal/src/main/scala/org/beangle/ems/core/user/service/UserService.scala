@@ -39,7 +39,7 @@ trait UserService {
 
   def remove(creator: User, user: User): Unit
 
-  def isRoot(user: User, appName: String): Boolean
+  def isRoot(user: User): Boolean
 
   def getCategories(): Seq[Category]
 

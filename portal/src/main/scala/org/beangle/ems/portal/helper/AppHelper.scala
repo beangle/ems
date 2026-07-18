@@ -47,7 +47,7 @@ object AppHelper {
   private def findApp(apps: Iterable[App], appId: Int): App = {
     apps.find(a => a.id == appId) match {
       case Some(app) => app
-      case None => apps.head
+      case None => if (apps.isEmpty) null else apps.head
     }
   }
 

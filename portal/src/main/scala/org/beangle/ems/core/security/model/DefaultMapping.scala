@@ -64,12 +64,6 @@ object DefaultMapping extends MappingModule {
       e.filters is length(600)
     }
 
-    bind[AppPermission].declare { e =>
-      e.app & e.resource are notnull
-      e.actions is length(500)
-      e.restrictions is length(500)
-    }
-
     bind[SessionConfig].declare { e =>
       index("idx_session_config", true, e.domain, e.category)
     }

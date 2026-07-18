@@ -54,13 +54,7 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
 
         val apps = Collections.newSet[App]
         apps ++= fpApps
-
-        val rootsQuery = OqlBuilder.from(classOf[Root], "root")
-          .where("root.app.domain=:domain", domain)
-          .where(s"root.user=:user and root.app.enabled=true and root.app.appType=:webapp", user, webapp)
-          .cacheable()
-        val roots = entityDao.search(rootsQuery)
-        apps ++= roots.map(a => a.app)
+        
         var appBuffer = apps.toBuffer.sorted
         get("q") foreach { q =>
           appBuffer = appBuffer.filter(a => a.title.contains(q))

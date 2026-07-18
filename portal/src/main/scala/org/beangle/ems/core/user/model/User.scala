@@ -18,6 +18,7 @@
 package org.beangle.ems.core.user.model
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{Json, JsonArray}
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org

@@ -6,14 +6,14 @@
   bar.addBack();
 [/@]
 [@b.form name="profileForm" action="!save" theme="list"]
-  [@b.textfield label="名称" value=profile.name!'默认' name="profile.name" required="true"/]
+  [@b.select label="业务场景" value=profile.env! name="profile.env.id" items=envs required="true"/]
   [@b.field label="数据项目"]
   [#if fields?size==0]该系统没有增加涉及到的数据维度[/#if]
   <div class="container">
   [@b.tabs]
     [#list fields?sort_by("title") as field]
     [@b.tab label="${field.title}(${field.name})"]
-    [#if ignoreDimensions?seq_contains(field) && field.multiple]
+    [#if ignoreDimensions?seq_contains(field.name) && field.multiple]
     <div>
       <input name="ignoreDimension${field.id}" type="radio" value="1" [#if userIgnoreDimensions?seq_contains(field)]checked="checked"[/#if] id="ignoreDimension${field.id}_1"><label for="ignoreDimension${field.id}_1">使用通配符*</label>
       <input name="ignoreDimension${field.id}" type="radio" value="0" [#if !userIgnoreDimensions?seq_contains(field)]checked="checked"[/#if] id="ignoreDimension${field.id}_2"><label for="ignoreDimension${field.id}_2">选择或填写具体值</label>

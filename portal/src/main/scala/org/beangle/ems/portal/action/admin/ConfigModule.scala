@@ -23,6 +23,7 @@ class ConfigModule extends BindModule {
 
   protected override def binding(): Unit = {
     bind(classOf[config.AppAction], classOf[config.AppGroupAction])
+    bind(classOf[config.EnvAction])
     bind(classOf[config.DbAction])
     bind(classOf[config.CredentialAction])
     bind(classOf[config.FileAction])

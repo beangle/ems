@@ -27,9 +27,7 @@ import scala.concurrent.Future
 class RemoteAuthorizer extends AbstractRoleBasedAuthorizer {
 
   override def fetchDomain(): AuthorityDomain = {
-    val roots = RemoteService.roots
-    val resources = RemoteService.getAuthorities
-    AuthorityDomain(roots.getOrElse(Set.empty), resources)
+    AuthorityDomain(RemoteService.getAuthorities)
   }
 
   /**

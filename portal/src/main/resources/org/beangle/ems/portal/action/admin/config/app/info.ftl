@@ -23,10 +23,23 @@
     <td>${app.logoUrl!}</td>
   </tr>
   <tr>
+    <td class="title">业务场景</td>
+    <td colspan="3">[#if app.envs?size>0][#list app.envs as env]${env.name}[#sep]、[/#list][#else]--[/#if]</td>
+  </tr>
+  <tr>
+    <td class="title">授权角色</td>
+    <td colspan="3">
+      [#if roles?size>0]
+        [#list roles as role]
+          [@b.a href="/portal/admin/security/permission/${role.id}/edit?app.id=${app.id}" target="_blank"]${role.name}[/@][#sep]、[/#list]
+      [#else]--[/#if]
+    </td>
+  </tr>
+  <tr>
     <td class="title" width="20%">引用资源</td>
     <td colspan="3">
     <style>.itable th, .itable td{padding:3px 5px;}</style>
-    <table class="table table-sm table-mini" style="width:600px;">
+    <table class="table table-sm table-mini" style="width:800px;">
       <thead>
         <th width="15%">数据源</th>
         <th width="15%">名称</th>

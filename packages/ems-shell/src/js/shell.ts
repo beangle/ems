@@ -135,33 +135,46 @@ export function fetchMessages(params: Record<string, string>): void {
 // --- 个人资料 ---
 
 export function createProfileNav(): void {
+  const profiles = config.profiles;
+  if (profiles.length === 0 || !config.profile) return;
+
+  const profile = config.profile;
+  const host = jQuery('.main-header > .ml-auto');
+  if (profiles.length === 1) {
+    // 仅一个 profile：显示名称，不可切换
+    host.prepend(
+      '<li class="nav-item">' +
+        '<span class="nav-link" id="profile_switcher" title="当前业务场景">' +
+        String(profile.name) +
+        '</span>' +
+        '</li>'
+    );
+    return;
+  }
+
   const profileSelectTemplate =
     '<li class="nav-item dropdown">' +
     '<a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" id="profile_switcher" aria-expanded="false">{first}</a> ' +
     '<div class="dropdown-menu">{list}</div>' +
     '</li>';
   const profileTemplate = '<a href="{profile.url}" class="dropdown-item">{profile.name}</a>';
-  const profiles = config.profiles;
-  if (profiles.length > 1) {
-    const profile = config.profile;
-    let profilehtml = profileSelectTemplate.replace('{first}', String(profile.name));
-    let list = '';
-    for (let i = 0; i < profiles.length; i++) {
-      if (profiles[i].id != profile.id) {
-        let profileItem = profileTemplate.replace('{profile.url}', String(profiles[i].url ?? ''));
-        profileItem = profileItem.replace('{profile.name}', String(profiles[i].name));
-        list += profileItem;
-      }
+  let profilehtml = profileSelectTemplate.replace('{first}', String(profile.name));
+  let list = '';
+  for (let i = 0; i < profiles.length; i++) {
+    if (profiles[i].id != profile.id) {
+      let profileItem = profileTemplate.replace('{profile.url}', String(profiles[i].url ?? ''));
+      profileItem = profileItem.replace('{profile.name}', String(profiles[i].name));
+      list += profileItem;
     }
-    profilehtml = profilehtml.replace('{list}', list);
-    jQuery('.main-header > .ml-auto').prepend(profilehtml);
-    jQuery('#profile_switcher')
-      .parent()
-      .find('.dropdown-item')
-      .on('click', () => {
-        clearContextLocalStorage();
-      });
   }
+  profilehtml = profilehtml.replace('{list}', list);
+  host.prepend(profilehtml);
+  jQuery('#profile_switcher')
+    .parent()
+    .find('.dropdown-item')
+    .on('click', () => {
+      clearContextLocalStorage();
+    });
 }
 
 // --- 主题 ---

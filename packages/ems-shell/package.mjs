@@ -34,12 +34,25 @@ if (!fs.existsSync(dist)) {
   process.exit(1);
 }
 
+// Only ship static assets — ignore dist/0.0.x snapshot dirs if present
+const assetDirs = ['js', 'css', 'images'];
 fs.rmSync(stagingDir, { recursive: true, force: true });
-fs.mkdirSync(releaseDir, { recursive: true });
-copyDir(dist, deployRoot);
+fs.mkdirSync(deployRoot, { recursive: true });
+for (const name of assetDirs) {
+  const from = path.join(dist, name);
+  if (fs.existsSync(from)) {
+    copyDir(from, path.join(deployRoot, name));
+  }
+}
 
+// Keep a versioned snapshot under dist/{version}/ for local static mirrors
+const versionSnap = path.join(dist, version);
+fs.rmSync(versionSnap, { recursive: true, force: true });
+copyDir(deployRoot, versionSnap);
+
+fs.mkdirSync(releaseDir, { recursive: true });
 fs.rmSync(zipPath, { force: true });
-execSync(`zip -rq ${JSON.stringify(`${bundleName}.zip`)} ems-shell`, {
+execSync(`zip -rq ${JSON.stringify(zipPath)} ems-shell`, {
   cwd: stagingDir,
   stdio: 'inherit',
 });

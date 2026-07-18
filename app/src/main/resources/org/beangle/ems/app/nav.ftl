@@ -165,7 +165,8 @@ ${b.static.load(["ems-shell"])}
     params['${k}']='${v}';
     [/#list]
     [#if nav.profiles??]
-    emsShell.init(${nav.profiles},${nav.cookie!'null'});
+    [#assign emsProfileId = nav.profileId!Parameters['contextProfileId']!""]
+    emsShell.init(${nav.profiles},[#if emsProfileId?has_content]'${emsProfileId}'[#else]null[/#if]);
     if(emsShell.config.profiles.length>0 && emsShell.config.profile){
       var default_p = emsShell.config.profile
       for(var i in default_p){

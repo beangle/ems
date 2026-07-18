@@ -15,16 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.user.service
+package org.beangle.ems.portal.action.admin.config
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.config.model.Env
-import org.beangle.ems.core.user.model.Dimension
+import org.beangle.ems.portal.action.admin.DomainSupport
+import org.beangle.she.webmvc.RestfulAction
+import org.beangle.webmvc.annotation.ignore
+import org.beangle.webmvc.view.View
 
-trait DimensionService {
+class EnvAction extends RestfulAction[Env], DomainSupport {
 
-  def getAll(): Seq[Dimension]
+  @ignore
+  override protected def saveAndRedirect(env: Env): View = {
+    env.domain = domainService.getDomain
+    saveOrUpdate(env)
+    publishUpdate(env)
+    super.saveAndRedirect(env)
+  }
 
-  def get(name: String): Option[Dimension]
-
-  def getEnvs():Seq[Env]
+  override protected def getQueryBuilder: OqlBuilder[Env] = {
+    super.getQueryBuilder.where("env.domain=:domain", domainService.getDomain)
+  }
 }

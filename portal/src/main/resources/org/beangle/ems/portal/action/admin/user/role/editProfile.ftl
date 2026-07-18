@@ -11,7 +11,7 @@
   [@b.tabs]
     [#list fields?sort_by("title") as field]
     [@b.tab label="${field.name}(${field.title})"]
-    [#if ignoreDimensions?seq_contains(field)]
+    [#if ignoreDimensions?seq_contains(field.name)]
     <div>
       <input name="ignoreDimension${field.id}" type="radio" value="1" [#if holderIgnoreDimensions?seq_contains(field)]checked="checked"[/#if] id="ignoreDimension${field.id}_1"><label for="ignoreDimension${field.id}_1">使用通配符*</label>
       <input name="ignoreDimension${field.id}" type="radio" value="0" [#if !holderIgnoreDimensions?seq_contains(field)]checked="checked"[/#if] id="ignoreDimension${field.id}_2"><label for="ignoreDimension${field.id}_2">选择或填写具体值</label>

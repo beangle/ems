@@ -21,7 +21,7 @@ import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.App
+import org.beangle.ems.core.config.model.Env
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.{Role, User}
@@ -48,7 +48,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
   var profileService: ProfileService = _
 
   override protected def indexSetting(): Unit = {
-    put("isRoot", SecurityContext.get.root)
+    put("isRoot", SecurityContext.get.isRoot)
   }
 
   /**
@@ -65,7 +65,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     put("role", role)
     val query = OqlBuilder.from(classOf[Role], "role")
     val me = userService.get(Securities.user).head
-    if (!userService.isRoot(me, EmsApp.name)) {
+    if (!userService.isRoot(me)) {
       query.join("role.members", "gm")
       query.where("gm.user=:me and gm.manager=true", me)
     }
@@ -74,6 +74,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     parents ++= entityDao.search(query)
     parents --= Hierarchicals.getFamily(role)
     put("parents", parents)
+    put("envs", dimensionService.getEnvs())
 
     if (!role.persisted) {
       role.enabled = true
@@ -101,6 +102,10 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     if entityDao.duplicate(classOf[Role], role.id, Map("name" -> role.getName, "domain" -> entity.domain)) then
       return redirect("edit", "error.notUnique")
 
+    val envs = entityDao.find(classOf[Env], getLongIds("env"))
+    role.envs.clear()
+    role.envs.addAll(envs)
+
     if (!role.persisted) {
       role.indexno = "tmp"
       roleService.create(me, role)
@@ -121,40 +126,6 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
       entityDao.saveOrUpdate(family)
     }
     redirect("search", "info.save.success")
-  }
-
-  def profile(): View = {
-    val role = entityDao.get(classOf[Role], getIntId("role"))
-    val helper = new ProfileHelper(entityDao, profileService, dimensionService)
-    helper.populateInfo(List(role))
-    put("role", role)
-    forward()
-  }
-
-  def editProfile(): View = {
-    val role = entityDao.get(classOf[Role], getIntId("role"))
-    val helper = new ProfileHelper(entityDao, profileService, dimensionService)
-    helper.fillEditInfo(role, isAdmin = true)
-    put("role", role)
-    forward()
-  }
-
-  def removeProfile(): View = {
-    val role = entityDao.get(classOf[Role], getIntId("role"))
-    role.properties.clear()
-    entityDao.saveOrUpdate(role)
-    redirect("profile", "info.save.success")
-  }
-
-  def saveProfile(): View = {
-    val me = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
-    val helper = new ProfileHelper(entityDao, profileService, dimensionService)
-    helper.dataResolver = dataResolver
-    val role = entityDao.get(classOf[Role], getIntId("role"))
-    val app = entityDao.get(classOf[App], getIntId("app"))
-    helper.populateSaveInfo(role, userService.isRoot(me, app.name))
-    entityDao.saveOrUpdate(role)
-    redirect("profile", "info.save.success")
   }
 
   /**

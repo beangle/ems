@@ -13,6 +13,8 @@ bar.addBack("${b.text("action.back")}");
   <tr>
    <td class="title" >修改时间:</td>
    <td >${role.updatedAt}</td>
+   <td class="title">业务场景:</td>
+   <td>[#if role.envs?size>0][#list role.envs as env]${env.name}[#sep]、[/#list][#else]--[/#if]</td>
   </tr>
   <tr>
   <td class="title" >&nbsp;${b.text("common.status")}:</td>

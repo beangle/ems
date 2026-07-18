@@ -22,7 +22,7 @@ import org.beangle.commons.json.JsonObject
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.service.AppService
-import org.beangle.notify.sms.{Receiver, SmsCodeService}
+import org.beangle.notify.sms.{Mobile, SmsCodeService}
 import org.beangle.webmvc.annotation.{action, mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
@@ -48,7 +48,7 @@ class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
           smsCodeService match {
             case None => ok(500, JsonObject("code" -> 500, "msg" -> "Platform 未配置SMS发生接口"))
             case Some(s) =>
-              val rs = s.send(Receiver(mobile, userName), template)
+              val rs = s.send(Mobile(mobile, userName), template)
               val status = if rs._1 then 200 else 500
               val json = JsonObject("code" -> status, "msg" -> rs._2)
               ok(status, json)

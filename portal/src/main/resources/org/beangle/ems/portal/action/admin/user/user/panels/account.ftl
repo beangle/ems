@@ -8,7 +8,7 @@
       <ul class="list-group list-group-unbordered mb-3">
         <li class="list-group-item">
          [@b.a href="!edit?user.id=${user.id}" target="user-info" ]修改账户[/@]
-         [#if isRoot]<a href="${portal_url}" onclick="runAs('${user.code}')" class="float-right">模拟登录</a>[/#if]
+         [#if isRoot]<a href="${portal_url}/index!runAs?code=${user.code}" target="_top" class="float-right">模拟登录</a>[/#if]
         </li>
       </ul>
       <strong><i class="fa-solid fa-phone mr-1"></i> 联系方式</strong>
@@ -67,9 +67,3 @@
     [/#if]
     </div>
   </div>
-  <script>
-    function runAs(u){
-      beangle.cookie.set('beangle.security.runAs',u,"/",1)
-      return true;
-    }
-  </script>

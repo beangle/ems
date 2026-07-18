@@ -18,6 +18,8 @@
 package org.beangle.ems.portal.action
 
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.json.{JsonArray, JsonObject}
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.web.NavContext
@@ -25,8 +27,12 @@ import org.beangle.ems.core.config.model.Portalet
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.{Doc, Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.Securities
+import org.beangle.security.context.SecurityContext
+import org.beangle.security.web.CookieKeys
 import org.beangle.web.servlet.url.UrlBuilder
+import org.beangle.web.servlet.util.CookieUtils
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
@@ -37,7 +43,7 @@ import scala.collection.mutable
 
 class IndexAction extends ActionSupport, ServletSupport {
   var entityDao: EntityDao = _
-
+  var userService: UserService = _
   var domainService: DomainService = _
 
   @mapping("")
@@ -153,5 +159,32 @@ class IndexAction extends ActionSupport, ServletSupport {
             builder.setContextPath("").setPathInfo(null).setQueryString(null)
             redirect(to(builder.buildUrl()), "")
       case None => Status.NotFound
+  }
+
+  def runAs(): View = {
+    val code = get("code", "")
+    if (SecurityContext.get.isRoot && Strings.isNotBlank(code)) {
+      userService.getAccount(code) match {
+        case None =>
+        case Some(account) =>
+          val ctx = ActionContext.current
+
+          val json = new JsonObject()
+          json.add("name", account.name)
+          val profiles = account.profiles
+          json.add("profiles", JsonArray(account.profiles.map(x => JsonObject("id" -> x.id, "name" -> x.name, "properties" -> x.properties)): _*))
+          if (profiles.nonEmpty) {
+            CookieUtils.addCookie(ctx.request, ctx.response, CookieKeys.ProfileIdKey, profiles.head.id.toString, path = "/", age = 3600 * 24)
+          }
+          CookieUtils.addCookie(ctx.request, ctx.response, CookieKeys.RunAsKey, json.toJson, path = "/", age = 3600 * 24)
+      }
+    }
+    redirect("index")
+  }
+
+  def removeRunAs(): View = {
+    val ctx = ActionContext.current
+    CookieUtils.deleteCookieByName(ctx.request, ctx.response, CookieKeys.RunAsKey)
+    redirect("index")
   }
 }

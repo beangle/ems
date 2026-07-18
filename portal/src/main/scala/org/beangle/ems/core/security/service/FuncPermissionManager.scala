@@ -36,6 +36,9 @@ trait FuncPermissionService {
 
   def authorize(app: App, role: Role, resources: Set[FuncResource]): Unit
 
+  /** 授权并设置各资源对应的业务场景 ID（空表示全部场景） */
+  def authorize(app: App, role: Role, resources: Set[FuncResource], resourceEnvIds: Map[Int, Iterable[Long]]): Unit
+
   def removeResources(entities: Iterable[FuncResource]): Unit
 
 }

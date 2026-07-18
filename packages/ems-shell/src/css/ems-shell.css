@@ -225,6 +225,12 @@
   font-size: var(--ems-header-nav-font-size);
 }
 
+/* 单一 profile：仅展示，无下拉 */
+#profile_switcher:not(a) {
+  cursor: default;
+  pointer-events: none;
+}
+
 .navbar-badge {
   position: absolute;
   top: 0.2rem;

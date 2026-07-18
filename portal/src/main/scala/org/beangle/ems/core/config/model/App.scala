@@ -24,6 +24,8 @@ import org.beangle.data.model.pojo.{Enabled, Named, Remark}
 import java.security.Principal
 import scala.collection.mutable
 
+/** EMS 应用信息
+ */
 class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, LocaleTitle {
   var title: String = _
   var enTitle: String = _
@@ -35,6 +37,7 @@ class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, Locale
   var group: AppGroup = _
   var domain: Domain = _
   var navStyle: Option[String] = None
+  var envs: mutable.Set[Env] = Collections.newSet
 
   def getName: String = name
 
