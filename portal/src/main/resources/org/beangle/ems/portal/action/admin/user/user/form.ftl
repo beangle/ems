@@ -26,32 +26,107 @@
     [/@]
   [/@]
   [@b.tab label="角色"]
-  [@b.form name="memberForm" action="!saveRole" class="listform" theme="list"]
+  <script type="text/javascript">
+    function toggleMemberEnvAll(cb){
+      var roleId = cb.getAttribute("data-role");
+      var choices = document.getElementById("envChoices" + roleId);
+      if (!choices) return;
+      var allMode = cb.checked;
+      choices.style.display = allMode ? "none" : "";
+      var boxes = choices.querySelectorAll("input[type=checkbox]");
+      for (var i = 0; i < boxes.length; i++) {
+        if (allMode) boxes[i].checked = false;
+      }
+    }
+    function toggleMemberEnvPanel(memberCb){
+      var roleId = memberCb.getAttribute("data-role");
+      var panel = document.getElementById("envPanel" + roleId);
+      if (!panel) return;
+      var show = memberCb.checked;
+      panel.style.display = show ? "" : "none";
+      if (!show) {
+        var allCb = panel.querySelector("input.member-env-all");
+        if (allCb) {
+          allCb.checked = true;
+          toggleMemberEnvAll(allCb);
+        }
+        var boxes = panel.querySelectorAll("input[name='env" + roleId + ".id']");
+        for (var i = 0; i < boxes.length; i++) boxes[i].checked = false;
+      }
+    }
+    function prepareMemberEnvSubmit(form){
+      var memberBoxes = form.querySelectorAll("input.security_member");
+      for (var i = 0; i < memberBoxes.length; i++) {
+        toggleMemberEnvPanel(memberBoxes[i]);
+      }
+      var allBoxes = form.querySelectorAll("input.member-env-all");
+      for (var i = 0; i < allBoxes.length; i++) {
+        toggleMemberEnvAll(allBoxes[i]);
+      }
+      return true;
+    }
+  </script>
+  [@b.form name="memberForm" action="!saveRole" class="listform" theme="list" onsubmit="return prepareMemberEnvSubmit(this)"]
     [@b.grid items=roles?sort_by("indexno") var="role" sortable="false"]
       [@b.row]
         <tr [#if role??]id="${role.indexno}"[/#if]>
-        [@b.col title="common.index" width="5%"]${role_index+1}[/@]
-        [@b.treecol title="角色" property="name"]
+        [@b.col title="common.index" width="4%"]${role_index+1}[/@]
+        [@b.treecol title="角色" property="name" width="22%"]
           <span [#if !role.enabled]class="ui-disabled" title="${b.text('action.freeze')}"[/#if]>
           ${role.indexno} ${role.name}[#if !role.enabled] (禁用)[/#if]
           </span>
         [/@]
-        [@b.col title="成员" width="10%"]
+        [@b.col title="成员" width="7%"]
           [#assign displayMember=(role.enabled && mngMemberMap.get(role).granter)/]
-          <input type="checkbox" class="security_member" [#if !displayMember]style="display:none"[/#if] name="member${role.id}" ${(memberMap.get(role).member)?default(false)?string('checked="checked"','')}/>
-          [#if !displayMember && (memberMap.get(role).member)!false]&radic;[/#if]
+          [#assign isMemberChecked=(memberMap.get(role).member)!false /]
+          <input type="checkbox" class="security_member" data-role="${role.id}" [#if !displayMember]style="display:none"[/#if] name="member${role.id}" [#if isMemberChecked]checked="checked"[/#if] onclick="toggleMemberEnvPanel(this)"/>
+          [#if !displayMember && isMemberChecked]&radic;[/#if]
         [/@]
-        [@b.col title="可授权" width="10%"]
+        [@b.col title="可授权" width="7%"]
           [#assign displayGranter=(role.enabled && mngMemberMap.get(role).granter)/]
           <input type="checkbox" name="granter${role.id}" [#if !displayGranter]style="display:none"[/#if] ${(memberMap.get(role).granter)?default(false)?string('checked="checked"','')}/>
           [#if !displayGranter && (memberMap.get(role).granter)!false]&radic;[/#if]
         [/@]
-        [@b.col title="可管理" width="10%"]
+        [@b.col title="可管理" width="7%"]
           [#assign displayManager=(role.enabled && mngMemberMap.get(role).manager)/]
           <input type="checkbox" name="manager${role.id}" [#if !displayManager]style="display:none"[/#if] ${(memberMap.get(role).manager)?default(false)?string('checked="checked"','')}/>
           [#if !displayManager && (memberMap.get(role).manager)!false]&radic;[/#if]
         [/@]
-        [@b.col title="common.updatedAt" width="20%"]${(memberMap.get(role).updatedAt)!}[/@]
+        [@b.col title="业务场景" width="35%"]
+          [#assign canEditEnv=(role.enabled && (mngMemberMap.get(role).granter || mngMemberMap.get(role).manager)) /]
+          [#if role.envs?size>0]
+            [#assign choiceEnvs=role.envs?sort_by("code") /]
+          [#else]
+            [#assign choiceEnvs=envs /]
+          [/#if]
+          [#assign selectedEnvIds=(memberEnvIds.get(role.id?string))![] /]
+          [#assign allEnvMode=(selectedEnvIds?size==0) /]
+          [#if envs?size<=1]
+            <span id="envPanel${role.id}" [#if !isMemberChecked]style="display:none"[/#if]>
+              [#list choiceEnvs as env]${env.name}[#sep]、[/#list]
+            </span>
+          [#elseif canEditEnv]
+            <span id="envPanel${role.id}" [#if !isMemberChecked]style="display:none"[/#if]>
+              <label style="margin:0 8px 0 0;display:inline-block;white-space:nowrap;">
+                <input type="checkbox" class="member-env-all" data-role="${role.id}" [#if allEnvMode]checked="checked"[/#if] onclick="toggleMemberEnvAll(this)"/> 不区分场景
+              </label>
+              <span id="envChoices${role.id}" [#if allEnvMode]style="display:none"[/#if]>
+                [#list choiceEnvs as env]
+                  [#assign envChecked=isMemberChecked && (!allEnvMode) && selectedEnvIds?seq_contains(env.id?string) /]
+                  <label style="margin:0 8px 0 0;display:inline-block;white-space:nowrap;">
+                    <input type="checkbox" name="env${role.id}.id" value="${env.id}" [#if envChecked]checked="checked"[/#if]/> ${env.name}
+                  </label>
+                [/#list]
+              </span>
+            </span>
+          [#elseif isMemberChecked]
+            [#if allEnvMode]不区分场景
+            [#else]
+              [#list choiceEnvs as env][#if selectedEnvIds?seq_contains(env.id?string)]${env.name}[#sep]、[/#if][/#list]
+            [/#if]
+          [/#if]
+        [/@]
+        [@b.col title="common.updatedAt" width="12%"]${(memberMap.get(role).updatedAt)!}[/@]
         </tr>
       [/@]
     [/@]

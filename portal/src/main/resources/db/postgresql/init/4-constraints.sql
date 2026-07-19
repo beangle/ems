@@ -84,6 +84,9 @@ alter table ems.se_data_permissions add constraint fk_jssv5ly5wjo02pvfmfputfqg3 
 alter table ems.se_data_resources add constraint fk_dk50vpqsida5h1271dv47imk6 foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.se_func_permissions add constraint fk_6f381rw1cmkb200ben5c76o foreign key (role_id) references ems.usr_roles (id);
 alter table ems.se_func_permissions add constraint fk_ao9ut2csq2k21nx7e8t2bjeuj foreign key (resource_id) references ems.se_func_resources (id);
+alter table ems.se_role_app_envs add constraint fk_role_app_env_role foreign key (role_id) references ems.usr_roles (id);
+alter table ems.se_role_app_envs add constraint fk_role_app_env_app foreign key (app_id) references ems.cfg_apps (id);
+alter table ems.se_role_app_envs add constraint fk_role_app_env_env foreign key (env_id) references ems.cfg_envs (id);
 alter table ems.se_func_resources add constraint fk_3ju8wtwtb6byhutjnfgej46ss foreign key (app_id) references ems.cfg_apps (id);
 alter table ems.se_menus add constraint fk_9j0v9w5h4bij1ajoh8febi4wh foreign key (entry_id) references ems.se_func_resources (id);
 alter table ems.se_menus add constraint fk_m6o2fdnpl1ngm724sdy6gmptb foreign key (app_id) references ems.cfg_apps (id);

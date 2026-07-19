@@ -26,5 +26,7 @@ trait DimensionService {
 
   def get(name: String): Option[Dimension]
 
-  def getEnvs():Seq[Env]
+  def getEnvs(): Seq[Env]
+
+  def getEnv(id: Long): Env
 }

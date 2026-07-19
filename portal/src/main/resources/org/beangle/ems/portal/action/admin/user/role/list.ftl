@@ -15,7 +15,7 @@
       [@b.a href="!info?id=${role.id}"]${role.indexno} ${role.name}[/@]
     [/@]
     [@b.col width="15%" title="业务场景"]
-      [#if role.envs?size>0][#list role.envs as env]${env.name}[#sep]&nbsp;[/#list][#else]--[/#if]
+      [#if role.envs?size>0][#list role.envs as env]${env.code} ${env.name}[#sep]&nbsp;[/#list][#else]--[/#if]
     [/@]
     [@b.col width="12%" property="creator.name" title="common.creator"]${(role.creator.fullname)!}[/@]
     [@b.col width="10%" property="enabled" title="common.status"][@enableInfo role.enabled/][/@]

@@ -8,6 +8,7 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
+    [@b.col width="20%" property="code" title="代码"/]
     [@b.col property="name" title="名称"/]
   [/@]
 [/@]

@@ -2,6 +2,7 @@
 [@b.head/]
 [@b.toolbar title="业务场景"]bar.addBack();[/@]
 [@b.form action=b.rest.save(env) theme="list"]
+  [@b.textfield name="env.code" label="代码" value="${env.code!}" required="true" maxlength="100"/]
   [@b.textfield name="env.name" label="名称" value="${env.name!}" required="true" maxlength="100"/]
   [@b.formfoot]
     [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]

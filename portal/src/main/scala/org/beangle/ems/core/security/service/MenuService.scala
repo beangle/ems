@@ -19,13 +19,13 @@ package org.beangle.ems.core.security.service
 
 import org.beangle.commons.collection.Properties
 import org.beangle.commons.xml.Node
-import org.beangle.ems.core.config.model.{App, AppType}
+import org.beangle.ems.core.config.model.{App, AppType, Env}
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.user.model.{Role, User}
 
 trait MenuService {
 
-  def getTopMenus(user: User, appType: AppType, envId: Option[Long]): collection.Seq[Menu]
+  def getTopMenus(user: User, appType: AppType, envId: Option[Env]): collection.Seq[Menu]
 
   def getTopMenus(app: App, user: User): collection.Seq[Menu]
 
@@ -45,7 +45,7 @@ trait MenuService {
 
   def convert(one: Menu, isEnName: Boolean): Properties
 
-  def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, envId: Option[Long]): DomainMenus
+  def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, env: Option[Env]): DomainMenus
 
 }
 

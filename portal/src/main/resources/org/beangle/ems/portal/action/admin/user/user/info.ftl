@@ -23,7 +23,13 @@
   </tr>
   <tr>
     <td class="title" >${b.text("user.members")}:</td>
-    <td  colspan="3">[#list user.roles?sort_by(['role','indexno']) as m]${m.role.indexno} ${m.role.name}([#if m.member]成员[/#if][#if m.manager] 管理者[/#if][#if m.granter] 可授权[/#if])<br>[/#list]</td>
+    <td  colspan="3">
+      [#list user.roles?sort_by(['role','indexno']) as m]
+        ${m.role.indexno} ${m.role.name}([#if m.member]成员[/#if][#if m.manager] 管理者[/#if][#if m.granter] 可授权[/#if]
+        ；场景:[#if m.envIds?size==0]不区分场景[#else][#list m.envIds as eid][#assign e=envById.get(eid?string)! /][#if e??]${e.name}[#else]${eid}[/#if][#sep]、[/#list][/#if])
+        <br>
+      [/#list]
+    </td>
   </tr>
   <tr>
     <td class="title">身份:</td>

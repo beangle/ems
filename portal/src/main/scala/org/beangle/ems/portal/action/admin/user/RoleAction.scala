@@ -23,6 +23,7 @@ import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.Env
 import org.beangle.ems.core.config.service.DomainService
+import org.beangle.ems.core.security.model.RoleAppEnv
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.impl.CsvDataResolver
@@ -31,9 +32,11 @@ import org.beangle.ems.portal.helper.ProfileHelper
 import org.beangle.security.Securities
 import org.beangle.security.context.SecurityContext
 import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
+import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.view.View
 
 import java.time.Instant
+import java.util as ju
 
 /**
  * 角色信息维护响应类
@@ -49,6 +52,26 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
 
   override protected def indexSetting(): Unit = {
     put("isRoot", SecurityContext.get.isRoot)
+  }
+
+  @mapping(value = "{id}")
+  override def info(@param("id") id: String): View = {
+    val role = getModel(id)
+    put("role", role)
+    val raes = entityDao.search(OqlBuilder.from(classOf[RoleAppEnv], "rae")
+      .where("rae.role=:role", role)
+      .orderBy("rae.app.indexno,rae.app.name,rae.env.code"))
+    val roleAppEnvMap = new ju.LinkedHashMap[AnyRef, ju.List[AnyRef]]()
+    raes.foreach { rae =>
+      var envs = roleAppEnvMap.get(rae.app)
+      if (null == envs) {
+        envs = new ju.ArrayList[AnyRef]()
+        roleAppEnvMap.put(rae.app, envs)
+      }
+      envs.add(rae.env)
+    }
+    put("roleAppEnvMap", roleAppEnvMap)
+    forward()
   }
 
   /**

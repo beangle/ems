@@ -35,6 +35,11 @@ object DefaultMapping extends MappingModule {
       index("", false, e.role)
     }
 
+    bind[RoleAppEnv].declare { e =>
+      e.role & e.app & e.env are notnull
+      index("idx_role_app_env", true, e.role, e.app, e.env)
+    }
+
     bind[Menu].declare { e =>
       e.name & e.enName & e.remark are length(100)
       e.indexno is length(50)

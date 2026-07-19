@@ -21,7 +21,7 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.security.model.FuncPermission
+import org.beangle.ems.core.security.model.{FuncPermission, RoleAppEnv}
 import org.beangle.ems.core.user.model._
 import org.beangle.ems.core.user.service.RoleService
 
@@ -75,7 +75,10 @@ class RoleServiceImpl extends RoleService {
     val query = OqlBuilder.from(classOf[FuncPermission], "fp")
     query.where("fp.role in(:roles)", roles)
     val fps = entityDao.search(query)
-    entityDao.remove(fps :: roles.toList)
+    val rapQuery = OqlBuilder.from(classOf[RoleAppEnv], "rae")
+    rapQuery.where("rae.role in(:roles)", roles)
+    val raps = entityDao.search(rapQuery)
+    entityDao.remove(fps ++ raps ++ roles)
   }
 
   def get(id: Int): Role = {

@@ -22,9 +22,9 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.xml.Node
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.core.config.model.{App, AppType}
+import org.beangle.ems.core.config.model.{App, AppType, Env}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.security.authz.Scope
@@ -38,32 +38,56 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   var domainService: DomainService = _
 
-  private def getRoles(user: User): Seq[Role] = {
+  private def getRoles(user: User, env: Option[Env]): Seq[Role] = {
     val domain = domainService.getDomain
-    val roles = user.roles.filter(m => m.member && m.role.domain == domain).map { m => m.role }
+    val roles = user.roles.filter(m => m.member && m.role.domain == domain && env.forall(m.suitable)).map(_.role)
     user.group foreach { g =>
       roles.addAll(g.roles filter (r => r.domain == domain))
     }
     user.groups foreach { gm =>
       roles.addAll(gm.group.roles filter (r => r.domain == domain))
     }
-    roles.toSet.toSeq //去重后返回
+    //去重后返回
+    env match {
+      case None => roles.toSet.toSeq
+      case Some(e) => roles.toSet.filter(r => r.envs.isEmpty || r.envs.contains(e)).toSeq
+    }
   }
 
   def getTopMenus(app: App, user: User): collection.Seq[Menu] = {
-    getTopMenus(Some(app), app.appType, getRoles(user), None)
+    getTopMenus(Some(app), app.appType, getRoles(user, None), None)
   }
 
-  override def getTopMenus(user: User, appType: AppType, envId: Option[Long]): collection.Seq[Menu] = {
-    getTopMenus(None, appType, getRoles(user), envId)
+  override def getTopMenus(user: User, appType: AppType, env: Option[Env]): collection.Seq[Menu] = {
+    getTopMenus(None, appType, getRoles(user, env), env)
   }
 
   def getTopMenus(app: App, role: Role): collection.Seq[Menu] = {
     getTopMenus(Some(app), app.appType, List(role), None)
   }
 
-  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role], envId: Option[Long]): collection.Seq[Menu] = {
+  /**
+   * 在指定场景下，各角色因 RoleAppEnv 限定而不可用的应用。
+   * 某角色在某应用上无 RoleAppEnv 记录表示不限制，不会出现在结果中；
+   * 有记录但不包含该 env 时，该应用记入该角色的不可用集合。
+   */
+  private def findUnavailableApps(roles: Iterable[Role], env: Env): Map[Role, Set[App]] = {
+    val roleList = roles.toSeq
+    if (roleList.isEmpty) return Map.empty
+    val raes = entityDao.search(OqlBuilder.from(classOf[RoleAppEnv], "rae")
+      .where("rae.role in (:roles)", roleList)
+      .cacheable())
+    raes.groupBy(_.role).flatMap { case (role, list) =>
+      val unavailable = list.groupBy(_.app).collect {
+        case (app, items) if !items.exists(_.env.id == env.id) => app
+      }.toSet
+      if (unavailable.isEmpty) None else Some(role -> unavailable)
+    }
+  }
+
+  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role], env: Option[Env]): collection.Seq[Menu] = {
     val menuSet = Collections.newSet[Menu]
+    val unavailableByRole = env.map(e => findUnavailableApps(roles, e)).getOrElse(Map.empty)
     roles foreach { role =>
       val query = OqlBuilder.from[Menu](classOf[Menu].getName + " menu," + classOf[FuncPermission].getName + " fp")
         .where("menu.enabled=true")
@@ -74,8 +98,11 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
       app foreach { p => query.where("menu.app=:app", p) }
       query.where("menu.app.appType=:appType", appType)
       query.where("menu.app.domain =:domain and menu.app.enabled=true", domainService.getDomain)
-      envId foreach { id =>
-        query.where("size(menu.app.envs)=0 or exists(from menu.app.envs as env where env.id=:envId)", id)
+      env foreach { e =>
+        query.where("size(menu.app.envs)=0 or exists(from menu.app.envs as env where env.id=:envId)", e.id)
+      }
+      unavailableByRole.get(role).filter(_.nonEmpty).foreach { apps =>
+        query.where("menu.app not in (:unavailableApps)", apps)
       }
       query.cacheable()
 
@@ -182,8 +209,8 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     parseMenu(app, None, xml)
   }
 
-  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, envId: Option[Long]): DomainMenus = {
-    val menus = getTopMenus(user, appType, envId)
+  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, env: Option[Env]): DomainMenus = {
+    val menus = getTopMenus(user, appType, env)
     val appsMenus = menus.groupBy(_.app)
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {

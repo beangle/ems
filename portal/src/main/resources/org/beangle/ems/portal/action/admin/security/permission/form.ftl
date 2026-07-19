@@ -119,7 +119,7 @@
     [#assign envChecked=selectedEnvIdStrs?seq_contains(env.id?string) /]
     [#-- 应用限定场景且尚无选中时，默认全选，方便通过「至少选一个」校验 --]
     [#if !allowAllEnv && selectedEnvIdStrs?size==0][#assign envChecked=true /][/#if]
-    <label style="margin-bottom:0;margin-right:10px;"><input type="checkbox" class="env-choice" name="env.id" value="${env.id}" [#if envChecked]checked="checked"[/#if] [#if allowAllEnv && allEnvMode]disabled="disabled"[/#if]/> ${env.name}</label>
+    <label style="margin-bottom:0;margin-right:10px;"><input type="checkbox" class="env-choice" name="env.id" value="${env.id}" [#if envChecked]checked="checked"[/#if] [#if allowAllEnv && allEnvMode]disabled="disabled"[/#if]/> ${env.code} ${env.name}</label>
     [/#list]
   </span>
 </div>

@@ -17,8 +17,10 @@
 
 package org.beangle.ems.core.user.model
 
+import org.beangle.commons.json.{Json, JsonArray}
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updatable
+import org.beangle.ems.core.config.model.Env
 
 import java.time.Instant
 
@@ -28,6 +30,9 @@ import java.time.Instant
 class RoleMember extends LongId, Updatable {
   var user: User = _
   var role: Role = _
+  /** 适用场景 ID 列表；空表示不限制 */
+  var envIds: JsonArray = Json.emptyArray
+
   var member: Boolean = _
   var granter: Boolean = _
   var manager: Boolean = _
@@ -54,5 +59,25 @@ class RoleMember extends LongId, Updatable {
       case MemberShip.Manager => manager
       case MemberShip.Granter => granter
     }
+  }
+
+  /** 空表示不限制；有值时仅所列场景适用 */
+  def suitable(env: Env): Boolean = {
+    envIds.isEmpty || envIds.exists {
+      case n: Number => n.longValue == env.id
+      case x => x.toString.toLongOption.contains(env.id)
+    }
+  }
+
+  def envIdSet: Set[Long] = {
+    envIds.flatMap {
+      case n: Number => Some(n.longValue)
+      case x => x.toString.toLongOption
+    }.toSet
+  }
+
+  def setEnvIds(ids: Iterable[Long]): Unit = {
+    val distinct = ids.toSeq.distinct.sorted
+    envIds = if (distinct.isEmpty) Json.emptyArray else JsonArray(distinct *)
   }
 }

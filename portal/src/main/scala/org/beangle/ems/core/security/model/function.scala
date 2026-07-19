@@ -17,15 +17,14 @@
 
 package org.beangle.ems.core.security.model
 
-import org.beangle.commons.json.{Json, JsonArray}
 import org.beangle.data.model.pojo.{Enabled, Named, Remark, TemporalAt}
 import org.beangle.data.model.{IntId, LongId}
-import org.beangle.ems.core.config.model.App
+import org.beangle.ems.core.config.model.{App, Env}
 import org.beangle.ems.core.user.model.Role
 import org.beangle.security.authz.{Permission, Resource, Scope}
 
 import java.security.Principal
-import java.time.{Instant, ZonedDateTime}
+import java.time.Instant
 
 class FuncResource extends IntId, Named, Enabled, Resource, Remark {
   var app: App = _
@@ -38,10 +37,10 @@ class FuncResource extends IntId, Named, Enabled, Resource, Remark {
   }
 }
 
+/** 角色在某应用上的功能资源授权（与场景无关） */
 class FuncPermission extends LongId, Permission, TemporalAt, Remark {
   var role: Role = _
   var resource: FuncResource = _
-  var envIds: JsonArray = Json.emptyArray
   var actions: Option[String] = None
   var restrictions: Option[String] = None
 
@@ -53,4 +52,21 @@ class FuncPermission extends LongId, Permission, TemporalAt, Remark {
   }
 
   def principal: Principal = role
+}
+
+/**
+ * 角色在某应用上限定的业务场景（一行一个 env）。
+ * 无记录表示不限制（全部场景）；有多条则表示仅这些场景生效。
+ */
+class RoleAppEnv extends LongId {
+  var role: Role = _
+  var app: App = _
+  var env: Env = _
+
+  def this(role: Role, app: App, env: Env) = {
+    this()
+    this.role = role
+    this.app = app
+    this.env = env
+  }
 }

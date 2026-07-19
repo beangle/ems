@@ -60,7 +60,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
     put("credentials", appService.getCredentials)
     put("envs", entityDao.search(OqlBuilder.from(classOf[Env], "env")
       .where("env.domain=:domain", domainService.getDomain)
-      .orderBy("env.name")))
+      .orderBy("env.code")))
   }
 
   /** 查询拥有该应用功能资源授权的角色 */

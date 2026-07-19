@@ -19,6 +19,8 @@ create index idx_m9p3e4v2m389xtm186dgaomkp on ems.oa_notices_categories (notice_
 create index idx_70rqx45v5adl1w9nmbikff5i6 on ems.oa_notices_docs (notice_id);
 create index idx_7wu1nir9kwrxh80w8l9jmvubv on ems.oa_todoes (user_id);
 create index idx_fy9icugi55g32afdp7dpya5tl on ems.se_func_permissions (role_id);
+create index idx_role_app_envs_role on ems.se_role_app_envs (role_id);
+create index idx_role_app_envs_app on ems.se_role_app_envs (app_id);
 create index idx_chjpjbdcov744gg5lq2de7rx3 on ems.se_menus (entry_id);
 create index idx_epksu8lgd3h8wadnbbot7b7rx on ems.se_menus (parent_id);
 create index idx_fdatks2vdh1idedyu5f6fb55l on ems.se_menus (app_id);

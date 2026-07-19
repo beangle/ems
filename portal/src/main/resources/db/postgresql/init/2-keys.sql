@@ -19,7 +19,7 @@ alter table ems.cfg_dbs add constraint uk_knjsj49986iis6p9nfvlrink6 unique (name
 alter table ems.cfg_dbs_properties add constraint pk_4hn9p4sx2tba0kn8c5m68bn5e primary key (db_id,value_,name);
 alter table ems.cfg_domains add constraint idx_domain unique (org_id,hostname);
 alter table ems.cfg_domains add constraint pk_endu524c1sjo6rfnwll8j7lgl primary key (id);
-alter table ems.cfg_envs add constraint idx_env unique (domain_id,name);
+alter table ems.cfg_envs add constraint idx_env unique (domain_id,code);
 alter table ems.cfg_envs add constraint pk_cfg_envs primary key (id);
 alter table ems.cfg_domains add constraint uk_4acqortg7kuo0b9i3cnefdct1 unique (name);
 alter table ems.cfg_domains add constraint uk_prodovqul9i18esekttaynh92 unique (hostname);
@@ -66,6 +66,8 @@ alter table ems.se_app_permissions add constraint pk_d4wk578yt4vxs2wsxqw6wi44r p
 alter table ems.se_data_permissions add constraint pk_n3ngio8x079e9p038kn9208we primary key (id);
 alter table ems.se_data_resources add constraint pk_m2lwng0xtvh944i0suv865sy primary key (id);
 alter table ems.se_func_permissions add constraint pk_2oifsqty75lclhgfdusglmk4d primary key (id);
+alter table ems.se_role_app_envs add constraint pk_role_app_envs primary key (id);
+alter table ems.se_role_app_envs add constraint idx_role_app_env unique (role_id,app_id,env_id);
 alter table ems.se_func_resources add constraint pk_glt9bssuurgayvpnxjupcsfqm primary key (id);
 alter table ems.se_menus add constraint pk_c3931pkfbpf3uerudht53n8sj primary key (id);
 alter table ems.se_menus_resources add constraint pk_gtyin0ge9irq6gy8qoupwbf3j primary key (menu_id,func_resource_id);

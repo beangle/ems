@@ -18,7 +18,7 @@
 package org.beangle.ems.core.security.service
 
 import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, RoleAppEnv}
 import org.beangle.ems.core.user.model.{Role, User}
 
 trait FuncPermissionService {
@@ -32,12 +32,16 @@ trait FuncPermissionService {
 
   def getPermissions(app: App, role: Role): Seq[FuncPermission]
 
+  /** 角色在应用上限定的场景；空表示不限制（全部场景） */
+  def getRoleAppEnvs(app: App, role: Role): Seq[RoleAppEnv]
+
   def activate(resourceId: Iterable[Int], active: Boolean): Unit
 
-  def authorize(app: App, role: Role, resources: Set[FuncResource]): Unit
-
-  /** 授权并设置各资源对应的业务场景 ID（空表示全部场景） */
-  def authorize(app: App, role: Role, resources: Set[FuncResource], resourceEnvIds: Map[Int, Iterable[Long]]): Unit
+  /**
+   * 授权功能资源，并设置场景限定。
+   * envIds 为空：不存储 RoleAppEnv（表示全部场景）；非空：每个 env 存一条。
+   */
+  def authorize(app: App, role: Role, resources: Set[FuncResource], envIds: Iterable[Long] = Nil): Unit
 
   def removeResources(entities: Iterable[FuncResource]): Unit
 

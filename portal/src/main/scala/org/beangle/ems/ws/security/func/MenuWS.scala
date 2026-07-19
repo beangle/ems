@@ -18,7 +18,8 @@
 package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
-import org.beangle.ems.core.config.model.AppType
+import org.beangle.data.dao.EntityDao
+import org.beangle.ems.core.config.model.{AppType, Env}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
@@ -34,6 +35,8 @@ class MenuWS extends ActionSupport {
   var appService: AppService = _
 
   var userService: UserService = _
+
+  var entityDao: EntityDao = _
 
   @response
   def index(@param("app") appName: String): collection.Seq[Any] = {
@@ -58,10 +61,11 @@ class MenuWS extends ActionSupport {
     val forDomain = getBoolean("forDomain", defaultValue = false)
     val appTypeId = getInt("appType.id", AppType.WebappId)
     val appType = new AppType(appTypeId, "appTypeName")
+    val env = getLong("profileId").map(id => entityDao.get(classOf[Env], id))
     app match {
       case Some(app) =>
         if (forDomain) {
-          menuService.getDomainMenus(u, appType, isEnName, getLong("profileId"))
+          menuService.getDomainMenus(u, appType, isEnName, env)
         } else {
           val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
           appProps.put("title", app.getTitle(isEnName))
@@ -73,7 +77,7 @@ class MenuWS extends ActionSupport {
           DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
         }
       case None =>
-        menuService.getDomainMenus(u, appType, isEnName, getLong("profileId"))
+        menuService.getDomainMenus(u, appType, isEnName, env)
     }
   }
 }

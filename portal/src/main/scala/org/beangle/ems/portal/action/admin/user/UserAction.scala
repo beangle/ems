@@ -24,7 +24,7 @@ import org.beangle.ems.app.log.WebBusinessLogger
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
-import org.beangle.ems.core.user.service.UserService
+import org.beangle.ems.core.user.service.{DimensionService, UserService}
 import org.beangle.ems.portal.helper.{UserDashboardHelper, UserPropertyExtractor}
 import org.beangle.security.Securities
 import org.beangle.security.authc.DBCredentialStore
@@ -50,6 +50,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   var credentialStore: DBCredentialStore = _
 
   var domainService: DomainService = _
+
+  var dimensionService: DimensionService = _
 
   var businessLogger: WebBusinessLogger = _
 
@@ -98,6 +100,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
         myMember.member = isMember
         myMember.granter = isGranter
         myMember.manager = isManager
+        if (isMember) myMember.setEnvIds(resolveMemberEnvIds(member.role))
+        else myMember.setEnvIds(Seq.empty)
         newMembers += myMember
       }
     }
@@ -287,6 +291,24 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)
     put("departs", entityDao.findBy(classOf[Depart], "org", domain.org))
+    put("envs", dimensionService.getEnvs())
+    val memberEnvIds = Collections.newMap[String, Seq[String]]
+    memberMap.foreach { case (role, m) =>
+      memberEnvIds.put(role.id.toString, m.envIdSet.map(_.toString).toSeq)
+    }
+    put("memberEnvIds", memberEnvIds)
+  }
+
+  /** 有提交的具体场景 id 则保存；否则为不区分场景。 */
+  private def resolveMemberEnvIds(role: Role): Seq[Long] = {
+    val selected = getLongIds("env" + role.id).distinct
+    println(("env" + role.id,selected))
+    if (selected.isEmpty) return Seq.empty
+    if (role.envs.isEmpty) selected
+    else {
+      val allowed = role.envs.map(_.id).toSet
+      selected.filter(allowed.contains)
+    }
   }
 
   override protected def configExport(context: ExportContext): Unit = {
@@ -306,6 +328,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   override def info(id: String): View = {
     val user = entityDao.get(classOf[User], id.toLong)
     put("user", user)
+    put("envById", dimensionService.getEnvs().map(e => e.id.toString -> e).toMap)
     forward()
   }
 

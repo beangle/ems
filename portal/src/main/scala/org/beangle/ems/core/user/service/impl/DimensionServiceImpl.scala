@@ -46,7 +46,12 @@ class DimensionServiceImpl extends DimensionService {
   override def getEnvs(): Seq[Env] = {
     val query = OqlBuilder.from(classOf[Env], "d")
       .where("d.domain=:domain", domainService.getDomain)
+      .orderBy("d.code")
       .cacheable()
     entityDao.search(query)
+  }
+
+  override def getEnv(id: Long): Env = {
+    entityDao.get(classOf[Env], id)
   }
 }

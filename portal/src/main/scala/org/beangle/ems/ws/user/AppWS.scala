@@ -54,7 +54,7 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
 
         val apps = Collections.newSet[App]
         apps ++= fpApps
-        
+
         var appBuffer = apps.toBuffer.sorted
         get("q") foreach { q =>
           appBuffer = appBuffer.filter(a => a.title.contains(q))

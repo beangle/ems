@@ -18,12 +18,16 @@
 package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.Named
+import org.beangle.data.model.pojo.{Coded, Named}
 
 /**
  * 该域下的业务场景
  */
-class Env extends LongId, Named {
+class Env extends LongId, Coded, Named {
 
   var domain: Domain = _
+
+  override def toString: String = {
+    if (null == code) name else s"$code $name"
+  }
 }

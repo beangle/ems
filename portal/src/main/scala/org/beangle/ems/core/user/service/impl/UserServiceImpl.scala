@@ -125,11 +125,12 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         val upQuery = OqlBuilder.from(classOf[EnvProfile], "up")
           .where("up.user=:user", user)
           .where("up.domain=:domain", domain)
+          .orderBy("up.env.code")
 
         val ups = entityDao.search(upQuery)
 
         if (ups.isEmpty) {
-          val envs = rs.flatMap(_.envs).toSet
+          val envs = rs.flatMap(_.envs).distinct.sortBy(_.code)
           account.profiles = Array.ofDim(envs.size)
           var i = 0
           envs foreach { env =>

@@ -23,7 +23,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.model.{App, Env}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
@@ -111,7 +111,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
       val appEnvs = resolveAppEnvs(app)
       put("allowAllEnv", allowAllEnv)
       put("appEnvs", appEnvs)
-      val (allEnvMode, selectedEnvIds) = resolveEnvSelection(allowAllEnv, appEnvs, permissions)
+      val (allEnvMode, selectedEnvIds) = resolveEnvSelection(allowAllEnv, appEnvs, funcPermissionService.getRoleAppEnvs(app, role))
       put("allEnvMode", allEnvMode)
       put("selectedEnvIds", selectedEnvIds)
       put("selectedEnvIdStrs", selectedEnvIds.map(_.toString).toSet)
@@ -170,36 +170,24 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
     if (app.envs.isEmpty) {
       entityDao.search(OqlBuilder.from(classOf[Env], "env")
         .where("env.domain=:domain", domainService.getDomain)
-        .orderBy("env.name"))
+        .orderBy("env.code"))
     } else {
-      app.envs.toSeq.sortBy(_.name)
+      app.envs.toSeq.sortBy(_.code)
     }
   }
 
   /**
-   * 回显场景选择。
-   * 应用无 envs 时可「全部场景」；应用有 envs 时必须指定，并保留已有权限 env.id（落在可选范围内）。
+   * 回显场景选择：读 RoleAppEnv；无记录表示全部场景。
    */
-  private def resolveEnvSelection(allowAllEnv: Boolean, appEnvs: Seq[Env], permissions: Seq[FuncPermission]): (Boolean, Set[Long]) = {
+  private def resolveEnvSelection(allowAllEnv: Boolean, appEnvs: Seq[Env], roleAppEnvs: Seq[RoleAppEnv]): (Boolean, Set[Long]) = {
     val allowedIds = appEnvs.map(_.id).toSet
+    val selected = roleAppEnvs.map(_.env.id).toSet.intersect(allowedIds)
     if (allowAllEnv) {
-      if (permissions.isEmpty || permissions.exists(_.envIds.isEmpty)) {
-        (true, Set.empty)
-      } else {
-        (false, permissions.flatMap(p => p.envIds.map(toLong)).filter(allowedIds.contains).toSet)
-      }
+      if (roleAppEnvs.isEmpty) (true, Set.empty)
+      else (false, selected)
     } else {
-      val selected = permissions.flatMap(p => p.envIds.map(toLong)).filter(allowedIds.contains).toSet
       val display = if (selected.nonEmpty) selected else allowedIds
       (false, display)
-    }
-  }
-
-  private def toLong(v: Any): Long = {
-    v match {
-      case n: Number => n.longValue
-      case s: String => Numbers.toLong(s)
-      case other => Numbers.toLong(other.toString)
     }
   }
 
@@ -241,9 +229,8 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
     resolveGlobalEnvIds(app) match {
       case Left(msg) =>
         return redirect(where, msg)
-      case Right(globalEnvIds) =>
-        val resourceEnvIds = newResources.map(r => r.id -> globalEnvIds).toMap
-        funcPermissionService.authorize(app, role, newResources, resourceEnvIds)
+      case Right(envIds) =>
+        funcPermissionService.authorize(app, role, newResources, envIds)
     }
 
     databus.publishUpdate(classOf[FuncPermission], Map("resource.app.name" -> app.name))
@@ -257,7 +244,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
   }
 
   /**
-   * 解析并校验全局场景。
+   * 解析并校验角色×应用的场景范围。
    * 应用 envs 为空才允许全部场景；否则必须在 app.envs 范围内至少选一个。
    */
   private def resolveGlobalEnvIds(app: App): Either[String, Seq[Long]] = {

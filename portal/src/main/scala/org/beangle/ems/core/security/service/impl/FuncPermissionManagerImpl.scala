@@ -18,10 +18,9 @@
 package org.beangle.ems.core.security.service.impl
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.json.JsonArray
 import org.beangle.data.dao.{EntityDao, Operation, OqlBuilder}
-import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
+import org.beangle.ems.core.config.model.{App, Env}
+import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.core.user.model.{Role, User}
 
@@ -31,7 +30,7 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
     val query = OqlBuilder.from(classOf[FuncResource], "r")
     query.where("r.name=:name and r.app=:app", name, app).cacheable()
     val rs = entityDao.search(query)
-    if (rs.isEmpty) None else Some(rs.head)
+    rs.headOption
   }
 
   def getResourceIdsByRole(roleId: Int): Set[Int] = {
@@ -52,7 +51,13 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
   }
 
   def getPermissions(app: App, role: Role): Seq[FuncPermission] = {
-    entityDao.search(OqlBuilder.from(classOf[FuncPermission], "fp").where("fp.resource.app=:app and fp.role=:role", app, role));
+    entityDao.search(OqlBuilder.from(classOf[FuncPermission], "fp").where("fp.resource.app=:app and fp.role=:role", app, role))
+  }
+
+  override def getRoleAppEnvs(app: App, role: Role): Seq[RoleAppEnv] = {
+    entityDao.search(OqlBuilder.from(classOf[RoleAppEnv], "rae")
+      .where("rae.app=:app and rae.role=:role", app, role)
+      .cacheable())
   }
 
   def activate(ids: Iterable[Int], active: Boolean): Unit = {
@@ -61,46 +66,43 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
     entityDao.saveOrUpdate(resources)
   }
 
-  def authorize(app: App, role: Role, resources: Set[FuncResource]): Unit = {
-    authorize(app, role, resources, Map.empty)
-  }
-
-  def authorize(app: App, role: Role, resources: Set[FuncResource], resourceEnvIds: Map[Int, Iterable[Long]]): Unit = {
+  def authorize(app: App, role: Role, resources: Set[FuncResource], envIds: Iterable[Long] = Nil): Unit = {
     val resourceSet = Collections.newSet[FuncResource] ++ resources
     val permissions = getPermissions(app, role).toBuffer
     val builder = new Operation.Builder()
     for (au <- permissions) {
       if (resources.contains(au.resource)) {
         resourceSet.remove(au.resource)
-        au.envIds = toEnvIds(resourceEnvIds.getOrElse(au.resource.id, Nil))
-        builder.saveOrUpdate(au)
       } else {
         builder.remove(au)
       }
     }
 
     for (resource <- resourceSet) {
-      val authority = new FuncPermission(role, resource)
-      authority.envIds = toEnvIds(resourceEnvIds.getOrElse(resource.id, Nil))
-      builder.saveOrUpdate(authority)
+      builder.saveOrUpdate(new FuncPermission(role, resource))
     }
+
+    // 场景：与目标 envIds 对比后增量增删；目标为空表示全部场景（不落库）
+    val exists = getRoleAppEnvs(app, role)
+    val targetIds = if (resources.isEmpty) Set.empty[Long] else envIds.toSet
+    val existByEnvId = exists.map(e => e.env.id -> e).toMap
+    (existByEnvId.keySet -- targetIds).foreach { id => builder.remove(existByEnvId(id)) }
+    val toAdd = targetIds -- existByEnvId.keySet
+    if (toAdd.nonEmpty) {
+      entityDao.find(classOf[Env], toAdd).foreach { env =>
+        builder.saveOrUpdate(new RoleAppEnv(role, app, env))
+      }
+    }
+
     entityDao.execute(builder)
   }
 
-  private def toEnvIds(ids: Iterable[Long]): JsonArray = {
-    val arr = new JsonArray()
-    ids.foreach(id => arr.add(Long.box(id)))
-    arr
-  }
-
   override def removeResources(resources: Iterable[FuncResource]): Unit = {
-    //删除相关表
     val menuBuilder2 = OqlBuilder.from(classOf[Menu], "m").join("m.resources", "r")
     val menus2 = entityDao.search(menuBuilder2)
     menus2 foreach (m => m.resources --= resources)
     entityDao.saveOrUpdate(menus2)
 
-    //重置依次作为入口的菜单
     val menuBuilder = OqlBuilder.from(classOf[Menu], "m").
       where("m.entry in(:entries)", resources)
     val menus = entityDao.search(menuBuilder)

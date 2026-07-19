@@ -21,7 +21,7 @@
     [@b.col width="8%" property="group.title" title="分组"/]
     [@b.col width="8%" property="appType.title" title="类型"/]
     [@b.col width="12%" title="业务场景"]
-      [#if app.envs?size>0][#list app.envs as env]${env.name}[#sep]&nbsp;[/#list][#else]--[/#if]
+      [#if app.envs?size>0][#list app.envs as env]${env.code} ${env.name}[#sep]&nbsp;[/#list][#else]--[/#if]
     [/@]
     [@b.col width="12%" title="数据源" ]
       [#list app.datasources as  ds]<span title="${ds.db.serverName!} ${ds.db.databaseName!}">${ds.name}(${ds.maximumPoolSize})</span>[/#list]

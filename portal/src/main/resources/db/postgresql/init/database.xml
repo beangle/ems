@@ -864,6 +864,7 @@
         <table name="usr_role_members" comment="角色成员">
           <columns>
             <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="env_ids" type="jsonb" comment="适用场景ID列表"/>
             <column name="is_granter" type="boolean" nullable="false" comment="可授权"/>
             <column name="is_manager" type="boolean" nullable="false" comment="可管理"/>
             <column name="is_member" type="boolean" nullable="false" comment="成员"/>
