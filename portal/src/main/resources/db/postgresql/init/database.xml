@@ -78,6 +78,7 @@
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
             <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
+            <column name="env_ids" type="jsonb" comment="适用场景ID列表"/>
             <column name="group_id" type="integer" nullable="false" comment="应用分组ID"/>
             <column name="indexno" type="varchar(50)" nullable="false" comment="排序索引号"/>
             <column name="logo_url" type="varchar(255)" comment="应用LOGO"/>
@@ -890,6 +891,7 @@
             <column name="creator_id" type="bigint" nullable="false" comment="用户ID"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
+            <column name="env_ids" type="jsonb" comment="适用场景ID列表"/>
             <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
             <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
             <column name="parent_id" type="integer" comment="角色ID"/>

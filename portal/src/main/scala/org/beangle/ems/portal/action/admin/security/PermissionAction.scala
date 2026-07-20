@@ -107,7 +107,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
       put("roleMenus", roleMenus.toSet)
       put("roleResources", roleResources)
 
-      val allowAllEnv = app.envs.isEmpty
+      val allowAllEnv = app.envIds.isEmpty
       val appEnvs = resolveAppEnvs(app)
       put("allowAllEnv", allowAllEnv)
       put("appEnvs", appEnvs)
@@ -152,27 +152,27 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
    * 任一方场景为空则仍展示（空表示不限制）。
    */
   private def filterAppsByRoleEnvs(apps: Seq[App], role: Role): Seq[App] = {
-    val roleEnvIds = role.envs.map(_.id)
+    val roleEnvIds = role.envIdSet
     if (roleEnvIds.isEmpty) {
       apps
     } else {
       apps.filter { app =>
-        val appEnvIds = app.envs.map(_.id)
+        val appEnvIds = app.envIdSet
         appEnvIds.isEmpty || appEnvIds.exists(roleEnvIds.contains)
       }
     }
   }
 
   /**
-   * 可选场景列表：应用配置了 envs 则仅这些；否则为域下全部（供「指定场景」使用）。
+   * 可选场景列表：应用配置了 envIds 则仅这些；否则为域下全部（供「指定场景」使用）。
    */
   private def resolveAppEnvs(app: App): Seq[Env] = {
-    if (app.envs.isEmpty) {
+    if (app.envIds.isEmpty) {
       entityDao.search(OqlBuilder.from(classOf[Env], "env")
         .where("env.domain=:domain", domainService.getDomain)
         .orderBy("env.code"))
     } else {
-      app.envs.toSeq.sortBy(_.code)
+      entityDao.find(classOf[Env], app.envIdSet).sortBy(_.code)
     }
   }
 
@@ -245,10 +245,10 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
 
   /**
    * 解析并校验角色×应用的场景范围。
-   * 应用 envs 为空才允许全部场景；否则必须在 app.envs 范围内至少选一个。
+   * 应用 envIds 为空才允许全部场景；否则必须在 app.envIds 范围内至少选一个。
    */
   private def resolveGlobalEnvIds(app: App): Either[String, Seq[Long]] = {
-    val allowedIds = app.envs.map(_.id).toSet
+    val allowedIds = app.envIdSet
     if (allowedIds.isEmpty) {
       val envScope = get("envScope", "all")
       if (envScope == "specific") {

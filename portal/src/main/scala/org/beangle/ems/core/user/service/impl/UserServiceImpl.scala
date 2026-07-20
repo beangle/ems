@@ -21,7 +21,7 @@ import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
-import org.beangle.ems.core.config.model.Domain
+import org.beangle.ems.core.config.model.{Domain, Env}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.model.MemberShip.{Granter, Manager, Member}
@@ -130,7 +130,8 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         val ups = entityDao.search(upQuery)
 
         if (ups.isEmpty) {
-          val envs = rs.flatMap(_.envs).distinct.sortBy(_.code)
+          val envIds = rs.flatMap(_.envIdSet).toSet
+          val envs = entityDao.find(classOf[Env], envIds).sortBy(_.code)
           account.profiles = Array.ofDim(envs.size)
           var i = 0
           envs foreach { env =>

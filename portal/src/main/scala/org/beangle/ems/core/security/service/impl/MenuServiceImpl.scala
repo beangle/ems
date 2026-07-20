@@ -50,7 +50,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     //去重后返回
     env match {
       case None => roles.toSet.toSeq
-      case Some(e) => roles.toSet.filter(r => r.envs.isEmpty || r.envs.contains(e)).toSeq
+      case Some(e) => roles.toSet.filter(_.suitable(e)).toSeq
     }
   }
 
@@ -64,6 +64,17 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   def getTopMenus(app: App, role: Role): collection.Seq[Menu] = {
     getTopMenus(Some(app), app.appType, List(role), None)
+  }
+
+  /**
+   * 指定场景下域内可用的应用：未配置 envs 表示不限制；有配置则须包含该 env。
+   */
+  private def findAvailableApps(appType: AppType, env: Env): Seq[App] = {
+    val apps = entityDao.search(OqlBuilder.from(classOf[App], "app")
+      .where("app.domain=:domain and app.enabled=true and app.appType=:appType",
+        domainService.getDomain, appType)
+      .cacheable())
+    apps.filter(_.suitable(env))
   }
 
   /**
@@ -86,6 +97,16 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   }
 
   private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role], env: Option[Env]): collection.Seq[Menu] = {
+    // 已指定应用时直接 suitable，避免全量 findAvailableApps
+    val availableApps: Option[Seq[App]] = (app, env) match {
+      case (Some(p), Some(e)) =>
+        if (!p.suitable(e)) return Nil else None
+      case (None, Some(e)) =>
+        val apps = findAvailableApps(appType, e)
+        if (apps.isEmpty) return Nil else Some(apps)
+      case _ => None
+    }
+
     val menuSet = Collections.newSet[Menu]
     val unavailableByRole = env.map(e => findUnavailableApps(roles, e)).getOrElse(Map.empty)
     roles foreach { role =>
@@ -95,12 +116,15 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         .where("fp.resource=menu.entry")
         .select("menu")
 
-      app foreach { p => query.where("menu.app=:app", p) }
+      app match {
+        case Some(p) => query.where("menu.app=:app", p)
+        case None =>
+          availableApps.foreach { apps =>
+            query.where("menu.app in (:availableApps)", apps)
+          }
+      }
       query.where("menu.app.appType=:appType", appType)
       query.where("menu.app.domain =:domain and menu.app.enabled=true", domainService.getDomain)
-      env foreach { e =>
-        query.where("size(menu.app.envs)=0 or exists(from menu.app.envs as env where env.id=:envId)", e.id)
-      }
       unavailableByRole.get(role).filter(_.nonEmpty).foreach { apps =>
         query.where("menu.app not in (:unavailableApps)", apps)
       }

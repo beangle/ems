@@ -41,12 +41,26 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
     val app = getModel(id.toInt)
     put("app", app)
     put("roles", findAuthorizedRoles(app))
+    putEnvById()
     forward()
+  }
+
+  override def search(): View = {
+    putEnvById()
+    super.search()
   }
 
   protected override def indexSetting(): Unit = {
     put("groups", appService.getGroups)
     put("appTypes", entityDao.getAll(classOf[AppType]))
+  }
+
+  private def putEnvById(): Unit = {
+    val envs = entityDao.search(OqlBuilder.from(classOf[Env], "env")
+      .where("env.domain=:domain", domainService.getDomain)
+      .orderBy("env.code"))
+    put("envs", envs)
+    put("envById", envs.map(e => e.id.toString -> e).toMap)
   }
 
   protected override def editSetting(entity: App): Unit = {
@@ -61,6 +75,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
     put("envs", entityDao.search(OqlBuilder.from(classOf[Env], "env")
       .where("env.domain=:domain", domainService.getDomain)
       .orderBy("env.code")))
+    put("selectedEnvs", entityDao.find(classOf[Env], entity.envIdSet))
   }
 
   /** 查询拥有该应用功能资源授权的角色 */
@@ -101,8 +116,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
       }
 
       val envs = entityDao.find(classOf[Env], getLongIds("env"))
-      app.envs.clear()
-      app.envs.addAll(envs)
+      app.setEnvIds(envs.map(_.id))
 
       saveOrUpdate(app)
 

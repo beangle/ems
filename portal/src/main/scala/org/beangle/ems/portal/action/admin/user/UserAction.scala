@@ -22,6 +22,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.{Condition, Operation, OqlBuilder}
 import org.beangle.ems.app.log.WebBusinessLogger
 import org.beangle.ems.app.{Ems, EmsApp}
+import org.beangle.ems.core.config.model.Env
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.{DimensionService, UserService}
@@ -76,6 +77,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     val removedMembers = Collections.newBuffer[RoleMember]
     val manager = loginUser
     val isAdmin = userService.isRoot(manager)
+    val profileEnvIds = loadUserProfileEnvIds(user)
     //查找用户可以授权的角色
     val members =
       if (isAdmin) {
@@ -100,7 +102,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
         myMember.member = isMember
         myMember.granter = isGranter
         myMember.manager = isManager
-        if (isMember) myMember.setEnvIds(resolveMemberEnvIds(member.role))
+        if (isMember) myMember.setEnvIds(resolveMemberEnvIds(member.role, profileEnvIds))
         else myMember.setEnvIds(Seq.empty)
         newMembers += myMember
       }
@@ -291,7 +293,15 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     put("memberMap", memberMap)
     put("mngMemberMap", mngMemberMap)
     put("departs", entityDao.findBy(classOf[Depart], "org", domain.org))
-    put("envs", dimensionService.getEnvs())
+    val domainEnvs = dimensionService.getEnvs().sortBy(_.code)
+    put("envs", domainEnvs)
+    put("envById", domainEnvs.map(e => e.id.toString -> e).toMap)
+    val profileEnvIds = loadUserProfileEnvIds(user)
+    val roleChoiceEnvs = Collections.newMap[String, Seq[Env]]
+    roles.foreach { role =>
+      roleChoiceEnvs.put(role.id.toString, resolveRoleChoiceEnvs(role, profileEnvIds, domainEnvs))
+    }
+    put("roleChoiceEnvs", roleChoiceEnvs)
     val memberEnvIds = Collections.newMap[String, Seq[String]]
     memberMap.foreach { case (role, m) =>
       memberEnvIds.put(role.id.toString, m.envIdSet.map(_.toString).toSeq)
@@ -299,16 +309,38 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     put("memberEnvIds", memberEnvIds)
   }
 
-  /** 有提交的具体场景 id 则保存；否则为不区分场景。 */
-  private def resolveMemberEnvIds(role: Role): Seq[Long] = {
-    val selected = getLongIds("env" + role.id).distinct
-    println(("env" + role.id,selected))
-    if (selected.isEmpty) return Seq.empty
-    if (role.envs.isEmpty) selected
-    else {
-      val allowed = role.envs.map(_.id).toSet
-      selected.filter(allowed.contains)
+  /** 用户在当前域下 EnvProfile 中的场景；无配置则视为不限制（与账号 profile 回退一致）。 */
+  private def loadUserProfileEnvIds(user: User): Option[Set[Long]] = {
+    val ids = entityDao.search(
+      OqlBuilder.from(classOf[EnvProfile], "up")
+        .where("up.user=:user and up.domain=:domain", user, domainService.getDomain)
+    ).map(_.env.id).toSet
+    if (ids.isEmpty) None else Some(ids)
+  }
+
+  /** 可选场景 = 用户数据权限场景 ∩ 角色 envIds（任一侧空表示不限制）。 */
+  private def resolveRoleChoiceEnvIds(role: Role, profileEnvIds: Option[Set[Long]], domainEnvIds: Set[Long]): Set[Long] = {
+    val roleIds = role.envIdSet
+    (profileEnvIds, roleIds.isEmpty) match {
+      case (None, true) => domainEnvIds
+      case (None, false) => roleIds
+      case (Some(p), true) => p.intersect(domainEnvIds)
+      case (Some(p), false) => p.intersect(roleIds)
     }
+  }
+
+  private def resolveRoleChoiceEnvs(role: Role, profileEnvIds: Option[Set[Long]], domainEnvs: Seq[Env]): Seq[Env] = {
+    val allowed = resolveRoleChoiceEnvIds(role, profileEnvIds, domainEnvs.map(_.id).toSet)
+    domainEnvs.filter(e => allowed.contains(e.id))
+  }
+
+  /** 有提交的具体场景 id 则保存；否则为不区分场景。仅允许数据权限与角色场景的交集。 */
+  private def resolveMemberEnvIds(role: Role, profileEnvIds: Option[Set[Long]]): Seq[Long] = {
+    val selected = getLongIds("env" + role.id).distinct
+    if (selected.isEmpty) return Seq.empty
+    val domainEnvIds = dimensionService.getEnvs().map(_.id).toSet
+    val allowed = resolveRoleChoiceEnvIds(role, profileEnvIds, domainEnvIds)
+    selected.filter(allowed.contains)
   }
 
   override protected def configExport(context: ExportContext): Unit = {

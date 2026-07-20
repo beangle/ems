@@ -106,10 +106,10 @@
 [#if showEnvPanel]
 [#assign allEnvMode=allEnvMode!allowAllEnv /]
 [#assign selectedEnvIdStrs=selectedEnvIdStrs![] /]
-<div id="envPanel" style="margin:6px 0;padding:6px 8px;background:#f7f7f7;border:1px solid #e5e5e5;">
+<div id="envPanel" style="margin:6px 0;padding:6px 0;">
   <strong>业务场景：</strong>
   [#if allowAllEnv]
-  <label style="margin-bottom:0;margin-right:10px;"><input type="radio" name="envScope" value="all" [#if allEnvMode]checked="checked"[/#if] onclick="toggleEnvScope()"/> 全部场景</label>
+  <label style="margin-bottom:0;margin-right:10px;"><input type="radio" name="envScope" value="all" [#if allEnvMode]checked="checked"[/#if] onclick="toggleEnvScope()"/> 不限场景</label>
   <label style="margin-bottom:0;margin-right:10px;"><input type="radio" name="envScope" value="specific" [#if !allEnvMode]checked="checked"[/#if] onclick="toggleEnvScope()"/> 指定场景</label>
   [#else]
   <input type="hidden" name="envScope" value="specific"/>
@@ -119,7 +119,7 @@
     [#assign envChecked=selectedEnvIdStrs?seq_contains(env.id?string) /]
     [#-- 应用限定场景且尚无选中时，默认全选，方便通过「至少选一个」校验 --]
     [#if !allowAllEnv && selectedEnvIdStrs?size==0][#assign envChecked=true /][/#if]
-    <label style="margin-bottom:0;margin-right:10px;"><input type="checkbox" class="env-choice" name="env.id" value="${env.id}" [#if envChecked]checked="checked"[/#if] [#if allowAllEnv && allEnvMode]disabled="disabled"[/#if]/> ${env.code} ${env.name}</label>
+    <label style="margin-bottom:0;margin-right:10px;"><input type="checkbox" class="env-choice" name="env.id" value="${env.id}" [#if envChecked]checked="checked"[/#if] [#if allowAllEnv && allEnvMode]disabled="disabled"[/#if]/> ${env.name}</label>
     [/#list]
   </span>
 </div>

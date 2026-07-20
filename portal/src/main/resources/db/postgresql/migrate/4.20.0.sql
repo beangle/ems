@@ -1,4 +1,3 @@
-alter table ems.usr_roles drop column if exists env_ids;
 alter table ems.usr_role_members add column if not exists env_ids jsonb;
 
 alter table ems.usr_profiles rename to usr_env_profiles;
@@ -79,15 +78,10 @@ FROM parsed
 
 drop table ems.usr_profiles_properties;
 
-create table ems.usr_roles_envs (role_id integer not null, env_id bigint not null);
-create table ems.cfg_apps_envs (app_id integer not null, env_id bigint not null);
+alter table ems.cfg_apps add column if not exists env_ids jsonb;
+alter table ems.usr_roles add column if not exists env_ids jsonb;
 
 create table ems.se_role_app_envs (id bigint not null, role_id integer not null, app_id integer not null, env_id bigint not null);
-alter table ems.se_role_app_envs add constraint pk_role_app_envs primary key (id);
-alter table ems.se_role_app_envs add constraint idx_role_app_env unique (role_id, app_id, env_id);
-alter table ems.se_role_app_envs add constraint fk_role_app_env_role foreign key (role_id) references ems.usr_roles (id);
-alter table ems.se_role_app_envs add constraint fk_role_app_env_app foreign key (app_id) references ems.cfg_apps (id);
-alter table ems.se_role_app_envs add constraint fk_role_app_env_env foreign key (env_id) references ems.cfg_envs (id);
 
 alter table ems.usr_roots add domain_id int4;
 update ems.usr_roots r set domain_id=(select app.domain_id from ems.cfg_apps app where app.id=r.app_id);

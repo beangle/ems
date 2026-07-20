@@ -66,42 +66,41 @@
       return true;
     }
   </script>
+  <div class="container" style="margin-left:10px;">
   [@b.form name="memberForm" action="!saveRole" class="listform" theme="list" onsubmit="return prepareMemberEnvSubmit(this)"]
-    [@b.grid items=roles?sort_by("indexno") var="role" sortable="false"]
+    [@b.grid items=roles?sort_by("indexno") var="role" sortable="false" theme="mini"]
       [@b.row]
         <tr [#if role??]id="${role.indexno}"[/#if]>
-        [@b.col title="common.index" width="4%"]${role_index+1}[/@]
-        [@b.treecol title="角色" property="name" width="22%"]
+        [@b.col title="common.index" width="40px"]${role_index+1}[/@]
+        [@b.treecol title="角色" property="name" width="400px"]
           <span [#if !role.enabled]class="ui-disabled" title="${b.text('action.freeze')}"[/#if]>
           ${role.indexno} ${role.name}[#if !role.enabled] (禁用)[/#if]
           </span>
         [/@]
-        [@b.col title="成员" width="7%"]
+        [@b.col title="成员" width="60px"]
           [#assign displayMember=(role.enabled && mngMemberMap.get(role).granter)/]
           [#assign isMemberChecked=(memberMap.get(role).member)!false /]
           <input type="checkbox" class="security_member" data-role="${role.id}" [#if !displayMember]style="display:none"[/#if] name="member${role.id}" [#if isMemberChecked]checked="checked"[/#if] onclick="toggleMemberEnvPanel(this)"/>
           [#if !displayMember && isMemberChecked]&radic;[/#if]
         [/@]
-        [@b.col title="可授权" width="7%"]
+        [@b.col title="可授权" width="60px"]
           [#assign displayGranter=(role.enabled && mngMemberMap.get(role).granter)/]
           <input type="checkbox" name="granter${role.id}" [#if !displayGranter]style="display:none"[/#if] ${(memberMap.get(role).granter)?default(false)?string('checked="checked"','')}/>
           [#if !displayGranter && (memberMap.get(role).granter)!false]&radic;[/#if]
         [/@]
-        [@b.col title="可管理" width="7%"]
+        [@b.col title="可管理" width="60px"]
           [#assign displayManager=(role.enabled && mngMemberMap.get(role).manager)/]
           <input type="checkbox" name="manager${role.id}" [#if !displayManager]style="display:none"[/#if] ${(memberMap.get(role).manager)?default(false)?string('checked="checked"','')}/>
           [#if !displayManager && (memberMap.get(role).manager)!false]&radic;[/#if]
         [/@]
-        [@b.col title="业务场景" width="35%"]
+        [@b.col title="业务场景" ]
           [#assign canEditEnv=(role.enabled && (mngMemberMap.get(role).granter || mngMemberMap.get(role).manager)) /]
-          [#if role.envs?size>0]
-            [#assign choiceEnvs=role.envs?sort_by("code") /]
-          [#else]
-            [#assign choiceEnvs=envs /]
-          [/#if]
+          [#assign choiceEnvs=(roleChoiceEnvs.get(role.id?string))![] /]
           [#assign selectedEnvIds=(memberEnvIds.get(role.id?string))![] /]
           [#assign allEnvMode=(selectedEnvIds?size==0) /]
-          [#if envs?size<=1]
+          [#if choiceEnvs?size==0]
+            <span id="envPanel${role.id}" [#if !isMemberChecked]style="display:none"[/#if] class="text-muted">无可用场景</span>
+          [#elseif choiceEnvs?size<=1]
             <span id="envPanel${role.id}" [#if !isMemberChecked]style="display:none"[/#if]>
               [#list choiceEnvs as env]${env.name}[#sep]、[/#list]
             </span>
@@ -126,15 +125,15 @@
             [/#if]
           [/#if]
         [/@]
-        [@b.col title="common.updatedAt" width="12%"]${(memberMap.get(role).updatedAt)!}[/@]
         </tr>
       [/@]
     [/@]
     [@b.formfoot]
        <input type="hidden" name="user.id" value="${user.id!}" />
         [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
-      [/@]
+    [/@]
   [/@]
+  </div>
 [/@]
   [#if user.persisted]
   [@b.tab label="全局数据权限" ]

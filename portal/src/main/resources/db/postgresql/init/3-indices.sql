@@ -1,5 +1,4 @@
 create index idx_hoy2tgjrxebjvagxqmx2si8ni on ems.cfg_data_sources (app_id);
-create index idx_apps_envs_app on ems.cfg_apps_envs (app_id);
 create index idx_pgw44gaecxm9xuoof339kk0lk on ems.cfg_dbs_properties (db_id);
 create index idx_opepxkjkhbladb0xpr1872yea on ems.cfg_portalets_categories (portalet_id);
 create index idx_a9rxcvrr8vs3dxx35pdq68s52 on ems.cfg_rule_param_metas (rule_meta_id);
@@ -34,5 +33,4 @@ create index idx_1jhdyxjnm417qgm96nwuinixt on ems.usr_profiles_properties (profi
 create index idx_kkhkte6jpxqrhc34y496ujdeg on ems.usr_role_members (role_id);
 create index idx_role_member_user on ems.usr_role_members (user_id);
 create index idx_ovw4p7sme2a30wkyoo7deyelo on ems.usr_roles (parent_id);
-create index idx_roles_envs_role on ems.usr_roles_envs (role_id);
 create index idx_owjdmrm6x6pqepg35o33y7bti on ems.usr_roles_properties (role_id);

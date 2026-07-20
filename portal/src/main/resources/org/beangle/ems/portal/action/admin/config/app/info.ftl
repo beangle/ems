@@ -24,7 +24,7 @@
   </tr>
   <tr>
     <td class="title">业务场景</td>
-    <td colspan="3">[#if app.envs?size>0][#list app.envs as env]${env.code} ${env.name}[#sep]、[/#list][#else]--[/#if]</td>
+    <td colspan="3">[#if app.envIds?size>0][#list app.envIds as eid][#assign e=envById.get(eid?string)! /][#if e??]${e.name}[#else]${eid}[/#if][#sep]、[/#list][#else]--[/#if]</td>
   </tr>
   <tr>
     <td class="title">授权角色</td>

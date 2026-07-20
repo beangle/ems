@@ -17,23 +17,20 @@
 
 package org.beangle.ems.core.user.model
 
-import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.{Numbers, Strings}
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.*
-import org.beangle.ems.core.config.model.{Domain, Env}
+import org.beangle.ems.core.config.model.{Domain, HasEnvIds}
 
 import java.security.Principal
-import scala.collection.mutable
 
 /**
  * @author chaostone
  */
-class Role extends IntId, Named, Updatable, Enabled, Hierarchical[Role], Principal, Remark {
+class Role extends IntId, Named, Updatable, Enabled, Hierarchical[Role], Principal, Remark, HasEnvIds {
   var creator: User = _
   var members: collection.mutable.Seq[RoleMember] = new collection.mutable.ListBuffer[RoleMember]
   var domain: Domain = _
-  var envs: mutable.Set[Env] = Collections.newSet
 
   override def getName: String = {
     name

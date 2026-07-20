@@ -54,10 +54,22 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     put("isRoot", SecurityContext.get.isRoot)
   }
 
+  override def search(): View = {
+    putEnvById()
+    super.search()
+  }
+
+  private def putEnvById(): Unit = {
+    val envs = dimensionService.getEnvs()
+    put("envs", envs)
+    put("envById", envs.map(e => e.id.toString -> e).toMap)
+  }
+
   @mapping(value = "{id}")
   override def info(@param("id") id: String): View = {
     val role = getModel(id)
     put("role", role)
+    putEnvById()
     val raes = entityDao.search(OqlBuilder.from(classOf[RoleAppEnv], "rae")
       .where("rae.role=:role", role)
       .orderBy("rae.app.indexno,rae.app.name,rae.env.code"))
@@ -98,6 +110,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
     parents --= Hierarchicals.getFamily(role)
     put("parents", parents)
     put("envs", dimensionService.getEnvs())
+    put("selectedEnvs", entityDao.find(classOf[Env], role.envIdSet))
 
     if (!role.persisted) {
       role.enabled = true
@@ -126,8 +139,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
       return redirect("edit", "error.notUnique")
 
     val envs = entityDao.find(classOf[Env], getLongIds("env"))
-    role.envs.clear()
-    role.envs.addAll(envs)
+    role.setEnvIds(envs.map(_.id))
 
     if (!role.persisted) {
       role.indexno = "tmp"
