@@ -34,9 +34,6 @@ export const menuProto = {
      */
     collectApps: function() {
       var shellAppBase = this.app.base;
-      if (!this.portal.base && this.portal.url) {
-        this.portal.base = this.portal.url;
-      }
       for (var p = 0; p < this.groupMenus.length; p++) {
         var childrenApps = this.groupMenus[p].appMenus;
         var group = this.groupMenus[p].group;
@@ -71,12 +68,6 @@ export const menuProto = {
             app.base = app.base.substring(0, app.base.length - 1);
           }
           app.base = this.processUrl(app.base || shellAppBase);
-          if (app.navStyle == NAV_OPENMODE_WUJIE) {
-            app.openMode = NAV_OPENMODE_WUJIE;
-          } else {
-            app.openMode = NAV_OPENMODE_IFRAME;
-          }
-          app.embeddable = sameDomain(shellAppBase, app.base);
         }
       }
       if (shellAppBase) {
@@ -107,10 +98,10 @@ export const menuProto = {
       for (var j = 0; j < menus.length; j++) {
         if (results.length >= limit) return;
         var menu = menus[j];
-        if (menu.entry && (menu.title.includes(name) || menu.entry.toLowerCase().includes(name))) {
+        if (menu.route && (menu.title.includes(name) || menu.route.toLowerCase().includes(name))) {
           var resultPath = path.slice();
           resultPath.push(menu.title);
-          var result = { "name": menu.title, "link": menu.entry, "path": resultPath, "target": menu.target, "openMode": menu.openMode || NAV_OPENMODE_IFRAME, "navGroupAttr": this.formatNavGroupAttr(menu.navAppId, menu.navGroupId) };
+          var result = { "name": menu.title, "link": menu.route, "path": resultPath, "target": menu.target, "openMode": menu.openMode || NAV_OPENMODE_IFRAME, "navGroupAttr": this.formatNavGroupAttr(menu.navAppId, menu.navGroupId) };
           results.push(result);
           if (results.length >= limit) break;
         } else {
@@ -139,12 +130,12 @@ export const menuProto = {
       var urlPath = this.navUrlToPath(url);
       for (var j = 0; j < menus.length; j++) {
         menu = menus[j];
-        if (menu.entry) {
-          if (url.startsWith(menu.entry)) {
+        if (menu.route) {
+          if (url.startsWith(menu.route)) {
             return menu;
           }
-          var entryPath = this.navUrlToPath(menu.entry);
-          if (entryPath !== "" && urlPath.startsWith(entryPath)) {
+          var routePath = this.navUrlToPath(menu.route);
+          if (routePath !== "" && urlPath.startsWith(routePath)) {
             return menu;
           }
         }
@@ -186,16 +177,16 @@ export const menuProto = {
       }
       for (var i = 0; i < menus.length; i++) {
         var menu = menus[i];
-        if (menu.entry) {
+        if (menu.route) {
           menu.navGroupId = navGroupId;
           menu.navAppId = app.id;
         }
-        if (menu.entry && !menu.entry.startsWith("http")) {
-          if (app.embeddable) menu.target = "main";
+        if (menu.route && !menu.route.startsWith("http")) {
+          if (sameDomain(this.app.base, app.base)) menu.target = "main";
           else menu.target = "_blank";
-          menu.entry = this.processUrl(app.base + menu.entry);
-          this.normalizeMenuOpenMode(menu, app.openMode);
-        } else if (menu.entry) {
+          menu.route = this.processUrl(app.base + menu.route);
+          this.normalizeMenuOpenMode(menu, app.embedMode == NAV_OPENMODE_WUJIE ? NAV_OPENMODE_WUJIE : NAV_OPENMODE_IFRAME);
+        } else if (menu.route) {
           this.normalizeMenuOpenMode(menu, NAV_OPENMODE_IFRAME);
         }
         if (menu.children) this.processMenuEntry(app, menu.children, navGroupId);
@@ -211,10 +202,10 @@ export const menuProto = {
       var menuItem = "";
       for (var i = 0; i < menus.length; i++) {
         var menu = menus[i];
-        var fonticon = "fa fa-list";
+        var iconClass = "fa fa-list";
         if (menu.menus) {
           var appItem = this.appFoldTemplate.replace("{app.id}", menu.app.id);
-          appItem = appItem.replace("{icon_class}", fonticon);
+          appItem = appItem.replace("{icon_class}", iconClass);
           appItem = appItem.replace("{app.title}", menu.app.title);
           appItem = appItem.replace("{open_class}", openMenuId == menu.app.id ? "menu-open" : "");
           appItem = appItem.replace("{active_class}", openMenuId == menu.app.id ? "active" : "");
@@ -222,8 +213,8 @@ export const menuProto = {
           this.createMenus(jQuery("#menu_app" + menu.app.id), menu.menus);
         } else if (menu.children) {
           menuItem = this.foldTemplate.replace("{menu.id}", menu.id);
-          if (menu.fonticon) fonticon = menu.fonticon;
-          menuItem = menuItem.replace("{icon_class}", fonticon);
+          if (menu.icon) iconClass = menu.icon;
+          menuItem = menuItem.replace("{icon_class}", iconClass);
           menuItem = menuItem.replace("{menu.title}", menu.title);
           menuItem = menuItem.replace("{open_class}", openMenuId == menu.id ? "menu-open" : "");
           menuItem = menuItem.replace("{active_class}", openMenuId == menu.id ? "active" : "");
@@ -231,13 +222,13 @@ export const menuProto = {
           this.createMenus(jQuery("#menu" + menu.id), menu.children);
         } else {
           menuItem = this.menuTempalte.replace("{menu.title}", menu.title);
-          if (menu.fonticon) {
-            fonticon = menu.fonticon;
+          if (menu.icon) {
+            iconClass = menu.icon;
           } else {
-            fonticon = this.getIconClass(menu.title);
+            iconClass = this.getIconClass(menu.title);
           }
-          menuItem = menuItem.replace("{icon_class}", fonticon);
-          menuItem = menuItem.replace("{menu.entry}", menu.entry);
+          menuItem = menuItem.replace("{icon_class}", iconClass);
+          menuItem = menuItem.replace("{menu.route}", menu.route);
           menuItem = menuItem.replace(/\{menu\.target\}/g, menu.target);
           menuItem = menuItem.replace("{menu.openMode}", menu.openMode ? String(menu.openMode) : NAV_OPENMODE_IFRAME);
           menuItem = menuItem.replace("{menu.navGroupAttr}", this.formatNavGroupAttr(menu.navAppId, menu.navGroupId));
@@ -421,8 +412,8 @@ export const menuProto = {
           break;
         }
       }
-      if (menuObj && menuObj.entry) {
-        var menu = jQuery('#main_siderbar a[href="' + menuObj.entry + '"]');
+      if (menuObj && menuObj.route) {
+        var menu = jQuery('#main_siderbar a[href="' + menuObj.route + '"]');
         menu.parents("li").each(function(i2, li) {
           jQuery(li).addClass("menu-open");
           jQuery(li).siblings().each(

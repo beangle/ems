@@ -24,12 +24,13 @@ import org.beangle.ems.core.config.model.App
 import scala.collection.mutable
 
 class Menu extends IntId, Named, Enabled, Hierarchical[Menu], Remark {
-  var app: App = _
+  var channel: Channel = _
   var enName: String = _
-  var entry: Option[FuncResource] = None
-  var params: Option[String] = None
-  var fonticon: Option[String] = None
+  var route: Option[String] = None
+  var icon: Option[String] = None
   var resources: mutable.Set[FuncResource] = new mutable.HashSet[FuncResource]
+
+  def app: App = channel.app
 
   def description: String = {
     indexno + " " + name

@@ -1,7 +1,7 @@
 [#ftl]
 [@b.head/]
 
-[#assign types = {"web-service":"web服务","web-app":"web应用"} ]
+[#assign types = {"pc":"PC","mobile":"移动"} ]
 [#macro enableInfo enabled]
 [#if enabled]<img height="15px" width="15px" src="${b.static_url("bui","icons/16x16/actions/activate.png")}"/>${b.text("action.activate")}[#else]<font color="red"><img height="15px" width="15px" src="${b.static_url("bui","icons/16x16/actions/freeze.png")}"/>${b.text("action.freeze")}</font>[/#if]
 [/#macro]
@@ -19,7 +19,6 @@
     [@b.col width="17%" property="title" title="标题"/]
     [@b.col width="17%" property="enTitle" title="英文标题"/]
     [@b.col width="8%" property="group.title" title="分组"/]
-    [@b.col width="8%" property="appType.title" title="类型"/]
     [@b.col width="12%" title="业务场景"]
       [#if app.envIds?size>0][#list app.envIds as eid][#assign e=envById.get(eid?string)! /][#if e??]${e.name}[#else]${eid}[/#if][#sep]&nbsp;[/#list][#else]--[/#if]
     [/@]

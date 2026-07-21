@@ -103,11 +103,6 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
     menus2 foreach (m => m.resources --= resources)
     entityDao.saveOrUpdate(menus2)
 
-    val menuBuilder = OqlBuilder.from(classOf[Menu], "m").
-      where("m.entry in(:entries)", resources)
-    val menus = entityDao.search(menuBuilder)
-    menus foreach (m => m.entry = None)
-
     val query = OqlBuilder.from(classOf[FuncPermission], "fp")
     query.where("fp.resource in(:res)", resources)
     val fps = entityDao.search(query)

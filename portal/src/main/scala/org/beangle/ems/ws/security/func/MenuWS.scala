@@ -19,7 +19,7 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.core.config.model.{AppType, Env}
+import org.beangle.ems.core.config.model.{ChannelType, Env}
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.Menu
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
@@ -59,25 +59,32 @@ class MenuWS extends ActionSupport {
     val u = user.get
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
-    val appTypeId = getInt("appType.id", AppType.WebappId)
-    val appType = new AppType(appTypeId, "appTypeName")
+
+    val channelType = ChannelType.of(get("channel",ChannelType.Pc))
     val env = getLong("profileId").map(id => entityDao.get(classOf[Env], id))
     app match {
       case Some(app) =>
         if (forDomain) {
-          menuService.getDomainMenus(u, appType, isEnName, env)
+          menuService.getDomainMenus(u, channelType, isEnName, env)
         } else {
-          val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
+          val menus = menuService.getTopMenus(app, u, channelType)
+          val appProps = new Properties(app, "id", "name", "base", "logoUrl")
           appProps.put("title", app.getTitle(isEnName))
-          val menus = menuService.getTopMenus(app, u) map (m => menuService.convert(m, isEnName))
+          menus.headOption.foreach { m =>
+            appProps.put("embedMode", m.channel.embedMode.name)
+            if (m.channel.base != null && m.channel.base.nonEmpty) {
+              appProps.put("base", m.channel.base)
+            }
+          }
+          val menuProps = menus map (m => menuService.convert(m, isEnName))
           val domain = new Properties(app.domain, "id", "name")
           domain.put("title", app.domain.getTitle(isEnName))
           val group = new Properties(app.group, "id", "name", "indexno")
           group.put("title", app.group.getTitle(isEnName))
-          DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menus)))))
+          DomainMenus(domain, List(GroupMenus(group, List(AppMenus(appProps, menuProps)))))
         }
       case None =>
-        menuService.getDomainMenus(u, appType, isEnName, env)
+        menuService.getDomainMenus(u, channelType, isEnName, env)
     }
   }
 }

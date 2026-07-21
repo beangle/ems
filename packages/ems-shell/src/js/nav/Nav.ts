@@ -87,7 +87,7 @@ export function Nav(
     return 'far fa-circle';
   };
   this.menuTempalte =
-    '<li class="nav-item"><a class="nav-link" href="{menu.entry}" target="{menu.target}" data-open-mode="{menu.openMode}" data-nav-group="{menu.navGroupAttr}"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
+    '<li class="nav-item"><a class="nav-link" href="{menu.route}" target="{menu.target}" data-open-mode="{menu.openMode}" data-nav-group="{menu.navGroupAttr}"><i class="nav-icon {icon_class}"></i><p>{menu.title}</p></a></li>';
   this.foldTemplate =
     '<li class="nav-item has-treeview {open_class}"><a class="nav-link {active_class}" href="javascript:void(0)"><i class="nav-icon {icon_class}"></i><p>{menu.title}<i class="nav-icon fa fa-angle-left right"></i></p></a><ul class="nav nav-treeview" id="menu{menu.id}"></ul></li>';
   this.appFoldTemplate =

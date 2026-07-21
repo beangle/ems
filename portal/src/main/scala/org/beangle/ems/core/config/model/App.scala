@@ -30,13 +30,11 @@ class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, Locale
   var title: String = _
   var enTitle: String = _
   var datasources: mutable.Buffer[DataSource] = Collections.newBuffer[DataSource]
-  var appType: AppType = _
   var base: String = _
   var logoUrl: Option[String] = None
   var indexno: String = _
   var group: AppGroup = _
   var domain: Domain = _
-  var navStyle: Option[String] = None
 
   def getName: String = name
 

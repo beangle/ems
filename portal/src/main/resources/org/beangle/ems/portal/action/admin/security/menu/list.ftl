@@ -3,7 +3,8 @@
 [#include "../status.ftl"/]
 [@b.grid  items=menus var="menu" sortable="false"]
 [@b.gridbar title="菜单列表"]
-  action.addParam('menu.app.id',"${Parameters['menu.app.id']!}");
+  action.addParam('menu.channel.app.id',"${Parameters['menu.channel.app.id']!}");
+  action.addParam('menu.channel.channelType.id',"${Parameters['menu.channel.channelType.id']!}");
   function activate(isActivate){
     return action.multi("activate","确定操作?","isActivate="+isActivate);
   }
@@ -19,9 +20,9 @@
   exportMenu.addItem("远程导入",action.method('displayRemoteMenu'));
 [/@]
   [@b.row]
-    <tr [#if menu??] title="入口及备注:${(menu.entry.name)!} ${(menu.remark?html)!}" id="${menu.indexno}"[/#if]>
+    <tr [#if menu??] title="路由及备注:${(menu.route)!} ${(menu.remark?html)!}" id="${menu.indexno}"[/#if]>
     [@b.boxcol/]
-    [@b.treecol title="common.name" width="20%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.fonticon??] <i class="${menu.fonticon}"></i> [/#if]${menu.name}[/@][/@]
+    [@b.treecol title="common.name" width="20%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.icon??] <i class="${menu.icon}"></i> [/#if]${menu.name}[/@][/@]
     [@b.col property="enName" title="英文名称" width="15%"/]
     [@b.col title="使用资源" ][#list menu.resources as re]${re.title?html}[#if re_has_next],[/#if][/#list][/@]
     [@b.col property="enabled" width="7%" title="common.status"][@enableInfo menu.enabled/][/@]

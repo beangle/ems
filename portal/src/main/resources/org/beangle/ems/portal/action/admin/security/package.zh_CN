@@ -72,6 +72,5 @@ user.password.sendmail.title=密码找回
 user.password=密码
 user.repeatPassword=确认密码
 
-menu.entry=入口资源
 app.funcresource.info=系统资源详细信息
 

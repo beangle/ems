@@ -1,8 +1,16 @@
 Menu=菜单
 Menu.enName=英文标题
-Menu.fonticon=字体图标
-Menu.params=参数
+Menu.route=路由
+Menu.icon=图标
+Menu.channel=菜单端
 Menu.resources=菜单关联资源
+
+Channel=菜单配置
+Channel.app=应用
+Channel.base=上下文地址
+Channel.channelType=前端类型
+Channel.embedMode=嵌入方式
+Channel.enabled=是否启用
 
 FuncResource=功能资源
 FuncResource.actions=操作

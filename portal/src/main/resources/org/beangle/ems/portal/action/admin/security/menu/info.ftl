@@ -7,10 +7,8 @@ bar.addBack("${b.text("action.back")}");
  <tr>
    <td class="title" width="15%">&nbsp;${b.text("common.id")}:</td>
    <td >${menu.indexno}  </td>
-   <td class="title"  width="15%">&nbsp;${b.text("menu.entry")}:</td>
-   <td >
-   [#if menu.entry??]${menu.entry.name}[/#if][#if menu.params??]?${menu.params?html}[/#if]
-   </td>
+   <td class="title"  width="15%">&nbsp;路由:</td>
+   <td >${menu.route!}</td>
  </tr>
  <tr>
    <td class="title" >&nbsp;${b.text("common.name")}:</td>
@@ -19,12 +17,16 @@ bar.addBack("${b.text("action.back")}");
    <td >${menu.enName}</td>
  </tr>
  <tr>
-  <td class="title" >&nbsp;${b.text("common.remark")}:</td>
-  <td   >${menu.remark!}</td>
+  <td class="title" >&nbsp;图标:</td>
+  <td >${menu.icon!}</td>
   <td class="title" >&nbsp;${b.text("common.status")}:</td>
   <td >
     [#if menu.enabled]${b.text("action.activate")}[#else]${b.text("action.unactivate")}[/#if]
   </td>
+ </tr>
+ <tr>
+  <td class="title" >&nbsp;${b.text("common.remark")}:</td>
+  <td colspan="3">${menu.remark!}</td>
  </tr>
  <tr>
    <td class="title" >&nbsp;引用资源:</td>

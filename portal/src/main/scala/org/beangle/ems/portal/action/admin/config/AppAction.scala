@@ -52,7 +52,6 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
 
   protected override def indexSetting(): Unit = {
     put("groups", appService.getGroups)
-    put("appTypes", entityDao.getAll(classOf[AppType]))
   }
 
   private def putEnvById(): Unit = {
@@ -70,7 +69,6 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
       put("roles", findAuthorizedRoles(entity))
     }
     put("groups", appService.getGroups)
-    put("appTypes", entityDao.getAll(classOf[AppType]))
     put("credentials", appService.getCredentials)
     put("envs", entityDao.search(OqlBuilder.from(classOf[Env], "env")
       .where("env.domain=:domain", domainService.getDomain)

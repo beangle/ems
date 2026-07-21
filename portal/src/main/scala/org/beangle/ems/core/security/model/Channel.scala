@@ -15,28 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.service
+package org.beangle.ems.core.security.model
 
-import org.beangle.ems.core.config.model.*
-import org.beangle.ems.core.security.model.Channel
+import org.beangle.data.model.IntId
+import org.beangle.data.model.pojo.{Enabled, Named}
+import org.beangle.ems.core.config.model.{App, ChannelType, EmbedMode}
 
-/**
- * @author chaostone
- */
-trait AppService {
-
-  def getApp(name: String): Option[App]
-
-  def getChannelType(typeName: String): ChannelType
-
-  def getChannels(channelType: ChannelType): Seq[Channel]
-
-  def getWebapps: Seq[App]
-
-  def getApps: Seq[App]
-
-  def getGroups: Seq[AppGroup]
-
-  def getCredentials: Seq[Credential]
-
+/** 应用下的菜单端（同一 App 可有 PC/移动/小程序等多套菜单） */
+class Channel extends IntId, Enabled {
+  var app: App = _
+  var base: String = _
+  var channelType: ChannelType = _
+  var embedMode: EmbedMode = EmbedMode.Iframe
 }

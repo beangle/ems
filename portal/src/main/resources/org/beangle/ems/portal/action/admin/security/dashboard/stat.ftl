@@ -20,10 +20,10 @@
 [/@]
 
 [@b.module title="菜单设置"]
-  [@b.grid width="94%" items=menuProfiles var="profile" sortable="false"]
+  [@b.grid width="94%" items=apps var="app" sortable="false"]
     [@b.row]
-      [@b.col title="类别" property="name"/]
-      [@b.col title="状态/菜单数"][#list menuStats.get(profile.id) as stat]${stat[0]?string("激活","禁用")}/${stat[1]}&nbsp;[/#list][/@]
+      [@b.col title="应用" property="name"/]
+      [@b.col title="状态/菜单数"][#list menuStats.get(app.id)! as stat]${stat[0]?string("激活","禁用")}/${stat[1]}&nbsp;[/#list][/@]
     [/@]
   [/@]
 [/@]

@@ -20,17 +20,24 @@ package org.beangle.ems.core.config.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 
-object AppType {
-  val Webapp = "web-app"
-  val Webservice = "web-service"
-  val MobileApp = "mobile-app"
+/** 菜单端类型 */
+object ChannelType {
+  val Pc = "pc"
+  val Mobile = "mobile"
 
-  val WebappId =1
-  val WebserviceId = 2
-  val MobileAppId = 3
+  val PcId = 1
+  val MobileId = 2
+
+  def of(name: String): ChannelType = {
+    name match {
+      case Pc => new ChannelType(PcId, Pc)
+      case Mobile => new ChannelType(MobileId, Mobile)
+      case _ => new ChannelType(PcId, Pc)
+    }
+  }
 }
 
-class AppType extends IntId, Named {
+class ChannelType extends IntId, Named {
   var title: String = _
 
   def this(id: Int, name: String) = {

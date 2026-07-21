@@ -14,7 +14,7 @@
      </div>
    [/@]
    [@b.formfoot]
-        <input type="hidden" name="menu.app.id" value="${Parameters['menu.app.id']}"/>
+        <input type="hidden" name="menu.channel.app.id" value="${Parameters['menu.channel.app.id']!Parameters['menu.app.id']!}"/>
         [#if remoteResponse==200][@b.submit class="btn btn-primary" value="上传"  /][/#if]
    [/@]
 [/@]

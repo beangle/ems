@@ -21,7 +21,7 @@ import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
-import org.beangle.ems.core.config.model.AppType
+import org.beangle.ems.core.config.model.ChannelType
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.SessionEvent
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService, ProfileService, SessionInfoService}
@@ -53,7 +53,7 @@ class UserDashboardHelper {
     ActionContext.current.attribute("sessioninfoes", sessionInfoService.find(Some(user.code), new PageLimit(1, 20), None))
     val domain = domainService.getDomain
     val myProfiles = entityDao.findBy(classOf[EnvProfile], "user" -> List(user), "domain" -> domain)
-    val menus = menuService.getDomainMenus(user, new AppType(AppType.WebappId, AppType.Webapp), false, None)
+    val menus = menuService.getDomainMenus(user, new ChannelType(ChannelType.PcId, ChannelType.Pc), false, None)
     ActionContext.current.attribute("menus", menus)
 
     ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(user.code) + "?t=" + System.currentTimeMillis())

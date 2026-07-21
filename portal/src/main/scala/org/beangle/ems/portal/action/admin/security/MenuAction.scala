@@ -24,8 +24,8 @@ import org.beangle.commons.net.http.HttpUtils
 import org.beangle.commons.xml.Document
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.core.config.model.App
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu}
+import org.beangle.ems.core.config.model.{App, ChannelType}
+import org.beangle.ems.core.security.model.{Channel, FuncPermission, FuncResource, Menu}
 import org.beangle.ems.core.security.service.MenuService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.ems.portal.helper.AppHelper
@@ -37,14 +37,20 @@ import org.beangle.webmvc.view.View
 class MenuAction extends RestfulAction[Menu], DomainSupport {
   var menuService: MenuService = _
 
+  private val appParam = "menu.channel.app.id"
+  private val channelTypeParam = "menu.channel.channelType.id"
+
   protected override def indexSetting(): Unit = {
     val apps = appService.getWebapps
-    AppHelper.putApps(apps, "menu.app.id", entityDao)
+    AppHelper.putApps(apps, appParam, entityDao)
+    val channelTypes = entityDao.getAll(classOf[ChannelType]).sortBy(_.id)
+    put("channelTypes", channelTypes)
+    put("current_channelType", resolveChannelType(channelTypes))
   }
 
   override def search(): View = {
-    AppHelper.remember("menu.app.id")
-    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    AppHelper.remember(appParam)
+    val app = entityDao.get(classOf[App], getInt(appParam).get)
     val domain = domainService.getDomain
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
       put("remoteMenuURL", url + s"/api/${profile}/ems/menus/${app.name}.xml")
@@ -55,18 +61,19 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
 
   override def getQueryBuilder: OqlBuilder[Menu] = {
     val builder = super.getQueryBuilder
-    builder.where("menu.app.domain=:domain", domainService.getDomain)
+    builder.where("menu.channel.app.domain=:domain", domainService.getDomain)
+    val channelTypeId = getInt(channelTypeParam).getOrElse(ChannelType.PcId)
+    builder.where("menu.channel.channelType.id=:channelTypeId", channelTypeId)
     builder
   }
 
   protected override def editSetting(menu: Menu): Unit = {
-    //search profile in app scope
-    val app = entityDao.get(classOf[App], menu.app.id)
+    ensureChannel(menu)
+    val channel = menu.channel
 
     val folders = Collections.newBuffer[Menu]
-    // 查找可以作为父节点的菜单
     val folderBuilder = OqlBuilder.from(classOf[Menu], "m")
-    folderBuilder.where("m.entry is null and m.app=:app", app)
+    folderBuilder.where("m.route is null and m.channel=:channel", channel)
     folderBuilder.orderBy("m.indexno")
     val rs = entityDao.search(folderBuilder)
     folders ++= rs
@@ -78,7 +85,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
 
     val alternatives = Collections.newBuffer[FuncResource]
     val resources = Collections.newBuffer[FuncResource]
-    val funcBuilder = OqlBuilder.from(classOf[FuncResource], "r").where("r.app=:app", app)
+    val funcBuilder = OqlBuilder.from(classOf[FuncResource], "r").where("r.app=:app", channel.app)
     alternatives ++= entityDao.search(funcBuilder)
     resources ++= alternatives
     alternatives --= menu.resources
@@ -111,15 +118,10 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
 
   @ignore
   protected override def saveAndRedirect(menu: Menu): View = {
+    ensureChannel(menu)
     val resources = entityDao.find(classOf[FuncResource], getIntIds("resource"))
     menu.resources.clear()
     menu.resources ++= resources
-    //检查入口资源是否在使用资源列表中
-    menu.entry.foreach { entry =>
-      if (!resources.contains(entry)) {
-        menu.resources += entry
-      }
-    }
 
     val newParentId = getInt("parent.id")
     val indexno = getInt("indexno", 0)
@@ -133,15 +135,11 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
       for (one <- family) one.enabled = false
       entityDao.saveOrUpdate(family)
     }
-    //refresh all app menus and their children relationships
     entityDao.evict(classOf[Menu])
     databus.publish(DataEvent.update(menu))
     redirect("search", "info.save.success")
   }
 
-  /**
-   * 禁用或激活一个或多个模块
-   */
   def activate(): View = {
     val menuIds = getIntIds("menu")
     val enabled = getBoolean("isActivate", defaultValue = true)
@@ -176,8 +174,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
     put("menus", menus)
 
     if menus.nonEmpty then
-      val app = menus.head.app
-      put("resources", entityDao.findBy(classOf[FuncResource], "app", app))
+      put("resources", entityDao.findBy(classOf[FuncResource], "app", menus.head.app))
     else
       put("resources", List.empty[FuncResource])
     forward()
@@ -185,7 +182,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
 
   def displayRemoteMenu(): View = {
     val domain = domainService.getDomain
-    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    val app = entityDao.get(classOf[App], getInt(appParam).get)
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
       val remoteUrl = url + s"/api/${profile}/ems/menus/${app.name}.xml"
       put("remoteMenuURL", remoteUrl)
@@ -198,7 +195,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
 
   def importFormRemote(): View = {
     val domain = domainService.getDomain
-    val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+    val app = entityDao.get(classOf[App], getInt(appParam).get)
     var remoteUrl: Option[String] = None
     for (profile <- domain.sashubProfile; url <- domain.sashubBase) {
       remoteUrl = Some(url + s"/api/${profile}/ems/menus/${app.name}.xml")
@@ -214,9 +211,40 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
     if (parts.isEmpty) {
       forward()
     } else {
-      val app = entityDao.get(classOf[App], getInt("menu.app.id").get)
+      val app = entityDao.get(classOf[App], getInt(appParam).get)
       menuService.importFrom(app, Document.parse(parts.head.getInputStream))
       redirect("search", "info.save.success")
+    }
+  }
+
+  private def ensureChannel(menu: Menu): Unit = {
+    if (menu.channel != null) return
+    getInt("menu.channel.id") match {
+      case Some(cid) => menu.channel = entityDao.get(classOf[Channel], cid)
+      case None =>
+        val appId = getInt(appParam).orElse(getInt("menu.app.id"))
+        val channelType = resolveChannelType(entityDao.getAll(classOf[ChannelType]))
+        appId foreach { id =>
+          menu.channel = resolveChannel(entityDao.get(classOf[App], id), channelType)
+        }
+    }
+  }
+
+  private def resolveChannelType(channelTypes: Iterable[ChannelType]): ChannelType = {
+    getInt(channelTypeParam) match {
+      case Some(id) => channelTypes.find(_.id == id).getOrElse(entityDao.get(classOf[ChannelType], id))
+      case None =>
+        channelTypes.find(_.id == ChannelType.PcId)
+          .orElse(channelTypes.find(_.name == ChannelType.Pc))
+          .getOrElse(entityDao.get(classOf[ChannelType], ChannelType.PcId))
+    }
+  }
+
+  private def resolveChannel(app: App, channelType: ChannelType): Channel = {
+    entityDao.search(OqlBuilder.from(classOf[Channel], "c")
+      .where("c.app=:app and c.channelType=:channelType", app, channelType)
+      .orderBy("c.id")).headOption.getOrElse {
+      throw new IllegalStateException(s"App ${app.name} has no Channel for ${channelType.name}")
     }
   }
 }

@@ -37,7 +37,7 @@ class DashboardAction extends ActionSupport {
     val menuStats = new collection.mutable.HashMap[Integer, Seq[_]]
     for (app <- apps) {
       val menuQuery = OqlBuilder.from(classOf[Menu], "menu")
-      menuQuery.where("menu.app=:app", app).select("menu.enabled,count(*)").groupBy("enabled")
+      menuQuery.where("menu.channel.app=:app", app).select("menu.enabled,count(*)").groupBy("enabled")
       menuStats.put(app.id, entityDao.search(menuQuery))
     }
     put("apps", apps)

@@ -35,7 +35,6 @@ object DefaultMapping extends MappingModule {
     bind[App].declare { e =>
       e.getName is length(100)
       e.title is length(100)
-      e.navStyle is length(50)
       e.remark is length(200)
       e.indexno is length(50)
       e.datasources is depends("app")
@@ -46,6 +45,10 @@ object DefaultMapping extends MappingModule {
       e.code is length(100)
       e.name is length(100)
       index("idx_env", true, e.domain, e.code)
+    }
+
+    bind[ChannelType].declare { e =>
+      index("", true, e.name)
     }
 
     bind[AppGroup].declare { e =>
@@ -80,10 +83,6 @@ object DefaultMapping extends MappingModule {
       e.hostname.is(length(100), unique)
       e.title is length(200)
       index("idx_domain", true, e.org, e.hostname)
-    }
-
-    bind[AppType].declare { e =>
-      index("", true, e.name)
     }
 
     bind[Portalet]

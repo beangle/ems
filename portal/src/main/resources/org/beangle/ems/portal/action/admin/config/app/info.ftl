@@ -12,13 +12,11 @@
   </tr>
   <tr>
     <td class="title">分组</td>
-    <td>${app.group.title}(${app.group.name})</td>
-    <td class="title">类型</td>
-    <td>${app.appType.title}(${app.appType.name})</td>
+    <td colspan="3">${app.group.title}(${app.group.name})</td>
   </tr>
   <tr>
     <td class="title">上下文地址</td>
-    <td>${app.base} 导航风格:${app.navStyle!}</td>
+    <td>${app.base}</td>
     <td class="title">logoUrl</td>
     <td>${app.logoUrl!}</td>
   </tr>

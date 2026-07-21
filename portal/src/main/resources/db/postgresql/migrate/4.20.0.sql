@@ -88,3 +88,19 @@ update ems.usr_roots r set domain_id=(select app.domain_id from ems.cfg_apps app
 delete from ems.usr_roots a where exists(select * from ems.usr_roots b where b.user_id=a.user_id and b.domain_id=a.domain_id and a.id > b.id);
 alter table ems.usr_roots drop column app_id;
 
+----
+create table ems.cfg_channel_types (name varchar(255) not null, id integer not null, title varchar(255) not null);
+create table ems.se_channels (channel_type_id integer not null, embed_mode integer not null, base varchar(200) not null, id integer not null, app_id integer not null,enabled bool not null);
+insert into ems.cfg_channel_types(id,name,title) values(1,'pc','PC端');
+insert into ems.cfg_channel_types(id,name,title) values(2,'mobile','移动端');
+
+insert into ems.se_channels(id,app_id,channel_type_id,base,embed_mode,enabled) select id,id,1,base,2,enabled from ems.cfg_apps where base is not null and app_type_id=1;
+
+alter table ems.se_menus add channel_id int4;
+update ems.se_menus m set channel_id=(select c.id from ems.se_channels c where c.app_id=m.app_id);
+alter table ems.se_menus drop column app_id;
+alter table ems.se_menus rename column fonticon to icon;
+alter table ems.se_menus add column route varchar(300);
+update ems.se_menus m set route = (select f.name||(case when m.params not null then '?'||m.params else '' end) from ems.se_func_resources f where f.id=m.entry_id) where m.entry_id is not null;
+alter table ems.se_menus drop column params;
+alter table ems.se_menus drop column entry_id;

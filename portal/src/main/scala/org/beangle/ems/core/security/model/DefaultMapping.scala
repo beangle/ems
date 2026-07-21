@@ -40,13 +40,19 @@ object DefaultMapping extends MappingModule {
       index("idx_role_app_env", true, e.role, e.app, e.env)
     }
 
+    bind[Channel].declare { e =>
+      e.base is length(200)
+      e.app & e.channelType & e.embedMode are notnull
+      index("idx_channel", true, e.app, e.channelType)
+    }
+
     bind[Menu].declare { e =>
       e.name & e.enName & e.remark are length(100)
       e.indexno is length(50)
       e.children.is(depends("parent"), orderby("indexno"))
-      e.params is length(200)
-      index("", false, e.app)
-      index("", false, e.entry)
+      e.route is length(300)
+      e.icon is length(200)
+      index("", false, e.channel)
     }
 
     bind[FuncResource].declare { e =>

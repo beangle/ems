@@ -19,25 +19,25 @@ package org.beangle.ems.core.config.service.impl
 
 import org.beangle.commons.bean.Initializing
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.{AppService, DomainService}
+import org.beangle.ems.core.security.model.Channel
 
 /**
  * @author chaostone
  */
 class AppServiceImpl(entityDao: EntityDao) extends AppService, Initializing {
 
-  private var appTypes: Map[String, AppType] = _
+  private var channelTypes: Map[String, ChannelType] = _
   var domainService: DomainService = _
 
   override def init(): Unit = {
-    val rs = entityDao.getAll(classOf[AppType])
-    appTypes = rs.map(x => (x.name, x)).toMap
+    val rs = entityDao.getAll(classOf[ChannelType])
+    channelTypes = rs.map(x => (x.name, x)).toMap
   }
 
-  override def getAppType(typeName: String): AppType = {
-    appTypes(typeName)
+  override def getChannelType(typeName: String): ChannelType = {
+    channelTypes(typeName)
   }
 
   override def getGroups: Seq[AppGroup] = {
@@ -62,8 +62,8 @@ class AppServiceImpl(entityDao: EntityDao) extends AppService, Initializing {
 
   override def getWebapps: Seq[App] = {
     entityDao.search(OqlBuilder.from(classOf[App], "app")
-      .where("app.appType.name=:typ and app.enabled=true", AppType.Webapp)
-      .where("app.domain=:domain", domainService.getDomain)
+      .where("app.enabled=true and app.domain=:domain", domainService.getDomain)
+      .where(s"exists(from ${classOf[Channel].getName} c where c.app=app)")
       .orderBy("app.group.indexno,app.indexno"))
   }
 
@@ -72,5 +72,12 @@ class AppServiceImpl(entityDao: EntityDao) extends AppService, Initializing {
       .where("app.enabled=true")
       .where("app.domain=:domain", domainService.getDomain)
       .orderBy("app.group.indexno,app.indexno"))
+  }
+
+  override def getChannels(channelType: ChannelType): Seq[Channel] = {
+    entityDao.search(OqlBuilder.from(classOf[Channel], "c")
+      .where("c.enabled=true and c.app.domain=:domain", domainService.getDomain)
+      .where("c.channelType=:channelType", channelType)
+      .orderBy("c.app.group.indexno,c.app.indexno"))
   }
 }

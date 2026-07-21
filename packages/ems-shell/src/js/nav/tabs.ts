@@ -706,8 +706,8 @@ export const tabsProto = {
       }
       var initMenu = initMenuLoc ? initMenuLoc.menu : null;
       var menuHighlightOnly = false;
-      if (initMenu && initMenu.entry && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME || initMenu.openMode === NAV_OPENMODE_AJAX)) {
-        var tid = this.findSnapshotTabIdForUrl({ tabs: data.tabs }, initMenu.entry, initMenu.openMode);
+      if (initMenu && initMenu.route && (initMenu.openMode === NAV_OPENMODE_WUJIE || initMenu.openMode === NAV_OPENMODE_IFRAME || initMenu.openMode === NAV_OPENMODE_AJAX)) {
+        var tid = this.findSnapshotTabIdForUrl({ tabs: data.tabs }, initMenu.route, initMenu.openMode);
         if (tid) {
           if (data.activeTabId !== tid) {
             data.activeTabId = tid;
@@ -726,7 +726,7 @@ export const tabsProto = {
           var newId = "ems_tab_" + (maxSeed + 1);
           var seedRow = {
             id: newId,
-            url: this.navUrlToPath(initMenu.entry),
+            url: this.navUrlToPath(initMenu.route),
             title: initMenu.title || "",
             openMode: this.normalizeNavOpenMode(initMenu.openMode)
           };
@@ -1336,7 +1336,7 @@ export const tabsProto = {
      * 左侧/顶部菜单：<a data-open-mode="iframe|wujie">，缺省或非合法值按 iframe。
      * - multiTab=true（默认）：iframe / wujie 在工作台开标签；ajax 仅用于内部首页 welcome。
      * - multiTab=false：iframe/wujie 进工作台单槽；#main 供内部 ajax 片段。
-     * openMode 由 collectApps 推导：navStyle=wujie 否则 iframe。
+     * openMode 写在 menu / DOM data-open-mode；应用级默认来自 embedMode（wujie → wujie，否则 iframe）。
      */
     openMenu: function(obj) {
       try {

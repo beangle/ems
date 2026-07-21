@@ -22,9 +22,9 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.xml.Node
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.core.config.model.{App, AppType, Env}
+import org.beangle.ems.core.config.model.{App, ChannelType, Env}
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
+import org.beangle.ems.core.security.model.*
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.security.authz.Scope
@@ -54,27 +54,31 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     }
   }
 
-  def getTopMenus(app: App, user: User): collection.Seq[Menu] = {
-    getTopMenus(Some(app), app.appType, getRoles(user, None), None)
+  override def getTopMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
+    getTopMenus(Some(app), channelType, getRoles(user, None), None)
   }
 
-  override def getTopMenus(user: User, appType: AppType, env: Option[Env]): collection.Seq[Menu] = {
-    getTopMenus(None, appType, getRoles(user, env), env)
+  override def getTopMenus(user: User, channelType: ChannelType, env: Option[Env]): collection.Seq[Menu] = {
+    getTopMenus(None, channelType, getRoles(user, env), env)
   }
 
-  def getTopMenus(app: App, role: Role): collection.Seq[Menu] = {
-    getTopMenus(Some(app), app.appType, List(role), None)
+  def getTopMenus(app: App, role: Role, channelType: ChannelType): collection.Seq[Menu] = {
+    getTopMenus(Some(app), channelType, List(role), None)
   }
 
   /**
-   * 指定场景下域内可用的应用：未配置 envs 表示不限制；有配置则须包含该 env。
+   * 解析可用 Channel：端类型 + 启用状态 + 域；可选限定 App；有 env 时再按 App.envIds 过滤。
    */
-  private def findAvailableApps(appType: AppType, env: Env): Seq[App] = {
-    val apps = entityDao.search(OqlBuilder.from(classOf[App], "app")
-      .where("app.domain=:domain and app.enabled=true and app.appType=:appType",
-        domainService.getDomain, appType)
-      .cacheable())
-    apps.filter(_.suitable(env))
+  private def findChannels(app: Option[App], channelType: ChannelType, env: Option[Env]): Seq[Channel] = {
+    val query = OqlBuilder.from(classOf[Channel], "c")
+      .where("c.channelType=:channelType", channelType)
+      .where("c.enabled=true and c.app.enabled=true and c.app.domain=:domain", domainService.getDomain)
+    app.foreach(a => query.where("c.app=:app", a))
+    val channels = entityDao.search(query.cacheable())
+    env match {
+      case Some(e) => channels.filter(_.app.suitable(e))
+      case None => channels
+    }
   }
 
   /**
@@ -96,49 +100,36 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     }
   }
 
-  private def getTopMenus(app: Option[App], appType: AppType, roles: Iterable[Role], env: Option[Env]): collection.Seq[Menu] = {
-    // 已指定应用时直接 suitable，避免全量 findAvailableApps
-    val availableApps: Option[Seq[App]] = (app, env) match {
-      case (Some(p), Some(e)) =>
-        if (!p.suitable(e)) return Nil else None
-      case (None, Some(e)) =>
-        val apps = findAvailableApps(appType, e)
-        if (apps.isEmpty) return Nil else Some(apps)
-      case _ => None
-    }
+  private def getTopMenus(app: Option[App], channelType: ChannelType, roles: Iterable[Role], env: Option[Env]): collection.Seq[Menu] = {
+    val channels = findChannels(app, channelType, env)
+    if (channels.isEmpty) return Nil
 
-    val menuSet = Collections.newSet[Menu]
     val unavailableByRole = env.map(e => findUnavailableApps(roles, e)).getOrElse(Map.empty)
+    val menuSet = Collections.newSet[Menu]
     roles foreach { role =>
-      val query = OqlBuilder.from[Menu](classOf[Menu].getName + " menu," + classOf[FuncPermission].getName + " fp")
-        .where("menu.enabled=true")
-        .where("fp.role =:role", role)
-        .where("fp.resource=menu.entry")
-        .select("menu")
-
-      app match {
-        case Some(p) => query.where("menu.app=:app", p)
-        case None =>
-          availableApps.foreach { apps =>
-            query.where("menu.app in (:availableApps)", apps)
-          }
+      val roleChannels = unavailableByRole.get(role) match {
+        case Some(apps) if apps.nonEmpty => channels.filterNot(c => apps.contains(c.app))
+        case _ => channels
       }
-      query.where("menu.app.appType=:appType", appType)
-      query.where("menu.app.domain =:domain and menu.app.enabled=true", domainService.getDomain)
-      unavailableByRole.get(role).filter(_.nonEmpty).foreach { apps =>
-        query.where("menu.app not in (:unavailableApps)", apps)
-      }
-      query.cacheable()
+      if (roleChannels.nonEmpty) {
+        val query = OqlBuilder.from[Menu](classOf[Menu].getName + " menu," + classOf[FuncPermission].getName + " fp")
+          .where("menu.enabled=true")
+          .where("fp.role =:role", role)
+          .where("exists(from menu.resources r where r=fp.resource)")
+          .where("menu.channel in (:channels)", roleChannels)
+          .select("menu")
+          .cacheable()
 
-      entityDao.search(query).foreach { m =>
-        menuSet += m
-        var p = m.parent.orNull
-        while (null != p) {
-          if (!menuSet.contains(p)) {
-            menuSet += p
-            p = p.parent.orNull
-          } else {
-            p = null
+        entityDao.search(query).foreach { m =>
+          menuSet += m
+          var p = m.parent.orNull
+          while (null != p) {
+            if (!menuSet.contains(p)) {
+              menuSet += p
+              p = p.parent.orNull
+            } else {
+              p = null
+            }
           }
         }
       }
@@ -180,12 +171,12 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   }
 
   override def getTopMenus(app: App): collection.Seq[Menu] = {
-    val builder = OqlBuilder.from(classOf[Menu]).where("menu.app= :app and menu.parent = null", app).orderBy("menu.indexno").cacheable()
+    val builder = OqlBuilder.from(classOf[Menu]).where("menu.channel.app= :app and menu.parent = null", app).orderBy("menu.indexno").cacheable()
     entityDao.search(builder)
   }
 
   override def getMenus(app: App): collection.Seq[Menu] = {
-    val builder = OqlBuilder.from(classOf[Menu]).where("menu.app= :app", app).orderBy("menu.indexno").cacheable()
+    val builder = OqlBuilder.from(classOf[Menu]).where("menu.channel.app= :app", app).orderBy("menu.indexno").cacheable()
     entityDao.search(builder)
   }
 
@@ -194,8 +185,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     builder.join("menu.resources", "mr")
     builder.where("exists(from " + classOf[FuncPermission].getName
       + " a where a.role=:role and a.resource=mr)", role)
-    builder.where("mr=menu.entry")
-    builder.where("menu.app = :app", app)
+    builder.where("menu.channel.app = :app", app)
     builder.cacheable()
     builder
   }
@@ -219,7 +209,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         Hierarchicals.move(menu, location, index)
       } else {
         val builder = OqlBuilder.from(classOf[Menu], "m")
-          .where("m.app = :app and m.parent is null", menu.app)
+          .where("m.channel = :channel and m.parent is null", menu.channel)
           .orderBy("m.indexno")
         Hierarchicals.move(menu, entityDao.search(builder).toBuffer, index)
       }
@@ -229,12 +219,8 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     if null == menu.indexno then menu.indexno = index.toString
   }
 
-  def importFrom(app: App, xml: Node): Unit = {
-    parseMenu(app, None, xml)
-  }
-
-  override def getDomainMenus(user: User, appType: AppType, isEnName: Boolean, env: Option[Env]): DomainMenus = {
-    val menus = getTopMenus(user, appType, env)
+  override def getDomainMenus(user: User, channelType: ChannelType, isEnName: Boolean, env: Option[Env]): DomainMenus = {
+    val menus = getTopMenus(user, channelType, env)
     val appsMenus = menus.groupBy(_.app)
     val groupApps = appsMenus.keys.groupBy(_.group)
     val directMenuMaps = groupApps map {
@@ -242,9 +228,14 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
         val group = new Properties(oned, "id", "name", "indexno")
         group.put("title", if isEnName then oned.enTitle else oned.title)
         val appMenus = groupApps(oned).toBuffer.sorted map { app =>
-          val appProps = new Properties(app, "id", "name", "base", "logoUrl", "navStyle")
+          val menusOfApp = appsMenus(app)
+          val appProps = new Properties(app, "id", "name", "logoUrl")
           appProps.put("title", if isEnName then app.enTitle else app.title)
-          AppMenus(appProps, appsMenus(app).map(x => convert(x, isEnName)))
+          menusOfApp.headOption.foreach { m =>
+            appProps.put("embedMode", m.channel.embedMode.name)
+            appProps.put("base", m.channel.base)
+          }
+          AppMenus(appProps, menusOfApp.map(x => convert(x, isEnName)))
         }
         (oned, GroupMenus(group, appMenus))
     }
@@ -260,9 +251,10 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
   }
 
   override def convert(one: Menu, isEnName: Boolean): Properties = {
-    val menu = new Properties(one, "id", "fonticon", "indexno")
+    val menu = new Properties(one, "id", "indexno")
     menu.put("title", if isEnName then one.enName else one.name)
-    if (one.entry.isDefined) menu.put("entry", one.entry.get.name + (if (one.params.isDefined) "?" + one.params.get else ""))
+    one.route.foreach(r => menu.put("route", r))
+    one.icon.foreach(i => menu.put("icon", i))
     if (one.children.nonEmpty) {
       val children = new mutable.ListBuffer[Properties]
       one.children foreach { child =>
@@ -273,7 +265,21 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     menu
   }
 
-  private def parseMenu(app: App, parent: Option[Menu], xml: Node): Unit = {
+  def importFrom(app: App, xml: Node): Unit = {
+    parseMenu(app, resolveDefaultChannel(app), None, xml)
+  }
+
+  /** 优先取 PC 端，否则取应用下第一个 Channel。 */
+  private def resolveDefaultChannel(app: App): Channel = {
+    val channels = entityDao.search(OqlBuilder.from(classOf[Channel], "c")
+      .where("c.app=:app", app)
+      .orderBy("c.id"))
+    channels.find(_.channelType.name == ChannelType.Pc).orElse(channels.headOption).getOrElse {
+      throw new IllegalStateException(s"App ${app.name} has no Channel; create a Channel before importing menus")
+    }
+  }
+
+  private def parseMenu(app: App, channel: Channel, parent: Option[Menu], xml: Node): Unit = {
     (xml \ "resources" \ "resource") foreach { r =>
       val name = (r \ "@name").text.trim
       val title = (r \ "@title").text.trim
@@ -286,48 +292,42 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     (xml \ "menu") foreach { m =>
       val indexno = (m \ "@indexno").text.trim
       val name = (m \ "@name").text.trim
-      val menu = findMenu(app, parent, name).getOrElse(new Menu)
+      val menu = findMenu(channel, parent, name).getOrElse(new Menu)
       menu.name = name
       menu.indexno = indexno
-      menu.app = app
+      menu.channel = channel
 
       val enName = m \ "@enName"
       menu.enName = if enName.isEmpty then menu.name else enName.text.trim
-      val params = m \ "@params"
-      if (params.isEmpty || Strings.isBlank(params.text)) {
-        menu.params = None
-      } else {
-        menu.params = Some(params.text.trim)
-      }
       val enabled = m \ "@enabled"
       if (enabled.isEmpty) {
         menu.enabled = true
       } else {
         menu.enabled = enabled.text.trim.toBoolean
       }
-      (m \ "@fonticon") foreach { fi =>
-        menu.fonticon = Some(fi.text.trim)
+      (m \ "@icon").headOption foreach { fi =>
+        menu.icon = Some(fi.text.trim)
       }
 
-      val entry = findFuncResource(app, (m \ "@entry").text.trim)
+      val routeAttr = (m \ "@route").text.trim
+      menu.route = if Strings.isNotBlank(routeAttr) then Some(routeAttr) else None
+
       val resources = m \ "@resources"
       if resources.nonEmpty then
         Strings.split(resources.text) foreach { n =>
           findFuncResource(app, n) foreach { r => menu.resources += r }
         }
-      entry foreach { r => menu.resources += r }
-      menu.entry = entry
       menu.parent = parent
       entityDao.saveOrUpdate(menu)
       val children = m \ "children"
       if (children.nonEmpty) {
-        parseMenu(app, Some(menu), children.head)
+        parseMenu(app, channel, Some(menu), children.head)
       }
     }
   }
 
-  private def findMenu(app: App, parent: Option[Menu], name: String): Option[Menu] = {
-    val builder = OqlBuilder.from(classOf[Menu], "m").where("m.app=:app", app)
+  private def findMenu(channel: Channel, parent: Option[Menu], name: String): Option[Menu] = {
+    val builder = OqlBuilder.from(classOf[Menu], "m").where("m.channel=:channel", channel)
     parent match
       case None => builder.where("m.name=:name and m.parent is null", name)
       case Some(p) => builder.where("m.name=:name and m.parent=:p", name, p)

@@ -15,28 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.core.config.service
+package org.beangle.ems.core.config.model
 
-import org.beangle.ems.core.config.model.*
-import org.beangle.ems.core.security.model.Channel
+/** Channel 在门户中的嵌入集成方式 */
+enum EmbedMode(val id: Int, val name: String) {
+  case Wujie extends EmbedMode(1, "wujie")
+  case Iframe extends EmbedMode(2, "iframe")
+}
 
-/**
- * @author chaostone
- */
-trait AppService {
+object EmbedMode {
+  def fromName(name: String): EmbedMode = {
+    values.find(_.name.equalsIgnoreCase(name)).getOrElse(Iframe)
+  }
 
-  def getApp(name: String): Option[App]
-
-  def getChannelType(typeName: String): ChannelType
-
-  def getChannels(channelType: ChannelType): Seq[Channel]
-
-  def getWebapps: Seq[App]
-
-  def getApps: Seq[App]
-
-  def getGroups: Seq[AppGroup]
-
-  def getCredentials: Seq[Credential]
-
+  def fromId(id: Int): EmbedMode = {
+    values.find(_.id == id).getOrElse(Iframe)
+  }
 }

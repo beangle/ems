@@ -12,24 +12,21 @@ export interface NavGroup {
 }
 
 export interface NavApp {
-  id?: string | number;
+  id: string | number;
   name: string;
-  title?: string;
-  base?: string;
-  url?: string;
+  title: string;
+  base: string;
   group?: NavGroup;
-  navStyle?: string;
-  openMode?: NavOpenMode | string;
-  embeddable?: boolean;
+  embedMode: string;
 }
 
 export interface NavMenu {
-  id?: string | number;
+  id: string | number;
   title: string;
-  entry?: string;
+  route?: string;
   target?: string;
   openMode?: NavOpenMode | string;
-  fonticon?: string;
+  icon?: string;
   children?: NavMenu[];
   navGroupId?: string | number;
   navAppId?: string | number;

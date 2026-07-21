@@ -36,7 +36,7 @@ class FileAction extends RestfulAction[File], ExportSupport[File] {
   var appService: AppService = _
 
   override protected def indexSetting(): Unit = {
-    put("apps", appService.getWebapps)
+    put("apps", appService.getApps)
   }
 
   override protected def getQueryBuilder: OqlBuilder[File] = {
@@ -46,7 +46,7 @@ class FileAction extends RestfulAction[File], ExportSupport[File] {
   }
 
   override protected def editSetting(entity: File): Unit = {
-    put("apps", appService.getWebapps)
+    put("apps", appService.getApps)
     super.editSetting(entity)
   }
 

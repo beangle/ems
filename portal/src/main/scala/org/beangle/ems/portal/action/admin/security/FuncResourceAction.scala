@@ -75,7 +75,7 @@ class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[Func
     val entity: FuncResource = getModel(id.toInt)
     val query = OqlBuilder.from(classOf[Menu], "menu")
     query.join("menu.resources", "r").where("r.id=:resourceId", entity.id)
-      .orderBy("menu.app.id,menu.indexno")
+      .orderBy("menu.channel.app.id,menu.indexno")
 
     val roleQuery = OqlBuilder.from(classOf[FuncPermission], "auth")
     roleQuery.where("auth.resource=:resource", entity).select("auth.role")

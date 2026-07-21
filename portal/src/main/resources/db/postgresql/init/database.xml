@@ -59,7 +59,7 @@
             <unique-key name="idx_app_group" columns="domain_id,name"/>
           </unique-keys>
         </table>
-        <table name="cfg_app_types" comment="应用类型">
+        <table name="cfg_channel_types" comment="端类型">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
             <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
@@ -73,7 +73,6 @@
         <table name="cfg_apps" comment="应用">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
-            <column name="app_type_id" type="integer" nullable="false" comment="应用类型ID"/>
             <column name="base" type="varchar(255)" nullable="false" comment="上下文"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
             <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
@@ -91,8 +90,6 @@
           </columns>
           <primary-key name="pk_n9cedywnexu7mm5vrohyngxhi" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_oyclhhl4b5hmp6irr0gcs9xbx" column="app_type_id" referenced-table="ems.cfg_app_types"
-                         referenced-column="id"/>
             <foreign-key name="fk_63b8qir7o0ra6nvjgbdxom1xp" column="domain_id" referenced-table="ems.cfg_domains"
                          referenced-column="id"/>
             <foreign-key name="fk_e9dlk79vqcr6h7s4j94xd3ur2" column="group_id" referenced-table="ems.cfg_app_groups"
@@ -587,32 +584,51 @@
                          referenced-column="id"/>
           </foreign-keys>
         </table>
+
+        <table name="se_channels" comment="菜单端">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="channel_type_id" type="integer" nullable="false" comment="端类型ID"/>
+          </columns>
+          <primary-key name="pk_se_channels" columns="id"/>
+          <foreign-keys>
+            <foreign-key name="fk_se_channels_app" column="app_id" referenced-table="ems.cfg_apps"
+                         referenced-column="id"/>
+            <foreign-key name="fk_se_channels_type" column="channel_type_id" referenced-table="ems.cfg_channel_types"
+                         referenced-column="id"/>
+          </foreign-keys>
+          <unique-keys>
+            <unique-key name="idx_channel" columns="app_id,channel_type_id"/>
+          </unique-keys>
+          <indexes>
+            <index name="idx_se_channels_app" columns="app_id"/>
+          </indexes>
+        </table>
+
         <table name="se_menus" comment="菜单">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
-            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="channel_id" type="integer" nullable="false" comment="菜单端ID"/>
             <column name="en_name" type="varchar(100)" nullable="false" comment="英文标题"/>
             <column name="enabled" type="boolean" nullable="false" comment="是否启用"/>
-            <column name="entry_id" type="integer" comment="功能资源ID"/>
-            <column name="fonticon" type="varchar(255)" comment="字体图标"/>
             <column name="indexno" type="varchar(50)" nullable="false" comment="顺序号"/>
             <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
-            <column name="params" type="varchar(200)" comment="参数"/>
+            <column name="route" type="varchar(200)" comment="路由"/>
+            <column name="icon" type="varchar(255)" comment="图标"/>
             <column name="parent_id" type="integer" comment="菜单ID"/>
             <column name="remark" type="varchar(100)" comment="备注"/>
           </columns>
           <primary-key name="pk_c3931pkfbpf3uerudht53n8sj" columns="id"/>
           <foreign-keys>
-            <foreign-key name="fk_m6o2fdnpl1ngm724sdy6gmptb" column="app_id" referenced-table="ems.cfg_apps"
+            <foreign-key name="fk_se_menus_channel" column="channel_id" referenced-table="ems.se_channels"
                          referenced-column="id"/>
             <foreign-key name="fk_sk5i2hu25xymere80g1rbn7uv" column="parent_id" referenced-table="ems.se_menus"
                          referenced-column="id"/>
-            <foreign-key name="fk_9j0v9w5h4bij1ajoh8febi4wh" column="entry_id" referenced-table="ems.se_func_resources"
-                         referenced-column="id"/>
           </foreign-keys>
           <indexes>
-            <index name="idx_fdatks2vdh1idedyu5f6fb55l" columns="app_id"/>
-            <index name="idx_chjpjbdcov744gg5lq2de7rx3" columns="entry_id"/>
+            <index name="idx_se_menus_channel" columns="channel_id"/>
             <index name="idx_epksu8lgd3h8wadnbbot7b7rx" columns="parent_id"/>
           </indexes>
         </table>
