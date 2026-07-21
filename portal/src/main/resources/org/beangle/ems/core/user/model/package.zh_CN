@@ -1,49 +1,79 @@
 User=用户
 User.code=帐号
 User.name=姓名
-
 User.remark=备注
 User.roles=角色
 User.members=成员
-User.name=姓名
 User.category.name=身份
 User.beginOn-endOn=有效期
 User.avatarId=头像ID
 User.properties=属性
 User.mobile=手机号码
 User.email=电子邮件
-
 User.enabled=是否启用
 User.locked=是否锁定
 User.password=密码
 User.passwdExpiredOn=密码过期日期
+User.org=组织
+User.depart=部门
+User.group=组
+User.category=用户类别
+User.openid=OpenID
+User.groups=用户组
 
 Category=用户类别
+Category.name=名称
 Category.enName=英文名
+Category.org=组织
 
 RoleMember=角色成员
+RoleMember.user=用户
+RoleMember.role=角色
 RoleMember.member=成员
 RoleMember.granter=可授权
 RoleMember.manager=可管理
+RoleMember.envIds=业务场景
 
 Role=角色
+Role.name=名称
 Role.properties=角色属性
 Role.users=成员
+Role.members=成员
+Role.creator=创建人
+Role.domain=业务系统
+Role.envIds=业务场景
+Role.enabled=是否启用
+Role.remark=备注
 
 Group=组
+Group.name=名称
 Group.properties=组属性
 Group.roles=组的默认角色列表
+Group.org=组织
+Group.manager=管理员
 
 GroupMember=组成员
+GroupMember.user=用户
+GroupMember.group=组
 GroupMember.member=成员
 GroupMember.granter=可授权
 GroupMember.manager=可管理
 
 Root=根用户
+Root.user=用户
+Root.domain=业务系统
+
+EnvProfile=用户场景配置
+EnvProfile.user=用户
+EnvProfile.domain=业务系统
+EnvProfile.env=业务场景
+EnvProfile.properties=属性
 
 Profile=用户配置
+Profile.properties=用户配置-属性
 
 Avatar=头像
+Avatar.user=用户
 Avatar.image=图像
 Avatar.fileName=文件名
 Avatar.filePath=文件路径
@@ -59,10 +89,16 @@ Dimension.required=是否必须
 Dimension.valueType=值类型
 Dimension.properties=其他属性
 
-Profile=用户配置
-Profile.properties=用户配置-属性
+Depart=部门
+Depart.code=代码
+Depart.name=名称
+Depart.org=组织
+Depart.shortName=简称
+
+MemberShip=成员身份
 
 PasswordConfig=密码配置
+PasswordConfig.domain=业务系统
 PasswordConfig.minlen=密码的最小长度
 PasswordConfig.maxlen=密码的最大长度
 PasswordConfig.mindays=密码可更改的最小天数

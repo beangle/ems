@@ -1,0 +1,1298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<db engine="PostgreSQL" version="UNDEFINED">
+  <schemas>
+    <schema name="ems">
+      <tables>
+        <table name="blb_blob_metas" comment="文件信息">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="file_path" type="varchar(400)" nullable="false" comment="文件路径"/>
+            <column name="file_size" type="bigint" nullable="false" defaultValue="0" comment="大小"/>
+            <column name="media_type" type="varchar(100)" nullable="false" comment="文件类型"/>
+            <column name="name" type="varchar(300)" nullable="false" comment="名称"/>
+            <column name="owner" type="varchar(100)" nullable="false" comment="所有者"/>
+            <column name="profile_id" type="integer" nullable="false" comment="文件配置ID"/>
+            <column name="sha" type="varchar(255)" nullable="false" comment="Sha"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_b8cqbowbec39t4blmd3n8n074" columns="id"/>
+            <foreign-key name="fk_d3yxkna364mf4mkit1c43alo3" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_fwsivfrcv3dueipw2679kvikl" column="profile_id" referenced-table="ems.blb_profiles" referenced-column="id"/>
+            <unique-key name="uk_6f0sq8k4w2vuw9r5qhdy1tjud" columns="profile_id,file_path"/>
+          </constraints>
+        </table>
+        <table name="blb_profiles" comment="文件配置">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="base" type="varchar(100)" nullable="false" comment="基础路径"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_4xq2aas8pre2k4gnyha4rrdc6" columns="id"/>
+            <foreign-key name="fk_e60r4lcpbwolub0gn2xetoolo" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_app_groups" comment="应用分组">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
+            <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="short_title" type="varchar(255)" nullable="false" comment="简称"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_j2j2ecvy0xos5dyc5bpvukvoo" columns="id"/>
+            <foreign-key name="fk_is79tynyqwd3tjp6imw4waxa2" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_app_group" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="cfg_app_types" comment="应用类型">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_tlb9nukbd5nakxiqdrb4lrrkg" columns="id"/>
+            <unique-key name="uk_5qmq81gd1xna4xeynxkdueqgu" columns="name"/>
+          </constraints>
+        </table>
+        <table name="cfg_apps" comment="应用">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_type_id" type="integer" nullable="false" comment="应用类型ID"/>
+            <column name="base" type="varchar(255)" nullable="false" comment="上下文"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="group_id" type="integer" nullable="false" comment="应用分组ID"/>
+            <column name="indexno" type="varchar(50)" nullable="false" comment="排序索引号"/>
+            <column name="logo_url" type="varchar(255)" comment="应用LOGO"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="应用名称"/>
+            <column name="nav_style" type="varchar(50)" comment="导航风格"/>
+            <column name="remark" type="varchar(200)" comment="备注"/>
+            <column name="title" type="varchar(100)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_n9cedywnexu7mm5vrohyngxhi" columns="id"/>
+            <foreign-key name="fk_oyclhhl4b5hmp6irr0gcs9xbx" column="app_type_id" referenced-table="ems.cfg_app_types" referenced-column="id"/>
+            <foreign-key name="fk_63b8qir7o0ra6nvjgbdxom1xp" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_e9dlk79vqcr6h7s4j94xd3ur2" column="group_id" referenced-table="ems.cfg_app_groups" referenced-column="id"/>
+            <unique-key name="idx_app" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="cfg_businesses" comment="业务类型">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="code" type="varchar(50)" nullable="false" comment="代码"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_1gjbnmsu7g40waqd6fhqyvhg7" columns="id"/>
+            <foreign-key name="fk_ex14d744riotflg8he0y5l3lw" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_credentials" comment="凭证">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="expired_at" type="timestamptz" nullable="false" comment="过期时间"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="password" type="varchar(200)" nullable="false" comment="密码"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="username" type="varchar(100)" nullable="false" comment="用户名"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_jqt3pjl6myepf89yf4vpl69lv" columns="id"/>
+            <foreign-key name="fk_83dcjrkal5a4f5caten4qsov0" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_credential" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="cfg_data_sources" comment="数据源">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="credential_id" type="integer" nullable="false" comment="凭证ID"/>
+            <column name="db_id" type="integer" nullable="false" comment="数据库ID"/>
+            <column name="maximum_pool_size" type="integer" nullable="false" defaultValue="0" comment="最大连接数"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="remark" type="varchar(200)" comment="备注"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_hbg82rakrkc2sifjhhimm05p2" columns="id"/>
+            <foreign-key name="fk_rncmj0cj4iyxjolva8oviqk4w" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_lkns1b89bk1r1gtftfflnl1r5" column="credential_id" referenced-table="ems.cfg_credentials" referenced-column="id"/>
+            <foreign-key name="fk_bdy20umf8o7qawut9sttmynfj" column="db_id" referenced-table="ems.cfg_dbs" referenced-column="id"/>
+            <unique-key name="idx_datasource" columns="app_id,name"/>
+          </constraints>
+          <indexes>
+            <index name="idx_hoy2tgjrxebjvagxqmx2si8ni" columns="app_id"/>
+          </indexes>
+        </table>
+        <table name="cfg_dbs" comment="数据库">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="database_name" type="varchar(100)" nullable="false" comment="数据库名"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="driver" type="varchar(100)" nullable="false" comment="驱动"/>
+            <column name="name" type="varchar(100)" nullable="false" unique="true" comment="名称"/>
+            <column name="port_number" type="integer" nullable="false" defaultValue="0" comment="端口"/>
+            <column name="remark" type="varchar(200)" comment="备注"/>
+            <column name="server_name" type="varchar(100)" nullable="false" comment="服务器地址"/>
+            <column name="url" type="varchar(200)" comment="Java数据库连接字符串"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_60bu45dxjo2fv64icid8g60dr" columns="id"/>
+            <foreign-key name="fk_tcq34ws060gnkcrmxw5ik8y19" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="uk_knjsj49986iis6p9nfvlrink6" columns="name"/>
+            <unique-key name="idx_db" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="cfg_dbs_properties" comment="数据源属性">
+          <columns>
+            <column name="db_id" type="integer" nullable="false" comment="数据库ID"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="name"/>
+            <column name="value_" type="varchar(255)" nullable="false" comment="数据源属性"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_4hn9p4sx2tba0kn8c5m68bn5e" columns="db_id,value_,name"/>
+            <foreign-key name="fk_2v5t7l6nx0rw0e4s5uqqs6nha" column="db_id" referenced-table="ems.cfg_dbs" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_pgw44gaecxm9xuoof339kk0lk" columns="db_id"/>
+          </indexes>
+        </table>
+        <table name="cfg_domains" comment="业务系统">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="en_title" type="varchar(255)" nullable="false" comment="英文标题"/>
+            <column name="hostname" type="varchar(100)" nullable="false" unique="true" comment="主机域名"/>
+            <column name="logo_url" type="varchar(255)" nullable="false" comment="logo 网址"/>
+            <column name="name" type="varchar(100)" nullable="false" unique="true" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="sashub_base" type="varchar(255)" comment="SasHub的地址"/>
+            <column name="sashub_profile" type="varchar(255)" comment="SasHub上注册的key"/>
+            <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_endu524c1sjo6rfnwll8j7lgl" columns="id"/>
+            <foreign-key name="fk_sv9p6l4dip3iufo95oq8moq7s" column="org_id" referenced-table="ems.cfg_orgs" referenced-column="id"/>
+            <unique-key name="uk_4acqortg7kuo0b9i3cnefdct1" columns="name"/>
+            <unique-key name="uk_prodovqul9i18esekttaynh92" columns="hostname"/>
+            <unique-key name="idx_domain" columns="org_id,hostname"/>
+          </constraints>
+        </table>
+        <table name="cfg_files" comment="项目文件">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="file_path" type="varchar(255)" nullable="false" comment="路径"/>
+            <column name="file_size" type="integer" nullable="false" defaultValue="0" comment="文件大小"/>
+            <column name="media_type" type="varchar(255)" nullable="false" comment="类型"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_mqdje4swyctoaf3fghs8nh2h0" columns="id"/>
+            <foreign-key name="fk_dol7duk700r2xmhltnqw2yac4" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <unique-key name="uk_c7cyjywlvbtlmsdanw03y0syi" columns="app_id,name"/>
+          </constraints>
+        </table>
+        <table name="cfg_orgs" comment="组织">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="code" type="varchar(50)" nullable="false" unique="true" comment="代码"/>
+            <column name="logo_url" type="varchar(200)" nullable="false" comment="组织Logo"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="short_name" type="varchar(100)" nullable="false" comment="简称"/>
+            <column name="www_url" type="varchar(200)" nullable="false" comment="网站地址"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_p2falj90tsjnuf6cul4dtnwbr" columns="id"/>
+            <unique-key name="uk_ry9aq5agfqx7nvjg1j7mh7ejl" columns="code"/>
+          </constraints>
+        </table>
+        <table name="cfg_portalets" comment="页面小部件">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="colspan" type="integer" nullable="false" defaultValue="0" comment="列数"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="idx" type="integer" nullable="false" defaultValue="0" comment="序号"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="row_index" type="integer" nullable="false" defaultValue="0" comment="行号"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+            <column name="url" type="varchar(255)" nullable="false" comment="地址"/>
+            <column name="using_iframe" type="boolean" nullable="false" defaultValue="false" comment="是否支持iframe"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_lusy0ot4df8ad2ogi52ud31x0" columns="id"/>
+            <foreign-key name="fk_d7vgg4tpsjapsi0u7n9swxh4b" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_portalets_categories" comment="面向用户">
+          <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="portalet_id" type="integer" nullable="false" comment="页面小部件ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_3y5ll75dv63sbfxrt5djc3vst" columns="portalet_id,category_id"/>
+            <foreign-key name="fk_4vtds4chbhscr97qd4c8o3qo1" column="portalet_id" referenced-table="ems.cfg_portalets" referenced-column="id"/>
+            <foreign-key name="fk_1wyav9ml67vi1urrrm6ri1w9o" column="category_id" referenced-table="ems.usr_categories" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_opepxkjkhbladb0xpr1872yea" columns="portalet_id"/>
+          </indexes>
+        </table>
+        <table name="cfg_rule_metas" comment="规则元数据">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="business_id" type="bigint" nullable="false" comment="业务类型ID"/>
+            <column name="description" type="varchar(500)" nullable="false" comment="描述"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(50)" nullable="false" comment="名称"/>
+            <column name="title" type="varchar(80)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_luomjgmjug1xl0nepih2e6bp7" columns="id"/>
+            <foreign-key name="fk_q9iyporl5em7o42j8latabkuy" column="business_id" referenced-table="ems.cfg_businesses" referenced-column="id"/>
+            <foreign-key name="fk_s7cqedp8bk5xjejn7w1t9ci7d" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_rule_param_metas" comment="规则参数元数据">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="data_type" type="varchar(255)" nullable="false" comment="数据类型"/>
+            <column name="description" type="varchar(200)" nullable="false" comment="描述"/>
+            <column name="name" type="varchar(50)" nullable="false" comment="名称"/>
+            <column name="rule_meta_id" type="bigint" nullable="false" comment="规则元数据ID"/>
+            <column name="title" type="varchar(80)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_72klsho25nxj48adlsbsvxw24" columns="id"/>
+            <foreign-key name="fk_3oe0coon11gr1em78qk42jkic" column="rule_meta_id" referenced-table="ems.cfg_rule_metas" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_a9rxcvrr8vs3dxx35pdq68s52" columns="rule_meta_id"/>
+          </indexes>
+        </table>
+        <table name="cfg_rule_params" comment="规则参数">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="contents" type="varchar(500)" nullable="false" comment="值"/>
+            <column name="meta_id" type="bigint" nullable="false" comment="规则参数元数据ID"/>
+            <column name="rule_id" type="bigint" nullable="false" comment="规则ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_ohdu0agjno63noube9jnd03x2" columns="id"/>
+            <foreign-key name="fk_n8bstrd9mjph73e4ksk0il11t" column="meta_id" referenced-table="ems.cfg_rule_param_metas" referenced-column="id"/>
+            <foreign-key name="fk_lj1ft5ot3s4dih9u4ftmpd8ta" column="rule_id" referenced-table="ems.cfg_rules" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_qkjt0l48d4fxolr2kc23abi0k" columns="rule_id"/>
+          </indexes>
+        </table>
+        <table name="cfg_rules" comment="规则">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="meta_id" type="bigint" nullable="false" comment="规则元数据ID"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="profile_id" type="varchar(255)" nullable="false" comment="场景配置ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_nqb0kg717ty66bcdlbevgg40w" columns="id"/>
+            <foreign-key name="fk_4yd4oon1ktw2mnonuu2sc6wyh" column="meta_id" referenced-table="ems.cfg_rule_metas" referenced-column="id"/>
+            <foreign-key name="fk_q770kf3u63q4uiwlhe4gvsfxy" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_text_bundles" comment="文本包">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="locale" type="varchar(255)" nullable="false" comment="语言"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="texts" type="text" nullable="false" comment="文本"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_7ckmfs80yl3vy0rb4h5kw0wy7" columns="id"/>
+            <foreign-key name="fk_hhs5wguuyu92ldedy1x9gqrx9" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_themes" comment="主题">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="grid_border_color" type="varchar(15)" nullable="false" comment="表格边框颜色"/>
+            <column name="gridbar_bg_color" type="varchar(15)" nullable="false" comment="表格工具栏背景颜色"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="navbar_bg_color" type="varchar(15)" nullable="false" comment="导航栏背景颜色"/>
+            <column name="primary_color" type="varchar(255)" nullable="false" comment="主要颜色"/>
+            <column name="search_bg_color" type="varchar(15)" nullable="false" comment="查询框背景颜色"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_8cgpd1jxx29su0g416k4uqq7h" columns="id"/>
+            <foreign-key name="fk_n65ws6o7yadgifeokpa33oj1r" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="cfg_third_party_apps" comment="ThirdPartyApp?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="code" type="varchar(50)" nullable="false" comment="代码"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="redirect_uri" type="varchar(500)" nullable="false" comment="redirectUri?"/>
+            <column name="secret" type="varchar(100)" nullable="false" comment="secret?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_rrfs9bcq1gl1dhw3894kitrn5" columns="id"/>
+            <foreign-key name="fk_ltk3pyvq43p809xogsm0axum2" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="jb_cron_task_logs" comment="CronTaskLog?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="duration" type="bigint" nullable="false" comment="duration?"/>
+            <column name="execute_at" type="timestamptz" nullable="false" comment="executeAt?"/>
+            <column name="result_file_path" type="varchar(500)" nullable="false" comment="resultFilePath?"/>
+            <column name="status_code" type="integer" nullable="false" defaultValue="0" comment="statusCode?"/>
+            <column name="task_id" type="bigint" nullable="false" comment="CronTask?ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_11be0fdugwgb8ikd3di6piful" columns="id"/>
+            <foreign-key name="fk_5dmjcu6wn71ky8hu8vo1s804w" column="task_id" referenced-table="ems.jb_cron_tasks" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="jb_cron_tasks" comment="CronTask?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="command" type="varchar(500)" nullable="false" comment="command?"/>
+            <column name="description" type="varchar(500)" nullable="false" comment="description?"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="duration" type="bigint" comment="duration?"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="enabled?"/>
+            <column name="expression" type="varchar(100)" nullable="false" comment="expression?"/>
+            <column name="last_execute_at" type="timestamptz" comment="lastExecuteAt?"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="status_code" type="integer" comment="statusCode?"/>
+            <column name="target" type="varchar(500)" nullable="false" comment="target?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_ekeyej7cs8cyenoef6fjv6qo8" columns="id"/>
+            <foreign-key name="fk_2i89r67kmnxb0im32x3ftx4qr" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_cron_task" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="oa_docs" comment="文档">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="archived" type="boolean" nullable="false" defaultValue="false" comment="是否归档"/>
+            <column name="file_path" type="varchar(255)" nullable="false" comment="路径"/>
+            <column name="file_size" type="integer" nullable="false" defaultValue="0" comment="大小"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="upload_by_id" type="bigint" nullable="false" comment="上传人ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_fc7xgtw2ph01nxnly6xdjj2ck" columns="id"/>
+            <foreign-key name="fk_t2qoocyx1xwbyo7ex0ii8hlij" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_90rt2b8ko9dtmfagl9j5jkdj5" column="upload_by_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_docs_categories" comment="适用用户类别">
+          <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="doc_id" type="bigint" nullable="false" comment="文档ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_t2xiuni4rx9kqxk3tl6ho27m0" columns="doc_id,category_id"/>
+            <foreign-key name="fk_c6dgseyhj0qohbadwxf5utpqq" column="doc_id" referenced-table="ems.oa_docs" referenced-column="id"/>
+            <foreign-key name="fk_5yuw0si9jf4m36tb23ngmbjuj" column="category_id" referenced-table="ems.usr_categories" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_e3q5c6y7hn6lgi1oyolmlrpk8" columns="doc_id"/>
+          </indexes>
+        </table>
+        <table name="oa_done_todoes" comment="DoneTodo?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:assigned"/>
+            <column name="business_id" type="bigint" nullable="false" comment="业务类型ID"/>
+            <column name="business_key" type="varchar(100)" nullable="false" comment="businessKey?"/>
+            <column name="complete_at" type="timestamptz" nullable="false" comment="completeAt?"/>
+            <column name="contents" type="varchar(1000)" nullable="false" comment="contents?"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="title" type="varchar(200)" nullable="false" comment="title?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="url" type="varchar(300)" nullable="false" comment="url?"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_mn26km960qlp4vdudumww56lb" columns="id"/>
+            <foreign-key name="fk_eaosqeohnlnbqojiknd978e78" column="business_id" referenced-table="ems.cfg_businesses" referenced-column="id"/>
+            <foreign-key name="fk_rb0lmg210x3o2ym1qmeuyx0u1" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_8echx7ncxfciwfy7v4gy3vli2" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_qg5tig2qcku0ai7jqajjre0xj" columns="user_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_active_processes" comment="FlowActiveProcess?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="business_key" type="varchar(255)" nullable="false" comment="businessKey?"/>
+            <column name="flow_id" type="bigint" nullable="false" comment="Flow?ID"/>
+            <column name="initiator_id" type="bigint" comment="用户ID"/>
+            <column name="start_at" type="timestamptz" nullable="false" comment="startAt?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_samobwkymr25sieibooxk8i82" columns="id"/>
+            <foreign-key name="fk_gre2ewl6h82gdxp6lewa3c9d6" column="initiator_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_l1nbrxve8ujxreeopgw0976fi" column="flow_id" referenced-table="ems.oa_flows" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_flow_active_tasks" comment="FlowActiveTask?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="due_time" type="timestamptz" comment="dueTime?"/>
+            <column name="idx" type="integer" nullable="false" defaultValue="0" comment="idx?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="process_id" type="bigint" nullable="false" comment="FlowActiveProcess?ID"/>
+            <column name="start_at" type="timestamptz" nullable="false" comment="startAt?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_le4po92kywf3ojowai32ckn4y" columns="id"/>
+            <foreign-key name="fk_sg1g40urx3449s4q2naajushb" column="process_id" referenced-table="ems.oa_flow_active_processes" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_8lf3ax3rnyt417d5xllh2fycd" columns="process_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_active_tasks_assignees" comment="assignees?">
+          <columns>
+            <column name="flow_active_task_id" type="bigint" nullable="false" comment="FlowActiveTask?ID"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_d6macidl90syk0lcjblvyr8cx" columns="flow_active_task_id,user_id"/>
+            <foreign-key name="fk_eahd7mkxm37shnngee8qgkjqk" column="flow_active_task_id" referenced-table="ems.oa_flow_active_tasks" referenced-column="id"/>
+            <foreign-key name="fk_ptscc0y4mxy965mo3ogfqi469" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_d6balk6rnbbnkrj7sdsotlhhq" columns="flow_active_task_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_activities" comment="FlowActivity?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="assignees" type="varchar(300)" comment="assignees?"/>
+            <column name="depart" type="varchar(50)" comment="depart?"/>
+            <column name="flow_id" type="bigint" nullable="false" comment="Flow?ID"/>
+            <column name="guard" type="varchar(255)" comment="guard?"/>
+            <column name="guard_comment" type="varchar(255)" comment="guardComment?"/>
+            <column name="idx" type="integer" nullable="false" defaultValue="0" comment="idx?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_65sx3h9xpdmkd2fh6taiqct3x" columns="id"/>
+            <foreign-key name="fk_qusjippmiefm8bsufhctiwfcd" column="flow_id" referenced-table="ems.oa_flows" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_pioa2b6oii20pk1hcyqrhapqg" columns="flow_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_activities_groups" comment="groups?">
+          <columns>
+            <column name="flow_activity_id" type="bigint" nullable="false" comment="FlowActivity?ID"/>
+            <column name="group_id" type="integer" nullable="false" comment="组ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_bu5sb3dylrw46u4nevi81m7g3" columns="flow_activity_id,group_id"/>
+            <foreign-key name="fk_74e6kph075bo1j64ffe0a3qdj" column="flow_activity_id" referenced-table="ems.oa_flow_activities" referenced-column="id"/>
+            <foreign-key name="fk_t0cp09971k8p4ripfg59ppfem" column="group_id" referenced-table="ems.usr_groups" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_3is6kryoxuel14a1axyyk9xd3" columns="flow_activity_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_attachments" comment="FlowAttachment?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="file_path" type="varchar(500)" nullable="false" comment="filePath?"/>
+            <column name="file_size" type="bigint" nullable="false" defaultValue="0" comment="fileSize?"/>
+            <column name="name" type="varchar(300)" nullable="false" comment="name?"/>
+            <column name="task_id" type="bigint" nullable="false" comment="FlowTask?ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_l0ch5m00xqxxosy5tbglcb29e" columns="id"/>
+            <foreign-key name="fk_q6pld85aopyiem4ebxp0rgvvh" column="task_id" referenced-table="ems.oa_flow_tasks" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_iog92udqfb2mjabua8ymmv3ri" columns="task_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_comments" comment="FlowComment?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="messages" type="varchar(4000)" nullable="false" comment="messages?"/>
+            <column name="task_id" type="bigint" nullable="false" comment="FlowTask?ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_r28qro3eeiewfaid733wom7vi" columns="id"/>
+            <foreign-key name="fk_5f0po8b40wqmqpveqwqy6rw1" column="task_id" referenced-table="ems.oa_flow_tasks" referenced-column="id"/>
+            <foreign-key name="fk_3uhel3ojloiyjf27357dtmma5" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_h1pyf3gpxn32552odmaxmnx6v" columns="task_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flow_processes" comment="FlowProcess?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:assigned"/>
+            <column name="business_key" type="varchar(255)" nullable="false" comment="businessKey?"/>
+            <column name="end_at" type="timestamptz" comment="endAt?"/>
+            <column name="env_json" type="varchar(1000)" nullable="false" comment="envJson?"/>
+            <column name="flow_id" type="bigint" nullable="false" comment="Flow?ID"/>
+            <column name="initiator_id" type="bigint" comment="用户ID"/>
+            <column name="start_at" type="timestamptz" nullable="false" comment="startAt?"/>
+            <column name="status" type="integer" nullable="false" comment="status?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_a4vw1icdpl9fd0lidn46ov43x" columns="id"/>
+            <foreign-key name="fk_mqb25lqp56l1ax6ojeqbw6qv9" column="initiator_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_dup2u538jii01ojp2oetnvq4y" column="flow_id" referenced-table="ems.oa_flows" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_flow_tasks" comment="FlowTask?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:assigned"/>
+            <column name="assignee_id" type="bigint" comment="用户ID"/>
+            <column name="assignees" type="varchar(500)" comment="assignees?"/>
+            <column name="data_json" type="varchar(255)" nullable="false" comment="dataJson?"/>
+            <column name="end_at" type="timestamptz" comment="endAt?"/>
+            <column name="idx" type="integer" nullable="false" defaultValue="0" comment="idx?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="process_id" type="bigint" nullable="false" comment="FlowProcess?ID"/>
+            <column name="start_at" type="timestamptz" nullable="false" comment="startAt?"/>
+            <column name="status" type="integer" nullable="false" comment="status?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_ix1l2ynxneogn9xxg9poq7q0k" columns="id"/>
+            <foreign-key name="fk_9ggqsib97ur6q5eknyfbqhi8g" column="process_id" referenced-table="ems.oa_flow_processes" referenced-column="id"/>
+            <foreign-key name="fk_pir738ipn6mwco1r8e7q30q35" column="assignee_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_dyibrhu4b7xeyne2djc7bcgpc" columns="process_id"/>
+          </indexes>
+        </table>
+        <table name="oa_flows" comment="Flow?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="business_id" type="bigint" nullable="false" comment="业务类型ID"/>
+            <column name="code" type="varchar(255)" nullable="false" comment="代码"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="env_json" type="varchar(2000)" nullable="false" comment="envJson?"/>
+            <column name="flow_json" type="varchar(8000)" nullable="false" comment="flowJson?"/>
+            <column name="form_url" type="varchar(255)" nullable="false" comment="formUrl?"/>
+            <column name="guard_json" type="varchar(300)" nullable="false" comment="guardJson?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="profile_id" type="varchar(255)" nullable="false" comment="profileId?"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="result_message_id" type="bigint" comment="MessageTemplate?ID"/>
+            <column name="todo_message_id" type="bigint" comment="MessageTemplate?ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_a73xr38hwrn5eq0cms9vtaojj" columns="id"/>
+            <foreign-key name="fk_l18hoer6jc25qw39fh0tlj9ns" column="business_id" referenced-table="ems.cfg_businesses" referenced-column="id"/>
+            <foreign-key name="fk_iv50dd1gsy3vgw1724b46opu8" column="result_message_id" referenced-table="ems.oa_message_templates" referenced-column="id"/>
+            <foreign-key name="fk_outg00yy45srrii7khxlld516" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_5gl9r4f9d9dnr0qcfnikd7gvu" column="todo_message_id" referenced-table="ems.oa_message_templates" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_message_templates" comment="MessageTemplate?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="business_id" type="bigint" nullable="false" comment="业务类型ID"/>
+            <column name="contents" type="varchar(3000)" nullable="false" comment="contents?"/>
+            <column name="delay_minutes" type="integer" nullable="false" defaultValue="0" comment="delayMinutes?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="title" type="varchar(400)" nullable="false" comment="title?"/>
+            <column name="todo" type="boolean" nullable="false" defaultValue="false" comment="todo?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="variables" type="varchar(255)" comment="variables?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_ns2rk4q0gl4ls5ctn6j6j1b38" columns="id"/>
+            <foreign-key name="fk_l4lg1f9pwnfv67wvqfrtfx68n" column="business_id" referenced-table="ems.cfg_businesses" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_messages" comment="消息">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="contents" type="varchar(1000)" nullable="false" comment="内容"/>
+            <column name="recipient_id" type="bigint" nullable="false" comment="接受人ID"/>
+            <column name="send_from" type="varchar(255)" nullable="false" comment="sendFrom?"/>
+            <column name="sender_id" type="bigint" comment="发送人ID"/>
+            <column name="sent_at" type="timestamptz" nullable="false" comment="发送时间"/>
+            <column name="status" type="integer" nullable="false" defaultValue="0" comment="状态"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_72sarmx45o88vbj3vxqpxxuic" columns="id"/>
+            <foreign-key name="fk_nilhuywf0n9f5t8200g70rvn4" column="sender_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_3u7wk80g0cui9ra3twa6scw36" column="recipient_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_dbubbjvyiyhwnbhtv54x8ac9f" columns="sender_id"/>
+            <index name="idx_k9ktx30dx0i14ufejqmt226ia" columns="recipient_id"/>
+          </indexes>
+        </table>
+        <table name="oa_news" comment="新闻">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="archived" type="boolean" nullable="false" defaultValue="false" comment="是否归档"/>
+            <column name="contents" type="text" comment="内容"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="published_on" type="date" nullable="false" comment="发布日期"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+            <column name="url" type="varchar(255)" nullable="false" comment="链接地址"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_eal2o84cuiediaeu3jpbj2rw8" columns="id"/>
+            <foreign-key name="fk_sa7idffyughpqt5fso3n95y77" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_notice_attachments" comment="NoticeAttachment?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="embedded" type="boolean" nullable="false" defaultValue="false" comment="embedded?"/>
+            <column name="file_path" type="varchar(255)" nullable="false" comment="filePath?"/>
+            <column name="file_size" type="integer" nullable="false" defaultValue="0" comment="fileSize?"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="name?"/>
+            <column name="notice_id" type="bigint" nullable="false" comment="公告ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_4ixhtw4naipbw9wyvufbpdgf5" columns="id"/>
+            <foreign-key name="fk_hp6sictlrr7msflwujka2wgmg" column="notice_id" referenced-table="ems.oa_notices" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_ih905m5f9dsqkmy3xpl8b30yn" columns="notice_id"/>
+          </indexes>
+        </table>
+        <table name="oa_notices" comment="公告">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="archived" type="boolean" nullable="false" defaultValue="false" comment="是否归档"/>
+            <column name="auditor_id" type="bigint" comment="审核人ID"/>
+            <column name="begin_on" type="date" nullable="false" comment="开始日期"/>
+            <column name="contents" type="text" nullable="false" comment="内容"/>
+            <column name="created_at" type="timestamptz" nullable="false" comment="创建时间"/>
+            <column name="end_on" type="date" nullable="false" comment="结束日期"/>
+            <column name="issuer" type="varchar(40)" nullable="false" comment="发布者"/>
+            <column name="operator_id" type="bigint" nullable="false" comment="用户ID"/>
+            <column name="popup" type="boolean" nullable="false" defaultValue="false" comment="是否弹窗"/>
+            <column name="published_at" type="timestamptz" comment="发布日期"/>
+            <column name="status" type="integer" nullable="false" comment="状态"/>
+            <column name="sticky" type="boolean" nullable="false" defaultValue="false" comment="是否置顶"/>
+            <column name="title" type="varchar(255)" nullable="false" comment="标题"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_fd9lrfm32gdx34wnf5tkegwri" columns="id"/>
+            <foreign-key name="fk_9ynb83bqk81v1f63byns5varx" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_liq6cinvsbnvimuij51bi9cc9" column="auditor_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_en5a6ud40d1v0nd77y7vonh2p" column="operator_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_notices_categories" comment="适用用户类别">
+          <columns>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="notice_id" type="bigint" nullable="false" comment="公告ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_ptniioqdxghbgxfb5nuxa8sok" columns="notice_id,category_id"/>
+            <foreign-key name="fk_sw9cowmvwom37orfr3mbeu7nu" column="notice_id" referenced-table="ems.oa_notices" referenced-column="id"/>
+            <foreign-key name="fk_9w0mcwh7o7n8ic5ptskrlo7ui" column="category_id" referenced-table="ems.usr_categories" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_m9p3e4v2m389xtm186dgaomkp" columns="notice_id"/>
+          </indexes>
+        </table>
+        <table name="oa_sensitive_words" comment="敏感词汇">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="contents" type="varchar(30)" nullable="false" comment="敏感词汇列表"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_pjoqu9l57q76r8j9m8ohsd7bv" columns="id"/>
+            <foreign-key name="fk_bvusulink71q1pbjckap6cqaw" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="oa_signatures" comment="Signature?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="file_path" type="varchar(255)" nullable="false" comment="filePath?"/>
+            <column name="file_size" type="integer" nullable="false" defaultValue="0" comment="fileSize?"/>
+            <column name="media_type" type="varchar(255)" nullable="false" comment="mediaType?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_dfbyistwcn4ddt5f4967c4lp4" columns="id"/>
+            <foreign-key name="fk_e671rwg5fykuy6c12rk9yuk9o" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <unique-key name="uk_hk2c47ht0vh6ti15lnfmvfxc9" columns="user_id"/>
+          </constraints>
+        </table>
+        <table name="oa_todoes" comment="待办">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="business_id" type="bigint" nullable="false" comment="业务类型ID"/>
+            <column name="business_key" type="varchar(100)" nullable="false" comment="businessKey?"/>
+            <column name="contents" type="varchar(1000)" nullable="false" comment="内容"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="done" type="boolean" nullable="false" defaultValue="false" comment="done?"/>
+            <column name="sms_status" type="integer" nullable="false" defaultValue="0" comment="smsStatus?"/>
+            <column name="title" type="varchar(200)" nullable="false" comment="title?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="url" type="varchar(300)" nullable="false" comment="url?"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_9miwvbk7lnym5j8gloxvye2ov" columns="id"/>
+            <foreign-key name="fk_8jml9fdwxe7fyqk5o1btqa1xt" column="business_id" referenced-table="ems.cfg_businesses" referenced-column="id"/>
+            <foreign-key name="fk_a4r41j3r11fk2kdxhadlyp730" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_bw0bv219t3rs9h4xgycxu1kb5" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_7wu1nir9kwrxh80w8l9jmvubv" columns="user_id"/>
+          </indexes>
+        </table>
+        <table name="se_app_permissions" comment="应用权限">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="actions" type="varchar(500)" comment="操作"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="begin_at" type="timestamptz" nullable="false" comment="生效时间"/>
+            <column name="end_at" type="timestamptz" comment="失效时间"/>
+            <column name="resource_id" type="integer" nullable="false" comment="功能资源ID"/>
+            <column name="restrictions" type="varchar(500)" comment="限制条件"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_d4wk578yt4vxs2wsxqw6wi44r" columns="id"/>
+            <foreign-key name="fk_5g13fgs1ppr4cwbs73uf27ny" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_56n4sdkcac0n09w0qatuiryog" column="resource_id" referenced-table="ems.se_func_resources" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="se_data_permissions" comment="数据权限">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="actions" type="varchar(255)" comment="操作"/>
+            <column name="app_id" type="integer" comment="应用ID"/>
+            <column name="attrs" type="varchar(255)" comment="属性"/>
+            <column name="begin_at" type="timestamptz" nullable="false" comment="开始时间"/>
+            <column name="description" type="varchar(100)" nullable="false" comment="描述"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="end_at" type="timestamptz" comment="结束时间"/>
+            <column name="filters" type="varchar(600)" nullable="false" comment="过滤条件"/>
+            <column name="func_resource_id" type="integer" comment="功能资源ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="resource_id" type="integer" nullable="false" comment="数据资源ID"/>
+            <column name="restrictions" type="varchar(255)" comment="限制条件"/>
+            <column name="role_id" type="integer" comment="角色ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_n3ngio8x079e9p038kn9208we" columns="id"/>
+            <foreign-key name="fk_jssv5ly5wjo02pvfmfputfqg3" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_ftnaay414xukmne6di331jcy0" column="role_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+            <foreign-key name="fk_8m9d4petjo64ktvo773itnyg8" column="resource_id" referenced-table="ems.se_data_resources" referenced-column="id"/>
+            <foreign-key name="fk_9qysha56tkvqd1vxq7yabsnft" column="func_resource_id" referenced-table="ems.se_func_resources" referenced-column="id"/>
+            <foreign-key name="fk_3iigcb47b6u4lk7600qu9mped" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="se_data_resources" comment="数据资源">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="actions" type="varchar(200)" comment="操作"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(200)" nullable="false" comment="名称"/>
+            <column name="remark" type="varchar(200)" comment="备注"/>
+            <column name="scope_" type="integer" nullable="false" comment="范围"/>
+            <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
+            <column name="type_name" type="varchar(200)" nullable="false" comment="类型"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_m2lwng0xtvh944i0suv865sy" columns="id"/>
+            <foreign-key name="fk_dk50vpqsida5h1271dv47imk6" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="se_func_permissions" comment="功能权限">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="actions" type="varchar(100)" comment="操作"/>
+            <column name="begin_at" type="timestamptz" nullable="false" comment="生效时间"/>
+            <column name="end_at" type="timestamptz" comment="失效时间"/>
+            <column name="remark" type="varchar(100)" comment="备注"/>
+            <column name="resource_id" type="integer" nullable="false" comment="功能资源ID"/>
+            <column name="restrictions" type="varchar(100)" comment="限制条件"/>
+            <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_2oifsqty75lclhgfdusglmk4d" columns="id"/>
+            <foreign-key name="fk_6f381rw1cmkb200ben5c76o" column="role_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+            <foreign-key name="fk_ao9ut2csq2k21nx7e8t2bjeuj" column="resource_id" referenced-table="ems.se_func_resources" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_fy9icugi55g32afdp7dpya5tl" columns="role_id"/>
+          </indexes>
+        </table>
+        <table name="se_func_resources" comment="功能资源">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="actions" type="varchar(200)" comment="操作"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="name" type="varchar(200)" nullable="false" comment="名称"/>
+            <column name="remark" type="varchar(200)" comment="备注"/>
+            <column name="scope_" type="integer" nullable="false" comment="范围"/>
+            <column name="title" type="varchar(200)" nullable="false" comment="标题"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_glt9bssuurgayvpnxjupcsfqm" columns="id"/>
+            <foreign-key name="fk_3ju8wtwtb6byhutjnfgej46ss" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="se_menus" comment="菜单">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="en_name" type="varchar(100)" nullable="false" comment="英文标题"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="entry_id" type="integer" comment="功能资源ID"/>
+            <column name="fonticon" type="varchar(255)" comment="字体图标"/>
+            <column name="indexno" type="varchar(50)" nullable="false" comment="顺序号"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="params" type="varchar(200)" comment="参数"/>
+            <column name="parent_id" type="integer" comment="菜单ID"/>
+            <column name="remark" type="varchar(100)" comment="备注"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_c3931pkfbpf3uerudht53n8sj" columns="id"/>
+            <foreign-key name="fk_m6o2fdnpl1ngm724sdy6gmptb" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_sk5i2hu25xymere80g1rbn7uv" column="parent_id" referenced-table="ems.se_menus" referenced-column="id"/>
+            <foreign-key name="fk_9j0v9w5h4bij1ajoh8febi4wh" column="entry_id" referenced-table="ems.se_func_resources" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_fdatks2vdh1idedyu5f6fb55l" columns="app_id"/>
+            <index name="idx_chjpjbdcov744gg5lq2de7rx3" columns="entry_id"/>
+            <index name="idx_epksu8lgd3h8wadnbbot7b7rx" columns="parent_id"/>
+          </indexes>
+        </table>
+        <table name="se_menus_resources" comment="菜单关联资源">
+          <columns>
+            <column name="func_resource_id" type="integer" nullable="false" comment="功能资源ID"/>
+            <column name="menu_id" type="integer" nullable="false" comment="菜单ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_gtyin0ge9irq6gy8qoupwbf3j" columns="menu_id,func_resource_id"/>
+            <foreign-key name="fk_eyl6aveotnavrf99odfsnwt2b" column="menu_id" referenced-table="ems.se_menus" referenced-column="id"/>
+            <foreign-key name="fk_13cr2f0yryioqbo09judu50df" column="func_resource_id" referenced-table="ems.se_func_resources" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_7e3okgphh4xg8fc1b4tja9y4c" columns="menu_id"/>
+          </indexes>
+        </table>
+        <table name="se_oauth_tokens" comment="OAuthToken?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="client_id" type="bigint" nullable="false" comment="ThirdPartyApp?ID"/>
+            <column name="expired_at" type="timestamptz" nullable="false" comment="expiredAt?"/>
+            <column name="issued_at" type="timestamptz" nullable="false" comment="issuedAt?"/>
+            <column name="scope_" type="varchar(200)" nullable="false" comment="scope?"/>
+            <column name="token" type="varchar(500)" nullable="false" comment="token?"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_c60mjym9bnp183t93i99omr2x" columns="id"/>
+            <foreign-key name="fk_1r7t3jx88wwuk9eh578wl6nd" column="client_id" referenced-table="ems.cfg_third_party_apps" referenced-column="id"/>
+            <foreign-key name="fk_ovhw2logmifv5on8comcld6iv" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="se_session_configs" comment="会话配置">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="capacity" type="integer" nullable="false" defaultValue="0" comment="最大容量"/>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="check_capacity" type="boolean" nullable="false" defaultValue="false" comment="是否检查容量"/>
+            <column name="check_concurrent" type="boolean" nullable="false" defaultValue="false" comment="是否检查多重会话"/>
+            <column name="concurrent" type="integer" nullable="false" defaultValue="0" comment="多重会话数"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="tti_minutes" type="integer" nullable="false" defaultValue="0" comment="过期时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_pp3vns65x9utg2vwtogp2cao8" columns="id"/>
+            <foreign-key name="fk_45ijj5mugsun1xt93tnqfsnh7" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_1lninitsqmbijgecrywhb88e6" column="category_id" referenced-table="ems.usr_categories" referenced-column="id"/>
+            <unique-key name="idx_session_config" columns="domain_id,category_id"/>
+          </constraints>
+        </table>
+        <table name="usr_avatars" comment="头像">
+          <columns>
+            <column name="id" type="varchar(50)" nullable="false" comment="非业务主键:assigned"/>
+            <column name="file_name" type="varchar(50)" nullable="false" comment="文件名"/>
+            <column name="file_path" type="varchar(300)" nullable="false" comment="文件路径"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_evhoecg5aoxqjlhw3emfuevip" columns="id"/>
+            <foreign-key name="fk_b5t09f57obh37di4c60bq9oab" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="usr_categories" comment="用户类别">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
+            <column name="code" type="varchar(30)" nullable="false" unique="true" comment="代码"/>
+            <column name="en_name" type="varchar(255)" nullable="false" comment="英文名"/>
+            <column name="end_on" type="date" comment="失效日期"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_j6l4jh94s3ga3ncv15fg7kjl4" columns="id"/>
+            <foreign-key name="fk_942y0yyte37hk7g2rtbsmw9a7" column="org_id" referenced-table="ems.cfg_orgs" referenced-column="id"/>
+            <unique-key name="uk_355dgck69qve4mlsk1d2dow4q" columns="code"/>
+            <unique-key name="idx_user_category" columns="org_id,name"/>
+          </constraints>
+        </table>
+        <table name="usr_departs" comment="Depart?">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
+            <column name="code" type="varchar(20)" nullable="false" comment="代码"/>
+            <column name="end_on" type="date" comment="失效日期"/>
+            <column name="indexno" type="varchar(20)" nullable="false" comment="顺序号"/>
+            <column name="name" type="varchar(300)" nullable="false" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="parent_id" type="integer" comment="Depart?ID"/>
+            <column name="short_name" type="varchar(200)" comment="shortName?"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_lqtwc4myrcgfw4e69xam0gx17" columns="id"/>
+            <foreign-key name="fk_4kmftkf1qayo2m8wthugjdy03" column="parent_id" referenced-table="ems.usr_departs" referenced-column="id"/>
+            <foreign-key name="fk_aowsdhi5qpfjwd3ax2hh5qeeg" column="org_id" referenced-table="ems.cfg_orgs" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_4vwhm848v40h493keotvho6f4" columns="parent_id"/>
+          </indexes>
+        </table>
+        <table name="usr_dimensions" comment="数据维度">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="key_name" type="varchar(20)" comment="关键字"/>
+            <column name="multiple" type="boolean" nullable="false" defaultValue="false" comment="是否多值"/>
+            <column name="name" type="varchar(40)" nullable="false" comment="名称"/>
+            <column name="properties" type="varchar(100)" comment="其他属性"/>
+            <column name="required" type="boolean" nullable="false" defaultValue="false" comment="是否必须"/>
+            <column name="source_" type="varchar(6000)" nullable="false" comment="来源"/>
+            <column name="title" type="varchar(40)" nullable="false" comment="标题"/>
+            <column name="value_type" type="boolean" nullable="false" defaultValue="false" comment="值类型"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_17npsfcux6ix6kjq7r73roe2i" columns="id"/>
+            <foreign-key name="fk_n554u52g2602fpj6o4pskw8gs" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_dimension_name" columns="domain_id,name"/>
+          </constraints>
+        </table>
+        <table name="usr_group_members" comment="组成员">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="group_id" type="integer" nullable="false" comment="组ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_9kgi9t31dhattii415hnqa8wp" columns="id"/>
+            <foreign-key name="fk_ohao01ximhmcf5q77sladwu6u" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_6f8eyjnx907a0gl1abag7tn7w" column="group_id" referenced-table="ems.usr_groups" referenced-column="id"/>
+            <unique-key name="uk_eybgaja399psr9ld03vd1cm70" columns="group_id,user_id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_11e6s0dtw3vhdlw8deeqjyjmm" columns="user_id"/>
+          </indexes>
+        </table>
+        <table name="usr_groups" comment="组">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="code" type="varchar(255)" nullable="false" comment="代码"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
+            <column name="manager_id" type="bigint" comment="用户ID"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="parent_id" type="integer" comment="组ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_qiobgfi5x9uer99bb4an2klr5" columns="id"/>
+            <foreign-key name="fk_a21ym9fl383pw06xqh8g508qu" column="parent_id" referenced-table="ems.usr_groups" referenced-column="id"/>
+            <foreign-key name="fk_2lvrc708015jhaiwn5m5789wv" column="manager_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_bjd8utlg5suh7lll0rhp7x9ku" column="org_id" referenced-table="ems.cfg_orgs" referenced-column="id"/>
+            <unique-key name="idx_group" columns="org_id,code"/>
+          </constraints>
+          <indexes>
+            <index name="idx_ipnyuvhd24x9n5xbrtpwocnol" columns="parent_id"/>
+          </indexes>
+        </table>
+        <table name="usr_groups_roles" comment="组的默认角色列表">
+          <columns>
+            <column name="group_id" type="integer" nullable="false" comment="组ID"/>
+            <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_sb7917p9v5v4yodepe7kflr3s" columns="group_id,role_id"/>
+            <foreign-key name="fk_6hn0c99vhfuj7vw1d6lfrodu1" column="group_id" referenced-table="ems.usr_groups" referenced-column="id"/>
+            <foreign-key name="fk_oy0x514dsa74ncvcs57v0qy00" column="role_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_f1th3d0r91lj50qxiccxkgsm1" columns="group_id"/>
+          </indexes>
+        </table>
+        <table name="usr_password_configs" comment="密码配置">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="dcredit" type="integer" nullable="false" defaultValue="0" comment="密码中最少含有多少个数字"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="idledays" type="integer" nullable="false" defaultValue="999" comment="密码停滞的天数"/>
+            <column name="lcredit" type="integer" nullable="false" defaultValue="0" comment="密码中最少含有多少个小写字母"/>
+            <column name="maxdays" type="integer" nullable="false" defaultValue="999" comment="密码保持有效的最大天数"/>
+            <column name="maxlen" type="integer" nullable="false" defaultValue="64" comment="密码的最大长度"/>
+            <column name="minclass" type="integer" nullable="false" defaultValue="2" comment="密码中最少含有几类字符"/>
+            <column name="mindays" type="integer" nullable="false" defaultValue="0" comment="密码可更改的最小天数"/>
+            <column name="minlen" type="integer" nullable="false" defaultValue="6" comment="密码的最小长度"/>
+            <column name="ocredit" type="integer" nullable="false" defaultValue="0" comment="密码中最少含有多少个其他字母"/>
+            <column name="ucredit" type="integer" nullable="false" defaultValue="0" comment="密码中最少含有多少个大写字母"/>
+            <column name="usercheck" type="boolean" nullable="false" defaultValue="false" comment="是否检查密码中含有用户名"/>
+            <column name="warnage" type="integer" nullable="false" defaultValue="7" comment="用户密码到期前，提前收到警告信息的天数"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_5qffiflvujhi6qpd4ww3doin5" columns="id"/>
+            <foreign-key name="fk_9oli46aiaibkpa2wftgsweqsb" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_password_config" columns="domain_id"/>
+          </constraints>
+        </table>
+        <table name="usr_profiles" comment="用户配置">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="name" type="varchar(255)" nullable="false" comment="名称"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_l9sqo0uv1apeypxv0k3qchf8k" columns="id"/>
+            <foreign-key name="fk_okkg9hdpvau3u2r7uanfl66y" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <foreign-key name="fk_ipf6f03qoljh8ahtb6s1foudm" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_user_profile" columns="user_id,domain_id"/>
+          </indexes>
+        </table>
+        <table name="usr_profiles_properties" comment="用户配置-属性">
+          <columns>
+            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
+            <column name="profile_id" type="bigint" nullable="false" comment="用户配置ID"/>
+            <column name="value_" type="varchar(2000)" nullable="false" comment="用户配置-属性"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_8erccmnnign5i91qbu5tpffw9" columns="profile_id,value_,dimension_id"/>
+            <foreign-key name="fk_hc3opa4vag30nnpi4itrq2fr8" column="profile_id" referenced-table="ems.usr_profiles" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_1jhdyxjnm417qgm96nwuinixt" columns="profile_id"/>
+          </indexes>
+        </table>
+        <table name="usr_role_members" comment="角色成员">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="is_granter" type="boolean" nullable="false" defaultValue="false" comment="可授权"/>
+            <column name="is_manager" type="boolean" nullable="false" defaultValue="false" comment="可管理"/>
+            <column name="is_member" type="boolean" nullable="false" defaultValue="false" comment="成员"/>
+            <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_1vq74b9ympc9qdgjvqcghk84e" columns="id"/>
+            <foreign-key name="fk_bm1ix1rci332yc9xjselvkltl" column="role_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+            <foreign-key name="fk_4ginknwrhsxxncy15fwierbyq" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_role_member_user" columns="user_id"/>
+            <index name="idx_kkhkte6jpxqrhc34y496ujdeg" columns="role_id"/>
+          </indexes>
+        </table>
+        <table name="usr_roles" comment="角色">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="creator_id" type="bigint" nullable="false" comment="用户ID"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="indexno" type="varchar(255)" nullable="false" comment="顺序号"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="parent_id" type="integer" comment="角色ID"/>
+            <column name="remark" type="varchar(255)" comment="备注"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_237n7fw14i3w0u34cwhapigb0" columns="id"/>
+            <foreign-key name="fk_48rf6jlralqywk4om6yw478kq" column="parent_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+            <foreign-key name="fk_k72k7td9qiw0c42wj3cbqe1wt" column="creator_id" referenced-table="ems.usr_users" referenced-column="id"/>
+            <foreign-key name="fk_s4bgp91kk8g9asdwmg60k2dwl" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+            <unique-key name="idx_role_name" columns="domain_id,name"/>
+          </constraints>
+          <indexes>
+            <index name="idx_ovw4p7sme2a30wkyoo7deyelo" columns="parent_id"/>
+          </indexes>
+        </table>
+        <table name="usr_roles_properties" comment="角色属性">
+          <columns>
+            <column name="dimension_id" type="integer" nullable="false" comment="数据维度ID"/>
+            <column name="role_id" type="integer" nullable="false" comment="角色ID"/>
+            <column name="value_" type="varchar(2000)" nullable="false" comment="角色属性"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_59m7apft4dpohfgp900cbkkip" columns="role_id,value_,dimension_id"/>
+            <foreign-key name="fk_f66m6ftj0kpr837j9dtewnop8" column="role_id" referenced-table="ems.usr_roles" referenced-column="id"/>
+          </constraints>
+          <indexes>
+            <index name="idx_owjdmrm6x6pqepg35o33y7bti" columns="role_id"/>
+          </indexes>
+        </table>
+        <table name="usr_roots" comment="根用户">
+          <columns>
+            <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_gpdqluxdt236rx6ft5wdoxiix" columns="id"/>
+            <foreign-key name="fk_akxow8uv93shp0ukqwgnqjs99" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+            <foreign-key name="fk_o5eita87yogy8ancda49b13f0" column="user_id" referenced-table="ems.usr_users" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="usr_users" comment="用户">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="avatar_id" type="varchar(255)" comment="头像ID"/>
+            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
+            <column name="category_id" type="integer" nullable="false" comment="用户类别ID"/>
+            <column name="code" type="varchar(30)" nullable="false" comment="帐号"/>
+            <column name="depart_id" type="integer" comment="Depart?ID"/>
+            <column name="email" type="varchar(255)" comment="电子邮件"/>
+            <column name="enabled" type="boolean" nullable="false" defaultValue="false" comment="是否启用"/>
+            <column name="end_on" type="date" comment="失效日期"/>
+            <column name="group_id" type="integer" comment="组ID"/>
+            <column name="locked" type="boolean" nullable="false" defaultValue="false" comment="是否锁定"/>
+            <column name="mobile" type="varchar(15)" comment="手机号码"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="姓名"/>
+            <column name="openid" type="varchar(60)" comment="openid?"/>
+            <column name="org_id" type="integer" nullable="false" comment="组织ID"/>
+            <column name="passwd_expired_on" type="date" nullable="false" comment="密码过期日期"/>
+            <column name="password" type="varchar(255)" nullable="false" comment="密码"/>
+            <column name="remark" type="varchar(100)" comment="备注"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_q9yqro8mq11gawulqm149lahf" columns="id"/>
+            <foreign-key name="fk_owno1cqcdeihlygy0qlwpw0qp" column="org_id" referenced-table="ems.cfg_orgs" referenced-column="id"/>
+            <foreign-key name="fk_3rnv1dg0kg6eur4oiskr0jmnp" column="depart_id" referenced-table="ems.usr_departs" referenced-column="id"/>
+            <foreign-key name="fk_rvydc53ioy9f11rhg7pmts3rr" column="category_id" referenced-table="ems.usr_categories" referenced-column="id"/>
+            <foreign-key name="fk_4jqeg9xewh4r2q5lty56fog90" column="group_id" referenced-table="ems.usr_groups" referenced-column="id"/>
+            <unique-key name="idx_user_code" columns="org_id,code"/>
+          </constraints>
+        </table>
+      </tables>
+    </schema>
+    <schema name="log">
+      <tables>
+        <table name="ems_business_logs" comment="业务日志">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="agent" type="varchar(100)" nullable="false" comment="操作客户端代理"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="details" type="varchar(4000)" nullable="false" comment="操作内容"/>
+            <column name="entry" type="varchar(100)" nullable="false" comment="访问入口"/>
+            <column name="ip" type="varchar(50)" nullable="false" comment="IP"/>
+            <column name="log_level" type="integer" nullable="false" comment="logLevel?"/>
+            <column name="operate_at" type="timestamptz" nullable="false" comment="操作时间"/>
+            <column name="operator" type="varchar(200)" nullable="false" comment="操作人"/>
+            <column name="resources" type="varchar(300)" nullable="false" comment="对应的资源"/>
+            <column name="summary" type="varchar(1000)" nullable="false" comment="操作内容摘要"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_n6v1mxbrbc6tw6mvyh4cqy9uq" columns="id"/>
+            <foreign-key name="fk_km7n10kxr9jcn7q2p0c3vistj" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="ems_error_logs" comment="ErrorLog?">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:datetime"/>
+            <column name="app_id" type="integer" nullable="false" comment="应用ID"/>
+            <column name="exception_name" type="varchar(400)" nullable="false" comment="exceptionName?"/>
+            <column name="message" type="varchar(400)" nullable="false" comment="message?"/>
+            <column name="occurred_at" type="timestamptz" nullable="false" comment="occurredAt?"/>
+            <column name="params" type="varchar(4000)" comment="params?"/>
+            <column name="request_url" type="varchar(100)" nullable="false" comment="requestUrl?"/>
+            <column name="stack_trace" type="varchar(4000)" nullable="false" comment="stackTrace?"/>
+            <column name="username" type="varchar(100)" comment="username?"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_5n4ch46jn9kkurc26ykg20hbw" columns="id"/>
+            <foreign-key name="fk_s885iyl55qhvdqokaj8ff35ru" column="app_id" referenced-table="ems.cfg_apps" referenced-column="id"/>
+          </constraints>
+        </table>
+        <table name="ems_session_events" comment="会话日志">
+          <columns>
+            <column name="id" type="bigint" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="detail" type="varchar(1000)" nullable="false" comment="明细"/>
+            <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="event_type" type="integer" nullable="false" comment="时间类型"/>
+            <column name="ip" type="varchar(255)" nullable="false" comment="IP"/>
+            <column name="name" type="varchar(100)" nullable="false" comment="名称"/>
+            <column name="principal" type="varchar(100)" nullable="false" comment="用户名"/>
+            <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
+            <column name="username" type="varchar(100)" nullable="false" comment="账户"/>
+          </columns>
+          <constraints>
+            <primary-key name="pk_oe05752qmg0omw08pxvms0e00" columns="id"/>
+            <foreign-key name="fk_ni0u0tnp38t3p8woovn2nelan" column="domain_id" referenced-table="ems.cfg_domains" referenced-column="id"/>
+          </constraints>
+        </table>
+      </tables>
+    </schema>
+  </schemas>
+</db>

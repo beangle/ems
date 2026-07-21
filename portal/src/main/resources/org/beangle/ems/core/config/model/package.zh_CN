@@ -8,6 +8,10 @@ App.url=应用地址
 App.indexno=排序索引号
 App.logoUrl=应用LOGO
 App.base=上下文
+App.envIds=业务场景
+App.group=应用分组
+App.domain=业务系统
+App.enabled=是否启用
 
 ChannelType=前端类型
 ChannelType.name=名称
@@ -16,45 +20,62 @@ ChannelType.title=标题
 EmbedMode=嵌入方式
 
 DataSource=数据源
+DataSource.name=名称
 DataSource.maximumPoolSize=最大连接数
+DataSource.app=应用
+DataSource.db=数据库
+DataSource.credential=凭证
+DataSource.remark=备注
 
 Credential=凭证
+Credential.name=名称
 Credential.password=密码
 Credential.username=用户名
 Credential.expiredAt=过期时间
+Credential.domain=业务系统
 
 Org=组织
 Org.code=代码
+Org.name=名称
 Org.logoUrl=组织Logo
 Org.shortName=简称
 Org.wwwUrl=网站地址
 
 Db=数据库
+Db.name=名称
 Db.portNumber=端口
 Db.databaseName=数据库名
 Db.driver=驱动
 Db.serverName=服务器地址
 Db.url=Java数据库连接字符串
 Db.properties=数据源属性
+Db.domain=业务系统
+Db.remark=备注
 
 Domain=业务系统
+Domain.name=名称
 Domain.title=标题
 Domain.enTitle=英文标题
 Domain.hostname=主机域名
 Domain.logoUrl=logo 网址
 Domain.sashubBase=SasHub的地址
 Domain.sashubProfile=SasHub上注册的key
+Domain.org=组织
 
 AppGroup=应用分组
+AppGroup.name=名称
 AppGroup.indexno=顺序号
 AppGroup.title=标题
 AppGroup.enTitle=英文标题
 AppGroup.shortTitle=简称
+AppGroup.domain=业务系统
 
 File=项目文件
+File.name=名称
 File.mediaType=类型
 File.fileSize=文件大小
 File.filePath=路径
+File.app=应用
 
 Portalet=页面小部件
 Portalet.categories=面向用户
@@ -64,6 +85,7 @@ Portalet.usingIframe=是否支持iframe
 Portalet.idx=序号
 Portalet.url=地址
 Portalet.title=标题
+Portalet.domain=业务系统
 
 Theme=主题
 Theme.navbarBgColor=导航栏背景颜色
@@ -71,26 +93,51 @@ Theme.gridbarBgColor=表格工具栏背景颜色
 Theme.searchBgColor=查询框背景颜色
 Theme.gridBorderColor=表格边框颜色
 Theme.primaryColor=主要颜色
+Theme.domain=业务系统
 
 Business=业务类型
+Business.name=名称
+Business.domain=业务系统
+
 RuleMeta=规则元数据
-RuleParamMeta=规则参数元数据
 RuleMeta.title=标题
 RuleMeta.description=描述
+RuleMeta.domain=业务系统
+RuleMeta.business=业务类型
+RuleMeta.params=参数元数据
 
+RuleParamMeta=规则参数元数据
 RuleParamMeta.title=标题
 RuleParamMeta.description=描述
 RuleParamMeta.dataType=数据类型
+RuleParamMeta.ruleMeta=规则元数据
 
 RuleParam=规则参数
 RuleParam.contents=值
+RuleParam.rule=规则
+RuleParam.meta=参数元数据
+
 Rule=规则
+Rule.name=名称
 Rule.profileId=场景配置ID
+Rule.domain=业务系统
+Rule.meta=规则元数据
+Rule.params=规则参数
+Rule.enabled=是否启用
 
 TextBundle=文本包
 TextBundle.locale=语言
 TextBundle.texts=文本
+TextBundle.app=应用
 
 Env=业务场景
 Env.code=代码
 Env.name=名称
+Env.domain=业务系统
+
+ThirdPartyApp=第三方应用
+ThirdPartyApp.code=代码
+ThirdPartyApp.name=名称
+ThirdPartyApp.secret=密钥
+ThirdPartyApp.redirectUri=回调地址
+ThirdPartyApp.domain=业务系统

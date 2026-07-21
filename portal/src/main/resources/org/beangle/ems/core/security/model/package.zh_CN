@@ -1,9 +1,13 @@
 Menu=菜单
+Menu.name=名称
 Menu.enName=英文标题
 Menu.route=路由
 Menu.icon=图标
-Menu.channel=菜单端
+Menu.channel=菜单配置
 Menu.resources=菜单关联资源
+Menu.enabled=是否启用
+Menu.indexno=顺序号
+Menu.remark=备注
 
 Channel=菜单配置
 Channel.app=应用
@@ -13,23 +17,40 @@ Channel.embedMode=嵌入方式
 Channel.enabled=是否启用
 
 FuncResource=功能资源
+FuncResource.name=名称
 FuncResource.actions=操作
 FuncResource.scope=范围
 FuncResource.title=标题
+FuncResource.app=应用
+FuncResource.enabled=是否启用
+FuncResource.remark=备注
 
 FuncPermission=功能权限
+FuncPermission.role=角色
+FuncPermission.resource=功能资源
 FuncPermission.actions=操作
 FuncPermission.restrictions=限制条件
+FuncPermission.beginAt=开始时间
+FuncPermission.endAt=结束时间
+FuncPermission.remark=备注
+
+RoleAppEnv=角色应用场景
+RoleAppEnv.role=角色
+RoleAppEnv.app=应用
+RoleAppEnv.env=业务场景
 
 AppPermission=应用权限
 AppPermission.actions=操作
 AppPermission.restrictions=限制条件
 
 DataResource=数据资源
+DataResource.name=名称
 DataResource.scope=范围
 DataResource.title=标题
 DataResource.typeName=类型
 DataResource.actions=操作
+DataResource.domain=业务系统
+DataResource.remark=备注
 
 DataPermission=数据权限
 DataPermission.actions=操作
@@ -39,19 +60,46 @@ DataPermission.endAt=结束时间
 DataPermission.description=描述
 DataPermission.filters=过滤条件
 DataPermission.attrs=属性
+DataPermission.domain=业务系统
+DataPermission.app=应用
+DataPermission.resource=数据资源
+DataPermission.role=角色
 
 SessionEvent=会话日志
-
 SessionEvent.principal=用户名
 SessionEvent.username=账户
 SessionEvent.detail=明细
 SessionEvent.ip=IP
-SessionEvent.eventType=时间类型
+SessionEvent.eventType=事件类型
+SessionEvent.domain=业务系统
+SessionEvent.name=名称
 
 SessionConfig=会话配置
-
 SessionConfig.ttiMinutes=过期时间
 SessionConfig.concurrent=多重会话数
 SessionConfig.capacity=最大容量
 SessionConfig.checkConcurrent=是否检查多重会话
 SessionConfig.checkCapacity=是否检查容量
+SessionConfig.category=用户类别
+SessionConfig.domain=业务系统
+
+SessionInfo=会话信息
+SessionInfo.principal=用户名
+SessionInfo.description=描述
+SessionInfo.category=用户类别
+SessionInfo.ip=IP
+SessionInfo.agent=客户端
+SessionInfo.os=操作系统
+SessionInfo.loginAt=登录时间
+SessionInfo.lastAccessAt=最后访问时间
+SessionInfo.domain=业务系统
+
+OAuthToken=OAuth令牌
+OAuthToken.token=令牌
+OAuthToken.client=客户端
+OAuthToken.user=用户
+OAuthToken.scope=授权范围
+OAuthToken.issuedAt=颁发时间
+OAuthToken.expiredAt=过期时间
+
+OAuthCode=OAuth授权码

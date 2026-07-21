@@ -8,3 +8,13 @@ BusinessLog.resources=对应的资源
 BusinessLog.ip=IP
 BusinessLog.agent=操作客户端代理
 BusinessLog.entry=访问入口
+BusinessLog.logLevel=日志级别
+
+ErrorLog=错误日志
+ErrorLog.requestUrl=访问路径
+ErrorLog.occurredAt=发生时间
+ErrorLog.exceptionName=异常名称
+ErrorLog.message=异常摘要
+ErrorLog.stackTrace=堆栈信息
+ErrorLog.params=请求参数
+ErrorLog.username=用户名
