@@ -19,10 +19,9 @@ package org.beangle.ems.core.user.service.impl
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.{FuncPermission, RoleAppEnv}
-import org.beangle.ems.core.user.model._
+import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.RoleService
 
 import java.time.ZonedDateTime
@@ -37,8 +36,7 @@ class RoleServiceImpl extends RoleService {
       true
     } else {
       val rq = OqlBuilder.from(classOf[Root], "r")
-      rq.where("r.user=:user and r.app.name=:appName", manager, EmsApp.name)
-      rq.where("r.app.domain=:domain", domainService.getDomain)
+      rq.where("r.user=:user and r.domain=:domain", manager, domainService.getDomain)
       entityDao.search(rq).nonEmpty
     }
   }
