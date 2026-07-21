@@ -27,7 +27,8 @@ ThisBuild / resolvers += Resolver.mavenLocal
 
 lazy val root = (project in file("."))
   .settings(
-    common
+    common,
+    publish / skip := true
   )
   .aggregate(app, portal)
 
@@ -52,4 +53,4 @@ lazy val portal = (project in file("portal"))
   )
   .dependsOn(app)
 
-publish / skip := true
+

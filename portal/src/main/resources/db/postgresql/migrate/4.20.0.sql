@@ -30,21 +30,16 @@ SET env_id = (properties->>'project')::bigint
 WHERE properties ? 'project'
   AND (properties->>'project') ~ '^[0-9]+$';
 
-CREATE TABLE IF NOT EXISTS ems.cfg_envs (
-                                          id         bigint       NOT NULL,
-                                          code       varchar(100) NOT NULL,
-                                          name       varchar(100) NOT NULL,
-  domain_id  integer      NOT NULL,
-  CONSTRAINT pk_cfg_envs PRIMARY KEY (id),
-  CONSTRAINT fk_cfg_envs_domain FOREIGN KEY (domain_id)
-  REFERENCES ems.cfg_domains (id),
-  CONSTRAINT idx_env UNIQUE (domain_id, code)
-  );
+alter table ems.cfg_domains add constraint pk_endu524c1sjo6rfnwll8j7lgl primary key (id);
+create table ems.cfg_envs (id bigint NOT NULL,code varchar(100) NOT NULL,name varchar(100) NOT NULL,domain_id  integer NOT NULL);
+alter table ems.cfg_envs add constraint pk_gcj0b58iw6hbkfywab8q7hwyx primary key (id);
+alter table ems.cfg_envs add constraint fk_gf1a2eds6tiqs9oqo1la8rmyr foreign key (domain_id) references ems.cfg_domains (id);
+alter table ems.cfg_envs add constraint idx_env unique (domain_id,code);
 
 WITH dim AS (
   SELECT domain_id, source_
   FROM ems.usr_dimensions
-  WHERE name = 'project' and domain_id=1
+  WHERE name = 'project'
 ),
      lines AS (
        SELECT
@@ -77,8 +72,6 @@ FROM parsed
                         code = EXCLUDED.code,
                         domain_id = EXCLUDED.domain_id;
 
-drop table ems.usr_profiles_properties;
-
 alter table ems.cfg_apps add column env_ids jsonb  default '[]';
 alter table ems.usr_roles add column env_ids jsonb default '[]';
 alter table ems.usr_roles alter env_ids set not null;
@@ -87,6 +80,7 @@ create table ems.se_role_app_envs (id bigint not null, role_id integer not null,
 
 alter table ems.usr_roots add domain_id int4;
 update ems.usr_roots r set domain_id=(select app.domain_id from ems.cfg_apps app where app.id=r.app_id);
+delete from ems.usr_roots where domain_id is null;
 alter table ems.usr_roots alter domain_id set not null;
 delete from ems.usr_roots a where exists(select * from ems.usr_roots b where b.user_id=a.user_id and b.domain_id=a.domain_id and a.id > b.id);
 alter table ems.usr_roots drop app_id cascade;
@@ -105,7 +99,7 @@ alter table ems.se_menus alter channel_id set not null;
 alter table ems.se_menus drop app_id cascade;
 alter table ems.se_menus rename column fonticon to icon;
 alter table ems.se_menus add column route varchar(300);
-update ems.se_menus m set route = (select f.name||(case when m.params not null then '?'||m.params else '' end) from ems.se_func_resources f where f.id=m.entry_id) where m.entry_id is not null;
+update ems.se_menus m set route = (select f.name||(case when m.params is not null then '?'||m.params else '' end) from ems.se_func_resources f where f.id=m.entry_id) where m.entry_id is not null;
 alter table ems.se_menus drop column params;
 alter table ems.se_menus drop entry_id cascade;
 
@@ -113,6 +107,7 @@ alter table ems.se_menus drop entry_id cascade;
 drop table ems.cfg_app_types cascade;
 drop table ems.se_app_permissions cascade;
 drop table ems.usr_roles_properties cascade;
+drop table ems.usr_profiles_properties cascade;
 --
 alter table ems.cfg_apps drop app_type_id cascade;
 alter table ems.cfg_apps drop nav_style cascade;
@@ -122,11 +117,10 @@ drop index ems.idx_fdatks2vdh1idedyu5f6fb55l;
 create index idx_g4tn2er1x799kfa58qg0kocv5 on ems.se_menus (channel_id);
 --
 alter table ems.cfg_channel_types add constraint pk_saobwwmk5hgqt3nu8j8vab2q0 primary key (id);
-alter table ems.cfg_envs add constraint pk_gcj0b58iw6hbkfywab8q7hwyx primary key (id);
+
 alter table ems.se_channels add constraint pk_9irbt4dlq1jkdxn2ohcj10apc primary key (id);
 alter table ems.se_role_app_envs add constraint pk_g5r31tly8t7ue77xpqfkgj0bp primary key (id);
 alter table ems.usr_env_profiles add constraint pk_ki3y1mwsmmvnxm6bi3jancjer primary key (id);
-alter table ems.cfg_envs add constraint fk_gf1a2eds6tiqs9oqo1la8rmyr foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.se_channels add constraint fk_jfkwbm9ofx2b2jecqldi6jppx foreign key (app_id) references ems.cfg_apps (id);
 alter table ems.se_channels add constraint fk_gp6gt3p8j0hjvi0opwnssno4r foreign key (channel_type_id) references ems.cfg_channel_types (id);
 alter table ems.se_role_app_envs add constraint fk_pb6yiiog6q5e07wpe32tvxg7l foreign key (app_id) references ems.cfg_apps (id);
@@ -142,12 +136,11 @@ alter table ems.se_menus add constraint fk_gpx2y07rsdc8qs6smlkd9kjq2 foreign key
 alter table ems.usr_roots drop constraint if exists fk_akxow8uv93shp0ukqwgnqjs99 cascade;
 alter table ems.usr_roots add constraint fk_ptys3k07lov27kt9u7cr8phal foreign key (domain_id) references ems.cfg_domains (id);
 alter table ems.cfg_channel_types add constraint uk_gnj63a7uob97olnwp5vj5d7u unique (name);
-alter table ems.cfg_envs add constraint idx_env unique (domain_id,code);
 alter table ems.se_channels add constraint idx_channel unique (app_id,channel_type_id);
 alter table ems.se_role_app_envs add constraint idx_role_app_env unique (role_id,app_id,env_id);
 alter table ems.usr_env_profiles add constraint idx_user_profile unique (user_id,domain_id,env_id);
 --
-omment on table ems.cfg_channel_types is '前端类型';
+comment on table ems.cfg_channel_types is '前端类型';
 comment on column ems.cfg_channel_types.id is '非业务主键:auto_increment';
 comment on column ems.cfg_channel_types.name is '名称';
 comment on column ems.cfg_channel_types.title is '标题';
@@ -201,4 +194,3 @@ comment on column ems.usr_role_members.env_ids is '业务场景';
 comment on column ems.usr_roles.env_ids is '业务场景';
 comment on column ems.usr_roots.domain_id is '业务系统ID';
 comment on table log.ems_error_logs is '错误日志';
-
