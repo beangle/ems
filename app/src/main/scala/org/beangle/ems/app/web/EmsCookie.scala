@@ -18,65 +18,76 @@
 package org.beangle.ems.app.web
 
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.beangle.commons.lang.Strings
-import org.beangle.security.authc.Profile
-import org.beangle.security.web.CookieKeys
+import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.web.servlet.util.CookieUtils
-import org.beangle.webmvc.context.Params
 
 object EmsCookie {
 
-  def check(profiles: collection.Seq[Profile], profileId: String): Option[String] = {
-    if (Strings.isNotBlank(profileId)) {
-      val hit = profiles.exists(_.id.toString == profileId)
-      if (hit) return Some(profileId)
-    }
-    if (profiles.nonEmpty) Some(profiles.head.id.toString) else None
+  def add(request: HttpServletRequest, response: HttpServletResponse, profile: EmsCookie): Unit = {
+    CookieUtils.addCookie(request, response, CookieName, profile.toJson, "/", COOKIE_AGE)
   }
 
-  def add(request: HttpServletRequest, response: HttpServletResponse, profileId: String): Unit = {
-    CookieUtils.addCookie(request, response, CookieKeys.ProfileIdKey, profileId, "/", COOKIE_AGE)
+  def get(request: HttpServletRequest, response: HttpServletResponse): EmsCookie = {
+    Option(CookieUtils.getCookieValue(request, CookieName)).map(parse).getOrElse(new EmsCookie)
   }
 
-  /**
-   * 解析当前 profileId：优先 request 参数（profile / contextProfileId），否则读 cookie。
-   * 仅 contextProfileId 会写回 cookie（与历史行为一致）。
-   */
-  def get(request: HttpServletRequest, response: HttpServletResponse): Option[String] = {
-    val cookieId = Option(CookieUtils.getCookieValue(request, CookieKeys.ProfileIdKey)).filter(Strings.isNotBlank)
-
-    def param(name: String): Option[String] = {
-      Option(request.getParameter(name)).map(_.trim).filter(Strings.isNotBlank)
-        .orElse(Params.get(name).map(_.trim).filter(Strings.isNotBlank))
-    }
-
-    param("profile") match {
-      case some@Some(_) => some
-      case None =>
-        param("contextProfileId") match {
-          case Some(pid) =>
-            if (!cookieId.contains(pid)) {
-              EmsCookie.update(request, response, pid, true)
-            }
-            Some(pid)
-          case None => cookieId
-        }
-    }
-  }
-
-  def update(request: HttpServletRequest, response: HttpServletResponse, profileId: String, create: Boolean): Unit = {
-    Option(CookieUtils.getCookieValue(request, CookieKeys.ProfileIdKey)) match {
+  def update(request: HttpServletRequest, response: HttpServletResponse, profile: EmsCookie, create: Boolean): Unit = {
+    Option(CookieUtils.getCookieValue(request, CookieName)).map(parse) match {
       case Some(exists) =>
-        if (exists != profileId) {
-          add(request, response, profileId)
+        if (exists != profile) {
+          add(request, response, profile)
         }
       case None =>
         if (create) {
-          add(request, response, profileId)
+          add(request, response, profile)
         }
     }
   }
 
+  private val CookieName = "beangle.ems.context"
   private val COOKIE_AGE = 60 * 60 * 24 * 7 // 7 days
 
+  private def parse(cookieValue: String): EmsCookie = {
+    val profile = new EmsCookie
+    Json.parseObject(cookieValue) foreach { case (k, v) =>
+      profile.data.add(k, v.toString)
+    }
+    profile
+  }
+}
+
+class EmsCookie {
+
+  private var data = new JsonObject
+
+  def put(key: String, value: String): Unit = {
+    data.add(key, value)
+  }
+
+  def remove(key: String): Unit = {
+    data.remove(key)
+  }
+
+  def apply(key: String): String = {
+    data(key).toString
+  }
+
+  def get(key: String): Option[String] = {
+    data.get(key).map(_.toString)
+  }
+
+  def contains(key: String): Boolean = {
+    data.contains(key)
+  }
+
+  def toJson: String = {
+    this.data.toJson
+  }
+
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case that: EmsCookie => that.data == this.data
+      case _ => false
+    }
+  }
 }

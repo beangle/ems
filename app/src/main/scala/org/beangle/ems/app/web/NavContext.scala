@@ -25,7 +25,7 @@ import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.Securities
 import org.beangle.security.authc.Account
 import org.beangle.security.context.RunAs
-import org.beangle.security.web.CookieKeys
+import org.beangle.security.web.{CookieKeys, ProfileCookie}
 import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.web.servlet.util.{CookieUtils, RequestUtils}
 import org.beangle.webmvc.context.ActionContext
@@ -68,9 +68,9 @@ object NavContext {
       }
 
       // cookie / URL 参数 → 校验是否在可用列表中；无则回落到第一个 profile
-      val resolvedProfileId = EmsCookie.check(profiles, EmsCookie.get(request, response).getOrElse(""))
+      val resolvedProfileId = ProfileCookie.check(profiles, ProfileCookie.get(request, response).getOrElse(""))
       resolvedProfileId foreach { pid =>
-        EmsCookie.update(request, response, pid, true)
+        ProfileCookie.update(request, response, pid, true)
         ctx.profileId = pid
       }
 
