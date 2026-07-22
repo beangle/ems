@@ -31,6 +31,7 @@ trait HasEnvIds {
     }
   }
 
+  @transient
   def envIdSet: Set[Long] = {
     envIds.flatMap {
       case n: Number => Some(n.longValue)
@@ -38,8 +39,8 @@ trait HasEnvIds {
     }.toSet
   }
 
-  def setEnvIds(ids: Iterable[Long]): Unit = {
-    val distinct = ids.toSeq.distinct.sorted
+  def setEnvIdSet(ids: Set[Long]): Unit = {
+    val distinct = ids.map(_.toString).toList
     envIds = if (distinct.isEmpty) Json.emptyArray else JsonArray(distinct *)
   }
 }

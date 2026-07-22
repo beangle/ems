@@ -102,8 +102,8 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
         myMember.member = isMember
         myMember.granter = isGranter
         myMember.manager = isManager
-        if (isMember) myMember.setEnvIds(resolveMemberEnvIds(member.role, profileEnvIds))
-        else myMember.setEnvIds(Seq.empty)
+        if (isMember) myMember.setEnvIdSet(resolveMemberEnvIds(member.role, profileEnvIds))
+        else myMember.setEnvIdSet(Set.empty)
         newMembers += myMember
       }
     }
@@ -335,12 +335,12 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
   }
 
   /** 有提交的具体场景 id 则保存；否则为不区分场景。仅允许数据权限与角色场景的交集。 */
-  private def resolveMemberEnvIds(role: Role, profileEnvIds: Option[Set[Long]]): Seq[Long] = {
+  private def resolveMemberEnvIds(role: Role, profileEnvIds: Option[Set[Long]]): Set[Long] = {
     val selected = getLongIds("env" + role.id).distinct
-    if (selected.isEmpty) return Seq.empty
+    if (selected.isEmpty) return Set.empty
     val domainEnvIds = dimensionService.getEnvs().map(_.id).toSet
     val allowed = resolveRoleChoiceEnvIds(role, profileEnvIds, domainEnvIds)
-    selected.filter(allowed.contains)
+    selected.filter(allowed.contains).toSet
   }
 
   override protected def configExport(context: ExportContext): Unit = {

@@ -114,7 +114,7 @@ class AppAction(dbService: DbService) extends RestfulAction[App], DomainSupport 
       }
 
       val envs = entityDao.find(classOf[Env], getLongIds("env"))
-      app.setEnvIds(envs.map(_.id))
+      app.setEnvIdSet(envs.map(_.id).toSet)
 
       saveOrUpdate(app)
 

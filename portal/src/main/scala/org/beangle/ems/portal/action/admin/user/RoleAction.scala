@@ -139,7 +139,7 @@ class RoleAction(val roleService: RoleService, val userService: UserService) ext
       return redirect("edit", "error.notUnique")
 
     val envs = entityDao.find(classOf[Env], getLongIds("env"))
-    role.setEnvIds(envs.map(_.id))
+    role.setEnvIdSet(envs.map(_.id).toSet)
 
     if (!role.persisted) {
       role.indexno = "tmp"
