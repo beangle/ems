@@ -2,31 +2,29 @@ import EmsDepends.*
 import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
-ThisBuild / organization := "org.beangle.ems"
-ThisBuild / version := "4.20.2-SNAPSHOT"
+organization := "org.beangle.ems"
+version := "4.20.2-SNAPSHOT"
 
-ThisBuild / scmInfo := Some(
-  ScmInfo(
-    url("https://github.com/beangle/ems"),
-    "scm:git@github.com:beangle/ems.git"
-  )
+scmInfo := Some(
+  ScmInfo(uri("https://github.com/beangle/ems"), "scm:git@github.com:beangle/ems.git")
 )
 
-ThisBuild / developers := List(
+developers := List(
   Developer(
     id = "chaostone",
     name = "Tihua Duan",
     email = "duantihua@gmail.com",
-    url = url("http://github.com/duantihua")
+    url = uri("http://github.com/duantihua")
   )
 )
 
-ThisBuild / description := "The Beangle EMS Application"
-ThisBuild / homepage := Some(url("http://beangle.github.io/ems/index.html"))
-ThisBuild / resolvers += Resolver.mavenLocal
+description := "The Beangle EMS Application"
+homepage := Some(uri("http://beangle.github.io/ems/index.html"))
+resolvers += Resolver.mavenLocal
 
 lazy val root = (project in file("."))
   .settings(
+    name := "beangle-ems",
     common,
     publish / skip := true
   )
@@ -52,5 +50,3 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= webAppDepends
   )
   .dependsOn(app)
-
-
