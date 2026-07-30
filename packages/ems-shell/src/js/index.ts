@@ -24,5 +24,15 @@ export {
   parseNavGroupAttr,
   buildMicroAppName,
 } from './tab-keys.js';
-export { resolveMultiTabParam, getMultiTabPreference } from './storage.js';
+export {
+  resolveMultiTabParam,
+  getMultiTabPreference,
+  getStoredLocale,
+  getStoredThemeMode,
+  setStoredLocaleAndNotify,
+  setStoredThemeModeAndNotify,
+  normalizeUiLocale,
+  normalizeUiThemeMode,
+} from './storage.js';
+export { emitWujieBus } from './wujie.js';
 export type { EmsShellApi } from './api.js';

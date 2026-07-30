@@ -114,6 +114,9 @@ ${b.static.load(["ems-shell"])}
               <label for="local_en">英文</label>
             <script>
                function changeLocale(locale){
+                  if (window.emsShell && typeof emsShell.changeLocale === 'function') {
+                    emsShell.changeLocale(locale);
+                  }
                   this.location=("${b.url('!index')}"+"?request_locale="+locale);
                }
             </script>

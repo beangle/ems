@@ -32,9 +32,16 @@ declare const define: {
   amd?: unknown;
 };
 
+interface WujieBus {
+  $emit?: (event: string, ...args: unknown[]) => void;
+  $on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  $off?: (event: string, handler: (...args: unknown[]) => void) => void;
+}
+
 interface WujieRuntime {
   startApp: (opts: Record<string, unknown>) => Promise<void>;
   destroyApp?: (name: string) => void;
+  bus?: WujieBus;
 }
 
 interface EmsShellApi {

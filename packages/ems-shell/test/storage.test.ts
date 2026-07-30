@@ -4,12 +4,24 @@ import {
   clearAllLocalStorage,
   clearContextLocalStorage,
   loadThemeFromLocal,
+  normalizeUiLocale,
+  normalizeUiThemeMode,
   resolveMultiTabParam,
   getMultiTabPreference,
+  getStoredLocale,
+  getStoredThemeMode,
   saveThemeToLocal,
   setMultiTabPreference,
+  setStoredLocaleAndNotify,
+  setStoredThemeModeAndNotify,
 } from '../src/js/storage.js';
-import { EMS_CONTEXT_STORAGE_PREFIX, NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from '../src/js/constants.js';
+import {
+  EMS_CONTEXT_STORAGE_PREFIX,
+  LOCALE_STORAGE_KEY,
+  NAV_MULTI_TAB_STORAGE_KEY,
+  THEME_MODE_STORAGE_KEY,
+  THEME_STORAGE_KEY,
+} from '../src/js/constants.js';
 
 describe('storage preferences', () => {
   beforeEach(() => {
@@ -100,5 +112,34 @@ describe('storage preferences', () => {
     const loaded = loadThemeFromLocal(fallback);
     assert.equal(loaded.primaryColor, '#0076ff');
     assert.equal(loaded.gridBorderColor, '#004');
+  });
+
+  it('normalizeUiLocale maps portal request_locale tags', () => {
+    assert.equal(normalizeUiLocale('zh_CN'), 'zh-CN');
+    assert.equal(normalizeUiLocale('en_US'), 'en-US');
+    assert.equal(normalizeUiLocale('en'), 'en-US');
+    assert.equal(normalizeUiLocale(''), null);
+  });
+
+  it('normalizeUiThemeMode maps light/dark nav styles', () => {
+    assert.equal(normalizeUiThemeMode('light'), 'light');
+    assert.equal(normalizeUiThemeMode('dark'), 'dark');
+    assert.equal(normalizeUiThemeMode('--'), null);
+  });
+
+  it('setStoredThemeModeAndNotify writes beangle.ui.theme-mode only', () => {
+    assert.equal(setStoredThemeModeAndNotify('dark'), 'dark');
+    assert.equal(localStorage.getItem(THEME_MODE_STORAGE_KEY), 'dark');
+    assert.equal(getStoredThemeMode(), 'dark');
+    // Must not overwrite color JSON theme (beangle.ui.theme).
+    assert.equal(localStorage.getItem(THEME_STORAGE_KEY), null);
+  });
+
+  it('setStoredLocaleAndNotify writes beangle.ui.locale', () => {
+    assert.equal(setStoredLocaleAndNotify('zh_CN'), 'zh-CN');
+    assert.equal(localStorage.getItem(LOCALE_STORAGE_KEY), 'zh-CN');
+    assert.equal(getStoredLocale(), 'zh-CN');
+    assert.equal(setStoredLocaleAndNotify('en_US'), 'en-US');
+    assert.equal(localStorage.getItem(LOCALE_STORAGE_KEY), 'en-US');
   });
 });

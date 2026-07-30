@@ -14,9 +14,12 @@ import {
   clearThemeFromLocal,
   getLocal,
   getMultiTabPreference,
+  getStoredThemeMode,
   loadThemeFromLocal,
   saveThemeToLocal,
   setMultiTabPreference,
+  setStoredLocaleAndNotify,
+  setStoredThemeModeAndNotify,
 } from './storage.js';
 import { applyThemeVars } from './theme.js';
 import { sameDomain } from './url.js';
@@ -27,7 +30,6 @@ import {
   ensureMobileHeaderBrand,
   ensureMobileSidebarOverlay,
   isMobileSidebarLayout,
-  openMobileSidebar,
   shellWrapper,
 } from './layout.js';
 
@@ -179,17 +181,30 @@ export function createProfileNav(): void {
 
 // --- 主题 ---
 
+/**
+ * 导航风格（侧栏浅白/暗黑）。同步写 beangle.ui.theme-mode（微应用）与
+ * beangle.ems.nav_sidebar_theme（门户侧栏 CSS），并通知无界子应用。
+ */
 export function changeNavSidebarTheme(theme: string): void {
   if (theme === '--') return;
-  if (localStorage) localStorage.setItem(NAV_SIDEBAR_THEME_STORAGE_KEY, theme);
-  jQuery('#nav_siderbar_theme_' + theme).prop('checked', true);
-  if (theme === 'dark') {
+  const mode = setStoredThemeModeAndNotify(theme);
+  if (!mode) return;
+  if (localStorage) localStorage.setItem(NAV_SIDEBAR_THEME_STORAGE_KEY, mode);
+  jQuery('#nav_siderbar_theme_' + mode).prop('checked', true);
+  if (mode === 'dark') {
     jQuery('#main_siderbar').removeClass('sidebar-light-lightblue').addClass('sidebar-dark-primary');
     jQuery('#control_sidebar').removeClass('control-sidebar-light').addClass('control-sidebar-dark');
   } else {
     jQuery('#main_siderbar').removeClass('sidebar-dark-primary').addClass('sidebar-light-lightblue');
     jQuery('#control_sidebar').removeClass('control-sidebar-dark').addClass('control-sidebar-light');
   }
+}
+
+/**
+ * 界面语言切换：写入 beangle.ui.locale 并通知子应用；调用方再执行 ?request_locale= 跳转。
+ */
+export function changeLocale(locale: string): void {
+  setStoredLocaleAndNotify(locale);
 }
 
 export function changeFontSize(fontSize: string): void {
@@ -254,7 +269,7 @@ export function setup(theme: NavTheme, params: Record<string, string>): void {
     setMultiTabPreference(!!this.checked);
   });
 
-  changeNavSidebarTheme(getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, '--'));
+  changeNavSidebarTheme(getStoredThemeMode() || getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, '--'));
   changeFontSize(getLocal(ROOT_FONT_SIZE_STORAGE_KEY, '--'));
   const resolvedTheme = loadThemeFromLocal(theme);
   applyTheme(resolvedTheme);

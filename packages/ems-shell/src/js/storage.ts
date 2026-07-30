@@ -1,5 +1,133 @@
-import { EMS_CONTEXT_STORAGE_PREFIX, NAV_MULTI_TAB_STORAGE_KEY, THEME_STORAGE_KEY } from './constants.js';
+import {
+  EMS_CONTEXT_STORAGE_PREFIX,
+  LOCALE_CHANGE_EVENT,
+  LOCALE_STORAGE_KEY,
+  NAV_MULTI_TAB_STORAGE_KEY,
+  THEME_MODE_CHANGE_EVENT,
+  THEME_MODE_STORAGE_KEY,
+  THEME_STORAGE_KEY,
+} from './constants.js';
 import type { NavTheme } from './types.js';
+import { emitWujieBus } from './wujie.js';
+
+export type UiThemeMode = 'light' | 'dark';
+export type UiLocale = 'zh-CN' | 'en-US';
+
+const THEME_MODE_LIGHT = new Set(['light', 'day', 'default']);
+const THEME_MODE_DARK = new Set(['dark', 'night']);
+const LOCALE_ENGLISH = new Set(['en', 'en-us', 'en_us', 'en-US', 'en_US']);
+const LOCALE_CHINESE = new Set(['zh', 'zh-cn', 'zh_cn', 'zh-CN', 'zh_CN', 'zh-hans', 'zh_hans']);
+
+/** Normalize portal / stored theme tags to light | dark (aligns with @beangle/bui-vue). */
+export function normalizeUiThemeMode(raw: unknown): UiThemeMode | null {
+  if (raw == null) return null;
+  const value = String(raw).trim();
+  if (!value) return null;
+  const lower = value.toLowerCase();
+  if (THEME_MODE_LIGHT.has(value) || THEME_MODE_LIGHT.has(lower)) return 'light';
+  if (THEME_MODE_DARK.has(value) || THEME_MODE_DARK.has(lower)) return 'dark';
+  return null;
+}
+
+/** Normalize portal request_locale (zh_CN / en_US) to zh-CN | en-US. */
+export function normalizeUiLocale(raw: unknown): UiLocale | null {
+  if (raw == null) return null;
+  const value = String(raw).trim();
+  if (!value) return null;
+  const lower = value.toLowerCase().replace(/_/g, '-');
+  if (LOCALE_ENGLISH.has(value) || LOCALE_ENGLISH.has(lower) || lower.startsWith('en')) return 'en-US';
+  if (LOCALE_CHINESE.has(value) || LOCALE_CHINESE.has(lower) || lower.startsWith('zh')) return 'zh-CN';
+  return null;
+}
+
+export function getStoredThemeMode(): UiThemeMode | null {
+  try {
+    if (typeof localStorage === 'undefined') return null;
+    return normalizeUiThemeMode(localStorage.getItem(THEME_MODE_STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredThemeMode(theme: UiThemeMode | string): UiThemeMode | null {
+  const normalized = normalizeUiThemeMode(theme);
+  if (!normalized) return null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(THEME_MODE_STORAGE_KEY, normalized);
+    }
+  } catch {
+    /* ignore */
+  }
+  return normalized;
+}
+
+/**
+ * Persist beangle.ui.theme-mode (light|dark only; not color JSON beangle.ui.theme),
+ * dispatch beangle.ui.themechange (bui-vue THEME_CHANGE_EVENT), emit wujie bus
+ * theme-mode-change. Skips notify when value unchanged.
+ */
+export function setStoredThemeModeAndNotify(theme: UiThemeMode | string): UiThemeMode | null {
+  const normalized = normalizeUiThemeMode(theme);
+  if (!normalized) return null;
+  const prev = getStoredThemeMode();
+  setStoredThemeMode(normalized);
+  if (prev === normalized) return normalized;
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent(THEME_MODE_CHANGE_EVENT, { detail: normalized }));
+    } catch {
+      /* ignore */
+    }
+  }
+  emitWujieBus('theme-mode-change', normalized);
+  return normalized;
+}
+
+export function getStoredLocale(): UiLocale | null {
+  try {
+    if (typeof localStorage === 'undefined') return null;
+    return normalizeUiLocale(localStorage.getItem(LOCALE_STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredLocale(locale: UiLocale | string): UiLocale | null {
+  const normalized = normalizeUiLocale(locale);
+  if (!normalized) return null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(LOCALE_STORAGE_KEY, normalized);
+      // request_locale is a backend query param only — never persist locally.
+      localStorage.removeItem('request_locale');
+    }
+  } catch {
+    /* ignore */
+  }
+  return normalized;
+}
+
+/**
+ * Persist beangle.ui.locale, dispatch beangle.ui.localechange, emit wujie bus
+ * locale-change. Skips notify when value unchanged.
+ */
+export function setStoredLocaleAndNotify(locale: UiLocale | string): UiLocale | null {
+  const normalized = normalizeUiLocale(locale);
+  if (!normalized) return null;
+  const prev = getStoredLocale();
+  setStoredLocale(normalized);
+  if (prev === normalized) return normalized;
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent(LOCALE_CHANGE_EVENT, { detail: normalized }));
+    } catch {
+      /* ignore */
+    }
+  }
+  emitWujieBus('locale-change', normalized);
+  return normalized;
+}
 
 /** 切换 profile：清除 localStorage 中以 beangle.ems.context. 开头的业务缓存 */
 export function clearContextLocalStorage(): void {
