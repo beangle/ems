@@ -6,16 +6,20 @@ export const NAV_STICKY_HEADER_STORAGE_KEY = 'beangle.ems.nav_sticky_header';
 export const NAV_SIDEBAR_THEME_STORAGE_KEY = 'beangle.ems.nav_sidebar_theme';
 /** localStorage：工作台多标签（true）/ 单槽（false）；缺省为多标签 */
 export const NAV_MULTI_TAB_STORAGE_KEY = 'beangle.ems.multi_tab';
-export const ROOT_FONT_SIZE_STORAGE_KEY = 'beangle.ems.root_font_size';
+/** localStorage 前缀：跨应用 UI 偏好（退出登录时保留） */
+export const BEANGLE_UI_STORAGE_PREFIX = 'beangle.ui.';
 /** localStorage：门户主题色板（JSON：primaryColor 等） */
 export const THEME_STORAGE_KEY = 'beangle.ui.theme';
 /** localStorage：与 @beangle/bui-vue / 微应用共享的 light|dark */
 export const THEME_MODE_STORAGE_KEY = 'beangle.ui.theme-mode';
 /** localStorage：与 @beangle/bui-vue / 微应用共享的 zh-CN|en-US */
 export const LOCALE_STORAGE_KEY = 'beangle.ui.locale';
+/** localStorage：与微应用共享的根字号档位 small|medium|large */
+export const FONT_SIZE_STORAGE_KEY = 'beangle.ui.font-size';
 /** 同页通知：镜像 bui-vue CustomEvent 名 */
 export const THEME_MODE_CHANGE_EVENT = 'beangle.ui.themechange';
 export const LOCALE_CHANGE_EVENT = 'beangle.ui.localechange';
+export const FONT_SIZE_CHANGE_EVENT = 'beangle.ui.fontsizechange';
 
 /** localStorage 前缀：业务 context 查询条件等（切换 profile 时清除） */
 export const EMS_CONTEXT_STORAGE_PREFIX = 'beangle.ems.context.';

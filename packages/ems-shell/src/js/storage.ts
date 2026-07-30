@@ -1,5 +1,8 @@
 import {
+  BEANGLE_UI_STORAGE_PREFIX,
   EMS_CONTEXT_STORAGE_PREFIX,
+  FONT_SIZE_CHANGE_EVENT,
+  FONT_SIZE_STORAGE_KEY,
   LOCALE_CHANGE_EVENT,
   LOCALE_STORAGE_KEY,
   NAV_MULTI_TAB_STORAGE_KEY,
@@ -12,6 +15,13 @@ import { emitWujieBus } from './wujie.js';
 
 export type UiThemeMode = 'light' | 'dark';
 export type UiLocale = 'zh-CN' | 'en-US';
+export type UiFontSize = 'small' | 'medium' | 'large';
+
+const FONT_SIZE_CSS: Record<UiFontSize, string> = {
+  small: '0.9286em',
+  medium: '1em',
+  large: '1.07143em',
+};
 
 const THEME_MODE_LIGHT = new Set(['light', 'day', 'default']);
 const THEME_MODE_DARK = new Set(['dark', 'night']);
@@ -129,6 +139,80 @@ export function setStoredLocaleAndNotify(locale: UiLocale | string): UiLocale | 
   return normalized;
 }
 
+/** Map semantic font size to portal root CSS font-size. */
+export function fontSizeToCss(size: UiFontSize): string {
+  return FONT_SIZE_CSS[size];
+}
+
+/** Map portal radio CSS / aliases to small|medium|large. */
+export function cssToFontSize(css: unknown): UiFontSize | null {
+  if (css == null) return null;
+  const value = String(css).trim().toLowerCase();
+  if (!value) return null;
+  if (value === FONT_SIZE_CSS.small || value === '0.9286em') return 'small';
+  if (value === FONT_SIZE_CSS.medium || value === '1em' || value === '1.0em') return 'medium';
+  if (value === FONT_SIZE_CSS.large || value === '1.07143em') return 'large';
+  return null;
+}
+
+/** Normalize portal / stored font-size tags to small|medium|large. */
+export function normalizeUiFontSize(raw: unknown): UiFontSize | null {
+  if (raw == null) return null;
+  const value = String(raw).trim();
+  if (!value) return null;
+  const lower = value.toLowerCase();
+  if (lower === 'small' || lower === 'sm' || lower === 's') return 'small';
+  if (lower === 'medium' || lower === 'middle' || lower === 'md' || lower === 'm' || lower === 'default') {
+    return 'medium';
+  }
+  if (lower === 'large' || lower === 'lg' || lower === 'l') return 'large';
+  return cssToFontSize(value);
+}
+
+/** Read beangle.ui.font-size (small|medium|large). */
+export function getStoredFontSize(): UiFontSize | null {
+  try {
+    if (typeof localStorage === 'undefined') return null;
+    return normalizeUiFontSize(localStorage.getItem(FONT_SIZE_STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredFontSize(size: UiFontSize | string): UiFontSize | null {
+  const normalized = normalizeUiFontSize(size);
+  if (!normalized) return null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(FONT_SIZE_STORAGE_KEY, normalized);
+    }
+  } catch {
+    /* ignore */
+  }
+  return normalized;
+}
+
+/**
+ * Persist beangle.ui.font-size, dispatch beangle.ui.fontsizechange, emit wujie bus
+ * font-size-change. Skips notify when value unchanged.
+ */
+export function setStoredFontSizeAndNotify(size: UiFontSize | string): UiFontSize | null {
+  const normalized = normalizeUiFontSize(size);
+  if (!normalized) return null;
+  const prev = getStoredFontSize();
+  setStoredFontSize(normalized);
+  if (prev === normalized) return normalized;
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent(FONT_SIZE_CHANGE_EVENT, { detail: normalized }));
+    } catch {
+      /* ignore */
+    }
+  }
+  emitWujieBus('font-size-change', normalized);
+  return normalized;
+}
+
 /** 切换 profile：清除 localStorage 中以 beangle.ems.context. 开头的业务缓存 */
 export function clearContextLocalStorage(): void {
   if (typeof localStorage === 'undefined') return;
@@ -148,11 +232,23 @@ export function clearContextLocalStorage(): void {
   }
 }
 
-/** 退出登录：清空当前源下全部 localStorage（含各业务查询条件与缓存） */
+/**
+ * 退出登录：清除同源 localStorage，但保留 `beangle.ui.*`
+ *（locale / theme-mode / font-size / theme 色板等跨会话 UI 偏好）。
+ */
 export function clearAllLocalStorage(): void {
   if (typeof localStorage === 'undefined') return;
   try {
-    localStorage.clear();
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key != null && !key.startsWith(BEANGLE_UI_STORAGE_PREFIX)) {
+        keys.push(key);
+      }
+    }
+    for (const key of keys) {
+      localStorage.removeItem(key);
+    }
   } catch {
     /* ignore */
   }

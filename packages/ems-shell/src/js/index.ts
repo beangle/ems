@@ -27,12 +27,16 @@ export {
 export {
   resolveMultiTabParam,
   getMultiTabPreference,
+  getStoredFontSize,
   getStoredLocale,
   getStoredThemeMode,
+  setStoredFontSizeAndNotify,
   setStoredLocaleAndNotify,
   setStoredThemeModeAndNotify,
+  fontSizeToCss,
+  normalizeUiFontSize,
   normalizeUiLocale,
   normalizeUiThemeMode,
 } from './storage.js';
-export { emitWujieBus } from './wujie.js';
+export type { UiFontSize, UiLocale, UiThemeMode } from './storage.js';export { emitWujieBus } from './wujie.js';
 export type { EmsShellApi } from './api.js';

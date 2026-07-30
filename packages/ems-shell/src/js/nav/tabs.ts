@@ -13,7 +13,7 @@ import {
   NAV_WORKSPACE_HOME_TAB_ID,
 } from '../constants.js';
 import { closeMobileSidebar } from '../layout.js';
-import { getStoredLocale, getStoredThemeMode } from '../storage.js';
+import { getStoredFontSize, getStoredLocale, getStoredThemeMode } from '../storage.js';
 import { resolveWujieRuntime } from '../wujie.js';
 
 /** 多标签生命周期、恢复、打开菜单、无界挂载 */
@@ -1093,6 +1093,7 @@ export const tabsProto = {
       }
       var uiLocale = getStoredLocale();
       var uiThemeMode = getStoredThemeMode();
+      var uiFontSize = getStoredFontSize();
       startOpts.props = {
         locale: uiLocale || undefined,
         lang: uiLocale || undefined,
@@ -1102,6 +1103,8 @@ export const tabsProto = {
         // legacy alias — not the color JSON at beangle.ui.theme.
         themeMode: uiThemeMode || undefined,
         theme: uiThemeMode || undefined,
+        // small|medium|large (beangle.ui.font-size)
+        fontSize: uiFontSize || undefined,
         jump: function(location2, query) {
           var urlRaw = "";
           if (typeof location2 === "string") {

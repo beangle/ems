@@ -5,19 +5,21 @@
 import {
   NAV_SIDEBAR_THEME_STORAGE_KEY,
   NAV_STICKY_HEADER_STORAGE_KEY,
-  ROOT_FONT_SIZE_STORAGE_KEY,
 } from './constants.js';
 import { config } from './config.js';
 import {
   clearAllLocalStorage,
   clearContextLocalStorage,
   clearThemeFromLocal,
+  fontSizeToCss,
   getLocal,
   getMultiTabPreference,
+  getStoredFontSize,
   getStoredThemeMode,
   loadThemeFromLocal,
   saveThemeToLocal,
   setMultiTabPreference,
+  setStoredFontSizeAndNotify,
   setStoredLocaleAndNotify,
   setStoredThemeModeAndNotify,
 } from './storage.js';
@@ -207,13 +209,19 @@ export function changeLocale(locale: string): void {
   setStoredLocaleAndNotify(locale);
 }
 
+/**
+ * 更改根字体大小。接受语义档位 small|medium|large，或侧栏 radio 的 CSS 值；
+ * 写入 beangle.ui.font-size 并通知微应用。
+ */
 export function changeFontSize(fontSize: string): void {
   if (fontSize === '--') return;
+  const mode = setStoredFontSizeAndNotify(fontSize);
+  if (!mode) return;
+  const css = fontSizeToCss(mode);
   jQuery('#control_sidebar input[name=root_font_size]').each(function (_i, a) {
-    if (jQuery(a).val() == fontSize) jQuery(a).prop('checked', true);
+    if (jQuery(a).val() == css) jQuery(a).prop('checked', true);
   });
-  if (localStorage) localStorage.setItem(ROOT_FONT_SIZE_STORAGE_KEY, fontSize);
-  document.documentElement.style.setProperty('font-size', fontSize);
+  document.documentElement.style.setProperty('font-size', css);
   syncBrandHeaderHeight();
 }
 
@@ -270,7 +278,7 @@ export function setup(theme: NavTheme, params: Record<string, string>): void {
   });
 
   changeNavSidebarTheme(getStoredThemeMode() || getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, '--'));
-  changeFontSize(getLocal(ROOT_FONT_SIZE_STORAGE_KEY, '--'));
+  changeFontSize(getStoredFontSize() || 'medium');
   const resolvedTheme = loadThemeFromLocal(theme);
   applyTheme(resolvedTheme);
   saveThemeToLocal(resolvedTheme);
@@ -415,7 +423,7 @@ export function clearNavState(): void {
   sessionStorage.clear();
 }
 
-/** 退出登录：清工作台会话 + 同源 localStorage / sessionStorage 全部数据 */
+/** 退出登录：清工作台会话 + sessionStorage；localStorage 清除但保留 beangle.ui.* */
 export function clearNavStateOnLogout(): void {
   clearNavState();
   clearAllLocalStorage();
