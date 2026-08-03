@@ -3,7 +3,6 @@ export const NAV_TABS_SESSION_KEY = 'beangle.ems.nav_tabs';
 
 /** localStorage 键：导航栏与外观偏好 */
 export const NAV_STICKY_HEADER_STORAGE_KEY = 'beangle.ems.nav_sticky_header';
-export const NAV_SIDEBAR_THEME_STORAGE_KEY = 'beangle.ems.nav_sidebar_theme';
 /** localStorage：工作台多标签（true）/ 单槽（false）；缺省为多标签 */
 export const NAV_MULTI_TAB_STORAGE_KEY = 'beangle.ems.multi_tab';
 /** localStorage 前缀：跨应用 UI 偏好（退出登录时保留） */

@@ -15,6 +15,7 @@ import {
   enableSearch,
   openMenu,
   changeNavSidebarTheme,
+  toggleNavSidebarTheme,
   changeLocale,
   changeFontSize,
   changeTheme,
@@ -37,6 +38,7 @@ export interface EmsShellApi {
   enableSearch: typeof enableSearch;
   openMenu: typeof openMenu;
   changeNavSidebarTheme: typeof changeNavSidebarTheme;
+  toggleNavSidebarTheme: typeof toggleNavSidebarTheme;
   changeLocale: typeof changeLocale;
   changeFontSize: typeof changeFontSize;
   clearNavState: typeof clearNavState;
@@ -68,6 +70,7 @@ export function createApi(): EmsShellApi {
     enableSearch,
     openMenu,
     changeNavSidebarTheme,
+    toggleNavSidebarTheme,
     changeLocale,
     changeFontSize,
     clearNavState,

@@ -28,6 +28,22 @@
   --ems-tab-hover: rgba(15, 23, 42, 0.045);
   --ems-tab-active-bg: #ffffff;
   --ems-tab-active-tint: color-mix(in srgb, var(--primary-color, #0076ff) 12%, #ffffff);
+  --ems-tab-divider: rgba(100, 116, 139, 0.18);
+}
+
+/* 深色模式：与 beangle.ui.theme-mode / applyThemeMode 钩子一致
+ * 色板对齐 AdminLTE sidebar-dark（#343a40），避免偏蓝 */
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) {
+  color-scheme: dark;
+  --ems-shell-bg: #343a40;
+  --ems-tab-strip-bg: #3f474e;
+  --ems-tab-strip-border: #4b545c;
+  --ems-tab-muted: #adb5bd;
+  --ems-tab-text: #e9ecef;
+  --ems-tab-hover: rgba(255, 255, 255, 0.08);
+  --ems-tab-active-bg: #343a40;
+  --ems-tab-active-tint: color-mix(in srgb, var(--primary-color, #0076ff) 18%, #3f474e);
+  --ems-tab-divider: rgba(255, 255, 255, 0.12);
 }
 
 .wrapper {
@@ -1223,7 +1239,7 @@
   top: 0.3rem;
   bottom: 0.3rem;
   width: 1px;
-  background: rgba(100, 116, 139, 0.18);
+  background: var(--ems-tab-divider);
   pointer-events: none;
   z-index: 1;
 }
@@ -1411,6 +1427,35 @@
 .ems-nav-workspace:-webkit-full-screen .ems-nav-tab-panel {
   min-height: 0;
   height: 100%;
+}
+
+/* 深色：工作台页签下拉 / 右键菜单 */
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-actions .dropdown-menu,
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-context-menu {
+  background-color: #3f474e;
+  border-color: #4b545c;
+  color: #e9ecef;
+}
+
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-actions .dropdown-item,
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-context-menu .dropdown-item {
+  color: #e9ecef;
+}
+
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-actions .dropdown-item:hover,
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-actions .dropdown-item:focus,
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-context-menu .dropdown-item:hover,
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-context-menu .dropdown-item:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-tab-context-menu .dropdown-divider {
+  border-top-color: #4b545c;
+}
+
+:is(html[data-theme="dark"], html[data-bs-theme="dark"], html.theme-dark) .ems-nav-workspace .ems-nav-tabs-scroll {
+  scrollbar-color: #64748b transparent;
 }
 
 .elevation-4 {

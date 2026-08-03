@@ -2,10 +2,7 @@
  * 门户壳层：布局、主题、消息、个人资料切换与 restoreNav 入口。
  * 业务导航逻辑委托 nav（factory 单例）上的 Nav 实例方法。
  */
-import {
-  NAV_SIDEBAR_THEME_STORAGE_KEY,
-  NAV_STICKY_HEADER_STORAGE_KEY,
-} from './constants.js';
+import { NAV_STICKY_HEADER_STORAGE_KEY } from './constants.js';
 import { config } from './config.js';
 import {
   clearAllLocalStorage,
@@ -92,6 +89,19 @@ export function initShellLayout() {
     e.preventDefault();
     shell().removeClass('control-sidebar-slide-open');
   });
+}
+
+/** 顶栏月亮/太阳图标：浅白显示月亮（切暗黑），暗黑显示太阳（切浅白） */
+function syncThemeToggleIcon(mode: string): void {
+  const icon = mode === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  const title = mode === 'dark' ? '切换浅白' : '切换暗黑';
+  jQuery('[data-ems-theme-toggle]').attr('title', title).find('i').attr('class', icon);
+}
+
+/** 切换侧栏浅白/暗黑（顶栏月亮/太阳按钮） */
+export function toggleNavSidebarTheme(): void {
+  const current = getStoredThemeMode() || 'light';
+  changeNavSidebarTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 export function applyStickyHeader(enabled: boolean): void {
@@ -184,22 +194,28 @@ export function createProfileNav(): void {
 // --- 主题 ---
 
 /**
- * 导航风格（侧栏浅白/暗黑）。同步写 beangle.ui.theme-mode（微应用）与
- * beangle.ems.nav_sidebar_theme（门户侧栏 CSS），并通知无界子应用。
+ * 导航风格（侧栏浅白/暗黑）。写入 beangle.ui.theme-mode，更新门户侧栏 DOM，并通知无界子应用。
  */
 export function changeNavSidebarTheme(theme: string): void {
   if (theme === '--') return;
   const mode = setStoredThemeModeAndNotify(theme);
   if (!mode) return;
-  if (localStorage) localStorage.setItem(NAV_SIDEBAR_THEME_STORAGE_KEY, mode);
   jQuery('#nav_siderbar_theme_' + mode).prop('checked', true);
+  const root = document.documentElement;
+  root.setAttribute('data-theme', mode);
+  root.setAttribute('data-bs-theme', mode);
   if (mode === 'dark') {
+    root.classList.add('theme-dark');
+    root.classList.remove('theme-light');
     jQuery('#main_siderbar').removeClass('sidebar-light-lightblue').addClass('sidebar-dark-primary');
     jQuery('#control_sidebar').removeClass('control-sidebar-light').addClass('control-sidebar-dark');
   } else {
+    root.classList.add('theme-light');
+    root.classList.remove('theme-dark');
     jQuery('#main_siderbar').removeClass('sidebar-dark-primary').addClass('sidebar-light-lightblue');
     jQuery('#control_sidebar').removeClass('control-sidebar-dark').addClass('control-sidebar-light');
   }
+  syncThemeToggleIcon(mode);
 }
 
 /**
@@ -277,7 +293,7 @@ export function setup(theme: NavTheme, params: Record<string, string>): void {
     setMultiTabPreference(!!this.checked);
   });
 
-  changeNavSidebarTheme(getStoredThemeMode() || getLocal(NAV_SIDEBAR_THEME_STORAGE_KEY, '--'));
+  changeNavSidebarTheme(getStoredThemeMode() || 'light');
   changeFontSize(getStoredFontSize() || 'medium');
   const resolvedTheme = loadThemeFromLocal(theme);
   applyTheme(resolvedTheme);

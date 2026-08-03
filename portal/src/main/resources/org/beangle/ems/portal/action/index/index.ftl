@@ -29,6 +29,12 @@
         </li>
 
         <li class="nav-item">
+          <a class="nav-link" data-ems-theme-toggle href="#" role="button" title="切换浅白/暗黑"
+             onclick="emsShell.changeNavSidebarTheme((localStorage.getItem('beangle.ui.theme-mode')||'light')==='dark'?'light':'dark');var m=localStorage.getItem('beangle.ui.theme-mode')||'light',i=this.querySelector('i');if(i)i.className=m==='dark'?'fas fa-sun':'fas fa-moon';this.title=m==='dark'?'切换浅白':'切换暗黑';return false;">
+            <i class="fas fa-moon"></i>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" data-ems-fullscreen href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
           </a>

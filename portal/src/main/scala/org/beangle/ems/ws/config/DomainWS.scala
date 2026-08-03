@@ -21,6 +21,7 @@ import org.beangle.commons.collection.Properties
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.annotation.response
 import org.beangle.webmvc.support.ActionSupport
+import org.beangle.webmvc.view.View
 
 class DomainWS extends ActionSupport {
 
@@ -36,6 +37,11 @@ class DomainWS extends ActionSupport {
     domainProperties.put("title", domain.getTitle(isEnName))
     domainProperties.put("org", orgProperties)
     domainProperties
+  }
+
+  def logo(): View = {
+    val domain = domainService.getDomain
+    redirect(to(domain.logoUrl))
   }
 
 }
