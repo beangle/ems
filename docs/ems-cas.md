@@ -384,7 +384,7 @@ create ──▶ pending ──扫码──▶ scanned ──确认──▶ con
                                   └────────────── 过期 / 超时 ──────────▶ expired
 ```
 
-除自然过期外，携带 `lastQrcodeId` 重新 `create` 也会使旧码**立即失效**（设备轮询旧码收到 `expired`），详见 §5.3 刷新。
+除自然过期外，携带 `lastQrcodeId` 重新 `create` 也会使旧码**立即失效**（`evict`，设备轮询/订阅旧码收到 `expired`），详见 §5.3 刷新。自然过期时记录从缓存消失，同样表现为 `expired`；**设备应基于 `create` 返回的 `expireAt` 本地倒计时主动刷新**，避免走到服务端过期。
 
 ### 5.3 创建二维码（设备）
 
@@ -428,7 +428,7 @@ POST /cas/qrcode/create
 
 **刷新（refresh）**
 
-二维码过期（默认 180 秒）或设备页面刷新时，携带上次创建的 `qrcodeId` 重新创建，即可在生成新码前**立即作废旧码**：
+二维码的过期时间由 `create` 返回的 `expireAt`（Unix 秒）决定，默认 180 秒。**设备应基于 `expireAt` 在本地倒计时，到期前主动携带上次的 `qrcodeId` 重新 `create`**（推荐做法，不要等待服务端过期）：
 
 ```text
 POST /cas/qrcode/create
@@ -437,14 +437,16 @@ POST /cas/qrcode/create
     &lastQrcodeId={上一张二维码 qrcodeId}
 ```
 
-- 新码生成前，`lastQrcodeId` 对应的旧码立即失效：正在轮询旧码的设备收到 `expired`，手机上尚未扫码的旧二维码也随即不可用，避免新旧两码并存导致状态错乱；
-- 刷新成功后，设备应改轮询新返回的 `qrcodeId` 与 `secret`；
-- 不携带 `lastQrcodeId` 直接重新 `create` 时，旧码不会立即作废，将保留至自然过期。
+- 新码生成前，`lastQrcodeId` 对应的旧码立即作废（`evict`）：手机上尚未扫码的旧二维码随即不可用，避免新旧两码并存导致状态错乱；此时若旧码仍有 SSE 连接，会收到 `expired` 事件（兜底，见 §5.4）；
+- 刷新成功后，设备应改用新返回的 `qrcodeId` 与 `secret` 重新订阅或轮询；
+- 不携带 `lastQrcodeId` 直接重新 `create` 时，旧码不会立即作废，将保留至自然过期（记录从缓存消失）；
+- 设备本地维护"上一张二维码 `qrcodeId`"，即上一次 `create` 成功返回的 `qrcodeId`；设备重启后已无旧码时，首次 `create` 不携带即可。
 
 **对接示例（JavaScript）**
 
 ```javascript
-let currentQrcode = null; // 当前有效的 { qrcodeId, secret }
+let currentQrcode = null; // 当前有效的 { qrcodeId, secret, expireAt }
+let refreshTimer = null;  // 到期自动刷新定时器
 
 // 创建二维码；lastQrcodeId 为空时即首次创建
 async function createQrcode(service, name, lastQrcodeId) {
@@ -457,14 +459,23 @@ async function createQrcode(service, name, lastQrcodeId) {
 // 首次创建：不携带 lastQrcodeId
 async function createFirst(service, name) {
   currentQrcode = await createQrcode(service, name);
+  scheduleRefresh(service, name); // 按 expireAt 本地倒计时
   subscribeStatus(currentQrcode.qrcodeId, currentQrcode.secret, service); // 见 §5.4
 }
 
-// 过期/页面刷新/用户点击"刷新二维码"：携带 lastQrcodeId，作废旧码再生成新码
+// 基于 expireAt 本地倒计时，到期前主动刷新（建议提前 5~10 秒），避免依赖服务端过期
+function scheduleRefresh(service, name) {
+  clearTimeout(refreshTimer);
+  const remainMs = currentQrcode.expireAt * 1000 - Date.now() - 10000;
+  refreshTimer = setTimeout(() => refreshQrcode(service, name), Math.max(0, remainMs));
+}
+
+// 页面刷新/用户点击"刷新二维码"：携带 lastQrcodeId，作废旧码再生成新码
 async function refreshQrcode(service, name) {
   const last = currentQrcode ? currentQrcode.qrcodeId : null;
   const next = await createQrcode(service, name, last);
   currentQrcode = next; // 立即切换到新码
+  scheduleRefresh(service, name);
   // 用新 qrcodeId/secret 重新订阅或轮询；旧连接会收到 expired 并自行结束
   subscribeStatus(next.qrcodeId, next.secret, service);
 }
@@ -473,6 +484,7 @@ async function refreshQrcode(service, name) {
 对接要点：
 
 - `lastQrcodeId` 由**设备本地维护**，即上一次 `create` 成功返回的 `qrcodeId`；设备重启后已无旧码时，首次 `create` 不携带即可；
+- **推荐**：依据 `create` 返回的 `expireAt` 本地倒计时，在到期前主动刷新二维码（如提前 5~10 秒调用刷新），避免二维码在用户面前过期、也避免依赖服务端推送过期事件；
 - 刷新成功后**必须改用新返回的 `qrcodeId`/`secret`** 重新订阅或轮询，旧码已作废不可继续使用；
 - 若并发提交了多次刷新，仅最后一次 `create` 返回的码有效（前序刷新会把各自的 `lastQrcodeId` 旧码作废）。
 
@@ -496,12 +508,12 @@ GET /cas/qrcode/stream?qrcodeId={qrcodeId}&secret={secret}
 | `scanned` | `{ "status": "scanned" }` | 手机已扫码 |
 | `confirmed` | `{ "status": "confirmed", "authToken": "..." }` | 手机已确认，可换取会话（服务端随即关闭连接） |
 | `cancelled` | `{ "status": "cancelled" }` | 手机已拒绝（服务端随即关闭连接） |
-| `expired` | `{ "status": "expired" }` | 记录不存在 / secret 错误 / 自然过期 |
+| `expired` | `{ "status": "expired" }` | 记录不存在 / secret 错误 / 旧码被 `lastQrcodeId` 刷新作废（兜底，见下方说明） |
 
 - 收到 `pending`/`scanned` 后连接保持，服务端每 15 秒发送一次注释心跳防止代理/容器断开空闲连接；
-- 收到 `confirmed` 后按 §5.6 用 `authToken` 换取会话；收到 `cancelled`/`expired` 后停止并提示用户；
-- 连接会随二维码自然过期（默认 180 秒）而收到 `expired`，收到后需重新 `create`；
-- `EventSource` 断线自动重连；`lastQrcodeId` 刷新导致旧码作废时，旧连接将收到 `expired`。
+- 收到 `confirmed` 后按 §5.6 用 `authToken` 换取会话；收到 `cancelled` 后停止并提示用户；
+- **过期不由服务端通知，由设备自行把控**：设备应基于 `create` 返回的 `expireAt` 本地倒计时，到期前主动携带 `lastQrcodeId` 重新 `create`（§5.3），再用新码重新订阅。`expired` 事件仅为兜底：出现异常（如旧码被刷新作废时遗留的 SSE 连接），设备收到后应重新走 `create` + 订阅；
+- `EventSource` 断线自动重连；断线重连后服务端会重推当前状态。
 
 **对接示例（JavaScript，浏览器 `EventSource`）**
 
@@ -510,7 +522,7 @@ GET /cas/qrcode/stream?qrcodeId={qrcodeId}&secret={secret}
 const { qrcodeId, secret } = await createQrcode(service, name);
 subscribeStatus(qrcodeId, secret, service);
 
-// 2. SSE 订阅状态，直至 confirmed / cancelled / expired
+// 2. SSE 订阅状态，直至 confirmed / cancelled（expired 为兜底）
 function subscribeStatus(qrcodeId, secret, service) {
   const es = new EventSource(`/cas/qrcode/stream?qrcodeId=${qrcodeId}&secret=${secret}`);
 
@@ -529,7 +541,8 @@ function subscribeStatus(qrcodeId, secret, service) {
 
   es.addEventListener("expired", () => {
     es.close();
-    // 二维码已失效：携带 lastQrcodeId 重新 create（§5.3），再用新 qrcodeId 重新订阅
+    // 兜底：连接异常（如旧码被 lastQrcodeId 刷新作废）时触发；
+    // 正常过期由本地 expireAt 倒计时提前刷新（§5.3），一般不会走到这里
   });
 
   // EventSource 断线自动重连；如需要可监听 es.onerror 记录日志
@@ -544,7 +557,7 @@ function subscribeStatus(qrcodeId, secret, service) {
 GET /cas/qrcode/status?qrcodeId={qrcodeId}&secret={secret}
 ```
 
-返回 `{ "status": ... }`，状态取值同上述事件表（`confirmed` 时附 `authToken`）；建议每 2~3 秒轮询一次。
+返回 `{ "status": ... }`，状态取值同上述事件表（`confirmed` 时附 `authToken`）；建议每 2~3 秒轮询一次。轮询到 `expired` 时同样为兜底场景，正常情况下应在本地按 `expireAt` 倒计时主动刷新（§5.3）。
 
 ### 5.5 扫码确认（手机）
 
@@ -578,9 +591,9 @@ GET /cas/qrcode/login?qrcodeId={qrcodeId}&authToken={authToken}&service={service
 
 - `authToken` **一次性**，消费后立即失效，不能重放；
 - `secret` 泄露仅导致登录进度可被窥探，不会泄露会话；但严禁写入二维码或日志；
-- `qrcodeId` 超时后状态返回 `expired`，需重新创建；
+- 二维码过期（默认 180 秒）以 `create` 返回的 `expireAt` 为准；**建议设备基于 `expireAt` 本地倒计时主动刷新**（提前携带 `lastQrcodeId` 重新 `create`），不要依赖服务端过期推送；
 - 通过 `lastQrcodeId` 刷新创建时旧码立即作废，请确保只订阅/轮询最新创建的 `qrcodeId`；
-- SSE 连接随二维码终态（`confirmed`/`cancelled`）或过期自动关闭，设备端断开后 EventSource 默认自动重连，重连后服务端会重推当前状态；
+- SSE 连接随二维码终态（`confirmed`/`cancelled`）自动关闭；`expired`（旧码作废等兜底场景）也会关闭。设备端断开后 EventSource 默认自动重连，重连后服务端会重推当前状态；
 - 手机拒绝后状态返回 `cancelled`，该二维码不可再登录；拒绝不影响手机端已登录会话；
 - 设备登录不携带手机端会话 ID，两端会话互不关联；
 - 扫码确认要求用户在 EMS 已登录；
