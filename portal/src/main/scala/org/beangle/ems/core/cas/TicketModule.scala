@@ -18,8 +18,10 @@
 package org.beangle.ems.core.cas
 
 import org.beangle.commons.cdi.BindModule
+import org.beangle.ems.core.cas.service.EmsCasAppInfoProvider
 import org.beangle.ids.cas.id.impl.DefaultServiceTicketIdGenerator
 import org.beangle.ids.cas.service.CasServiceImpl
+import org.beangle.ids.cas.service.impl.DefaultQrcodeService
 import org.beangle.ids.cas.ticket.{DefaultTicketCacheService, DefaultTicketRegistry}
 
 class TicketModule extends BindModule {
@@ -28,5 +30,7 @@ class TicketModule extends BindModule {
     bind(classOf[DefaultTicketRegistry])
     bind(classOf[CasServiceImpl])
     bind(classOf[DefaultServiceTicketIdGenerator])
+    bind(classOf[DefaultQrcodeService]).constructor(ref("redis.Factory"))
+    bind(classOf[EmsCasAppInfoProvider])
   }
 }

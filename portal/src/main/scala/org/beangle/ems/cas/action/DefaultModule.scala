@@ -20,7 +20,7 @@ package org.beangle.ems.cas.action
 import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ids.cas.service.LoginRetryServiceImpl
-import org.beangle.ids.cas.web.action.{AuthAction, LoginAction, LogoutAction, SmsLoginAction}
+import org.beangle.ids.cas.web.action.{AuthAction, LoginAction, LogoutAction, OAuthAction, QrcodeAction, SmsLoginAction}
 import org.beangle.ids.cas.web.helper.CaptchaHelper
 import org.beangle.ids.cas.web.ws.{ServiceValidateAction, SessionAction}
 import org.beangle.notify.sms.SmsCodeService
@@ -40,6 +40,7 @@ class DefaultModule extends BindModule {
     bind(classOf[SessionAction])
     bind(classOf[EditAction])
     bind(classOf[OAuthAction])
+    bind(classOf[QrcodeAction])
     bind(classOf[CaptchaHelper]).constructor(Ems.innerApi + "/tools")
     bind(classOf[LoginRetryServiceImpl]).constructor(ref("redis.Factory"))
   }

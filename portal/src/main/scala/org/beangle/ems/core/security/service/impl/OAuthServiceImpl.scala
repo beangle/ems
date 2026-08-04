@@ -18,138 +18,90 @@
 package org.beangle.ems.core.security.service.impl
 
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.beangle.cache.redis.RedisCacheManager
-import org.beangle.commons.bean.Initializing
-import org.beangle.commons.cache.Cache
-import org.beangle.commons.io.DefaultBinarySerializer
-import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.data.dao.EntityDao
-import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.ThirdPartyApp
 import org.beangle.ems.core.config.service.DomainService
-import org.beangle.ems.core.security.model.{OAuthCode, OAuthToken}
-import org.beangle.ems.core.security.service.OAuthService
+import org.beangle.ems.core.security.model.OAuthToken
 import org.beangle.ems.core.user.model.User
+import org.beangle.ems.core.user.service.UserService
+import org.beangle.ids.cas.service.{AbstractOAuthService, OAuthClient, OAuthCode, OAuthResources}
 import org.beangle.security.authc.PreauthToken
-import org.beangle.security.realm.jwt.{JwtDigest, Jwts}
 import org.beangle.security.session.SessionProfile
 import org.beangle.security.web.WebSecurityManager
 import org.beangle.web.servlet.util.CookieUtils
 import redis.clients.jedis.RedisClient
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.time.{Duration, Instant}
-import java.util.{Base64, UUID}
+import java.time.Instant
 
-class OAuthServiceImpl extends OAuthService, Initializing {
+/** ems 的 OAuth2 授权服务实现。
+ *
+ * 复用 ids 的 {@link AbstractOAuthService} 通用逻辑，仅实现 ems 特有的客户端校验、
+ * 用户资源获取与授权码验证通过后的会话建立和令牌持久化。
+ */
+class OAuthServiceImpl extends AbstractOAuthService {
 
-  var codeTTL: Duration = Duration.ofMinutes(5)
-  var tokenTTL: Duration = Duration.ofHours(1)
-  private var digest: JwtDigest = _
-  private[this] var codes: Cache[String, String] = _
   var domainService: DomainService = _
   var entityDao: EntityDao = _
   var securityManager: WebSecurityManager = _
-
-  override def init(): Unit = {
-    val s = EmsApp.properties.getOrElse("oauth.secret", "org.beangle.ems:oauth.secret.not.specified").toString
-    this.digest = Jwts.digest(s)
-  }
+  var userService: UserService = _
 
   def this(client: RedisClient) = {
     this()
-    val cacheManager = new RedisCacheManager(client, new DefaultBinarySerializer, true)
-    cacheManager.ttl = codeTTL.getSeconds.toInt
-    codes = cacheManager.getCache("oauth2_code", classOf[String], classOf[String])
+    initRedis(client)
   }
 
   def this(factory: java.util.function.Supplier[RedisClient]) = {
-    this(factory.get())
+    this()
+    initRedis(factory.get())
   }
 
-  /** 生成授权码并存入 Redis，强制要求 PKCE
-   *
-   * @param clientId      客户端编码 (ThirdPartyApp.code)
-   * @param userId        用户编码 (User.code)
-   * @param scope         授权范围，如 "read write profile"
-   * @param codeChallenge PKCE 的 code_challenge，必传
-   * @return 生成的授权码
-   */
-  def generateAuthCode(clientId: String, userId: String, scope: String, codeChallenge: String): String = {
-    assert(codeChallenge != null && codeChallenge.nonEmpty, "PKCE code_challenge is required")
-    val code = UUID.randomUUID().toString.replace("-", "")
-    val expiresAt = Instant.now().plusSeconds(codeTTL.getSeconds)
-    val oauthCode = new OAuthCode(code, clientId, userId, scope, codeChallenge, expiresAt)
-    codes.put(code, OAuthCode.toJson(oauthCode).toJson)
-    code
+  protected override def secret: String = {
+    Ems.key
   }
 
-  /** 验证授权码并生成 access token，强制要求 PKCE
-   *
-   * 验证通过后授权码将被移除（一次性使用），并生成 JWT token 及数据库记录。
-   *
-   * @param code         授权码
-   * @param clientId     客户端编码，需与授权时一致
-   * @param codeVerifier PKCE 的 code_verifier，必传
-   * @return (成功, token或错误信息)
-   */
-  override def exchangeCode(code: String, clientId: String, codeVerifier: String)
-                           (request: HttpServletRequest, response: HttpServletResponse): (Boolean, String) = {
-    if (code == null || code.isEmpty || clientId == null || codeVerifier == null || codeVerifier.isEmpty)
-      return (false, "Invalid parameters")
-    val jsonOpt = codes.get(code)
-    codes.evict(code)
-    if (jsonOpt.isEmpty) return (false, "Invalid code")
-    val json = jsonOpt.get
-
-    val oauthCode = OAuthCode.fromJson(Json.parseObject(json))
-
-    if (Instant.now().isAfter(oauthCode.expiresAt)) return (false, "Code expired")
-    if (clientId != oauthCode.clientId) return (false, "Client ID mismatch")
-
-    if (!verifyPkceS256(codeVerifier, oauthCode.codeChallenge)) return (false, "PKCE verification failed")
-
+  override def findClient(clientId: String): Option[OAuthClient] = {
     val domain = domainService.getDomain
-    val app = entityDao.findBy(classOf[ThirdPartyApp], "domain" -> domain, "code" -> clientId).headOption
-    if (app.isEmpty) {
-      return (false, "Client not found")
-    }
-    val user = entityDao.findBy(classOf[User], "org" -> domain.org, "code" -> oauthCode.userId).headOption
-    if (user.isEmpty) {
-      return (false, "User not found")
-    }
-    //我们把token放到credential中
-    val authToken = new PreauthToken(user.get.code, code)
-
-    authToken.addDetail("authorities", oauthCode.scope)
-    authToken.addDetail("session_profile", SessionProfile.tti(tokenTTL))
-    request.setAttribute(CookieUtils.DisableCookie, true)
-
-    val session = securityManager.login(request, response, authToken)
-
-    val tokenData = new JsonObject()
-    tokenData.add("user_id", oauthCode.userId)
-    tokenData.add("client_id", oauthCode.clientId)
-    tokenData.add("scope", oauthCode.scope)
-    tokenData.add("jti", session.id)
-    val jwtToken = digest.generateToken(tokenData, tokenTTL)
-
-    val otoken = new OAuthToken
-    otoken.token = jwtToken
-    otoken.user = user.get
-    otoken.client = app.get
-    otoken.scope = oauthCode.scope
-    otoken.issuedAt = Instant.now()
-    otoken.expiredAt = Instant.now().plusSeconds(tokenTTL.getSeconds)
-    entityDao.saveOrUpdate(otoken)
-    (true, jwtToken)
+    val apps = entityDao.findBy(classOf[ThirdPartyApp], "domain" -> domain, "code" -> clientId)
+    apps.headOption.map(a => OAuthClient(a.id, a.name, a.redirectUri))
   }
 
-  private def verifyPkceS256(verifier: String, challenge: String): Boolean = {
-    val digest = MessageDigest.getInstance("SHA-256")
-    val hash = digest.digest(verifier.getBytes(StandardCharsets.UTF_8))
-    val computed = Base64.getUrlEncoder.withoutPadding.encodeToString(hash)
-    computed == challenge
+  override def getAuthResources(userId: String): Option[OAuthResources] = {
+    val domain = domainService.getDomain
+    userService.get(userId).map(u => OAuthResources(u, userService.getRoles(u, domain)))
+  }
+
+  /** 授权码验证通过后，建立用户会话并签发、持久化访问令牌。 */
+  override protected def onCodeValidated(oauthCode: OAuthCode)
+                                        (request: HttpServletRequest, response: HttpServletResponse): (Boolean, String) = {
+    val domain = domainService.getDomain
+    val app = entityDao.findBy(classOf[ThirdPartyApp], "domain" -> domain, "code" -> oauthCode.clientId).headOption
+    if (app.isEmpty) {
+      (false, "Client not found")
+    } else {
+      val user = entityDao.findBy(classOf[User], "org" -> domain.org, "code" -> oauthCode.userId).headOption
+      if (user.isEmpty) {
+        (false, "User not found")
+      } else {
+        // 把token放到credential中
+        val authToken = new PreauthToken(user.get.code, oauthCode.code)
+        authToken.addDetail("authorities", oauthCode.scope)
+        authToken.addDetail("session_profile", SessionProfile.tti(tokenTTL))
+        request.setAttribute(CookieUtils.DisableCookie, true)
+
+        val session = securityManager.login(request, response, authToken)
+        val jwtToken = buildAccessToken(oauthCode.userId, oauthCode.clientId, oauthCode.scope, session.id)
+
+        val otoken = new OAuthToken
+        otoken.token = jwtToken
+        otoken.user = user.get
+        otoken.client = app.get
+        otoken.scope = oauthCode.scope
+        otoken.issuedAt = Instant.now()
+        otoken.expiredAt = Instant.now().plusSeconds(tokenTTL.getSeconds)
+        entityDao.saveOrUpdate(otoken)
+        (true, jwtToken)
+      }
+    }
   }
 }

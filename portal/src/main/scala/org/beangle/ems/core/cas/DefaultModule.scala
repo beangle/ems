@@ -84,7 +84,10 @@ class DefaultModule extends BindModule, Config.Provider {
     val filters = Collections.newBuffer[Binder.Reference]
     if remoteOpenidServer.isDefined then filters.addOne(ref("security.Filter.OpenidPreauth"))
     if remoteCasServer.isDefined || remoteLtpa.isDefined then filters.addOne(ref("security.Filter.Preauth"))
-    bind("security.Filter.authorization_cas", new AuthorizationFilter(new ProtectedAuthorizer(Set(localLogin, smsLogin, authLogin))))
+    //ProtectedAuthorizer 按 action 名精确匹配（resource 为 action 名，非方法级路径），
+    //故按 action 整体放行：/cas/qrcode 与 /cas/oauth 内部的登录校验/CSRF 由各 action 自行处理
+    bind("security.Filter.authorization_cas", new AuthorizationFilter(
+      new ProtectedAuthorizer(Set(localLogin, smsLogin, authLogin, "/cas/qrcode", "/cas/oauth"))))
     filters.addOne(ref("security.Filter.authorization_cas"))
     interceptor.property("filters", filters.toList)
 
