@@ -150,19 +150,19 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     menu.children.foreach { c => reserveChildren(c, menus) }
   }
 
-  def getMenus(app: App, role: Role): collection.Seq[Menu] = {
-    val query = buildMenuQuery(app, role)
+  def getMenus(app: App, role: Role, channelType: ChannelType): collection.Seq[Menu] = {
+    val query = buildMenuQuery(app, role, channelType)
     query.where("menu.enabled = true")
     val menus = Collections.newSet[Menu]
     menus ++= entityDao.search(query)
     addParentMenus(menus)
   }
 
-  def getMenus(app: App, user: User): collection.Seq[Menu] = {
+  def getMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
     val menus = Collections.newSet[Menu]
     for (rm <- user.roles) {
       if (rm.member) {
-        val query = buildMenuQuery(app, rm.role)
+        val query = buildMenuQuery(app, rm.role, channelType)
         query.where("menu.enabled= true")
         menus ++= entityDao.search(query)
       }
@@ -175,17 +175,21 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
     entityDao.search(builder)
   }
 
-  override def getMenus(app: App): collection.Seq[Menu] = {
-    val builder = OqlBuilder.from(classOf[Menu]).where("menu.channel.app= :app", app).orderBy("menu.indexno").cacheable()
+  override def getMenus(app: App, channelType: ChannelType): collection.Seq[Menu] = {
+    val builder = OqlBuilder.from(classOf[Menu])
+      .where("menu.channel.app= :app", app)
+      .where("menu.channel.channelType= :channelType", channelType)
+      .orderBy("menu.indexno").cacheable()
     entityDao.search(builder)
   }
 
-  private def buildMenuQuery(app: App, role: Role): OqlBuilder[Menu] = {
+  private def buildMenuQuery(app: App, role: Role, channelType: ChannelType): OqlBuilder[Menu] = {
     val builder = OqlBuilder.from(classOf[Menu])
     builder.join("menu.resources", "mr")
     builder.where("exists(from " + classOf[FuncPermission].getName
       + " a where a.role=:role and a.resource=mr)", role)
     builder.where("menu.channel.app = :app", app)
+    builder.where("menu.channel.channelType = :channelType", channelType)
     builder.cacheable()
     builder
   }

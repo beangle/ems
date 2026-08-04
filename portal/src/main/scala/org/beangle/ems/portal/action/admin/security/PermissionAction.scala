@@ -21,9 +21,9 @@ import org.beangle.commons.concurrent.Timers
 import org.beangle.commons.lang.Numbers
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.ems.core.config.model.{App, Env}
+import org.beangle.ems.core.config.model.{App, ChannelType, Env}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
-import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
+import org.beangle.ems.core.security.model.{Channel, FuncPermission, FuncResource, Menu, RoleAppEnv}
 import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
@@ -70,7 +70,13 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
       if (myMngRoles.contains(r) || isPlatformRoot) mngRoles += r
     }
     put("mngRoles", mngRoles)
-    val apps = filterAppsByRoleEnvs(appService.getWebapps, role)
+    val channelTypes = entityDao.getAll(classOf[ChannelType]).sortBy(_.id)
+    put("channelTypes", channelTypes)
+    val channelType = resolveChannelType(channelTypes)
+    put("current_channelType", channelType)
+
+    val supportingAppIds = appIdsSupporting(channelType)
+    val apps = filterAppsByRoleEnvs(appService.getWebapps, role).filter(app => supportingAppIds.contains(app.id))
     AppHelper.putApps(apps, "app.id", entityDao)
 
     val app: App = ActionContext.current.attribute("current_app")
@@ -78,7 +84,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
     if (null != app) {
       var mngResources: collection.Seq[Object] = null
       if (isPlatformRoot) {
-        mngMenus ++= menuService.getMenus(app)
+        mngMenus ++= menuService.getMenus(app, channelType)
         mngResources = funcPermissionService.getResources(app)
       } else {
         mngResources = new collection.mutable.ListBuffer[FuncResource]
@@ -87,13 +93,14 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
         val menuSet = new collection.mutable.HashSet[Menu]
         for (m <- user.roles) {
           if (m.granter) {
-            menuSet ++= menuService.getMenus(app, m.role)
+            menuSet ++= menuService.getMenus(app, m.role, channelType)
             params.put("roleId", m.role.id)
             mngResources ++= entityDao.search(OqlBuilder.oql[FuncResource](hql).params(params))
           }
         }
         mngMenus ++= menuSet.toList.sorted
       }
+      mngMenus.filterInPlace(_.channel.channelType == channelType)
       put("mngResources", mngResources.toSet)
       val displayFreezen = getBoolean("displayFreezen", defaultValue = false)
       if (!displayFreezen) {
@@ -102,7 +109,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
         mngMenus --= freezed
       }
       val permissions = funcPermissionService.getPermissions(app, role)
-      val roleMenus = menuService.getMenus(app, role)
+      val roleMenus = menuService.getMenus(app, role, channelType)
       val roleResources = permissions.map(p => p.resource).toSet
       put("roleMenus", roleMenus.toSet)
       put("roleResources", roleResources)
@@ -122,7 +129,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
       var parent = role.parent.orNull
       while (null != parent && !parents.contains(parent)) {
         val parentPermissions = funcPermissionService.getPermissions(app, parent)
-        parentMenus ++= menuService.getMenus(app, parent)
+        parentMenus ++= menuService.getMenus(app, parent, channelType)
         for (permission <- parentPermissions) {
           parentResources += permission.resource
         }
@@ -145,6 +152,28 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
     put("mngMenus", mngMenus)
     put("role", role)
     forward()
+  }
+
+  /**
+   * 解析当前选中的菜单端类型，缺省取 PC。
+   */
+  private def resolveChannelType(channelTypes: Iterable[ChannelType]): ChannelType = {
+    getInt("channelType.id") match {
+      case Some(id) => channelTypes.find(_.id == id).getOrElse(entityDao.get(classOf[ChannelType], id))
+      case None =>
+        channelTypes.find(_.id == ChannelType.PcId)
+          .orElse(channelTypes.find(_.name == ChannelType.Pc))
+          .getOrElse(entityDao.get(classOf[ChannelType], ChannelType.PcId))
+    }
+  }
+
+  /** 已配置所选菜单端的应用 id 集合，用于按端过滤应用下拉。 */
+  private def appIdsSupporting(channelType: ChannelType): Set[Int] = {
+    val query = OqlBuilder.from[App](classOf[Channel].getName, "c")
+      .where("c.channelType=:channelType", channelType)
+      .select("c.app")
+      .cacheable()
+    entityDao.search(query).map(_.id).toSet
   }
 
   /**
@@ -208,12 +237,13 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
 
     // 管理员拥有的菜单权限和系统资源
     val manager = entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+    val channelType = resolveChannelType(entityDao.getAll(classOf[ChannelType]))
     var mngMenus: collection.Set[Menu] = null
     val mngResources = new collection.mutable.HashSet[FuncResource]
     if (userService.isRoot(manager)) {
-      mngMenus = menuService.getMenus(app).toSet
+      mngMenus = menuService.getMenus(app, channelType).toSet
     } else {
-      mngMenus = menuService.getMenus(app, manager).toSet
+      mngMenus = menuService.getMenus(app, manager, channelType).toSet
     }
     for (m <- mngMenus) {
       mngResources ++= m.resources
@@ -223,6 +253,7 @@ class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
 
     val where = to(this, "edit")
     where.param("role.id", role.id).param("app.id", app.id)
+    getInt("channelType.id") foreach (id => where.param("channelType.id", id))
     val displayFreezen = get("displayFreezen")
     if (null != displayFreezen) where.param("displayFreezen", displayFreezen)
 

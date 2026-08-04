@@ -33,11 +33,11 @@ trait MenuService {
 
   def getTopMenus(app: App): collection.Seq[Menu]
 
-  def getMenus(app: App, role: Role): collection.Seq[Menu]
+  def getMenus(app: App, role: Role, channelType: ChannelType): collection.Seq[Menu]
 
-  def getMenus(app: App, user: User): collection.Seq[Menu]
+  def getMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu]
 
-  def getMenus(app: App): collection.Seq[Menu]
+  def getMenus(app: App, channelType: ChannelType): collection.Seq[Menu]
 
   def move(menu: Menu, location: Menu, index: Int): Unit
 

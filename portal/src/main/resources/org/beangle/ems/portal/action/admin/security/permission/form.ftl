@@ -93,6 +93,13 @@
     </select>
     </td>
     <td class="title">
+    菜单端:<select name="channelType.id" style="width:100px;" onchange="this.form.submit();">
+      [#list channelTypes as ct]
+      <option value="${ct.id}" [#if current_channelType.id=ct.id]selected="selected"[/#if]>${ct.title}</option>
+      [/#list]
+      </select>
+    </td>
+    <td class="title">
     应用:<select name="app.id" style="width:300px;" onchange="this.form.submit();">
       [#list apps as p]
       <option value="${p.id}" [#if current_app=p]selected="selected"[/#if]>${p.fullTitle}</option>
