@@ -366,11 +366,14 @@ sequenceDiagram
 | 方法 | 路径 | 调用方 | 说明 |
 |------|------|--------|------|
 | POST | `/cas/qrcode/create?service&name` | 设备 | 创建二维码票据 |
-| GET | `/cas/qrcode/status?qrcodeId&secret` | 设备 | 轮询状态 |
+| GET | `/cas/qrcode/stream?qrcodeId&secret` | 设备 | SSE 订阅状态（推荐，服务端实时推送） |
+| GET | `/cas/qrcode/status?qrcodeId&secret` | 设备 | 查询状态（降级/调试用，单次轮询） |
 | GET | `/cas/qrcode/scan?qrcodeId` | 手机 | 扫码确认页（未登录先跳 `/cas/login`） |
 | POST | `/cas/qrcode/confirm?qrcodeId` | 手机 | 确认授权，生成一次性 `authToken` |
 | POST | `/cas/qrcode/cancel?qrcodeId` | 手机 | 拒绝授权，状态置为 `cancelled` |
 | GET | `/cas/qrcode/login?qrcodeId&authToken&service` | 设备 | 换取会话，302 回 `service?ticket=ST` |
+
+`create`、`stream` 与 `status` 均为纯数据接口，**支持跨域（CORS）**：服务端动态回显请求来源 `Origin` 并允许携带凭据，前端可直接跨域调用（无需服务端代理）。
 
 ### 5.2 状态机
 
@@ -381,6 +384,8 @@ create ──▶ pending ──扫码──▶ scanned ──确认──▶ con
                                   └────────────── 过期 / 超时 ──────────▶ expired
 ```
 
+除自然过期外，携带 `lastQrcodeId` 重新 `create` 也会使旧码**立即失效**（设备轮询旧码收到 `expired`），详见 §5.3 刷新。
+
 ### 5.3 创建二维码（设备）
 
 **请求**
@@ -389,12 +394,14 @@ create ──▶ pending ──扫码──▶ scanned ──确认──▶ con
 POST /cas/qrcode/create
     ?service={service}
     &name={name}
+    &lastQrcodeId={qrcodeId}   // 可选
 ```
 
 | 参数 | 必填 | 说明 |
 |------|------|------|
 | `service` | 是 | 设备登录成功后的回跳地址，须在 service 白名单内 |
-| `name` | 否 | 应用名（预留字段，当前展示以 EMS 登记信息为准） |
+| `name` | 是 | 应用名，须与 EMS 管理端登记的 `App.name` 一致（确认页按此识别应用） |
+| `lastQrcodeId` | 否 | 上次创建的二维码标识；传入时旧码立即作废、再生成新码（刷新场景），可避免旧码继续被扫描/轮询 |
 
 **成功响应**（HTTP 200）
 
@@ -419,42 +426,136 @@ POST /cas/qrcode/create
 | `secret` | 轮询身份认证密钥，**不得**出现在二维码或日志中 |
 | `scanUrl` | 二维码渲染内容：手机扫开后直接进入确认页 |
 
-### 5.4 轮询状态（设备）
+**刷新（refresh）**
+
+二维码过期（默认 180 秒）或设备页面刷新时，携带上次创建的 `qrcodeId` 重新创建，即可在生成新码前**立即作废旧码**：
+
+```text
+POST /cas/qrcode/create
+    ?service={service}
+    &name={name}
+    &lastQrcodeId={上一张二维码 qrcodeId}
+```
+
+- 新码生成前，`lastQrcodeId` 对应的旧码立即失效：正在轮询旧码的设备收到 `expired`，手机上尚未扫码的旧二维码也随即不可用，避免新旧两码并存导致状态错乱；
+- 刷新成功后，设备应改轮询新返回的 `qrcodeId` 与 `secret`；
+- 不携带 `lastQrcodeId` 直接重新 `create` 时，旧码不会立即作废，将保留至自然过期。
+
+**对接示例（JavaScript）**
+
+```javascript
+let currentQrcode = null; // 当前有效的 { qrcodeId, secret }
+
+// 创建二维码；lastQrcodeId 为空时即首次创建
+async function createQrcode(service, name, lastQrcodeId) {
+  const params = new URLSearchParams({ service, name });
+  if (lastQrcodeId) params.set("lastQrcodeId", lastQrcodeId);
+  const resp = await fetch(`/cas/qrcode/create?${params}`, { method: "POST", credentials: "include" });
+  return resp.json(); // { qrcodeId, secret, expireAt, scanUrl }
+}
+
+// 首次创建：不携带 lastQrcodeId
+async function createFirst(service, name) {
+  currentQrcode = await createQrcode(service, name);
+  subscribeStatus(currentQrcode.qrcodeId, currentQrcode.secret, service); // 见 §5.4
+}
+
+// 过期/页面刷新/用户点击"刷新二维码"：携带 lastQrcodeId，作废旧码再生成新码
+async function refreshQrcode(service, name) {
+  const last = currentQrcode ? currentQrcode.qrcodeId : null;
+  const next = await createQrcode(service, name, last);
+  currentQrcode = next; // 立即切换到新码
+  // 用新 qrcodeId/secret 重新订阅或轮询；旧连接会收到 expired 并自行结束
+  subscribeStatus(next.qrcodeId, next.secret, service);
+}
+```
+
+对接要点：
+
+- `lastQrcodeId` 由**设备本地维护**，即上一次 `create` 成功返回的 `qrcodeId`；设备重启后已无旧码时，首次 `create` 不携带即可；
+- 刷新成功后**必须改用新返回的 `qrcodeId`/`secret`** 重新订阅或轮询，旧码已作废不可继续使用；
+- 若并发提交了多次刷新，仅最后一次 `create` 返回的码有效（前序刷新会把各自的 `lastQrcodeId` 旧码作废）。
+
+### 5.4 订阅状态（设备，SSE 推荐）
+
+设备创建二维码后，推荐用 **SSE（Server-Sent Events）** 订阅状态：连接建立后由服务端实时推送状态变化，设备无需轮询。
 
 **请求**
+
+```text
+GET /cas/qrcode/stream?qrcodeId={qrcodeId}&secret={secret}
+```
+
+参数：`qrcodeId`（创建时返回）、`secret`（创建时返回，身份认证），均必填。客户端用标准 `EventSource` 连接（GET + `text/event-stream`），跨域时由服务端回显 `Origin`。
+
+**事件**（`Content-Type: text/event-stream`，每条为命名事件 + JSON data）：
+
+| 事件名 | data | 触发时机 |
+|------|------|------|
+| `pending` | `{ "status": "pending" }` | 已创建、尚未被扫描 |
+| `scanned` | `{ "status": "scanned" }` | 手机已扫码 |
+| `confirmed` | `{ "status": "confirmed", "authToken": "..." }` | 手机已确认，可换取会话（服务端随即关闭连接） |
+| `cancelled` | `{ "status": "cancelled" }` | 手机已拒绝（服务端随即关闭连接） |
+| `expired` | `{ "status": "expired" }` | 记录不存在 / secret 错误 / 自然过期 |
+
+- 收到 `pending`/`scanned` 后连接保持，服务端每 15 秒发送一次注释心跳防止代理/容器断开空闲连接；
+- 收到 `confirmed` 后按 §5.6 用 `authToken` 换取会话；收到 `cancelled`/`expired` 后停止并提示用户；
+- 连接会随二维码自然过期（默认 180 秒）而收到 `expired`，收到后需重新 `create`；
+- `EventSource` 断线自动重连；`lastQrcodeId` 刷新导致旧码作废时，旧连接将收到 `expired`。
+
+**对接示例（JavaScript，浏览器 `EventSource`）**
+
+```javascript
+// 1. 创建二维码并订阅（createQrcode 定义见 §5.3 对接示例）
+const { qrcodeId, secret } = await createQrcode(service, name);
+subscribeStatus(qrcodeId, secret, service);
+
+// 2. SSE 订阅状态，直至 confirmed / cancelled / expired
+function subscribeStatus(qrcodeId, secret, service) {
+  const es = new EventSource(`/cas/qrcode/stream?qrcodeId=${qrcodeId}&secret=${secret}`);
+
+  // 命名事件用 addEventListener 精确监听
+  es.addEventListener("confirmed", (e) => {
+    const { authToken } = JSON.parse(e.data);
+    es.close(); // 收到终态，客户端主动关闭
+    // 3. 用一次性 authToken 换取会话（§5.6），跳转到 service 并附带 ticket
+    location.href = `/cas/qrcode/login?qrcodeId=${qrcodeId}&authToken=${authToken}&service=${encodeURIComponent(service)}`;
+  });
+
+  es.addEventListener("cancelled", () => {
+    es.close();
+    // 手机端已拒绝，停止流程并提示用户
+  });
+
+  es.addEventListener("expired", () => {
+    es.close();
+    // 二维码已失效：携带 lastQrcodeId 重新 create（§5.3），再用新 qrcodeId 重新订阅
+  });
+
+  // EventSource 断线自动重连；如需要可监听 es.onerror 记录日志
+}
+```
+
+**降级：轮询 `status`**
+
+不适用 SSE 的环境可退化为轮询（保留原端点，单次查询语义）：
 
 ```text
 GET /cas/qrcode/status?qrcodeId={qrcodeId}&secret={secret}
 ```
 
-| 参数 | 必填 | 说明 |
-|------|------|------|
-| `qrcodeId` | 是 | 创建时返回 |
-| `secret` | 是 | 创建时返回，身份认证 |
-
-**响应**（HTTP 200）
-
-| 状态 | 响应体 | 说明 |
-|------|--------|------|
-| `pending` | `{ "status": "pending" }` | 尚未被扫描 |
-| `scanned` | `{ "status": "scanned" }` | 手机已扫码 |
-| `confirmed` | `{ "status": "confirmed", "authToken": "..." }` | 手机已确认，可换取会话 |
-| `cancelled` | `{ "status": "cancelled" }` | 手机已拒绝，不可再登录 |
-| `expired` | `{ "status": "expired" }` | 超时/不存在/secret 错误 |
-
-- 建议每 2~3 秒轮询一次；
-- 票据默认有效期 180 秒，超时返回 `expired`，需重新创建。
+返回 `{ "status": ... }`，状态取值同上述事件表（`confirmed` 时附 `authToken`）；建议每 2~3 秒轮询一次。
 
 ### 5.5 扫码确认（手机）
 
 1. 手机打开二维码中的 `scanUrl`；未登录时先跳 `/cas/login`，登录成功回跳确认页；
-2. 确认页展示应用名与当前用户；若 service 未在 EMS 管理端登记（`App.base` 前缀不匹配），则视为**非法应用**，直接跳转错误页，错误页会显示该 service 地址，无法进行确认/拒绝；
+2. 确认页展示应用名与当前用户；若应用名未在 EMS 管理端登记（`App.name` 不匹配），则视为**非法应用**，直接跳转错误页，错误页会显示该 service 地址，无法进行确认/拒绝；
 3. 点击"确认登录"自动提交 `POST /cas/qrcode/confirm`（携带 `qrcodeId`），CAS 生成一次性 `authToken`，状态置为 `confirmed`；
 4. 点击"拒绝"提交 `POST /cas/qrcode/cancel`，状态置为 `cancelled`，设备轮询到后停止并提示失败；拒绝仅结束本次授权，**不影响手机端自身登录状态**。
 
 ### 5.6 设备登录（换取会话）
 
-轮询到 `confirmed` 后，由**设备的浏览器**发起（须与后续 SSO 会话同一上下文）。
+订阅到 `confirmed` 后，由**设备的浏览器**发起（须与后续 SSO 会话同一上下文）。
 
 **请求**
 
@@ -465,7 +566,7 @@ GET /cas/qrcode/login?qrcodeId={qrcodeId}&authToken={authToken}&service={service
 | 参数 | 必填 | 说明 |
 |------|------|------|
 | `qrcodeId` | 是 | 创建时返回 |
-| `authToken` | 是 | 状态轮询到 `confirmed` 时返回 |
+| `authToken` | 是 | 订阅/轮询到 `confirmed` 时返回 |
 | `service` | 是 | 与创建时一致 |
 
 **响应（浏览器层面）**
@@ -478,10 +579,12 @@ GET /cas/qrcode/login?qrcodeId={qrcodeId}&authToken={authToken}&service={service
 - `authToken` **一次性**，消费后立即失效，不能重放；
 - `secret` 泄露仅导致登录进度可被窥探，不会泄露会话；但严禁写入二维码或日志；
 - `qrcodeId` 超时后状态返回 `expired`，需重新创建；
+- 通过 `lastQrcodeId` 刷新创建时旧码立即作废，请确保只订阅/轮询最新创建的 `qrcodeId`；
+- SSE 连接随二维码终态（`confirmed`/`cancelled`）或过期自动关闭，设备端断开后 EventSource 默认自动重连，重连后服务端会重推当前状态；
 - 手机拒绝后状态返回 `cancelled`，该二维码不可再登录；拒绝不影响手机端已登录会话；
 - 设备登录不携带手机端会话 ID，两端会话互不关联；
 - 扫码确认要求用户在 EMS 已登录；
-- 扫码 `service` 除需在白名单内，还须在 EMS 管理端登记（按应用注册的 `base` 前缀匹配），否则确认页显示**非法应用**、无法授权。
+- 扫码 `service` 除需在白名单内，还须在 EMS 管理端登记应用名（按 `App.name` 精确匹配），否则确认页显示**非法应用**、无法授权。
 
 ---
 
@@ -509,8 +612,11 @@ GET /cas/qrcode/login?qrcodeId={qrcodeId}&authToken={authToken}&service={service
 **Q3：OAuth 授权页报缺少 `code_challenge`？**
 PKCE 为强制要求，授权请求必须携带 `code_challenge`（S256）。
 
-**Q4：扫码轮询一直停在 `pending`？**
+**Q4：扫码订阅一直停在 `pending`？**
 确认二维码内容渲染的是 `scanUrl` 而非 qrcodeId，且手机端已登录 EMS。
 
-**Q5：access token 过期后怎么办？**
+**Q5：SSE 连接意外断开？**
+`EventSource` 默认自动重连，重连后服务端会重推当前状态（见 §5.7）；若频繁断开，请确认代理/网关未对 `text/event-stream` 做缓冲或过短的 idle 超时（服务端已每 15 秒发送心跳）。
+
+**Q6：access token 过期后怎么办？**
 JWT 默认 1 小时有效，过期后需重新发起授权流程获取新令牌。

@@ -5,8 +5,8 @@
       <h5 class="mb-0">确认登录</h5>
     </div>
     <div class="card-body">
-      <p class="text-muted">${app.name} 请求登录 EMS</p>
-      <p class="mb-3">当前用户：<strong>${user.name!user.code!''}</strong></p>
+      <p class="text-muted">${app.name} 请求登录你的账户</p>
+      <p class="mb-3">当前用户：<strong>${user}</strong></p>
       <div class="d-flex justify-content-between">
         <form method="post" action="${b.base}/cas/qrcode/cancel">
           <input type="hidden" name="qrcodeId" value="${qrcodeId}"/>

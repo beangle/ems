@@ -89,11 +89,27 @@ EMS 侧通过 cdi `BindModule` 装配 CAS 能力，四个核心模块：
 
 ### 6.1 ids 侧实现（已完成）
 
-- **`QrcodeRecord`**：Externalizable 序列化，字段含 `qrcodeId`/`secret`/`service`/`name`/`status`/`username`/`authToken`/`deviceIp`/`expireAt`/`createAt`；状态机 `pending → scanned → confirmed → consumed`，`pending/scanned/confirmed(未消费) → cancelled`。
-- **`DefaultQrcodeService`**：Redis 缓存 `cas_qrcodes` 存放记录（TTL 180 秒），全程不落库；`create`/`get`（过期自动清除）/`markScanned`/`confirm`（生成一次性 authToken）/`reject`（置 cancelled）/`consume`（匹配后置 consumed）。
-- **`QrcodeAction`**：六个端点 `create`/`status`/`scan`/`confirm`/`cancel`/`login`；依赖 `WebSecurityManager`、`TicketRegistry`（构造器）与 `casSetting`、`casService`、`qrcodeService`、`appInfoProvider`、`securityContextBuilder`（字段注入）；写操作 `confirm`/`cancel` 经 `CsrfDefender` 校验。
-- **`CasAppInfoProvider`**：确认页应用名提供接口，由部署方实现（ems 用 `EmsCasAppInfoProvider`）。`appInfoProvider` 无法识别 service 时视为**非法应用**，直接渲染错误页，不做兜底；错误页同时携带 `service` 变量展示具体地址。
+- **`QrcodeRecord`**：Externalizable 序列化，字段含 `qrcodeId`/`secret`/`service`/`appName`/`status`/`username`/`authToken`/`deviceIp`/`expireAt`；状态机 `pending → scanned → confirmed → consumed`，`pending/scanned/confirmed(未消费) → cancelled`。
+- **`DefaultQrcodeService`**：Redis 缓存 `cas_qrcodes` 存放记录，全程不落库；**缓存 TTL 由 `CasSetting.qrcodeExpireSeconds` 决定**（默认 180 秒），`create` 时 `QrcodeRecord.expireAt` 使用同一配置值；`create`/`get`/`markScanned`/`confirm`（生成一次性 authToken）/`reject`（置 cancelled）/`consume`（匹配后置 consumed）。**过期判定完全依赖 Redis key 的物理 TTL**（`get` 不做逻辑过期检查，`QrcodeRecord.expireAt` 仅作展示），避免与物理 TTL 不同步导致"已失效但 key 仍在"。
+- **`QrcodeAction`**：七个端点 `create`/`stream`/`status`/`scan`/`confirm`/`cancel`/`login`；依赖 `WebSecurityManager`、`TicketRegistry`（构造器）与 `casSetting`、`casService`、`qrcodeService`、`appInfoProvider`、`securityContextBuilder`（字段注入）；写操作 `confirm`/`cancel` 经 `CsrfDefender` 校验；`create`/`status` 为 JSON 接口，`stream` 为 SSE 长连接（`SseWriter`，同步阻塞轮询 Redis + 命名事件推送，工作方式见 §6.1.1）；三者均在方法内动态回显 `Origin` 并允许凭据（`addCorsHeaders`，与 `AuthAction` 一致）以支持跨域调用。
+- **`CasAppInfoProvider`**：确认页应用名提供接口，由部署方实现（ems 用 `EmsCasAppInfoProvider`，按 `App.name` 精确匹配）。`appInfoProvider` 无法识别应用名时视为**非法应用**，直接渲染错误页，不做兜底；错误页同时携带 `service` 变量展示具体地址。
 - **错误页 `error.ftl`**：`QrcodeAction` 在 `scan`/`confirm`/`cancel` 解析不到应用、以及 `login` 的 service 非法等分支，均 `put("service", ...)` 后 `forward("error")`；模板在 `service??` 存在时以 `<code>` 展示请求的服务地址。
+
+### 6.1.1 SSE 订阅（stream）工作方式
+
+`stream` 端点是扫码登录设备侧的状态订阅通道（`GET /cas/qrcode/stream?qrcodeId&secret`），以 **SSE（Server-Sent Events）** 替代轮询 `status`。实现采用与 `CetImportAction.logStream` 相同的**同步阻塞模式**，不依赖 Servlet 异步：
+
+- **连接建立**：`ActionContext.current.response` 包一层 `SseWriter`，`start()` 写 `text/event-stream;charset=UTF-8`、`Cache-Control: no-cache`、`Connection: keep-alive` 头；入口先 `addCorsHeaders`（与 `create`/`status` 一致），使跨域 `EventSource` 可用。连接建立时**立即校验记录存在性与 secret**：记录不存在或 secret 不匹配，直接推送 `expired` 事件并 `complete()` 关闭，与 `status` 的鉴权语义一致（不泄露登录进度）。
+- **推送循环**：合法连接进入 `while` 循环，**同步占用容器工作线程**（单连接占一线程，最多存活至二维码 TTL，默认 180 秒）：
+  - 每轮 `qrcodeService.get(qrcodeId)` 读一次 Redis（TTL 判定天然由 Redis key 物理过期完成）；
+  - 状态**与上次不同才推送**命名事件（`pending`/`scanned`/`confirmed`/`cancelled`/`expired`），避免重复事件刷屏；`confirmed` 时 payload 附 `authToken`；
+  - `confirmed`/`cancelled` 为终态：推送后置 `closed`，退出循环并 `complete()` 关闭连接；
+  - 无状态变化时计数空闲秒数，**每 15 秒 `sse.ping()` 一次注释行**，保持连接活跃并探测客户端断开；
+  - 每轮末尾 `Thread.sleep(1000)` 控制查询频率（1 次/秒，远低于设备端 2~3 秒轮询的开销）。
+- **断开检测**：`sse.onError` 置 `closed`；推送写失败抛 `IOException` 被 catch 后退出循环。连接关闭路径统一走 `sse.complete()`（幂等）。
+- **与 `status` 的关系**：`status` 端点保留作降级/调试（单次查询语义，响应结构与 `stream` 事件 data 一致），二者鉴权、状态取值完全对齐，设备端可自由切换。
+
+> **代价说明**：`stream` 采用同步阻塞，一个二维码订阅连接占用一个容器线程直到终态/断开。扫码登录是低频低并发场景（单设备一张码、TTL 短），可接受；若未来需要承载大量长连接，可改为 Servlet 异步 + 独立推送线程（需 webmvc 支持 `AsyncContext`），当前不引入该复杂度。
 
 ### 6.2 ems 集成步骤（已完成）
 
@@ -107,7 +123,7 @@ EMS 侧通过 cdi `BindModule` 装配 CAS 能力，四个核心模块：
    ```scala
    bind(classOf[QrcodeAction])
    ```
-3. **实现并绑定应用信息提供者** — `EmsCasAppInfoProvider`（`portal/.../core/cas/service/EmsCasAppInfoProvider.scala`），实现 `CasAppInfoProvider`，按本域 `App.base` 前缀匹配 `service`，返回 `App.title`（缺省 `App.name`）、`App.logoUrl`、`App.base` 作为确认页展示信息；在 `core/cas/TicketModule.scala` 一并绑定。
+3. **实现并绑定应用信息提供者** — `EmsCasAppInfoProvider`（`portal/.../core/cas/service/EmsCasAppInfoProvider.scala`），实现 `CasAppInfoProvider`，按本域 `App.name` 精确匹配设备创建二维码时传入的 `name`，返回 `App.title`（缺省 `App.name`）、`App.logoUrl`、`App.base` 作为确认页展示信息；在 `core/cas/TicketModule.scala` 一并绑定。
 4. **放行匿名端点** — `core/cas/DefaultModule.scala` 的 `ProtectedAuthorizer` 白名单加入 `/cas/qrcode`（放行整个扫码 action，与 `localLogin`、`smsLogin`、`authLogin` 合并）。注意：`ProtectedAuthorizer` 按 **action 名**精确匹配（`MvcRequestConvertor` 生成 `resource=action.name`），不能精确到方法级路径；`scan`/`confirm`/`cancel` 在 action 内部自行校验会话并跳转登录、写操作另有 CSRF 校验，整体放行安全。
 5. **提供扫码页面模板** — `portal/src/main/resources/org/beangle/ids/cas/web/action/qrcode/` 下 `scan.ftl`（确认页，含向 `/cas/qrcode/confirm` 的确认 POST 表单与向 `/cas/qrcode/cancel` 的拒绝 POST 表单，CSRF 校验走 `CSRF_TOKEN` cookie）、`confirmed.ftl`、`cancelled.ftl`（拒绝成功提示页）、`error.ftl`。
 6. **配置** — `CasSetting` 已含 `qrcodeExpireSeconds`（默认 180）与 `enableQrcodeLogin`（默认 true），一般无需额外配置。
