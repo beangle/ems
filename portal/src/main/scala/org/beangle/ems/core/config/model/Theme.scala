@@ -26,7 +26,7 @@ object Theme {
   Default.navbarBgColor = "#3c8dbc"
   Default.searchBgColor = "#e1ecff"
   Default.gridbarBgColor = "#e1ecff"
-  Default.gridBorderColor = "#006cb2"
+  Default.gridBorderColor = "hsla(0,0%,0%,0.3)"
 }
 
 /** 主题 */
