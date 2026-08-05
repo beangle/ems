@@ -295,7 +295,10 @@ export function setup(theme: NavTheme, params: Record<string, string>): void {
 
   changeNavSidebarTheme(getStoredThemeMode() || 'light');
   changeFontSize(getStoredFontSize() || 'medium');
-  const resolvedTheme = loadThemeFromLocal(theme);
+  // 服务端主题优先：navContext 传入的 theme 直接覆盖本地缓存；
+  // 仅当服务端无主题时才回退到 localStorage 中保存的主题
+  const hasServerTheme = !!theme && Object.values(theme).some(v => !!v);
+  const resolvedTheme = hasServerTheme ? theme : loadThemeFromLocal(theme);
   applyTheme(resolvedTheme);
   saveThemeToLocal(resolvedTheme);
 
