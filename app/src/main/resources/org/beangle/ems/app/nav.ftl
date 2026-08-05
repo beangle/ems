@@ -1,7 +1,7 @@
 [#macro displayFrame mainHref=""]
 ${b.static.load(["ems-shell"])}
 <div class="wrapper">
-    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--navbar-bg-color)">
+    <nav id="main_header" class="main-header navbar navbar-expand navbar-dark border-bottom-0" style="background-color:var(--bui-navbar-bg)">
       <ul class="nav navbar-nav">
          <li class="nav-item">
             <a class="nav-link" data-ems-pushmenu title="隐藏/显示菜单" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -70,7 +70,7 @@ ${b.static.load(["ems-shell"])}
     </nav>
 
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
-    <a href="${b.base}" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--navbar-bg-color)" onclick="emsShell.clearNavState();return true;">
+    <a href="${b.base}" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--bui-navbar-bg)" onclick="emsShell.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
       <span class="brand-text font-weight-light" id="appName" style="color: rgba(255,255,255,.8);"></span>
     </a>
