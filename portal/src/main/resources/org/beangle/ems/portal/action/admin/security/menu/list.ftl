@@ -22,8 +22,9 @@
   [@b.row]
     <tr [#if menu??] title="路由及备注:${(menu.route)!} ${(menu.remark?html)!}" id="${menu.indexno}"[/#if]>
     [@b.boxcol/]
-    [@b.treecol title="common.name" width="20%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.icon??] <i class="${menu.icon}"></i> [/#if]${menu.name}[/@][/@]
-    [@b.col property="enName" title="英文名称" width="15%"/]
+    [@b.treecol title="common.name" width="25%"][@b.a href="!info?id=${menu.id}"]${menu.indexno}  [#if menu.icon??] <i class="${menu.icon}"></i> [/#if]${menu.name}[/@][/@]
+    [@b.col property="enName" title="英文名称" width="12%"/]
+    [@b.col title="路由" width="15%"][#if menu.route??]${menu.route}[#else]-[/#if][/@]
     [@b.col title="使用资源" ][#list menu.resources as re]${re.title?html}[#if re_has_next],[/#if][/#list][/@]
     [@b.col property="enabled" width="7%" title="common.status"][@enableInfo menu.enabled/][/@]
     </tr>

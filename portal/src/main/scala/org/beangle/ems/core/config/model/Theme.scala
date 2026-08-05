@@ -25,15 +25,8 @@ object Theme {
   Default.primaryColor = "#007bff"
   Default.navbarBgColor = "#3c8dbc"
   Default.searchBgColor = "#e1ecff"
-  Default.gridbarBgColor = "#c7dbff"
+  Default.gridbarBgColor = "#e1ecff"
   Default.gridBorderColor = "#006cb2"
-
-//  Default.primaryColor = "#0969da"
-//  Default.navbarBgColor = "#ffffff"
-//  Default.searchBgColor = "#f6f8fa"
-//  Default.gridbarBgColor = "#f6f8fa"
-//  Default.gridBorderColor = "#d0d7de"
-//}
 }
 
 /** 主题 */
