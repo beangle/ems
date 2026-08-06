@@ -304,7 +304,7 @@ export function loadThemeFromLocal(fallback: NavTheme): NavTheme {
   }
 }
 
-/** 将五个主题色写入 localStorage（beangle.ui.theme） */
+/** 将主题色写入 localStorage（beangle.ui.theme） */
 export function saveThemeToLocal(theme: NavTheme): void {
   setLocal(
     THEME_STORAGE_KEY,
@@ -313,6 +313,7 @@ export function saveThemeToLocal(theme: NavTheme): void {
       navbarBgColor: theme.navbarBgColor,
       searchBgColor: theme.searchBgColor,
       gridbarBgColor: theme.gridbarBgColor,
+      gridHeaderBgColor: theme.gridHeaderBgColor,
       gridBorderColor: theme.gridBorderColor,
     })
   );
@@ -328,6 +329,7 @@ function normalizeNavTheme(raw: Partial<NavTheme> | null | undefined, fallback: 
     navbarBgColor: raw?.navbarBgColor ?? fallback.navbarBgColor,
     searchBgColor: raw?.searchBgColor ?? fallback.searchBgColor,
     gridbarBgColor: raw?.gridbarBgColor ?? fallback.gridbarBgColor,
+    gridHeaderBgColor: raw?.gridHeaderBgColor ?? fallback.gridHeaderBgColor,
     gridBorderColor: raw?.gridBorderColor ?? fallback.gridBorderColor,
   };
 }

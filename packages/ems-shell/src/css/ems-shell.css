@@ -12,8 +12,8 @@
   --ems-header-padding-y: 0.5rem;
   /* 与 .main-header.navbar（padding 0.5rem + nav-link 1.93725rem）一致；顶栏 index 使用 border-bottom-0 */
   --ems-header-height: calc(var(--ems-header-padding-y) * 2 + var(--ems-header-nav-height));
-  --ems-shell-bg: #f4f6f9;
-  --ems-sidebar-bg: #f4f6f9;
+  --ems-shell-bg: #f8fafc;
+  --ems-sidebar-bg: #f8fafc;
   --ems-sidebar-text: #343a40;
   --ems-sidebar-muted: #6c757d;
   --ems-sidebar-hover: rgba(0, 0, 0, 0.06);

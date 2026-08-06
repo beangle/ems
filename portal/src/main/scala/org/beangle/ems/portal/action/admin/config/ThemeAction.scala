@@ -29,7 +29,7 @@ class ThemeAction extends RestfulAction[Theme], DomainSupport {
     p.domain = domainService.getDomain
     saveOrUpdate(p)
     publishUpdate(p)
-    super.saveAndRedirect(p)
+    redirect("search", "info.save.success")
   }
 
 }

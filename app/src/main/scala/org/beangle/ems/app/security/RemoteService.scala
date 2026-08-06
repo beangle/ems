@@ -104,9 +104,10 @@ object RemoteService {
     val navbarBgColor = data.getString("navbarBgColor")
     val searchBgColor = data.getString("searchBgColor")
     val gridbarBgColor = data.getString("gridbarBgColor")
+    val gridHeaderBgColor = data.getString("gridHeaderBgColor")
     val gridBorderColor = data.getString("gridBorderColor")
 
-    Ems.Theme(primaryColor, navbarBgColor, searchBgColor, gridbarBgColor, gridBorderColor)
+    Ems.Theme(primaryColor, navbarBgColor, searchBgColor, gridbarBgColor, gridHeaderBgColor, gridBorderColor)
   }
 
   def verifyJwtToken(token: String): Boolean = {

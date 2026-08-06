@@ -259,6 +259,7 @@ export function applyTheme(theme: NavTheme | string): void {
   jQuery('#theme_navbarBgColor').val(t.navbarBgColor);
   jQuery('#theme_searchBgColor').val(t.searchBgColor);
   jQuery('#theme_gridbarBgColor').val(t.gridbarBgColor);
+  jQuery('#theme_gridHeaderBgColor').val(t.gridHeaderBgColor);
   jQuery('#theme_gridBorderColor').val(t.gridBorderColor);
 }
 

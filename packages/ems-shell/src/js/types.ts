@@ -60,6 +60,7 @@ export interface NavTheme {
   navbarBgColor: string;
   searchBgColor: string;
   gridbarBgColor: string;
+  gridHeaderBgColor: string;
   gridBorderColor: string;
 }
 

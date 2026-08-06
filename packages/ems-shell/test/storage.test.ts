@@ -106,25 +106,29 @@ describe('storage preferences', () => {
       navbarBgColor: '#222',
       searchBgColor: '#333',
       gridbarBgColor: '#444',
-      gridBorderColor: '#555',
+      gridHeaderBgColor: '#555',
+      gridBorderColor: '#666',
     };
     saveThemeToLocal({
       primaryColor: '#0076ff',
       navbarBgColor: '#001',
       searchBgColor: '#002',
       gridbarBgColor: '#003',
-      gridBorderColor: '#004',
+      gridHeaderBgColor: '#004',
+      gridBorderColor: '#005',
     });
     assert.equal(localStorage.getItem(THEME_STORAGE_KEY), JSON.stringify({
       primaryColor: '#0076ff',
       navbarBgColor: '#001',
       searchBgColor: '#002',
       gridbarBgColor: '#003',
-      gridBorderColor: '#004',
+      gridHeaderBgColor: '#004',
+      gridBorderColor: '#005',
     }));
     const loaded = loadThemeFromLocal(fallback);
     assert.equal(loaded.primaryColor, '#0076ff');
-    assert.equal(loaded.gridBorderColor, '#004');
+    assert.equal(loaded.gridHeaderBgColor, '#004');
+    assert.equal(loaded.gridBorderColor, '#005');
   });
 
   it('normalizeUiLocale maps portal request_locale tags', () => {

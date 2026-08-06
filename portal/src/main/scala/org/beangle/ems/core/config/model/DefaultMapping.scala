@@ -92,7 +92,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Theme].declare { e =>
-      e.gridBorderColor & e.gridbarBgColor & e.navbarBgColor & e.searchBgColor are length(15)
+      e.gridBorderColor & e.gridHeaderBgColor & e.gridbarBgColor & e.navbarBgColor & e.searchBgColor are length(50)
     }
 
     bind[TextBundle] declare { e =>

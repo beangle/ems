@@ -9,6 +9,7 @@
     [@b.textfield name="theme.navbarBgColor" label="导航区背景" value=theme.navbarBgColor! required="true" maxlength="10"/]
     [@b.textfield name="theme.searchBgColor" label="查询区背景" value=theme.searchBgColor! required="true" maxlength="10"/]
     [@b.textfield name="theme.gridbarBgColor" label="表格工具栏背景" value=theme.gridbarBgColor! required="true" maxlength="10"/]
+    [@b.textfield name="theme.gridHeaderBgColor" label="表格表头背景" value=theme.gridHeaderBgColor! required="true" maxlength="10"/]
     [@b.textfield name="theme.gridBorderColor" label="表格边框颜色" value=theme.gridBorderColor! required="true" maxlength="10"/]
     [@b.radios name="theme.enabled" label="是否启用" value=theme.enabled/]
     [@b.formfoot]

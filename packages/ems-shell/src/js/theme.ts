@@ -7,6 +7,7 @@ const EMPTY_THEME: NavTheme = {
   navbarBgColor: '',
   searchBgColor: '',
   gridbarBgColor: '',
+  gridHeaderBgColor: '',
   gridBorderColor: '',
 };
 
@@ -22,10 +23,9 @@ export function applyThemeVars(theme: NavTheme): void {
   }
   if (theme.navbarBgColor) r.style.setProperty('--bui-navbar-bg', theme.navbarBgColor);
   if (theme.searchBgColor) r.style.setProperty('--bui-search-bg', theme.searchBgColor);
-  if (theme.gridbarBgColor) {
-    r.style.setProperty('--bui-gridbar-bg', theme.gridbarBgColor);
-    r.style.setProperty('--bui-grid-header-bg', theme.gridbarBgColor);
-  }
+  if (theme.gridbarBgColor) r.style.setProperty('--bui-gridbar-bg', theme.gridbarBgColor);
+  if (theme.gridHeaderBgColor) r.style.setProperty('--bui-grid-header-bg', theme.gridHeaderBgColor);
+  else if (theme.gridbarBgColor) r.style.setProperty('--bui-grid-header-bg', theme.gridbarBgColor);
   if (theme.gridBorderColor) r.style.setProperty('--bui-grid-border-color', theme.gridBorderColor);
 }
 

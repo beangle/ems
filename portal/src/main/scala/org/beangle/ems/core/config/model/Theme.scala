@@ -24,8 +24,9 @@ object Theme {
   val Default = new Theme()
   Default.primaryColor = "#007bff"
   Default.navbarBgColor = "#3c8dbc"
-  Default.searchBgColor = "#e1ecff"
-  Default.gridbarBgColor = "#e1ecff"
+  Default.searchBgColor = "#f8fafc"
+  Default.gridbarBgColor = "#f8fafc"
+  Default.gridHeaderBgColor = "#e1ecff"
   Default.gridBorderColor = "hsla(0,0%,0%,0.3)"
 }
 
@@ -44,6 +45,9 @@ class Theme extends LongId, Named, Enabled {
 
   /** 表格工具栏背景颜色 */
   var gridbarBgColor: String = _
+
+  /** 表格表头背景颜色 */
+  var gridHeaderBgColor: String = _
 
   /** 表格边框颜色 */
   var gridBorderColor: String = _

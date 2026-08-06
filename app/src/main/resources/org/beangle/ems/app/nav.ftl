@@ -147,6 +147,7 @@ ${b.static.load(["ems-shell"])}
               <li class="mb-2">导航区背景：<input type="color" id="theme_navbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;" value=""/></li>
               <li class="mb-2">查询区背景：<input type="color" id="theme_searchBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">工具栏背景：<input type="color" id="theme_gridbarBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
+              <li class="mb-2">表头背景：<input type="color" id="theme_gridHeaderBgColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li class="mb-2">表格边框颜色：<input type="color" id="theme_gridBorderColor" onchange="changeTheme()" style="height: 20px;padding: 0px;"  value=""/></li>
               <li><button class="btn btn-outline-primary btn-sm" onclick="emsShell.changeTheme(null,true)">恢复默认值</button>
             </ul>
@@ -194,7 +195,7 @@ ${b.static.load(["ems-shell"])}
       [#if mainHref?? && mainHref?length>0 ]
       emsShell.setWelcomeUrl('${b.url(mainHref)}');
       [/#if]
-      var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
+      var theme={"primaryColor": "${nav.theme.primaryColor}","navbarBgColor": "${nav.theme.navbarBgColor}", "searchBgColor": "${nav.theme.searchBgColor}", "gridbarBgColor": "${nav.theme.gridbarBgColor}", "gridHeaderBgColor": "${nav.theme.gridHeaderBgColor}", "gridBorderColor": "${nav.theme.gridBorderColor}"}
       emsShell.setup(theme,params);
       emsShell.enableSearch('menu_searcher');
     });
@@ -226,6 +227,7 @@ ${b.static.load(["ems-shell"])}
     theme.navbarBgColor=jQuery("#theme_navbarBgColor").val();
     theme.searchBgColor=jQuery("#theme_searchBgColor").val();
     theme.gridbarBgColor=jQuery("#theme_gridbarBgColor").val();
+    theme.gridHeaderBgColor=jQuery("#theme_gridHeaderBgColor").val();
     theme.gridBorderColor=jQuery("#theme_gridBorderColor").val();
     emsShell.changeTheme(theme)
   }

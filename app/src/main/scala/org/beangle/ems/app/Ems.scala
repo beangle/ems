@@ -113,7 +113,7 @@ object Ems {
     var org: Org = _
   }
 
-  case class Theme(primaryColor: String, navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridBorderColor: String)
+  case class Theme(primaryColor: String, navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridHeaderBgColor: String, gridBorderColor: String)
 
   case class Sid(name: String, prefix: String)
 

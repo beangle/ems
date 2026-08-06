@@ -36,7 +36,7 @@ class ThemeWS extends ActionSupport {
     query.where("theme.domain =:domain and theme.enabled=true", domain)
     query.cacheable()
     val theme = entityDao.search(query).headOption.getOrElse(Theme.Default)
-    new Properties(theme, "primaryColor","navbarBgColor", "searchBgColor", "gridbarBgColor", "gridBorderColor")
+    new Properties(theme, "primaryColor","navbarBgColor", "searchBgColor", "gridbarBgColor", "gridHeaderBgColor", "gridBorderColor")
   }
 
 }
