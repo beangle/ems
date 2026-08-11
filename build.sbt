@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 organization := "org.beangle.ems"
-version := "4.20.5"
+version := "4.20.6-SNAPSHOT"
 
 scmInfo := Some(
   ScmInfo(uri("https://github.com/beangle/ems"), "scm:git@github.com:beangle/ems.git")
