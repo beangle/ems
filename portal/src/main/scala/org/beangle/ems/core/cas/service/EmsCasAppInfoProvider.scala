@@ -33,10 +33,7 @@ class EmsCasAppInfoProvider extends CasAppInfoProvider {
     if name == null || name.isEmpty then None
     else {
       appService.getApp(name)
-        .map(a => CasAppInfo(
-          if (a.title != null && a.title.nonEmpty) a.title else a.name,
-          a.logoUrl,
-          Some(a.base)))
+        .map(a => CasAppInfo(if (a.title != null && a.title.nonEmpty) a.title else a.name, a.logoUrl, None))
     }
   }
 }

@@ -22,7 +22,6 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.{App, ChannelType}
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.{Channel, FuncPermission}
-import org.beangle.ems.core.user.model.{Root, User}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
@@ -41,13 +40,13 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
     userService.get(userCode) match {
       case Some(user) =>
         val domain = domainService.getDomain
-        val webapp = appService.getChannelType(ChannelType.Pc)
+        val channelType = appService.getChannelType(ChannelType.Pc)
         val fpAppQuery = OqlBuilder.from[App](classOf[FuncPermission].getName, "fp")
           .join("fp.role.members", "m")
           .where("m.user=:user and m.member=true", user)
           .where("fp.resource.app.enabled=true")
           .where("fp.resource.app.domain=:domain", domain)
-          .where("exists(from " + classOf[Channel].getName + " c where c.app=fp.resource.app and c.channelType=:webapp)", webapp)
+          .where("exists(from " + classOf[Channel].getName + " c where c.app=fp.resource.app and c.channelType=:channelType)", channelType)
           .select("distinct fp.resource.app").cacheable()
 
         val fpApps = entityDao.search(fpAppQuery)
@@ -60,12 +59,12 @@ class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSuppor
           appBuffer = appBuffer.filter(a => a.title.contains(q))
         }
         appBuffer.map { app =>
-          val p = new Properties(app, "id", "name", "title", "base", "logoUrl")
+          val p = new Properties(app, "id", "name", "title", "logoUrl")
           entityDao.search(OqlBuilder.from(classOf[Channel], "c")
-            .where("c.app=:app and c.channelType=:webapp", app, webapp)
+            .where("c.app=:app and c.channelType=:channelType", app, channelType)
             .cacheable()).headOption.foreach { c =>
             p.put("embedMode", c.embedMode.name)
-            if (c.base != null && c.base.nonEmpty) p.put("base", c.base)
+            p.put("base", c.base)
           }
           p.add("group", app.group, "id", "name", "title")
           p

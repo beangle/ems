@@ -3,7 +3,6 @@
 [@b.textfield name="app.title" label="标题" value=app.title! required="true" maxlength="200"/]
 [@b.textfield name="app.enTitle" label="英文标题" value=app.enTitle! required="true" maxlength="200"/]
 [@b.select name="app.group.id" label="分组" value=app.group! option="id,title" required="true" items=groups?sort_by('indexno')/]
-[@b.textfield name="app.base" label="上下文地址" value="${app.base!}" required="true" maxlength="200" style="width:300px"/]
 [@b.select label="业务场景" name="env.id" multiple="true" items=envs values=selectedEnvs! style="width:400px" comment="更改业务场景后，需要重新对角色进行授权" /]
 [#if app.persisted]
 [@b.field label="已授权角色"]

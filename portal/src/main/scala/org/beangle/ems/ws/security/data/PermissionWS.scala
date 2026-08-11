@@ -37,11 +37,12 @@ class PermissionWS(entityDao: EntityDao) extends ActionSupport {
 
   @response
   @mapping("user/{userCode}")
-  def index(@param("app") appName: String, @param("userCode") userCode: String, @param("data") dataName: String): Any = {
+  def index(@param("app") appName: String, @param("userCode") userCode: String, @param("data") dataName: String): Properties = {
     val users = userService.get(userCode)
     val apps = appService.getApp(appName)
+    val props = new Properties()
     if (users.isEmpty || apps.isEmpty) {
-      List.empty
+      props
     } else {
       val u = users.head
       val app = apps.head
@@ -66,7 +67,7 @@ class PermissionWS(entityDao: EntityDao) extends ActionSupport {
               }
           }
       }
-      val props = new Properties()
+
       if (p != null) props.put("filters", p.filters)
       props
     }

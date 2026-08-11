@@ -48,7 +48,7 @@ class MenuWS extends ActionSupport {
     menus map (m => menuService.convert(m, isEnName))
   }
 
-  @response()
+  @response
   @mapping("user/{user}")
   def user(@param("app") appName: String, @param("user") username: String): Any = {
     val user = userService.get(username)
@@ -60,7 +60,7 @@ class MenuWS extends ActionSupport {
     val app = appService.getApp(appName)
     val forDomain = getBoolean("forDomain", defaultValue = false)
 
-    val channelType = ChannelType.of(get("channel",ChannelType.Pc))
+    val channelType = ChannelType.of(get("channel", ChannelType.Pc))
     val env = getLong("profileId").map(id => entityDao.get(classOf[Env], id))
     app match {
       case Some(app) =>
@@ -68,13 +68,11 @@ class MenuWS extends ActionSupport {
           menuService.getDomainMenus(u, channelType, isEnName, env)
         } else {
           val menus = menuService.getTopMenus(app, u, channelType)
-          val appProps = new Properties(app, "id", "name", "base", "logoUrl")
+          val appProps = new Properties(app, "id", "name", "logoUrl")
           appProps.put("title", app.getTitle(isEnName))
           menus.headOption.foreach { m =>
             appProps.put("embedMode", m.channel.embedMode.name)
-            if (m.channel.base != null && m.channel.base.nonEmpty) {
-              appProps.put("base", m.channel.base)
-            }
+            appProps.put("base", m.channel.base)
           }
           val menuProps = menus map (m => menuService.convert(m, isEnName))
           val domain = new Properties(app.domain, "id", "name")

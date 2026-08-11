@@ -59,9 +59,6 @@ class ChannelAction extends RestfulAction[Channel], DomainSupport {
     if (!channel.persisted) {
       channel.enabled = true
       channel.embedMode = EmbedMode.Iframe
-      if (channel.app != null && Strings.isBlank(channel.base)) {
-        channel.base = channel.app.base
-      }
     }
     put("apps", appService.getApps)
     put("channelTypes", entityDao.getAll(classOf[ChannelType]).sortBy(_.id))
@@ -71,9 +68,6 @@ class ChannelAction extends RestfulAction[Channel], DomainSupport {
   protected override def saveAndRedirect(channel: Channel): View = {
     getInt("embedMode.id").foreach { id =>
       channel.embedMode = EmbedMode.fromId(id)
-    }
-    if (Strings.isBlank(channel.base) && channel.app != null) {
-      channel.base = channel.app.base
     }
     val builder = OqlBuilder.from[Int](classOf[Channel].getName, "c")
       .where("c.app=:app and c.channelType=:channelType", channel.app, channel.channelType)

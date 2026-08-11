@@ -59,6 +59,12 @@ object RemoteService {
     get(Ems.innerApi + "/platform/security/func/" + EmsApp.name + "/menus/user/" + Securities.user + ".json?forDomain=1&request_locale=" + locale.toString + profileQuery).getOrElse(null)
   }
 
+  def getAppUserPermissions(user: String, channel: String): String = {
+    require("pc" == channel || "mobile" == channel)
+    val url = Ems.innerApi + "/platform/security/func/" + EmsApp.name + s"/permissions/user/${user}.json?channel=${channel}"
+    get(url).getText
+  }
+
   def getAppsJson: String = {
     get(Ems.innerApi + "/platform/user/apps/" + Securities.user + ".json").getOrElse(null)
   }

@@ -218,7 +218,7 @@ class MenuAction extends RestfulAction[Menu], DomainSupport {
   }
 
   private def ensureChannel(menu: Menu): Unit = {
-    if (menu.channel != null) return
+    if (menu.channel != null && menu.channel.persisted) return
     getInt("menu.channel.id") match {
       case Some(cid) => menu.channel = entityDao.get(classOf[Channel], cid)
       case None =>

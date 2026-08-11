@@ -19,8 +19,11 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.core.config.model.ChannelType
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
+import org.beangle.ems.core.security.service.MenuService
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
 
@@ -32,10 +35,12 @@ import org.beangle.webmvc.support.ActionSupport
 class PermissionWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
+  var userService: UserService = _
+  var menuService: MenuService = _
 
   @response
   @mapping("role/{roleId}")
-  def role(@param("app") appName: String, @param("roleId") roleId: Int): Any = {
+  def role(@param("app") appName: String, @param("roleId") roleId: Int): Seq[Properties] = {
     val app = appService.getApp(appName).head
     val roleQuery = OqlBuilder.from[FuncResource](classOf[FuncPermission].getName, "fp")
       .where("fp.resource.app = :app", app).where("fp.role.id = :roleId", roleId)
@@ -43,5 +48,30 @@ class PermissionWS(entityDao: EntityDao) extends ActionSupport {
       .select("fp.resource")
     val resources = entityDao.search(roleQuery)
     resources.map { r => new Properties(r, "id", "name", "title", "scope") }
+  }
+
+  /** 查找一个app对应的某个用户的权限
+   * 返回资源的集合
+   *
+   * @param appName
+   * @param username
+   * @return
+   */
+  @response
+  @mapping("user/{user}")
+  def user(@param("app") appName: String, @param("user") username: String): collection.Iterable[String] = {
+    val user = userService.get(username)
+    if (user.isEmpty) {
+      return List.empty
+    }
+    val isEnName = get("request_locale", "zh_CN").startsWith("en")
+    val u = user.get
+    val app = appService.getApp(appName)
+    if (app.isEmpty) {
+      return List.empty
+    }
+    val channelType = ChannelType.of(get("channel", ChannelType.Pc))
+    val menus = menuService.getMenus(app.get, u, channelType)
+    menus.flatMap(_.resources).toSet.map(_.name)
   }
 }

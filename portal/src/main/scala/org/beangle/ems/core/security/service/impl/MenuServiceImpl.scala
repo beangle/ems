@@ -160,12 +160,11 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   def getMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
     val menus = Collections.newSet[Menu]
-    for (rm <- user.roles) {
-      if (rm.member) {
-        val query = buildMenuQuery(app, rm.role, channelType)
-        query.where("menu.enabled= true")
-        menus ++= entityDao.search(query)
-      }
+    val roles = getRoles(user, None)
+    for (role <- roles) {
+      val query = buildMenuQuery(app, role, channelType)
+      query.where("menu.enabled= true")
+      menus ++= entityDao.search(query)
     }
     addParentMenus(menus)
   }
