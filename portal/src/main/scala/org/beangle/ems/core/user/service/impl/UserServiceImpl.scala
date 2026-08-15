@@ -119,7 +119,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
         account.disabled = !user.enabled
         account.categoryId = user.category.id
 
-        val rs = getRoles(user, domain)
+        val rs = getRoles(user, domain, None)
         account.authorities = rs.map(_.id.toString).toArray
 
         val upQuery = OqlBuilder.from(classOf[EnvProfile], "up")
@@ -151,15 +151,36 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     }
   }
 
-  override def getRoles(user: User, domain: Domain): Seq[Role] = {
-    val roles = user.roles.filter(m => m.member && m.role.domain == domain).map { m => m.role }
+  override def getRoles(user: User, domain: Domain, env: Option[Env]): Seq[Role] = {
+    var roles = user.roles.filter(m => m.member && m.role.domain == domain && env.forall(m.suitable)).map(_.role)
     user.group foreach { g =>
       roles.addAll(g.roles filter (r => r.domain == domain))
     }
     user.groups foreach { gm =>
       roles.addAll(gm.group.roles filter (r => r.domain == domain))
     }
-    roles.toSet.toSeq //去重后返回
+    val roleSet = Collections.newSet[Role]
+    env match {
+      case None => roleSet.addAll(roles)
+      case Some(e) =>
+        roles = roles.filter(x => x.suitable(e))
+        roleSet.addAll(roles)
+    }
+    // 子角色常无独立菜单授权，需沿父链补齐祖先角色以加载 FuncPermission/菜单；有 env 时祖先也须 suitable
+    roles foreach { r =>
+      var c = r
+      var ascending = true
+      while (ascending && c.parent.nonEmpty && !roleSet.contains(c.parent.get)) {
+        val p = c.parent.get
+        if (env.forall(p.suitable)) {
+          roleSet.addOne(p)
+          c = p
+        } else {
+          ascending = false
+        }
+      }
+    }
+    roleSet.toSeq //去重后返回
   }
 
   override def enable(manager: User, userIds: Iterable[Long], enabled: Boolean): Int = {

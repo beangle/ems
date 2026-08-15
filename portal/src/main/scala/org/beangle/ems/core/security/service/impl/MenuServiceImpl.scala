@@ -27,6 +27,7 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.*
 import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus, MenuService}
 import org.beangle.ems.core.user.model.{Role, User}
+import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.authz.Scope
 
 import scala.collection.mutable
@@ -37,29 +38,14 @@ import scala.collection.mutable
 class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   var domainService: DomainService = _
-
-  private def getRoles(user: User, env: Option[Env]): Seq[Role] = {
-    val domain = domainService.getDomain
-    val roles = user.roles.filter(m => m.member && m.role.domain == domain && env.forall(m.suitable)).map(_.role)
-    user.group foreach { g =>
-      roles.addAll(g.roles filter (r => r.domain == domain))
-    }
-    user.groups foreach { gm =>
-      roles.addAll(gm.group.roles filter (r => r.domain == domain))
-    }
-    //去重后返回
-    env match {
-      case None => roles.toSet.toSeq
-      case Some(e) => roles.toSet.filter(_.suitable(e)).toSeq
-    }
-  }
+  var userService: UserService = _
 
   override def getTopMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
-    getTopMenus(Some(app), channelType, getRoles(user, None), None)
+    getTopMenus(Some(app), channelType, userService.getRoles(user, domainService.getDomain, None), None)
   }
 
   override def getTopMenus(user: User, channelType: ChannelType, env: Option[Env]): collection.Seq[Menu] = {
-    getTopMenus(None, channelType, getRoles(user, env), env)
+    getTopMenus(None, channelType, userService.getRoles(user, domainService.getDomain, env), env)
   }
 
   def getTopMenus(app: App, role: Role, channelType: ChannelType): collection.Seq[Menu] = {
@@ -160,7 +146,7 @@ class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
   def getMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
     val menus = Collections.newSet[Menu]
-    val roles = getRoles(user, None)
+    val roles = userService.getRoles(user,domainService.getDomain,None)
     for (role <- roles) {
       val query = buildMenuQuery(app, role, channelType)
       query.where("menu.enabled= true")

@@ -68,7 +68,7 @@ class OAuthServiceImpl extends AbstractOAuthService {
 
   override def getAuthResources(userId: String): Option[OAuthResources] = {
     val domain = domainService.getDomain
-    userService.get(userId).map(u => OAuthResources(u, userService.getRoles(u, domain)))
+    userService.get(userId).map(u => OAuthResources(u, userService.getRoles(u, domain, None)))
   }
 
   /** 授权码验证通过后，建立用户会话并签发、持久化访问令牌。 */
