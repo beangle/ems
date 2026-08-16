@@ -23,6 +23,7 @@ import org.beangle.ems.core.security.service.impl.*
 class DefaultModule extends BindModule {
 
   override def binding(): Unit = {
+    // FuncPermissionServiceImpl / MenuServiceImpl 依赖 UserService，改注入字段后需重编本 Module
     bind(classOf[FuncPermissionServiceImpl])
     bind(classOf[MenuServiceImpl])
     bind(classOf[ProfileServiceImpl])

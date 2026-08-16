@@ -23,8 +23,11 @@ import org.beangle.ems.core.config.model.{App, Env}
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, RoleAppEnv}
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.core.user.model.{Role, User}
+import org.beangle.ems.core.user.service.UserService
 
 class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermissionService {
+
+  var userService: UserService = _
 
   def getResource(app: App, name: String): Option[FuncResource] = {
     val query = OqlBuilder.from(classOf[FuncResource], "r")
@@ -40,8 +43,19 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
     entityDao.search(query).toSet
   }
 
-  def getResources(user: User): Seq[FuncResource] = {
-    null
+  def getResources(app: App, user: User): Seq[FuncResource] = {
+    val roles = userService.getRoles(user, app.domain, None)
+    if (roles.isEmpty) {
+      List.empty
+    } else {
+      val q = OqlBuilder.from[FuncResource](classOf[FuncPermission].getName, "fp")
+        .where("fp.resource.app=:app", app)
+        .where("fp.role in (:roles)", roles)
+        .where("fp.resource.enabled=true")
+        .select("fp.resource")
+        .cacheable()
+      entityDao.search(q).distinct
+    }
   }
 
   def getResources(app: App): Seq[FuncResource] = {
@@ -51,7 +65,10 @@ class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermission
   }
 
   def getPermissions(app: App, role: Role): Seq[FuncPermission] = {
-    entityDao.search(OqlBuilder.from(classOf[FuncPermission], "fp").where("fp.resource.app=:app and fp.role=:role", app, role))
+    val q = OqlBuilder.from(classOf[FuncPermission], "fp")
+      .where("fp.resource.app=:app and fp.role=:role", app, role)
+    q.cacheable()
+    entityDao.search(q)
   }
 
   override def getRoleAppEnvs(app: App, role: Role): Seq[RoleAppEnv] = {

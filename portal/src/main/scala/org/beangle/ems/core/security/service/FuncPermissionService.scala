@@ -26,7 +26,7 @@ trait FuncPermissionService {
 
   def getResourceIdsByRole(roleId: Int): Set[Int]
 
-  def getResources(user: User): Seq[FuncResource]
+  def getResources(app: App, user: User): Seq[FuncResource]
 
   def getResources(app: App): Seq[FuncResource]
 

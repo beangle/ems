@@ -23,6 +23,8 @@ import org.beangle.ems.ws.security.{data, func}
 class WSModule extends BindModule {
 
   override protected def binding(): Unit = {
+    //修正PermissionWS中的实现
+
     bind(classOf[config.DatasourceWS], classOf[config.OrgWS], classOf[config.FileWS])
     bind(classOf[config.DomainWS], classOf[config.ThemeWS])
     bind(classOf[config.TextBundleWS], classOf[config.RedisWS])

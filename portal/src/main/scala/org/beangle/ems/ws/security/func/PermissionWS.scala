@@ -19,10 +19,9 @@ package org.beangle.ems.ws.security.func
 
 import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
-import org.beangle.ems.core.config.model.ChannelType
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
-import org.beangle.ems.core.security.service.MenuService
+import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
@@ -36,7 +35,7 @@ class PermissionWS(entityDao: EntityDao) extends ActionSupport {
 
   var appService: AppService = _
   var userService: UserService = _
-  var menuService: MenuService = _
+  var funcPermissionService: FuncPermissionService = _
 
   @response
   @mapping("role/{roleId}")
@@ -64,14 +63,11 @@ class PermissionWS(entityDao: EntityDao) extends ActionSupport {
     if (user.isEmpty) {
       return List.empty
     }
-    val isEnName = get("request_locale", "zh_CN").startsWith("en")
     val u = user.get
     val app = appService.getApp(appName)
     if (app.isEmpty) {
       return List.empty
     }
-    val channelType = ChannelType.of(get("channel", ChannelType.Pc))
-    val menus = menuService.getMenus(app.get, u, channelType)
-    menus.flatMap(_.resources).toSet.map(_.name)
+    funcPermissionService.getResources(app.get, u).map(_.name)
   }
 }
