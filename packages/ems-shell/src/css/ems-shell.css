@@ -225,7 +225,9 @@
 .text-sm .main-header .nav-link,
 .main-header.text-sm .nav-link {
   height: var(--ems-header-nav-height);
-  padding: 0.35rem 1rem;
+  /* 水平内边距 1rem→0.5rem：收紧汉堡/分组按钮宽度（宽窄屏一致），
+   * 缓解窄屏顶栏横向空间不足；其他链接由各自更具体的选择器覆盖 */
+  padding: 0.35rem 0.5rem;
 }
 
 .main-header .navbar-nav .nav-item {
@@ -301,13 +303,24 @@
   background: transparent;
   border-top: 1px solid #dee2e6;
   overflow: visible;
-  display: flow-root;
+  /* flex 排版：模板里的 float-sm-left/right 仅在 ≥576px 生效，
+   * <576px 时两个按钮会退化为块级上下堆叠；改用 flex 后宽窄屏均并排 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.main-header .user-footer .float-sm-left,
+.main-header .user-footer .float-sm-right {
+  float: none;
 }
 
 .main-header .user-footer .btn {
   font-size: var(--ems-header-nav-font-size);
   line-height: 1.5;
   padding: 0.25rem 0.5rem;
+  white-space: nowrap;
 }
 
 .main-header .user-footer .btn-default {
@@ -589,8 +602,22 @@
   }
   .ems-header-brand-image {
     max-height: 1.75rem;
+    /* 同时限宽：宽 logo（如横向校名字标）按 max-height 等比放大后可能超过视口，
+     * 把汉堡挤到第二行撑高顶栏；限宽后保持纵横比收缩，保证 logo 与汉堡同行 */
+    max-width: 10rem;
     width: auto;
+    height: auto;
     display: block;
+  }
+  /* 右侧设置区（消息/待办/主题/全屏/用户/设置）在窄屏收紧内边距，
+   * 避免其总宽把左侧 logo+汉堡所在 ul 压缩到内容宽度以下而内部换行 */
+  #navbar-setting .nav-link {
+    padding-right: 0.35rem;
+    padding-left: 0.35rem;
+  }
+  /* logo+汉堡所在的 ul 禁止 flex 收缩：宁可右侧溢出，也不让内部换行 */
+  .main-header ul.navbar-nav:has(> .ems-header-brand-item) {
+    flex-shrink: 0;
   }
 }
 

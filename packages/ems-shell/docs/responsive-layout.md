@@ -70,6 +70,10 @@ beangle.require(['ems-shell'], function (emsShell) {
 - **何时显示：** 仅 `< 992px`（`≥992px` 由侧栏 `brand-link` 展示）。
 - **来源：** `ensureMobileHeaderBrand()` 复制侧栏 `.brand-image` 的 `src`。
 - **位置：** 插入第一个 `ul.navbar-nav` 的**最前**（汉堡按钮左侧）。
+- **尺寸约束：** `.ems-header-brand-image` 同时受 `max-height: 1.75rem` 与 `max-width: 10rem` 约束，保证任意宽高比的 logo 收缩后仍与汉堡**同行**（避免宽 logo 把汉堡挤到第二行撑高顶栏）。
+- **防压缩换行：** logo+汉堡所在的 `ul.navbar-nav` 在窄屏 `flex-shrink: 0`；同时 `#navbar-setting .nav-link` 左右内边距收紧为 `0.35rem`。若右侧设置区总宽过大，布局会压缩左侧 ul，使其小于内容宽度（logo 38px + 汉堡 50px ≈ 88px）而在内部换行，顶栏变两行。
+- **汉堡/分组按钮宽度：** `.text-sm .main-header .nav-link` 水平内边距为 `0.35rem 0.5rem`（宽窄屏一致），汉堡约 34px、分组按钮约 45px；其余顶栏链接由各自更具体的选择器覆盖不受影响。
+- **用户下拉底部按钮：** `.main-header .user-footer` 使用 `display: flex; justify-content: space-between`。模板中的 `float-sm-left/right` 仅在 ≥576px 生效，<576px 时两个按钮会块级堆叠换行，flex 后宽窄屏均并排。
 - **交互：** 纯展示（`pointer-events: none`），**不**复制侧栏 `clearNavState` / 跳转，避免误点导致工作台状态清空。
 - **稳定性：** 窄屏下**常驻显示**，不随 `sidebar-open` 隐藏，避免开关侧栏时顶栏闪动。
 
