@@ -39,7 +39,7 @@ lazy val app = (project in file("app"))
   )
 
 lazy val portal = (project in file("portal"))
-  .enablePlugins(WarPlugin, TomcatPlugin, UndertowPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
