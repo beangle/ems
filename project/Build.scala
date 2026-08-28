@@ -16,7 +16,7 @@ object EmsDepends {
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.17"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.0"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.27"
-  val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.8"
+  val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.9"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.7"
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.1"
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.6"

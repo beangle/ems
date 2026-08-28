@@ -22,9 +22,7 @@ import org.beangle.commons.cdi.Container
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.reflect.Reflections
 
-class DefaultRuleCheckerBuilder extends RuleCheckerBuilder {
-
-  var container: Container = _
+class DefaultRuleCheckerBuilder(container: Container) extends RuleCheckerBuilder {
 
   override def build(rule: Rule): RuleChecker = {
     val checker = container.getBean[Object](rule.name) match {

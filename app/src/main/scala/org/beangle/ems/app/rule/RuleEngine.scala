@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app.rule
 
+import org.beangle.commons.cdi.Container
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.json.{Json, JsonObject}
 import org.beangle.commons.lang.{ScopedContext, Strings}
@@ -25,9 +26,9 @@ import org.beangle.ems.app.Ems
 
 import scala.collection.mutable
 
-class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
+class RuleEngine(container: Container, val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 
-  var builder: RuleCheckerBuilder = new DefaultRuleCheckerBuilder
+  private val builder = new DefaultRuleCheckerBuilder(container)
 
   def execute(context: Any*): List[(Rule, Boolean, String)] = {
     val executors = builder.build(rules, stopWhenFail)
@@ -46,26 +47,26 @@ class RuleEngine(val rules: Iterable[Rule], val stopWhenFail: Boolean = false) {
 object RuleEngine {
   private val engineKey = ScopedContext.Key[mutable.Map[String, RuleEngine]]("beangle.ems.rule-engine")
 
-  def get(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
+  def get(container: Container, ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
     val cache = ScopedContext.getOrElseUpdate(engineKey, Collections.newMap[String, RuleEngine])
     val key = ruleIds + stopWhenFail
     cache.get(key) match {
       case Some(engine) => engine
       case None =>
-        val ng = of(ruleIds, stopWhenFail)
+        val ng = of(container, ruleIds, stopWhenFail)
         cache.put(key, ng)
         ng
     }
   }
 
-  def of(ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
+  def of(container: Container, ruleIds: String, stopWhenFail: Boolean = false): RuleEngine = {
     if (Strings.isEmpty(ruleIds)) {
-      new RuleEngine(Nil)
+      new RuleEngine(container, Nil)
     } else {
       val url = Ems.innerApi + s"/platform/config/rules/${ruleIds}.json"
       val json = HttpUtils.get(url).getText
       val rules = parseToRules(json)
-      new RuleEngine(rules, stopWhenFail)
+      new RuleEngine(container, rules, stopWhenFail)
     }
   }
 
