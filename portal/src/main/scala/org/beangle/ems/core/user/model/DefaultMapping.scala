@@ -42,7 +42,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[Role].declare { e =>
-      e.getName is length(100)
+      e.name is length(100)
       e.children is depends("parent")
       e.members is depends("role")
       index("idx_role_name", true, e.domain, e.name)
@@ -50,7 +50,7 @@ object DefaultMapping extends MappingModule {
 
     bind[User].declare { e =>
       e.code is length(30)
-      e.getName is length(100)
+      e.name is length(100)
       e.remark is length(100)
       e.roles is depends("user")
       e.groups is depends("user")

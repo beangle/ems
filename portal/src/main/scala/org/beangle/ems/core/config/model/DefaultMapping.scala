@@ -33,7 +33,7 @@ object DefaultMapping extends MappingModule {
     }
 
     bind[App].declare { e =>
-      e.getName is length(100)
+      e.name is length(100)
       e.title is length(100)
       e.remark is length(200)
       e.indexno is length(50)
@@ -72,7 +72,7 @@ object DefaultMapping extends MappingModule {
     bind[Db].declare { e =>
       e.name.is(length(100), unique)
       e.driver is length(100)
-      e.databaseName & e.serverName is length(100)
+      e.databaseName & e.serverName are length(100)
       e.url is length(200)
       e.remark is length(200)
       index("idx_db", true, e.domain, e.name)
