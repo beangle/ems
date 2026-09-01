@@ -2,17 +2,17 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.0-SNAPSHOT"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.1"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.7-SNAPSHOT"
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.9.2-SNAPSHOT"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.9.2-SNAPSHOT"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.21-SNAPSHOT"
-  val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.10-SNAPSHOT"
+  val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.10"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.10-SNAPSHOT"
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.21-SNAPSHOT"
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.8-SNAPSHOT"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.27-SNAPSHOT"
-  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.13-SNAPSHOT"
+  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.13"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.18-SNAPSHOT"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.1-SNAPSHOT"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.28-SNAPSHOT"

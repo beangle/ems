@@ -1,0 +1,3 @@
+# ems portal 模块 BeanMeta 注册器（org.beangle.ems.core.* 源码位于 portal 模块，
+# 随 portal jar 发布）：非 JPA 实体的菜单 DTO 与模板会话/日志模型
+org.beangle.ems.core.aot.EmsCoreMetaRegistrar

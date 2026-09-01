@@ -155,7 +155,7 @@ class NoticeAction extends RestfulAction[Notice], DomainSupport {
       addFlashMessage("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf,zip,jpg,png后缀的文件")
       throw new RuntimeException("非法文件类型，附件仅允许doc,docx,xls,xlsx,pdf,zip,jpg,png后缀的文件")
     } else {
-      notice.status = NoticeStatus.Submited
+      notice.status = NoticeStatus.Submitted
       entityDao.saveOrUpdate(notice)
       databus.publish(DataEvent.update(notice))
       super.saveAndRedirect(notice)

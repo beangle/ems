@@ -99,7 +99,7 @@ object EmsApp {
 
   private def readProperties(): Map[String, String] = {
     try {
-      val configLocation = "classpath:beangle.xml"
+      val configLocation = "classpath*:beangle.xml"
       val doc = XmlDocs.load(configLocation).get
       var appManifest: Map[String, String] = null
       (doc \ "ems").headOption foreach { ems =>

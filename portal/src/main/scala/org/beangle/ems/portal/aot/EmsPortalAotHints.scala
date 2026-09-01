@@ -15,10 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.beangle.ems.nativeapp
+package org.beangle.ems.portal.aot
 
-import org.beangle.data.model.LongId
-import org.beangle.data.model.pojo.{Coded, Named, Updatable}
+import org.beangle.ems.app.aot.EmsAotSupport
 
-/** Simple entity for native-image integration test. */
-class TestUser extends LongId, Coded, Named, Updatable
+/** org.beangle.ems.portal.* 包的 GraalVM 反射提示。
+ *
+ * 随 portal 模块发布（AotPlugin 按模块独立收集，native 构建时各 jar 配置自动
+ * 合并）。目前只需补 portal 辅助类 DomainSupport（Spring 依赖注入反射）。
+ */
+class EmsPortalAotHints extends EmsAotSupport {
+
+  override def registering(): Unit = {
+    // ems portal 辅助类
+    hints.registerType(classOf[org.beangle.ems.portal.action.admin.DomainSupport], servicePolicy)
+  }
+}

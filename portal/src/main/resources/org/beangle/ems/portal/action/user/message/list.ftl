@@ -89,7 +89,7 @@
           return false;
        }
       });
-      var page_msg = bg.page("${request.requestURI}",'');
+      var page_msg = bg.page("${b.requestURI}",'');
       page_msg.addParams('${b.paramstring}').orderBy("${Parameters['orderBy']!('null')}");
       page_msg.pageInfo(${messages.pageIndex},${messages.pageSize},${messages.totalItems});
       page_msg.formid='messageListForm';

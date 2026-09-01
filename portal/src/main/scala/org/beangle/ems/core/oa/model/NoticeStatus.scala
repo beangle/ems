@@ -19,7 +19,7 @@ package org.beangle.ems.core.oa.model
 
 enum NoticeStatus(val title: String) {
   case Draft extends NoticeStatus("草稿")
-  case Submited extends NoticeStatus("已提交")
+  case Submitted extends NoticeStatus("已提交")
   case Unpassed extends NoticeStatus("审核不通过")
   case Passed extends NoticeStatus("审核通过")
 }

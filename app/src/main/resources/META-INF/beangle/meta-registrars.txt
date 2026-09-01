@@ -1,0 +1,4 @@
+# ems app 模块 BeanMeta 注册器（MetaPlugin 生成 beanmeta.idx；AotPlugin 同时读取
+# 本文件收集反射提示）。注册类均为 org.beangle.ems.app.*（模板模型/标签库/Flows DTO/
+# Level 枚举），随 app jar 发布
+org.beangle.ems.app.aot.EmsAppMetaRegistrar

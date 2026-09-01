@@ -1,0 +1,3 @@
+# ems portal 模块 AOT 注册器（org.beangle.ems.core.* 与 org.beangle.ems.portal.*
+# 源码均位于 portal 模块，随 portal jar 发布）
+org.beangle.ems.portal.aot.EmsPortalAotHints
