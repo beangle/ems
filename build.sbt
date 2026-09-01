@@ -28,7 +28,7 @@ lazy val root = (project in file("."))
     common,
     publish / skip := true
   )
-  .aggregate(app, portal, native)
+  .aggregate(app, portal)
 
 lazy val app = (project in file("app"))
   .settings(
@@ -39,7 +39,7 @@ lazy val app = (project in file("app"))
   )
 
 lazy val portal = (project in file("portal"))
-  .enablePlugins(WarPlugin, TomcatPlugin)
+  .enablePlugins(WarPlugin, TomcatPlugin, NativeImagePlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
@@ -47,15 +47,8 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
     snapshotRepoUrl := "https://sas.openurp.net/sas/repo/snapshot/upload/{fileName}",
-    libraryDependencies ++= webAppDepends
-  )
-  .dependsOn(app)
-
-lazy val native = (project in file("native"))
-  .enablePlugins(NativeImagePlugin, TomcatPlugin)
-  .settings(
-    name := "beangle-ems-native",
-    common,
+    libraryDependencies ++= webAppDepends,
+    // native-image 配置
     Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
     nativeImageGraalHome := Def.uncached {
       file(sys.env.getOrElse("GRAALVM_HOME",
@@ -71,17 +64,10 @@ lazy val native = (project in file("native"))
       "--initialize-at-build-time=ch.qos.logback,org.slf4j",
       "--initialize-at-run-time=java.net.http"
     ),
-    // TomcatPlugin 依赖是 test scope，native-image 需要 compile scope
     libraryDependencies ++= Seq(
       "org.beangle.sas" % "beangle-sas-engine" % "0.13.12-SNAPSHOT",
       "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.24" exclude("org.apache.tomcat", "tomcat-annotations-api"),
       "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.24" exclude("org.apache.tomcat", "tomcat-annotations-api")
-    ),
-    libraryDependencies ++= Seq(beangle_data_hibernate, beangle_she, h2, logback_classic, logback_core),
-    libraryDependencies ++= Seq(
-      "com.github.ben-manes.caffeine" % "caffeine" % "3.2.0",
-      "com.github.ben-manes.caffeine" % "jcache" % "3.2.0",
-      "javax.cache" % "cache-api" % "1.1.1"
     )
   )
-  .dependsOn(app, portal)
+  .dependsOn(app)
