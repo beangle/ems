@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beangle>
+  <jpa>
+    <mapping class="org.beangle.ems.nativeapp.EmsMapping"/>
+    <naming>
+      <profile package="org.beangle.ems.nativeapp" pluralize="true"/>
+    </naming>
+  </jpa>
+</beangle>

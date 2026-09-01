@@ -1,0 +1,5 @@
+# native 模块 AOT 注册器（引用第三方类，无对应仓库模块，保留在 native）：
+#   EmsInfraAotHints -> hibernate/freemarker/tomcat 等第三方
+#   caffeine/jedis 相关注册已移至 beangle-cache 模块的 CacheAotHints
+# security 注册器已随 beangle-security 库发布（security jar 的 aot-registrars.txt）
+org.beangle.ems.nativeapp.aot.EmsInfraAotHints

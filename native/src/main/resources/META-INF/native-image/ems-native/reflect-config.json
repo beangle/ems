@@ -1,0 +1,5 @@
+[
+  {"name":"scala.collection.convert.JavaCollectionWrappers$MapWrapper","allPublicMethods":true},
+  {"name":"scala.collection.convert.JavaCollectionWrappers$AbstractJMapWrapper","allPublicMethods":true},
+  {"name":"scala.collection.convert.JavaCollectionWrappers$JMapWrapper","allPublicMethods":true}
+]
