@@ -17,17 +17,16 @@
 
 package org.beangle.ems.portal.aot
 
-import org.beangle.ems.app.aot.EmsAotSupport
+import org.beangle.commons.aot.{AotHintRegistrar, AotPolicy}
 
 /** org.beangle.ems.portal.* 包的 GraalVM 反射提示。
  *
  * 随 portal 模块发布（AotPlugin 按模块独立收集，native 构建时各 jar 配置自动
  * 合并）。目前只需补 portal 辅助类 DomainSupport（Spring 依赖注入反射）。
  */
-class EmsPortalAotHints extends EmsAotSupport {
+class EmsPortalAotHints extends AotHintRegistrar {
 
   override def registering(): Unit = {
-    // ems portal 辅助类
-    hints.registerType(classOf[org.beangle.ems.portal.action.admin.DomainSupport], servicePolicy)
+    hints.registerType(classOf[org.beangle.ems.portal.action.admin.DomainSupport],AotPolicy.bean)
   }
 }

@@ -55,10 +55,11 @@ lazy val portal = (project in file("portal"))
         sys.env.getOrElse("JAVA_HOME", "/home/chaostone/local/graalvm-jdk-21"))).toPath
     },
     nativeImageInstalled := true,
+    nativeImageOutput := xsbti.VirtualFileRef.of((NativeImage / target).value.getAbsolutePath + "/ems-portal"),
     nativeImageOptions ++= Seq(
       "--no-fallback",
+      "--enable-sbom=cyclonedx",
       "--enable-url-protocols=jar,resource,http,https",
-      "-H:+AddAllCharsets",
       "-H:+ReportExceptionStackTraces",
       "--report-unsupported-elements-at-runtime",
       "--initialize-at-build-time=ch.qos.logback,org.slf4j",
@@ -66,8 +67,8 @@ lazy val portal = (project in file("portal"))
     ),
     libraryDependencies ++= Seq(
       "org.beangle.sas" % "beangle-sas-engine" % "0.13.12-SNAPSHOT",
-      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.24" exclude("org.apache.tomcat", "tomcat-annotations-api"),
-      "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.24" exclude("org.apache.tomcat", "tomcat-annotations-api")
+      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api"),
+      "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api")
     )
   )
   .dependsOn(app)
