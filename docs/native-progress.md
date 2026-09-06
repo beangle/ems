@@ -217,12 +217,57 @@ beangle-security，由 security 库 `SecurityAotHints` 随 jar 发布注册。
 ```bash
 # 构建 native image
 cd ~/workspace/beangle/ems
-sbt "native/compile; native/nativeImage"
+sbt "portal/nativeImage"
 
 # 运行 native image
-./target/out/jvm/u/beangle-ems-native/native-image/beangle-ems-native \
+./target/out/jvm/u/beangle-ems-portal/native-image/ems-portal \
   -Dems.profile=lixin.course --port=8082
 
 # 测试
 curl http://localhost:8082/
 ```
+
+## 七、POI/XMLBeans 在 native 下的 Excel 导出
+
+导出 xlsx 时 `XSSFWorkbook`/`CTWorkbook` 依赖 XMLBeans 编译 schema，native 下需要三件事：
+
+1. **schema 资源嵌入镜像**：`build.sbt` 中
+   `-H:IncludeResources=.*\\.xsb`（POI 公式元数据另加
+   `-H:IncludeResources=.*functionMetadata.*\\.txt`）。
+2. **生成类反射注册**：`portal/src/main/resources/META-INF/native-image/poi-ooxml/reflect-config.json`
+   （由 poi-ooxml-lite jar 生成：`*Impl` 注册 `allDeclaredConstructors`，
+   `*$Enum` 注册 `allDeclaredFields`，接口仅列名）。
+3. **xmlbeans 资源包**：`-H:IncludeResourceBundles=org.apache.xmlbeans.impl.regex.message`
+   与 `-H:+AddAllCharsets`（缺一不可）。
+
+构建期 `Could not register complete reflection metadata for ...$Enum` 警告可忽略：
+lite jar 裁剪了对应外层接口（仅保留 `$Enum`），POI 实际使用的枚举外层接口均在，
+可完整注册。
+
+## 八、POI autoSizeColumn/字体测量在 native 下的 AWT JNI 崩溃
+
+导出 xlsx 若触发 POI 列宽测量（`SheetUtil`/`autoSizeColumn`），会初始化
+`java.awt.font.TextLayout` → `java.awt.Font` → `Toolkit`，运行时 `System.loadLibrary("awt")`
+加载 `libawt.so`，其 `JNI_OnLoad`（`AWT_OnLoad`）通过 JNI 回调
+`java.awt.GraphicsEnvironment.isHeadless()` 等 Java 方法。native 镜像未注册这些
+C→Java JNI 回调时，残留异常会在 `awt_LoadLibrary.c` 中被误报为
+
+```
+Fatal error reported via JNI: Could not allocate library name
+```
+
+（JDK-8336382 / oracle/graal#8475、#9300，退出码 99，进程直接 SIGABRT。）
+
+**修复**：`portal/src/main/resources/META-INF/native-image/awt/` 新增
+- `jni-config.json`：`java.awt.GraphicsEnvironment.isHeadless`、`java.lang.System.load`、
+  `sun.font.*`（Font2D/FontStrike/GlyphLayout/TrueTypeFont/PhysicalStrike 等）、
+  `sun.java2d.Disposer` 等 18 条 C→Java JNI 回调注册（由 native-image tracing agent 采集，
+  验证见 `/tmp/poitest/agent3`）。
+- `resource-config.json`：`sun.awt.resources.awt` 资源包、`ubidi.icu`（ICU 双向文本）等。
+
+镜像构建时通过 classpath `META-INF/native-image` 自动发现，无需新增构建参数。
+
+**验证**：独立最小工程 `/tmp/poitest`（XSSF/SXSSF + `autoSizeColumn` + 中英文/日期/公式）：
+修复前与线上一致的 `Fatal error reported via JNI` 崩溃；修复后 `XSSF OK`/`SXSSF OK` 正常写出。
+注意 native 下无 autoSize 的普通导出（beangle-transfer `ExcelWriter` 手工
+`setColumnWidth`）本来就不需要 AWT；只有触发字体测量的路径才需要上述配置。

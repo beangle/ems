@@ -212,7 +212,6 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
     populateConditions(q)
     q.tailOrder("user.id")
     q.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
-    q
   }
 
   /**
