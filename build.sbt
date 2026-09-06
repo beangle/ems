@@ -70,10 +70,13 @@ lazy val portal = (project in file("portal"))
       "--initialize-at-build-time=ch.qos.logback,org.slf4j",
       "--initialize-at-run-time=java.net.http"
     ),
+    // 以下依赖仅供 nativeImage 使用：mainClass Bootstrap 由 beangle-sas-engine 提供，镜像需内嵌 Tomcat。
+    // scalameta sbt-native-image 的任务类路径取自 (Compile / fullClasspath)，
+    // 因此用 provided 让其进入 native-image 类路径，同时不打进 WAR、不随 POM 传递。
     libraryDependencies ++= Seq(
-      "org.beangle.sas" % "beangle-sas-engine" % "0.13.12-SNAPSHOT",
-      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api"),
-      "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api")
+      "org.beangle.sas" % "beangle-sas-engine" % "0.13.12" % "provided",
+      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.25" % "provided" exclude("org.apache.tomcat", "tomcat-annotations-api"),
+      "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.25" % "provided" exclude("org.apache.tomcat", "tomcat-annotations-api")
     )
   )
   .dependsOn(app)
