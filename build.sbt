@@ -40,6 +40,7 @@ lazy val app = (project in file("app"))
 
 lazy val portal = (project in file("portal"))
   .enablePlugins(WarPlugin, TomcatPlugin, NativeImagePlugin)
+  .enablePlugins(AotPlugin,MetaPlugin,ProxyPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
@@ -50,28 +51,18 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= webAppDepends,
     // native-image 配置
     Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
-    nativeImageGraalHome := Def.uncached {
-      file(sys.env.getOrElse("GRAALVM_HOME",
-        sys.env.getOrElse("JAVA_HOME", "/home/chaostone/local/graalvm-jdk-21"))).toPath
-    },
-    nativeImageInstalled := true,
     nativeImageOutput := xsbti.VirtualFileRef.of((NativeImage / target).value.getAbsolutePath + "/ems-portal"),
     nativeImageOptions ++= Seq(
+      "--sun-misc-unsafe-memory-access=allow",
       "--no-fallback",
-      "--enable-sbom=cyclonedx,export",
-      "--enable-url-protocols=jar,resource,http,https",
       "-H:+AddAllCharsets",
-      "-H:+BuildReport",
+      "-H:+UnlockExperimentalVMOptions",
       "-H:IncludeResourceBundles=org.apache.xmlbeans.impl.regex.message",
-      "-H:IncludeResources=.*\\.xsb",
-      "-H:IncludeResources=.*functionMetadata.*\\.txt",
       "-H:+ReportExceptionStackTraces",
-      "--report-unsupported-elements-at-runtime",
-      "--initialize-at-build-time=ch.qos.logback,org.slf4j",
-      "--initialize-at-run-time=java.net.http"
+      "--initialize-at-build-time=ch.qos.logback,org.slf4j,org.xml.sax,org.w3c.dom,javax.xml,org.apache.sshd"
     ),
     libraryDependencies ++= Seq(
-      "org.beangle.sas" % "beangle-sas-engine" % "0.13.12-SNAPSHOT",
+      "org.beangle.sas" % "beangle-sas-engine" % "0.13.12",
       "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api"),
       "org.apache.tomcat.embed" % "tomcat-embed-websocket" % "11.0.25" exclude("org.apache.tomcat", "tomcat-annotations-api")
     )

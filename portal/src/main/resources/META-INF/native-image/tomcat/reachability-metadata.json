@@ -1,0 +1,13 @@
+{
+  "reflection": [
+    {
+      "type": "org.apache.coyote.http11.AbstractHttp11Protocol",
+      "methods": [
+        {
+          "name": "isSSLEnabled",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}
