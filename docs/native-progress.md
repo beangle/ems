@@ -258,12 +258,13 @@ Fatal error reported via JNI: Could not allocate library name
 
 （JDK-8336382 / oracle/graal#8475、#9300，退出码 99，进程直接 SIGABRT。）
 
-**修复**：`portal/src/main/resources/META-INF/native-image/awt/` 新增
-- `jni-config.json`：`java.awt.GraphicsEnvironment.isHeadless`、`java.lang.System.load`、
+**修复**：`portal/src/main/resources/META-INF/native-image/awt/reachability-metadata.json`
+（GraalVM 25 统一格式，由 native-image tracing agent 采集后合并 `jni-config.json` /
+`resource-config.json`）：
+- reflection + `jniAccessible`：`java.awt.GraphicsEnvironment.isHeadless`、`java.lang.System.load`、
   `sun.font.*`（Font2D/FontStrike/GlyphLayout/TrueTypeFont/PhysicalStrike 等）、
-  `sun.java2d.Disposer` 等 18 条 C→Java JNI 回调注册（由 native-image tracing agent 采集，
-  验证见 `/tmp/poitest/agent3`）。
-- `resource-config.json`：`sun.awt.resources.awt` 资源包、`ubidi.icu`（ICU 双向文本）等。
+  `sun.java2d.Disposer` 等 18 条 C→Java JNI 回调注册；
+- resources：`sun.awt.resources.awt` 资源包、`ubidi.icu`（ICU 双向文本）等。
 
 镜像构建时通过 classpath `META-INF/native-image` 自动发现，无需新增构建参数。
 
@@ -271,3 +272,48 @@ Fatal error reported via JNI: Could not allocate library name
 修复前与线上一致的 `Fatal error reported via JNI` 崩溃；修复后 `XSSF OK`/`SXSSF OK` 正常写出。
 注意 native 下无 autoSize 的普通导出（beangle-transfer `ExcelWriter` 手工
 `setColumnWidth`）本来就不需要 AWT；只有触发字体测量的路径才需要上述配置。
+
+### JDK 25 回调名变更（charToGlyphRaw / charToVariationGlyphRaw）
+
+上述 JNI 清单是在更早 JDK/GraalVM 上采集的；GraalVM for JDK 25 的 `libfontmanager`
+把 `sun.font.Font2D` 回调名换成了带 `Raw` 的变体，`SunFontManager.initIDs` 初始化时
+会按新名 `GetMethodID`，旧清单因此运行期抛：
+
+```
+java.lang.NoSuchMethodError: sun.font.Font2D.charToGlyphRaw(I)I
+  at ...JNIFunctions$Support.getMethodID(JNIFunctions.java:1948)
+  at java.desktop@25.../sun.font.SunFontManager.initIDs(Native Method)
+```
+
+**修复**：`Font2D` 注册的方法名改为 JDK 25 实际使用的
+`canDisplay(char)` / `charToGlyphRaw(int)` / `charToVariationGlyphRaw(int,int)` /
+`getMapper()` / `getTableBytes(int)`（`CharToGlyphMapper.charToGlyph` 保留）。
+依据：`strings libfontmanager.so` 的 JNI 名字表 + JDK 25 native-image tracing agent 输出。
+
+**验证**（GraalVM CE 25.3.4.1，最小 `BufferedImage` + `drawString` 工程 A/B）：
+- 用旧名（charToGlyph/charToVariationGlyph）→ 复现上面完全相同的
+  `NoSuchMethodError ... charToGlyphRaw`（`SunFontManager.initIDs`）；
+- 用新名（Raw 变体）→ `paintedPixels=680` 正常渲染。
+
+## 九、运行期 sun.misc.Unsafe 弃用告警（scala.runtime.LazyVals）
+
+Scala 3 的 lazy val 在首次取值时由 `scala.runtime.LazyVals` 通过
+`sun.misc.Unsafe::objectFieldOffset` 动态计算字段偏移，JDK 24+（JEP 498）
+会打印弃用告警：
+
+```
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:.../native-image/ems-portal)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+```
+
+该调用无法在构建期折叠（字段名来自运行期反射），因此告警出现在 native 镜像运行期。
+
+**修复**：`build.sbt` 的 `nativeImageOptions` 增加
+`--sun-misc-unsafe-memory-access=allow`（GraalVM 25 的 native-image 选项，
+默认 `warn`，可选 `allow`/`warn`/`debug`/`deny`，参数写入镜像不再产生运行期告警）。
+
+**验证**（GraalVM CE 25.3.4.1，最小工程 A/B）：运行期反射取 `Field` 后调用
+`Unsafe.objectFieldOffset`，默认构建复现上面 4 行告警；加
+`--sun-misc-unsafe-memory-access=allow` 后无任何输出，且偏移值不变（`offset=72`）。

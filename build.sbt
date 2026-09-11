@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 organization := "org.beangle.ems"
-version := "4.20.11"
+version := "4.20.12"
 
 scmInfo := Some(
   ScmInfo(uri("https://github.com/beangle/ems"), "scm:git@github.com:beangle/ems.git")
@@ -40,6 +40,7 @@ lazy val app = (project in file("app"))
 
 lazy val portal = (project in file("portal"))
   .enablePlugins(WarPlugin, TomcatPlugin, NativeImagePlugin)
+  .enablePlugins(AotPlugin,MetaPlugin,ProxyPlugin)
   .settings(
     name := "beangle-ems-portal",
     common,
@@ -50,25 +51,15 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= webAppDepends,
     // native-image 配置
     Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
-    nativeImageGraalHome := Def.uncached {
-      file(sys.env.getOrElse("GRAALVM_HOME",
-        sys.env.getOrElse("JAVA_HOME", "/home/chaostone/local/graalvm-jdk-21"))).toPath
-    },
-    nativeImageInstalled := true,
     nativeImageOutput := xsbti.VirtualFileRef.of((NativeImage / target).value.getAbsolutePath + "/ems-portal"),
     nativeImageOptions ++= Seq(
+      "--sun-misc-unsafe-memory-access=allow",
       "--no-fallback",
-      "--enable-sbom=cyclonedx,export",
-      "--enable-url-protocols=jar,resource,http,https",
       "-H:+AddAllCharsets",
-      "-H:+BuildReport",
+      "-H:+UnlockExperimentalVMOptions",
       "-H:IncludeResourceBundles=org.apache.xmlbeans.impl.regex.message",
-      "-H:IncludeResources=.*\\.xsb",
-      "-H:IncludeResources=.*functionMetadata.*\\.txt",
       "-H:+ReportExceptionStackTraces",
-      "--report-unsupported-elements-at-runtime",
-      "--initialize-at-build-time=ch.qos.logback,org.slf4j",
-      "--initialize-at-run-time=java.net.http"
+      "--initialize-at-build-time=ch.qos.logback,org.slf4j,org.xml.sax,org.w3c.dom,javax.xml,org.apache.sshd"
     ),
     // 以下依赖仅供 nativeImage 使用：mainClass Bootstrap 由 beangle-sas-engine 提供，镜像需内嵌 Tomcat。
     // scalameta sbt-native-image 的任务类路径取自 (Compile / fullClasspath)，
