@@ -13,7 +13,7 @@
  [/@]
   [@b.row]
     [@b.boxcol/]
-    [@b.col property="code" width="12%"]${user.code}[/@]
+    [@b.col property="code" width="12%" ]${user.code}[/@]
     [@b.col property="name" width="9%"][@b.a href="!dashboard?id="+user.id target="_blank"]${user.name}[/@][/@]
     [@b.col property="category.name" width="8%"/]
     [@b.col property="depart.name" width="11%" title="部门"]${(user.depart.name)!}[/@]

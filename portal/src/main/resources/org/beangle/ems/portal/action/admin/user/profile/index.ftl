@@ -5,9 +5,15 @@
 [/@]
 [@b.messages slash="3"/]
 [#if (profiles?size==0)]没有设置[/#if]
-<div style="width:100%;display:flex">
+<style>
+  .profile-cards { display: grid; grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
+  .profile-cards .compact.table > tbody > tr > td:first-child { padding-right: 1.5rem; white-space: nowrap; }
+  @media (min-width: 900px) { .profile-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1500px) { .profile-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
+<div class="profile-cards">
  [#list profiles as profile]
- [@b.card style="width:50%"]
+ [@b.card style="margin-bottom:0"]
    [@b.card_header title=profile.name]
      <div class="card-title">${profile.env.name}</div>
      [@b.card_tools]
@@ -15,7 +21,7 @@
        [@b.a onclick="removeProfile(${profile.id});return false;" class="btn btn-tool"]<span class="text-danger"><i class="fa fa-times"></i>删除</span>[/@]
      [/@]
    [/@]
-   [@b.card_body style="padding-top: 0px;"]
+   [@b.card_body style="padding-top: 0.75rem;"]
       <div class="table-responsive">
         <table class="table no-margin m-0 compact">
           <tbody>
