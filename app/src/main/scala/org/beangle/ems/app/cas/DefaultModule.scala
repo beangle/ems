@@ -21,7 +21,7 @@ import org.beangle.commons.cdi.BindModule
 import org.beangle.ems.app.Ems
 import org.beangle.ems.app.event.AppAuthorizerSubscriber
 import org.beangle.ems.app.security.RemoteAuthorizer
-import org.beangle.security.authc.{DefaultAccount, Profile, RealmAuthenticator}
+import org.beangle.security.authc.{DefaultAccount, Profile}
 import org.beangle.security.authz.AuthorizerRefresher
 import org.beangle.security.realm.cas.{CasConfig, CasEntryPoint}
 import org.beangle.security.session.protobuf.{AccountSerializer, AgentSerializer, ProfileSerializer, SessionSerializer}
