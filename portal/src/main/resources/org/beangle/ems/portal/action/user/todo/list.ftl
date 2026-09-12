@@ -27,7 +27,7 @@
           [#if todoes.totalItems==0]
           0-0/0
           [#else]
-          ${(todoes.pageIndex-1)*todoes.pageSize+1}-${(todoes.pageIndex-1)*todoes.pageSize+todoes.items.size}/${todoes.totalItems}
+          ${(todoes.pageIndex-1)*todoes.pageSize+1}-${(todoes.pageIndex-1)*todoes.pageSize+(todoes.items?size)}/${todoes.totalItems}
           [/#if]
           <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm" [#if todoes.hasPrevious] onclick="gotoPage(${todoes.pageIndex-1})"[#else] disabled="disabled"[/#if]><i class="fa fa-chevron-left"></i></button>
