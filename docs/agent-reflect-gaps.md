@@ -1,5 +1,8 @@
 # EMS Native 反射缺口清单（agent 采集 × 构建配置对比）
 
+> **生成物，不要手改**：本清单对应 2026-08-31 的代码与采集结果，反射注册变化后即失效，需重新采集比对。
+> 采集与比对方法见文末说明；反射配置的最终去向是构建期 AOT hints（`beangle/commons`、`beangle/webmvc` 等仓库的 `*AotHints`）。
+
 > 来源：`/tmp/agent-portal-20260831/`（native-image-agent 采集 JVM 全量 portal 访问，110 个真实 URL，登录 `imroot/123456`，`-Dems.profile=lixin.course`）
 
 > 对比基线：构建期合并 reflect-config（`target/out/jvm/u/beangle-ems-native/resource_managed/main/META-INF/native-image/beangle/reflect-config.json`）

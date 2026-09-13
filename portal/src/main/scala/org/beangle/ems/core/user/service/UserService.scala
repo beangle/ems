@@ -33,8 +33,6 @@ trait UserService {
 
   def getRoles(user: User, domain: Domain, env: Option[Env]): Seq[Role]
 
-  def isManagedBy(manager: User, user: User): Boolean
-
   def create(creator: User, user: User): Unit
 
   def remove(creator: User, user: User): Unit

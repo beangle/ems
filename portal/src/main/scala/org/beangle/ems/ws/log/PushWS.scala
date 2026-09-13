@@ -79,13 +79,9 @@ class PushWS extends ActionSupport, ServletSupport {
     Status.BadRequest
   }
 
+  /** 校验请求体摘要，`digest` 必填：它只依赖双方共享的 key，用来挡住伪造的应用日志。 */
   private def validate(bytes: Array[Byte], secret: String): Boolean = {
-    get("digest") match {
-      case None => true
-      case Some(d) => d == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
-    }
-    //FIXME 暂时不要进行强制验证
-    //get("digest", "--") == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
+    get("digest", "--") == Digests.md5Hex(Array.concat(secret.getBytes(Charsets.UTF_8), bytes))
   }
 
 }

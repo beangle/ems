@@ -96,39 +96,29 @@ class AvatarAction extends ActionSupport, ServletSupport {
     forward()
   }
 
+  /** zip 包和单张照片的上限，防止批量导入把内存/磁盘撑满。 */
+  private val MaxZipSize: Long = 100 * 1024 * 1024
+  private val MaxPhotoSize: Long = 20 * 1024 * 1024
+  private val PhotoSuffixes = Set("jpg", "jpeg", "png", "gif", "bmp", "webp")
+
   def upload(): View = {
     getAll("zipfile", classOf[Part]) foreach { zipFile =>
-      val tmpFile = new File(SystemInfo.tmpDir + "/photo" + System.currentTimeMillis())
-      IOs.copy(zipFile.getInputStream, new FileOutputStream(tmpFile))
-      put("total", processZip(tmpFile, "GBK"))
-    }
-    get("dirInServer") foreach { dirInServer =>
-      put("total", processDir(new File(dirInServer)))
-    }
-    forward()
-  }
-
-  def processDir(dir: File): Int = {
-    if (!dir.exists()) return 0
-    var i = 0
-    dir.list() foreach { name =>
-      val file = new File(dir.getAbsolutePath + "/" + name)
-      if (name.indexOf(".") < 1) {
-        EmsLogger.warn(name + " without suffix,skipped")
-      } else if (file.isDirectory) {
-        EmsLogger.info(name + " is dir,skipped")
+      if (zipFile.getSize > MaxZipSize) {
+        EmsLogger.warn(s"photo zip is too large: ${zipFile.getSize} bytes,skipped")
+        put("total", 0)
       } else {
-        val usercode = Strings.substringBeforeLast(name, ".")
-        val users = userService.getIgnoreCase(usercode)
-        if (users.isEmpty) {
-          EmsLogger.warn("Cannot find user info of " + usercode)
-        } else {
-          i += 1
-          avatarService.save(users.head, name, new FileInputStream(dir.getAbsolutePath + "/" + name))
+        val tmpFile = new File(SystemInfo.tmpDir + "/photo" + System.currentTimeMillis())
+        try {
+          val out = new FileOutputStream(tmpFile)
+          try IOs.copy(zipFile.getInputStream, out)
+          finally out.close()
+          put("total", processZip(tmpFile, "GBK"))
+        } finally {
+          tmpFile.delete()
         }
       }
     }
-    i
+    forward()
   }
 
   def processZip(zipfile: File, encoding: String): Int = {
@@ -143,24 +133,34 @@ class AvatarAction extends ActionSupport, ServletSupport {
         i = i + 1
         if (!ze.isDirectory) {
           val photoname = if (ze.getName.contains("/")) Strings.substringAfterLast(ze.getName, "/") else ze.getName
-          if (photoname.indexOf(".") < 1) {
+          if (!isPhoto(photoname)) {
             EmsLogger.warn(photoname + " format is error")
+          } else if (ze.getSize > MaxPhotoSize) {
+            EmsLogger.warn(s"$photoname is too large: ${ze.getSize} bytes,skipped")
           } else {
             val usercode = Strings.substringBeforeLast(photoname, ".")
             val users = userService.getIgnoreCase(usercode)
             if (users.isEmpty) {
               EmsLogger.warn("Cannot find user info of " + usercode)
             } else {
-              avatarService.save(users.head, photoname, file.getInputStream(ze))
+              val is = file.getInputStream(ze)
+              try avatarService.save(users.head, photoname, is)
+              finally is.close()
             }
           }
         }
       }
-      file.close()
     } catch {
       case e: IOException => Throwables.propagate(e)
+    } finally {
+      file.close()
     }
     i
+  }
+
+  private def isPhoto(name: String): Boolean = {
+    val dot = name.lastIndexOf('.')
+    dot > 0 && PhotoSuffixes.contains(name.substring(dot + 1).toLowerCase)
   }
 
   def downloadSetting(): View = {

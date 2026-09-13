@@ -1,6 +1,9 @@
 # EMS Native-Image 工作进展
 
 > 最后更新：2026-09-01
+>
+> 本文是打通 native-image 时的**过程记录**（含当时的状态表与待办），不再随代码更新。
+> 构建、打包、增量补丁与发布的最终说明见 `beangle/build` 的 `docs/native.md`；反射相关清单见 `reflection-converged.md`、`agent-reflect-gaps.md`。
 
 ## 一、当前状态
 

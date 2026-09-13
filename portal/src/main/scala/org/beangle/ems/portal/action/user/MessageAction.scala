@@ -17,7 +17,6 @@
 
 package org.beangle.ems.portal.action.user
 
-import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.oa.model.Message
@@ -66,13 +65,13 @@ class MessageAction extends RestfulAction[Message] {
   def newly(): View = {
     val builder = getQueryBuilder
     builder.limit(1, 5)
-    builder.where("message.status=" + Message.Newly)
+    builder.where("message.status=:status", Message.Newly)
     val messages = entityDao.search(builder)
     put("messages", messages)
     val avatarUrls = messages.filter(_.sender.nonEmpty) map { m =>
-      (m.sender.get.code, Ems.api + "/platform/user/avatars/" + Digests.md5Hex(m.sender.get.code))
+      (m.sender.get.code, Ems.avatarUrl(m.sender.get.code))
     }
-    put("defaultUrl", Ems.api + "/platform/user/avatars/" + Digests.md5Hex("default_user_code"))
+    put("defaultUrl", Ems.avatarUrl("default_user_code"))
     put("avatarUrls", avatarUrls.toMap)
     forward()
   }

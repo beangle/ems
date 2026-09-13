@@ -1,5 +1,7 @@
 # 反射注册收敛清单
 
+> **生成物，不要手改**：内容对应 2026-08-31 的代码，反射注册调整后需重新采集比对。
+
 > 基于 native-image-agent 采集（2026-08-31）与现有 reflect-config 对比
 > 已去除：JPA 元模型噪声、BeanInfo/Customizer 噪声、JDK class-only、数组 class-only
 > 缺失（需注册）: 731 个类

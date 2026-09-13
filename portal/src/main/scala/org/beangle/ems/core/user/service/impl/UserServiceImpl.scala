@@ -68,11 +68,6 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
     }
   }
 
-  //FIXME
-  def isManagedBy(manager: User, user: User): Boolean = {
-    true
-  }
-
   override def isRoot(user: User): Boolean = {
     val rootQuery = OqlBuilder.from[Long](classOf[Root].getName, "r")
     rootQuery.where("r.domain=:domain", domainService.getDomain)
@@ -94,7 +89,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
   }
 
   def remove(manager: User, user: User): Unit = {
-    if (isManagedBy(manager, user)) {
+    if (isRoot(manager)) {
       val removed = Collections.newBuffer[Entity[_]]
       removed ++= entityDao.findBy(classOf[EnvProfile], "user", List(user))
       entityDao.remove(removed, user)
@@ -185,10 +180,9 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
 
   override def enable(manager: User, userIds: Iterable[Long], enabled: Boolean): Int = {
     val users = entityDao.find(classOf[User], userIds)
-    val updated = users.filter(a => isManagedBy(manager, a))
-    updated.foreach { u => u.enabled = enabled }
-    entityDao.saveOrUpdate(updated)
-    updated.size
+    users.foreach { u => u.enabled = enabled }
+    entityDao.saveOrUpdate(users)
+    users.size
   }
 
   override def getActivePassword(code: String): Option[String] = {
