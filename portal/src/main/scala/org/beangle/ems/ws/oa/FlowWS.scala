@@ -55,15 +55,18 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
    */
   @mapping("{flowCode}/start/{businessKey}", methods = "post")
   @response
-  def start(flowCode: String, businessKey: String): JsonObject = {
+  def start(flowCode: String, businessKey: String): AnyRef = {
     val flow = flowService.getFlow(flowCode)
-    val data = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
-    val p = flowService.start(flow, businessKey, data)
-    if (null != p) {
-      convertProcess(p)
+    if (null == flow) {
+      ok(404, JsonObject("code" -> 404, "msg" -> s"Cannot find flow $flowCode"))
     } else {
-      //FIXME 错误处理
-      null
+      val data = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
+      val p = flowService.start(flow, businessKey, data)
+      if (null != p) {
+        convertProcess(p)
+      } else {
+        ok(400, JsonObject("code" -> 400, "msg" -> s"$flowCode cannot start with the given data"))
+      }
     }
   }
 

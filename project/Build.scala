@@ -2,7 +2,7 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.3"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.4"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.7"
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.9.4"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.9.4"
@@ -10,9 +10,9 @@ object EmsDepends {
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.11"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.11"
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.21"
-  val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.9"
+  val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.10"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.27"
-  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.16"
+  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.17"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.18"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.2"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.28"

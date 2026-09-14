@@ -63,8 +63,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[EnvPro
   protected override def saveAndRedirect(profile: EnvProfile): View = {
     val helper = new ProfileHelper(entityDao, profileService, dimensionService)
     helper.dataResolver = dataResolver
-    //FIXME
-    helper.populateSaveInfo(profile, isAdmin = true)
+    helper.populateSaveInfo(profile, isAdmin = isDataAdmin)
     profile.domain = domainService.getDomain
     if (profile.properties.isEmpty) {
       if (profile.persisted) {
@@ -93,7 +92,12 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[EnvPro
   protected override def editSetting(profile: EnvProfile): Unit = {
     val helper = new ProfileHelper(entityDao, profileService, dimensionService)
     if (null == profile.user) profile.user = userService.get(Securities.user).get
-    helper.fillEditInfo(profile, isAdmin = true)
+    helper.fillEditInfo(profile, isAdmin = isDataAdmin)
+  }
+
+  /** 自己不受数据权限限制（或本身是 root）的人，才能把某个维度设成"不限"授给别人。 */
+  private def isDataAdmin: Boolean = {
+      userService.get(Securities.user).exists(userService.isRoot)
   }
 
 }

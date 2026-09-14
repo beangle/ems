@@ -18,7 +18,6 @@
 package org.beangle.ems.portal.action.user
 
 import jakarta.servlet.http.Part
-import org.beangle.commons.codec.digest.Digests
 import org.beangle.data.dao.EntityDao
 import org.beangle.ems.EmsLogger
 import org.beangle.ems.app.Ems
@@ -35,7 +34,7 @@ class AvatarAction extends ActionSupport {
   var avatarService: AvatarService = _
 
   def index(): View = {
-    put("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(Securities.user) + "?t=" + System.currentTimeMillis())
+    put("avatar_url", Ems.avatarUrl(Securities.user) + "?t=" + System.currentTimeMillis())
     put("users", entityDao.findBy(classOf[User], "code", List(Securities.user)))
     forward()
   }

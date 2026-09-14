@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app
 
+import org.beangle.commons.codec.digest.Digests
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -26,6 +27,12 @@ class EmsTest extends AnyFunSpec, Matchers {
       val key = Ems.generateKey()
       println(key)
       assert(key.length >= 32)
+    }
+
+    it("build platform avatar url") {
+      val url = Ems.avatarUrl("imroot")
+      url shouldBe s"${Ems.api}/platform/user/avatars/${Digests.md5Hex("imroot")}"
+      url should not be Ems.avatarUrl("root")
     }
   }
 

@@ -35,7 +35,7 @@
           [#if messages.totalItems==0]
           0-0/0
           [#else]
-          ${(messages.pageIndex-1)*messages.pageSize+1}-${(messages.pageIndex-1)*messages.pageSize+messages.items.size}/${messages.totalItems}
+          ${(messages.pageIndex-1)*messages.pageSize+1}-${(messages.pageIndex-1)*messages.pageSize+(messages.items?size)}/${messages.totalItems}
           [/#if]
           <div class="btn-group">
             <button type="button" class="btn btn-default btn-sm" [#if messages.hasPrevious] onclick="gotoPage(${messages.pageIndex-1})"[#else] disabled="disabled"[/#if]><i class="fa fa-chevron-left"></i></button>

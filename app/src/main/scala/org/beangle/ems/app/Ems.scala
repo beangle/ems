@@ -17,6 +17,7 @@
 
 package org.beangle.ems.app
 
+import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.config.Config
 import org.beangle.commons.lang.Strings
 
@@ -67,6 +68,11 @@ object Ems {
 
   def api: String = {
     env.api
+  }
+
+  /** 门户上的头像地址：`/platform/user/avatars/<md5(userCode)>`，供各页面/应用生成 img src。 */
+  def avatarUrl(userCode: String): String = {
+    api + "/platform/user/avatars/" + Digests.md5Hex(userCode)
   }
 
   def innerApi: String = {

@@ -2,6 +2,11 @@
 
 > 基于 `ems/portal/src/main/scala/org/beangle/ems` 下的 Action / WS 类整理。
 > URL 规则：beangle webmvc SEO 风格（camelCase → kebab-case），WS 使用 plur-seo 风格（包名复数化）。
+>
+> 这是**人工整理的主要入口清单，不是全量路由**：页面级入口、常用 WS 都列了，但 `@ignore` 的辅助方法、
+> 同名 action 的重载、以及依赖 `beangle.xml` 中 profile 配置的路径可能未完全覆盖。
+> 改动 Action/映射后请随手校对，可用 `rg -n "@action|@mapping" portal/src/main/scala` 与本文对照。
+> 最后校对：2026-09-13。
 
 ## 一、首页与认证
 

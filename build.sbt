@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 organization := "org.beangle.ems"
-version := "4.20.13"
+version := "4.20.14"
 
 scmInfo := Some(
   ScmInfo(uri("https://github.com/beangle/ems"), "scm:git@github.com:beangle/ems.git")
@@ -48,13 +48,14 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
     snapshotRepoUrl := "https://sas.openurp.net/sas/repo/snapshot/upload/{fileName}",
+    nativePublishUrl := "https://sas.openurp.net/sas/repo/native/upload/{path}/{fileName}",
     libraryDependencies ++= webAppDepends,
     // native-image 配置
     Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
     nativeImageOutput := xsbti.VirtualFileRef.of((NativeImage / target).value.getAbsolutePath + "/ems-portal"),
     nativeImageOptions ++= Seq(
       "--sun-misc-unsafe-memory-access=allow",
-      "--no-fallback",
+      "-Os",
       "-H:+AddAllCharsets",
       "-H:+UnlockExperimentalVMOptions",
       "-H:IncludeResourceBundles=org.apache.xmlbeans.impl.regex.message",

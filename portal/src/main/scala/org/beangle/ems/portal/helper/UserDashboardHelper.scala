@@ -17,7 +17,6 @@
 
 package org.beangle.ems.portal.helper
 
-import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.app.Ems
@@ -56,7 +55,7 @@ class UserDashboardHelper {
     val menus = menuService.getDomainMenus(user, new ChannelType(ChannelType.PcId, ChannelType.Pc), false, None)
     ActionContext.current.attribute("menus", menus)
 
-    ActionContext.current.attribute("avatar_url", Ems.api + "/platform/user/avatars/" + Digests.md5Hex(user.code) + "?t=" + System.currentTimeMillis())
+    ActionContext.current.attribute("avatar_url", Ems.avatarUrl(user.code) + "?t=" + System.currentTimeMillis())
 
     val seQuery = OqlBuilder.from(classOf[SessionEvent], "se")
     seQuery.where("se.domain=:domain and se.principal=:principal", domain, user.code)
