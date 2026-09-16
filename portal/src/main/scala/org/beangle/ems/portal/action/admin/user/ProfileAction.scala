@@ -85,7 +85,7 @@ class ProfileAction(profileService: ProfileService) extends RestfulAction[EnvPro
     } catch {
       case e: Exception =>
         EmsLogger.error("removeAndForwad failure", e)
-        redirect("appinfo",Map("profile.user.id" -> profile.user.id), "info.delete.failure")
+        redirect("index",Map("profile.user.id" -> profile.user.id), "info.delete.failure")
     }
   }
 
