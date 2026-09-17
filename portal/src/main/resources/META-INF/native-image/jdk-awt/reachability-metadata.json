@@ -1,4 +1,13 @@
 {
+  "comment": [
+    "JNI callbacks and resources of java.desktop (libawt / libfontmanager) for GraalVM native images.",
+    "JDK version bound: verified with GraalVM for JDK 25 (25.3.4.1).",
+    "sun.font.Font2D uses charToGlyphRaw/charToVariationGlyphRaw on JDK 25; JDK 21 only has charToGlyph/charToVariationGlyph.",
+    "The ICU data glob keeps the version segment as '*' because it changes per JDK (icudt72b on 21, icudt76b on 25).",
+    "Reached only when font measurement / column auto sizing (POI SheetUtil.autoSizeColumn) runs;",
+    "beangle-transfer's ExcelWriter sets column widths manually and never triggers it.",
+    "Re-verify (javap sun.font.Font2D, jimage list | grep icudt) on every JDK or GraalVM upgrade."
+  ],
   "reflection": [
     {
       "type": "java.awt.GraphicsEnvironment",
@@ -339,33 +348,8 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/log4j-provider.properties"
-    },
-    {
-      "glob": "log4j2.StatusLogger.properties"
-    },
-    {
-      "glob": "log4j2.component.properties"
-    },
-    {
-      "glob": "log4j2.simplelog.properties"
-    },
-    {
-      "glob": "log4j2.system.properties"
-    },
-    {
       "module": "java.base",
-      "glob": "jdk/internal/icu/impl/data/icudt72b/ubidi.icu"
-    },
-    {
-      "module": "java.xml",
-      "glob": "com/sun/org/apache/xml/internal/serializer/Encodings.properties"
-    },
-    {
-      "bundle": "com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages"
-    },
-    {
-      "bundle": "com.sun.org.apache.xml.internal.serializer.XMLEntities"
+      "glob": "jdk/internal/icu/impl/data/*/ubidi.icu"
     },
     {
       "bundle": "sun.awt.resources.awt"

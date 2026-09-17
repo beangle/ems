@@ -1,0 +1,23 @@
+{
+  "comment": [
+    "log4j-api introspection resources, read at runtime by PropertiesUtil / StatusLogger.",
+    "Only log4j-api and log4j-to-slf4j are on the classpath (no log4j-core)."
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/log4j-provider.properties"
+    },
+    {
+      "glob": "log4j2.StatusLogger.properties"
+    },
+    {
+      "glob": "log4j2.component.properties"
+    },
+    {
+      "glob": "log4j2.simplelog.properties"
+    },
+    {
+      "glob": "log4j2.system.properties"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import org.beangle.parent.Dependencies.*
 import sbt.*
 
 object EmsDepends {
-  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.5"
+  val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.6"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.7"
   val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.9.5"
   val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.9.5"
@@ -12,13 +12,13 @@ object EmsDepends {
   val beangle_ids = "org.beangle.ids" % "beangle-ids" % "0.4.22"
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.12"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.27"
-  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.17"
+  val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.18"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.18"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.4"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.28"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.13"
-  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.8"
-  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.3"
+  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.9"
+  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.4"
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.7"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.19.0"
 

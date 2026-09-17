@@ -1,0 +1,18 @@
+{
+  "comment": [
+    "Internal java.xml / Xalan / serializer resources, used when JAXP serializes a document (identity transform).",
+    "Collected by the native-image tracing agent; these package names are stable across JDK versions."
+  ],
+  "resources": [
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xml/internal/serializer/Encodings.properties"
+    },
+    {
+      "bundle": "com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages"
+    },
+    {
+      "bundle": "com.sun.org.apache.xml.internal.serializer.XMLEntities"
+    }
+  ]
+}
