@@ -234,14 +234,15 @@ curl http://localhost:8082/
 
 导出 xlsx 时 `XSSFWorkbook`/`CTWorkbook` 依赖 XMLBeans 编译 schema，native 下需要三件事：
 
-1. **schema 资源嵌入镜像**：`build.sbt` 中
-   `-H:IncludeResources=.*\\.xsb`（POI 公式元数据另加
-   `-H:IncludeResources=.*functionMetadata.*\\.txt`）。
-2. **生成类反射注册**：`portal/src/main/resources/META-INF/native-image/poi-ooxml/reflect-config.json`
+1. **schema 资源嵌入镜像**：已由元数据的 `resources` 声明（`org/apache/poi|xmlbeans **/*.xsb`
+   等 glob），`build.sbt` 不再需要 `-H:IncludeResources`。
+2. **生成类反射注册**：已迁到 `beangle/doc` 的 excel 与 docx 模块，各一份
+   `excel|docx/src/main/resources/META-INF/native-image/poi-ooxml/reachability-metadata.json`
    （由 poi-ooxml-lite jar 生成：`*Impl` 注册 `allDeclaredConstructors`，
-   `*$Enum` 注册 `allDeclaredFields`，接口仅列名）。
-3. **xmlbeans 资源包**：`-H:IncludeResourceBundles=org.apache.xmlbeans.impl.regex.message`
-   与 `-H:+AddAllCharsets`（缺一不可）。
+   `*$Enum` 注册 `allDeclaredFields`，接口仅列名；两份逐字节一致）。
+   迁移后 ems 的 native 构建依赖带该元数据的 doc 版本（0.5.14+），否则导出 xlsx 会缺元数据。
+3. **xmlbeans 资源包**：`org.apache.xmlbeans.impl.regex.message` 已写进上述元数据的
+   `resources.bundle`；`-H:+AddAllCharsets` 仍保留在 `build.sbt`（缺一不可）。
 
 构建期 `Could not register complete reflection metadata for ...$Enum` 警告可忽略：
 lite jar 裁剪了对应外层接口（仅保留 `$Enum`），POI 实际使用的枚举外层接口均在，
@@ -261,13 +262,18 @@ Fatal error reported via JNI: Could not allocate library name
 
 （JDK-8336382 / oracle/graal#8475、#9300，退出码 99，进程直接 SIGABRT。）
 
-**修复**：`portal/src/main/resources/META-INF/native-image/awt/reachability-metadata.json`
-（GraalVM 25 统一格式，由 native-image tracing agent 采集后合并 `jni-config.json` /
-`resource-config.json`）：
-- reflection + `jniAccessible`：`java.awt.GraphicsEnvironment.isHeadless`、`java.lang.System.load`、
-  `sun.font.*`（Font2D/FontStrike/GlyphLayout/TrueTypeFont/PhysicalStrike 等）、
-  `sun.java2d.Disposer` 等 18 条 C→Java JNI 回调注册；
-- resources：`sun.awt.resources.awt` 资源包、`ubidi.icu`（ICU 双向文本）等。
+**修复**：原 `portal/src/main/resources/META-INF/native-image/awt/reachability-metadata.json`
+（GraalVM 25 统一格式，由 tracing agent 采集）已按性质拆成三份：
+
+| 目录 | 内容 |
+| --- | --- |
+| `jdk-awt/reachability-metadata.json` | 18 条 C→Java JNI 回调（`java.awt.GraphicsEnvironment.isHeadless`、`java.lang.System.load`、`sun.font.*`、`sun.java2d.Disposer` 等）+ `sun.awt.resources.awt` 资源包 + ICU `ubidi.icu` |
+| `jdk-xml/reachability-metadata.json` | java.xml serializer `Encodings.properties`、Xalan `ErrorMessages`、`XMLEntities` 资源包 |
+| `log4j/reachability-metadata.json` | log4j-api 的 `META-INF/log4j-provider.properties`、`log4j2.*.properties` 等 5 条 |
+
+两份 JDK 相关配置**只适用于构建期 JDK**，升级 JDK/GraalVM 时必须复核：
+`javap sun.font.Font2D` 的回调名（JDK 21 只有 `charToGlyph`，JDK 25 为 `charToGlyphRaw`）、
+`jimage list | grep icudt` 的 ICU 数据包名（21=`icudt72b`，25=`icudt76b`，配置里已改用 `*` 通配）。
 
 镜像构建时通过 classpath `META-INF/native-image` 自动发现，无需新增构建参数。
 

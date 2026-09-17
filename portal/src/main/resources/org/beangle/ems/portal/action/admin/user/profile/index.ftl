@@ -18,7 +18,7 @@
      <div class="card-title">${profile.env.name}</div>
      [@b.card_tools]
        [@b.a href="!edit?id=" + profile.id class="btn btn-tool"]<i class="fa fa-edit"></i>修改[/@]
-       [@b.a onclick="removeProfile(${profile.id});return false;" class="btn btn-tool"]<span class="text-danger"><i class="fa fa-times"></i>删除</span>[/@]
+       [@b.a onclick="removeProfile('${profile.id}');return false;" class="btn btn-tool"]<span class="text-danger"><i class="fa fa-times"></i>删除</span>[/@]
      [/@]
    [/@]
    [@b.card_body style="padding-top: 0.75rem;"]
