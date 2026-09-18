@@ -186,6 +186,8 @@
     if (!params['wujieIframeSrc']) {
       params['wujieIframeSrc'] = '${b.base}/index?about=1';
     }
+    [#-- 入口强刷：入口 URL 追加 _=时间戳，且仅入口文档请求带 cache:no-store；
+         子应用自身的请求按自己的 Cache-Control 走，详见 ems-shell/docs/workspace-tabs.md --]
     if (!params['wujieFetchNoStore']) {
       params['wujieFetchNoStore'] = 'true';
     }

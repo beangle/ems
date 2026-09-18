@@ -14,7 +14,7 @@ import {
 } from '../constants.js';
 import { closeMobileSidebar } from '../layout.js';
 import { getStoredFontSize, getStoredLocale, getStoredThemeMode } from '../storage.js';
-import { resolveWujieRuntime } from '../wujie.js';
+import { isWujieEntryRequest, resolveWujieRuntime } from '../wujie.js';
 
 /** 多标签生命周期、恢复、打开菜单、无界挂载 */
 export const tabsProto = {
@@ -1060,6 +1060,7 @@ export const tabsProto = {
         current.panel.innerHTML = "";
       } catch (eCl) {
       }
+      var forceEntryReload = wujieShouldBustEntryUrl();
       var entryFetchUrl = wujieBustEntryUrl(absoluteUrl);
       var startOpts = {
         name: tabAppName,
@@ -1073,7 +1074,8 @@ export const tabsProto = {
         },
         fetch: function(input, init2) {
           init2 = Object.assign({ mode: "cors" }, init2 || {}, { credentials: "include" });
-          if (wujieFetchNoStore || !wujieAlive) {
+          // 只强刷入口文档：子应用自身的请求保持其 Cache-Control 与应用自己的 fetch 配置
+          if (forceEntryReload && isWujieEntryRequest(input, entryFetchUrl)) {
             init2.cache = "no-store";
           }
           return fetch(input, init2).catch(function() {

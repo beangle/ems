@@ -45,7 +45,7 @@ npm 包同时包含 **TypeScript 源码** 与 **预编译静态资源**，安装
 `app/src/main/resources/beangle.xml` 中声明 bundle（版本与 `package.json` 一致）：
 
 ```xml
-<bundle name="ems-shell" version="0.0.9">
+<bundle name="ems-shell" version="0.0.13">
   <module name="ems-shell"
           js="js/ems-shell-min.js"
           css="css/ems-shell-min.css"
@@ -102,6 +102,7 @@ npm run package    # → release/ems-shell-{version}.zip
 
 - **iframe 标签的 URL 与标题**保持打开时的原值，不跟随 iframe 内页内跳转更新。
 - **标签过多时不做** chevron 滚动、「全部标签」列表等扩展；仅横向滚动，不鼓励多开标签。
+- **无界子应用缓存**：壳层只强刷入口文档（`wujieFetchNoStore`，门户默认开启），子应用自身的请求按自己的 `Cache-Control` 走，不再被强制 `no-store`。
 
 用户操作说明见 [docs/tabs-user-guide.md](./docs/tabs-user-guide.md)。
 

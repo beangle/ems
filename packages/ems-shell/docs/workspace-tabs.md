@@ -80,3 +80,33 @@
 
 - 标签条容器：`src/js/nav/workspace.ts` → `ensureNavWorkspace`（`ems-nav-tabs-scroll`）
 - 激活滚入视口：`src/js/nav/tabs.ts` → `activateNavTab`
+
+## 无界子应用缓存策略：只强刷入口，不干预子应用请求
+
+### 决策
+
+**壳层传给无界的 `fetch` 只负责两件事：统一补 `credentials` / `mode`；需要强刷时，只对「入口文档」这一个请求加 `cache: 'no-store'`。子应用自身发出的请求不再被改写缓存策略，遵循 HTTP 响应头（`Cache-Control`）与子应用传给 `fetch` 的 `init`。**
+
+### 背景
+
+无界会把 `startApp({ fetch })` 装到子应用沙箱的 `window.fetch` 上（wujie-core `sandbox.active`），所以这个 fetch 有两个调用方：无界加载子应用入口 HTML/JS/CSS，以及子应用内部的所有请求。
+
+早期实现在此处无条件加 `cache: 'no-store'`，等于替所有子应用关掉了浏览器 HTTP 缓存：子应用即使声明 `Cache-Control: private, max-age=300`（甚至自己传 `cache` 选项）也会被覆盖，门户里每次重开标签都要整份重新下载（例如选课建议的 msgpack 响应 200KB+）。
+
+### 当前行为
+
+| 项目 | 行为 |
+|------|------|
+| `credentials` / `mode` | 所有请求统一 `credentials: 'include'`、`mode: 'cors'`；失败时降级为 `credentials: 'omit'` 重试一次 |
+| 入口文档 | `wujieFetchNoStore=true`（门户默认）、`wujieAlive=false` 或 `wujieEntryReload=true` 时：入口 URL 追加 `_=时间戳`，且该请求带 `cache: 'no-store'` |
+| 入口之外的请求（子应用接口、入口页引用的 JS/CSS） | **不改写**缓存策略，按子应用与服务端自己的 `Cache-Control` 走 |
+| 参数 | `wujieFetchNoStore` 名称保留以兼容既有配置，语义收窄为「入口强刷」，与 `wujieEntryReload` 等价 |
+
+### 相关代码
+
+- 壳层 fetch 包装：`src/js/nav/tabs.ts` → `startWujieAppForTab`（`wujieShouldBustEntryUrl` / `wujieBustEntryUrl`）
+- 入口文档判定：`src/js/wujie.ts` → `isWujieEntryRequest`
+
+### 备注
+
+入口强刷只保证拿到新的入口 HTML；入口引用的静态资源带内容 hash，可长期缓存。因此部署侧仍需为 `index.html` 配置 `no-cache`（或依赖 `wujieFetchNoStore` 的 `_=` 时间戳），`/assets/*` 建议 `public, max-age=31536000, immutable`。
