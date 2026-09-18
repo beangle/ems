@@ -41,7 +41,9 @@ class DefaultEmsAuthorizer extends AbstractRoleBasedAuthorizer {
 
   private def getRoots(app: App): Iterable[String] = {
     val query = OqlBuilder.from[String](classOf[Root].getName, "r")
-    query.where("r.domain = :domain", app.domain).select("r.user.code").cacheable()
+    query.where("r.domain = :domain", app.domain)
+    Root.activeWhere(query)
+    query.select("r.user.code").cacheable()
     entityDao.search(query)
   }
 

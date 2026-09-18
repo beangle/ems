@@ -71,6 +71,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
   override def isRoot(user: User): Boolean = {
     val rootQuery = OqlBuilder.from[Long](classOf[Root].getName, "r")
     rootQuery.where("r.domain=:domain", domainService.getDomain)
+    Root.activeWhere(rootQuery)
     rootQuery.select("r.user.id").cacheable()
     entityDao.search(rootQuery).toSet.contains(user.id)
   }

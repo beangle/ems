@@ -62,6 +62,7 @@ GroupMember.manager=可管理
 Root=根用户
 Root.user=用户
 Root.domain=业务系统
+Root.beginOn-endOn=有效期
 
 EnvProfile=用户场景配置
 EnvProfile.user=用户

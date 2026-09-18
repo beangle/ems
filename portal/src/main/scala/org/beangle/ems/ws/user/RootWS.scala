@@ -33,8 +33,8 @@ class RootWS(domainService: DomainService, entityDao: EntityDao) extends ActionS
     val domain = domainService.getDomain
     val query = OqlBuilder.from[String](classOf[Root].getName, "r")
     query.where("r.domain=:domain", domain)
-      .select("r.user.code")
-      .cacheable()
+    Root.activeWhere(query)
+    query.select("r.user.code").cacheable()
     entityDao.search(query)
   }
 }

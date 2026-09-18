@@ -17,14 +17,27 @@
 
 package org.beangle.ems.core.user.model
 
+import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Updatable
+import org.beangle.data.model.pojo.{TemporalOn, Updatable}
 import org.beangle.ems.core.config.model.{App, Domain}
+
+import java.time.LocalDate
 
 /**
  * @author chaostone
  */
-class Root extends IntId, Updatable {
+class Root extends IntId, Updatable, TemporalOn {
   var domain: Domain = _
   var user: User = _
+}
+
+object Root {
+
+  /** 追加根用户记录当前有效的查询条件 */
+  def activeWhere(builder: OqlBuilder[?], alias: String = "r"): Unit = {
+    builder.where(
+      s"$alias.beginOn <= :now and ($alias.endOn is null or $alias.endOn >= :now)",
+      LocalDate.now)
+  }
 }

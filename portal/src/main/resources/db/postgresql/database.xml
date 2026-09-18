@@ -1191,7 +1191,9 @@
         <table name="usr_roots" comment="根用户">
           <columns>
             <column name="id" type="integer" nullable="false" comment="非业务主键:auto_increment"/>
+            <column name="begin_on" type="date" nullable="false" comment="生效日期"/>
             <column name="domain_id" type="integer" nullable="false" comment="业务系统ID"/>
+            <column name="end_on" type="date" comment="失效日期"/>
             <column name="updated_at" type="timestamptz" nullable="false" comment="更新时间"/>
             <column name="user_id" type="bigint" nullable="false" comment="用户ID"/>
           </columns>

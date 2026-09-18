@@ -37,6 +37,7 @@ class RoleServiceImpl extends RoleService {
     } else {
       val rq = OqlBuilder.from(classOf[Root], "r")
       rq.where("r.user=:user and r.domain=:domain", manager, domainService.getDomain)
+      Root.activeWhere(rq)
       entityDao.search(rq).nonEmpty
     }
   }

@@ -17,22 +17,22 @@
 
 package org.beangle.ems.portal.action.admin.user
 
-import org.beangle.commons.collection.Properties
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.core.user.model.Root
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.event.bus.DataEvent
-import org.beangle.security.Securities
 import org.beangle.security.context.SecurityContext
+import org.beangle.she.webmvc.{QueryHelper, RestfulAction}
 import org.beangle.webmvc.view.View
-import org.beangle.she.webmvc.RestfulAction
+
+import java.time.LocalDate
 
 /**
-  * 超级用户管理
-  *
-  * @author chaostone
-  */
+ * 超级用户管理
+ *
+ * @author chaostone
+ */
 class RootAction extends RestfulAction[Root], DomainSupport {
 
   var userService: UserService = _
@@ -45,16 +45,37 @@ class RootAction extends RestfulAction[Root], DomainSupport {
   override protected def getQueryBuilder: OqlBuilder[Root] = {
     val builder = super.getQueryBuilder
     builder.where("root.domain=:domain", domainService.getDomain)
+    QueryHelper.addActive(builder, getBoolean("active"))
     builder
+  }
+
+  override def editSetting(root: Root): Unit = {
+    if (!root.persisted) root.beginOn = LocalDate.now
+    super.editSetting(root)
   }
 
   override protected def saveAndRedirect(root: Root): View = {
     get("user") foreach { u =>
-      root.user = userService.get(u).get
+      userService.get(u) foreach { user =>
+        root.user = user
+      }
     }
-    entityDao.saveOrUpdate(root)
-    publishUpdate(root)
-    super.saveAndRedirect(root)
+    root.domain = domainService.getDomain
+    if (root.user == null) {
+      addError("查不到账户")
+      put(simpleEntityName, root)
+      editSetting(root)
+      forward("form")
+    } else if (root.endOn.exists(_.isBefore(root.beginOn))) {
+      addError("失效日期不能早于生效日期")
+      put(simpleEntityName, root)
+      editSetting(root)
+      forward("form")
+    } else {
+      entityDao.saveOrUpdate(root)
+      publishUpdate(root)
+      super.saveAndRedirect(root)
+    }
   }
 
   override protected def removeAndRedirect(roots: Seq[Root]): View = {
