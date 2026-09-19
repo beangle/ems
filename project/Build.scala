@@ -15,10 +15,10 @@ object EmsDepends {
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.18"
   val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.18"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.4"
-  val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.28"
+  val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.29"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.13"
   val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.9"
-  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.4"
+  val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.5"
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.7"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.19.0"
 
