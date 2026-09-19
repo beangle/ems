@@ -28,5 +28,9 @@ class EmsPortalAotHints extends AotHintRegistrar {
 
   override def registering(): Unit = {
     hints.registerType(classOf[org.beangle.ems.portal.action.admin.DomainSupport],AotPolicy.bean)
+    // AvatarWS 默认头像：由 classpath 直读，native 下需显式登记才进镜像
+    hints.registerPattern("org/beangle/ems/ws/default_avatar.jpg")
+    // 隐私安全政策页（SafetyAction 提供），同上
+    hints.registerPattern("cas/safety.html")
   }
 }

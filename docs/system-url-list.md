@@ -14,6 +14,7 @@
 |---|---|---|
 | `/` | IndexAction.index() | 系统首页 |
 | `/cas` | IndexAction.index() | CAS 登录页 |
+| `/cas/safety.html` | SafetyAction.index() | 隐私安全政策页（classpath 静态 HTML） |
 | `/cas/edit` | EditAction.index() | CAS 信息编辑 |
 | `/cas/edit/save` | EditAction.save() | CAS 信息保存 |
 | `/portal/index` | IndexAction.index() | Portal 首页 |
@@ -135,7 +136,8 @@
 | `/api/platform/users/user` | UserWS.index() | 用户信息 |
 | `/api/platform/users/account` | AccountWS.index() | 账户信息 |
 | `/api/platform/users/app` | AppWS.index() | 用户应用列表 |
-| `/api/platform/users/avatar/info` | AvatarWS.info() | 用户头像 |
+| `/api/platform/user/avatars/info` | AvatarWS.info() | 用户头像 |
+| `/api/platform/user/avatars/default` | AvatarWS.defaultAvatar() | 默认头像（classpath 静态图） |
 | `/api/platform/users/credential` | CredentialWS.index() | 用户凭证 |
 | `/api/platform/users/dimension` | DimensionWS.index() | 用户维度 |
 | `/api/platform/users/profile` | ProfileWS.index() | 用户档案 |
