@@ -3,7 +3,7 @@ import org.beangle.parent.Dependencies.*
 import org.beangle.parent.Settings.*
 
 organization := "org.beangle.ems"
-version := "4.20.18"
+version := "4.20.19-SNAPSHOT"
 
 scmInfo := Some(
   ScmInfo(uri("https://github.com/beangle/ems"), "scm:git@github.com:beangle/ems.git")
@@ -66,7 +66,7 @@ lazy val portal = (project in file("portal"))
     // scalameta sbt-native-image 的任务类路径取自 (Compile / fullClasspath)，
     // 因此用 provided 让其进入 native-image 类路径，同时不打进 WAR、不随 POM 传递。
     libraryDependencies ++= Seq(
-      "org.beangle.sas" % "beangle-sas-engine" % "0.13.14-SNAPSHOT" % "provided",
+      "org.beangle.sas" % "beangle-sas-engine" % "0.13.14" % "provided",
       "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.26" % "provided" exclude("org.apache.tomcat", "tomcat-annotations-api")
     )
   )
