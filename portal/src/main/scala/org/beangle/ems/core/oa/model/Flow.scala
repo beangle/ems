@@ -24,16 +24,17 @@ import org.beangle.data.model.pojo.{Coded, Named, Remark, Updatable}
 import org.beangle.ems.core.config.model.{Business, Domain}
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** 工作流定义
  */
 class Flow extends LongId, Coded, Updatable, Named, Remark {
   /** 业务系统 */
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   /** 环境配置 */
-  var profileId: String = _
+  var profileId: String = uninitialized
   /** 业务类型 */
-  var business: Business = _
+  var business: Business = uninitialized
   /** 活动列表 */
   var activities: mutable.Buffer[FlowActivity] = Collections.newBuffer[FlowActivity]
   /** 节点流转关系 */
@@ -43,7 +44,7 @@ class Flow extends LongId, Coded, Updatable, Named, Remark {
   /** 先决条件 */
   var guardJson: String = "{}"
   /** 审批表单地址 */
-  var formUrl: String = _
+  var formUrl: String = uninitialized
   /** 审核消息模板 */
   var todoMessage: Option[MessageTemplate] = None
   /** 审核结果消息模板 */

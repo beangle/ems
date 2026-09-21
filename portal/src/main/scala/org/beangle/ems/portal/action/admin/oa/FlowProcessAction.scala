@@ -23,10 +23,11 @@ import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.FlowProcess
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 class FlowProcessAction extends RestfulAction[FlowProcess] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

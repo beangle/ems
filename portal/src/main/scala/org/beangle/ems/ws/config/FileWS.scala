@@ -26,14 +26,15 @@ import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 /** 应用配置文件
  */
 class FileWS extends ActionSupport {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   @mapping(value = "{app}/{path*}", methods = "head")
   def info(@param("app") app: String, @param("path") path: String): View = {

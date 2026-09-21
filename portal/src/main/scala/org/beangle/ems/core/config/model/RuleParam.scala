@@ -18,14 +18,15 @@
 package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
+import scala.compiletime.uninitialized
 /**
  * 规则参数
  */
 class RuleParam extends LongId {
 
-  var rule: Rule = _
+  var rule: Rule = uninitialized
 
-  var meta: RuleParamMeta = _
+  var meta: RuleParamMeta = uninitialized
 
-  var contents: String = _
+  var contents: String = uninitialized
 }

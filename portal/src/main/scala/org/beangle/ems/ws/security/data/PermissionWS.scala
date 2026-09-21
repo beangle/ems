@@ -24,6 +24,7 @@ import org.beangle.ems.core.security.model.DataPermission
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /** 查询app对应的用户授权信息
  *
@@ -32,8 +33,8 @@ import org.beangle.webmvc.support.ActionSupport
 @action("/security/data/permissions")
 class PermissionWS(entityDao: EntityDao) extends ActionSupport {
 
-  var appService: AppService = _
-  var userService: UserService = _
+  var appService: AppService = uninitialized
+  var userService: UserService = uninitialized
 
   @response
   @mapping("user/{userCode}")

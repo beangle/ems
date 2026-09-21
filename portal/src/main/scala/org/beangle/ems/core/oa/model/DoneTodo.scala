@@ -23,25 +23,26 @@ import org.beangle.ems.core.config.model.{Business, Domain}
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 代办 */
 class DoneTodo extends LongId, Updatable {
   /** 用户 */
-  var user: User = _
+  var user: User = uninitialized
   /** 领域 */
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   /** 标题 */
-  var title: String = _
+  var title: String = uninitialized
   /** 内容 */
-  var contents: String = _
+  var contents: String = uninitialized
   /** 业务主键 */
-  var businessKey: String = _
+  var businessKey: String = uninitialized
   /** 业务类型 */
-  var business: Business = _
+  var business: Business = uninitialized
   /** 完成时间 */
-  var completeAt: Instant = _
+  var completeAt: Instant = uninitialized
   /** 处理代办的地址 */
-  var url: String = _
+  var url: String = uninitialized
 
   def this(todo: Todo) = {
     this()

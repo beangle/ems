@@ -8,10 +8,10 @@
       <ul class="list-group list-group-unbordered mb-3">
         <li class="list-group-item">
          [@b.a href="!edit?user.id=${user.id}" target="user-info" ]修改账户[/@]
-         [#if isRoot]<a href="${portal_url}/index!runAs?code=${user.code}" target="_top" class="float-right">模拟登录</a>[/#if]
+         [#if isRoot]<a href="${portal_url}/index!runAs?code=${user.code}" target="_top" class="float-end">模拟登录</a>[/#if]
         </li>
       </ul>
-      <strong><i class="fa-solid fa-phone mr-1"></i> 联系方式</strong>
+      <strong><i class="fa-solid fa-phone me-1"></i> 联系方式</strong>
       <p class="text-muted">
         [#if user.mobile?? && user.mobile?length>10]
           <span title="${user.mobile}">${(user.mobile[0..2])!}****${(user.mobile[7..10])!}</span>
@@ -20,18 +20,18 @@
         [/#if]
         ${user.email!}
       </p>
-      <strong><i class="fa-solid fa-wifi mr-1"></i> 状态</strong>
+      <strong><i class="fa-solid fa-wifi me-1"></i> 状态</strong>
       <p class="text-muted">
         [#if user.locked] ${b.text("action.freeze")}[#else]${b.text("action.activate")}[/#if]
          ${(user.beginOn)!}～${(user.endOn)!}
       </p>
-      <strong><i class="fa-solid fa-key mr-1"></i> 密码过期日期</strong>
+      <strong><i class="fa-solid fa-key me-1"></i> 密码过期日期</strong>
       <p class="text-muted">
         [#if user.passwdExpiredOn??]${(user.passwdExpiredOn)!}[#else]永不过期[/#if]
       </p>
 
     [#if user.groups?size>0 || user.group??]
-      <strong><i class="fas fa-user mr-1"></i>用户组</strong>
+      <strong><i class="fas fa-user me-1"></i>用户组</strong>
       <p class="text-muted"> [#if user.group??]${user.group.name}&nbsp;[/#if]
         [#list user.groups as g]${g.group.name}&nbsp;[/#list]
       </p>
@@ -46,21 +46,21 @@
       [#if rm.manager][#assign managers=managers+[rm.role]/][/#if]
     [/#list]
     [#if members?size>0]
-      <strong><i class="fas fa-user mr-1"></i> 持有角色<span class="badge badge-primary">${members?size}</span></strong>
+      <strong><i class="fas fa-user me-1"></i> 持有角色<span class="text-bg-primary badge">${members?size}</span></strong>
       <p class="text-muted">
         [#list members as r]${r.name}&nbsp;[/#list]
       </p>
     [/#if]
 
     [#if granters?size>0]
-      <strong><i class="fa-solid fa-shield mr-1"></i> 可授权<span class="badge badge-primary">${granters?size}</span></strong>
+      <strong><i class="fa-solid fa-shield me-1"></i> 可授权<span class="text-bg-primary badge">${granters?size}</span></strong>
       <p class="text-muted">
         [#list granters as r]${r.name}&nbsp;[#if r_index>3]...[#break/][/#if][/#list]
       </p>
     [/#if]
 
     [#if managers?size>0]
-      <strong><i class="fas fa-user mr-1"></i> 可管理 <span class="badge badge-primary">${managers?size}</span></strong>
+      <strong><i class="fas fa-user me-1"></i> 可管理 <span class="text-bg-primary badge">${managers?size}</span></strong>
       <p class="text-muted">
         [#list managers as r]${r.name}&nbsp;[#if r_index>3]...[#break/][/#if][/#list]
       </p>

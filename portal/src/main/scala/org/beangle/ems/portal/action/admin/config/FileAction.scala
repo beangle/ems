@@ -29,11 +29,12 @@ import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class FileAction extends RestfulAction[File], ExportSupport[File] {
 
-  var domainService: DomainService = _
-  var appService: AppService = _
+  var domainService: DomainService = uninitialized
+  var appService: AppService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("apps", appService.getApps)

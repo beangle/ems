@@ -1,14 +1,14 @@
 [#list messages as message]
     <a class="dropdown-item" href="${ems.webapp}${b.base}/portal/user/message/${message.id}" target="_blank">
-      <div class="media">
+      <div class="d-flex">
         [#if message.sender??]
-        <img src="${avatarUrls[message.sender.code]}" class="mr-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
+        <img src="${avatarUrls[message.sender.code]}" class="me-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
         [#else]
-        <img src="${defaultUrl}" class="mr-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
+        <img src="${defaultUrl}" class="me-3 rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="${message.sendFrom}">
         [/#if]
-        <div class="media-body">
+        <div class="flex-grow-1">
           <h4 class="dropdown-item-title">${message.sendFrom}
-          <span class="float-right text-sm text-muted"><i class="far fa-clock mr-1"></i>${message.sentAt?string('yy-MM-dd')}</span>
+          <span class="float-end text-sm text-muted"><i class="far fa-clock me-1"></i>${message.sentAt?string('yy-MM-dd')}</span>
           </h4>
           <p class="text-sm">${message.title}</p>
         </div>
@@ -17,7 +17,7 @@
     <div class="dropdown-divider"></div>
   [/#list]
   <div>
-    <a  class="float-right text-sm text-muted" href="${ems.webapp}${b.base}/portal/user/message" target="_blank">
+    <a  class="float-end text-sm text-muted" href="${ems.webapp}${b.base}/portal/user/message" target="_blank">
      <span>查看所有消息</span>
     </a>
   </div>

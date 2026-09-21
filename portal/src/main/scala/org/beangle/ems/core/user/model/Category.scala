@@ -20,6 +20,7 @@ package org.beangle.ems.core.user.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
+import scala.compiletime.uninitialized
 
 /**
  * 用户分类
@@ -27,8 +28,8 @@ import org.beangle.ems.core.config.model.Org
  * @author chaostone
  */
 class Category extends IntId, Coded, TemporalOn, Named, Updatable, Remark {
-  var enName: String = _
-  var org: Org = _
+  var enName: String = uninitialized
+  var org: Org = uninitialized
 
   def this(id: Int) = {
     this()

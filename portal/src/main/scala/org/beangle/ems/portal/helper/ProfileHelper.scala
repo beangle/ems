@@ -151,7 +151,7 @@ class ProfileHelper(entityDao: EntityDao, profileService: ProfileService, dimens
         if (null == values || values.isEmpty) {
           profile.setProperty(field, null)
         } else {
-          profile.setProperty(field, Strings.join(values.toSeq: _*))
+          profile.setProperty(field, Strings.join(values.toSeq*))
         }
       }
     }

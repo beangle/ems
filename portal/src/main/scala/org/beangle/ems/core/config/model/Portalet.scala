@@ -23,25 +23,26 @@ import org.beangle.data.model.pojo.{Enabled, Named}
 import org.beangle.ems.core.user.model.Category
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /**
  * 小部件
  */
 class Portalet extends IntId, Named, Enabled {
 
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
-  var idx: Int = _
+  var idx: Int = uninitialized
 
-  var title: String = _
+  var title: String = uninitialized
 
-  var url: String = _
+  var url: String = uninitialized
 
-  var usingIframe: Boolean = _
+  var usingIframe: Boolean = uninitialized
 
-  var rowIndex: Int = _
+  var rowIndex: Int = uninitialized
 
-  var colspan: Int = _
+  var colspan: Int = uninitialized
 
   var categories: mutable.Set[Category] = Collections.newSet[Category]
 

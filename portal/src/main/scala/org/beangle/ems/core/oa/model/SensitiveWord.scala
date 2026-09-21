@@ -19,8 +19,9 @@ package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.IntId
 import org.beangle.ems.core.config.model.Domain
+import scala.compiletime.uninitialized
 
 class SensitiveWord extends IntId {
-  var domain: Domain = _
-  var contents: String = _
+  var domain: Domain = uninitialized
+  var contents: String = uninitialized
 }

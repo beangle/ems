@@ -28,9 +28,10 @@ import org.hibernate.query.internal.QueryHelper
 
 import java.sql.Timestamp
 import javax.sql.DataSource
+import scala.compiletime.uninitialized
 
 class SessionInfoServiceImpl(ds: DataSource) extends SessionInfoService {
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   private val jdbcExecutor = new JdbcExecutor(ds)
 

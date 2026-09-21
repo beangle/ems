@@ -151,7 +151,7 @@
   }
 }
 
-.layout-navbar-fixed.layout-fixed .main-sidebar > .form-inline {
+.layout-navbar-fixed.layout-fixed .main-sidebar > :is(.form-inline, .ems-sidebar-search) {
   margin-top: 0;
   flex-shrink: 0;
   position: relative;
@@ -303,7 +303,7 @@
   background: transparent;
   border-top: 1px solid #dee2e6;
   overflow: visible;
-  /* flex 排版：模板里的 float-sm-left/right 仅在 ≥576px 生效，
+  /* flex 排版：模板里的 float-sm-start/end（旧名 float-sm-left/right）仅在 ≥576px 生效，
    * <576px 时两个按钮会退化为块级上下堆叠；改用 flex 后宽窄屏均并排 */
   display: flex;
   align-items: center;
@@ -311,8 +311,7 @@
   gap: 0.5rem;
 }
 
-.main-header .user-footer .float-sm-left,
-.main-header .user-footer .float-sm-right {
+.main-header .user-footer :is(.float-sm-left, .float-sm-right, .float-sm-start, .float-sm-end) {
   float: none;
 }
 
@@ -836,7 +835,7 @@
 }
 
 /* ========== 侧栏菜单搜索（AdminLTE sidebar-search，搬迁） ========== */
-.main-sidebar > .form-inline {
+.main-sidebar > :is(.form-inline, .ems-sidebar-search) {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -846,7 +845,7 @@
   margin-bottom: 0;
 }
 
-.main-sidebar > .form-inline .input-group {
+.main-sidebar > :is(.form-inline, .ems-sidebar-search) .input-group {
   width: 100%;
   flex-wrap: nowrap;
 }
@@ -885,7 +884,7 @@
   border-bottom-right-radius: 0;
 }
 
-.main-sidebar .input-group-append .btn-sidebar {
+.main-sidebar .input-group .btn-sidebar {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   margin-left: 0;
@@ -939,6 +938,7 @@
 
 .sidebar-collapse .form-control-sidebar,
 .sidebar-collapse .form-control-sidebar ~ .input-group-append,
+.sidebar-collapse .form-control-sidebar ~ .btn-sidebar,
 .sidebar-collapse .sidebar-search-results {
   display: none;
 }

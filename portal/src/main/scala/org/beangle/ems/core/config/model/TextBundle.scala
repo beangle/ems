@@ -21,12 +21,13 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Named
 
 import java.util.Locale
+import scala.compiletime.uninitialized
 
 class TextBundle extends LongId, Named {
 
-  var app: App = _
+  var app: App = uninitialized
 
-  var locale: Locale = _
+  var locale: Locale = uninitialized
 
-  var texts: String = _
+  var texts: String = uninitialized
 }

@@ -28,22 +28,23 @@ import org.beangle.ems.core.user.model.{Category, User}
 
 import java.net.URI
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 class Doc extends LongId, Updatable {
 
-  var app: App = _
+  var app: App = uninitialized
 
-  var uploadBy: User = _
+  var uploadBy: User = uninitialized
 
-  var name: String = _
+  var name: String = uninitialized
 
-  var fileSize: Int = _
+  var fileSize: Int = uninitialized
 
-  var filePath: String = _
+  var filePath: String = uninitialized
 
   var categories: mutable.Set[Category] = Collections.newSet
 
-  var archived: Boolean = _
+  var archived: Boolean = uninitialized
 
   def image: Boolean = {
     MediaTypes.Defaults.get(Strings.substringAfterLast(filePath, ".")) match

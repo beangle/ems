@@ -19,17 +19,18 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Named
+import scala.compiletime.uninitialized
 
 /**
  * 规则参数类型元信息
  */
 class RuleParamMeta extends LongId, Named {
 
-  var ruleMeta: RuleMeta = _
+  var ruleMeta: RuleMeta = uninitialized
 
-  var description: String = _
+  var description: String = uninitialized
 
-  var title: String = _
+  var title: String = uninitialized
 
-  var dataType: String = _
+  var dataType: String = uninitialized
 }

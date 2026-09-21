@@ -19,6 +19,7 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
+import scala.compiletime.uninitialized
 
 /** 菜单端类型 */
 object ChannelType {
@@ -38,7 +39,7 @@ object ChannelType {
 }
 
 class ChannelType extends IntId, Named {
-  var title: String = _
+  var title: String = uninitialized
 
   def this(id: Int, name: String) = {
     this()

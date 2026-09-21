@@ -22,14 +22,15 @@ import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Named, Remark}
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 class Db extends IntId, Named, Remark {
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   var url: Option[String] = None
-  var driver: String = _
-  var serverName: String = _
-  var databaseName: String = _
-  var portNumber: Int = _
+  var driver: String = uninitialized
+  var serverName: String = uninitialized
+  var databaseName: String = uninitialized
+  var portNumber: Int = uninitialized
   var properties: mutable.Map[String, String] = Collections.newMap[String, String]
 
   def propertiesString: String = {

@@ -24,10 +24,11 @@ import org.beangle.ems.core.oa.model.{Flow, FlowProcess, Message}
 import org.beangle.ems.core.oa.service.MessageService
 import org.beangle.ems.core.user.model.User
 import org.beangle.template.freemarker.DefaultTemplateInterpreter
+import scala.compiletime.uninitialized
 
 class MessageServiceImpl extends MessageService {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   override def newMessage(recipient: User, flow: Flow, process: FlowProcess): Option[Message] = {
     flow.resultMessage.map { template =>

@@ -20,10 +20,11 @@ package org.beangle.ems.core.user.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
+import scala.compiletime.uninitialized
 
 /** 部门
  */
 class Depart extends IntId, Coded, Named, Updatable, TemporalOn, Hierarchical[Depart] {
-  var org: Org = _
+  var org: Org = uninitialized
   var shortName: Option[String] = None
 }

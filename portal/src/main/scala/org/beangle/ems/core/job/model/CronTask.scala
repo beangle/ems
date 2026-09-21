@@ -22,21 +22,22 @@ import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Domain
 
 import java.time.{Duration, Instant}
+import scala.compiletime.uninitialized
 
 /** 计划任务
  *
  */
 class CronTask extends LongId, Named, Updatable {
   /** 所属域 */
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   /** 目标（执行目标类或地址） */
-  var target: String = _
+  var target: String = uninitialized
   /** 描述 */
-  var description: String = _
+  var description: String = uninitialized
   /** 任务内容 */
-  var command: String = _
+  var command: String = uninitialized
   /** Cron 表达式 */
-  var expression: String = _
+  var expression: String = uninitialized
   /** 上次执行时间 */
   var lastExecuteAt: Option[Instant] = None
   /** 上次执行耗时（毫秒） */
@@ -44,5 +45,5 @@ class CronTask extends LongId, Named, Updatable {
   /** 状态码 */
   var statusCode: Option[Int] = None
   /** 是否启用 */
-  var enabled: Boolean = _
+  var enabled: Boolean = uninitialized
 }

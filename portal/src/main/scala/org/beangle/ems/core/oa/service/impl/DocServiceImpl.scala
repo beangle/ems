@@ -24,10 +24,11 @@ import org.beangle.ems.core.oa.service.DocService
 
 import java.io.InputStream
 import java.time.ZoneId
+import scala.compiletime.uninitialized
 
 class DocServiceImpl extends DocService {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   def save(doc: Doc, filename: String, is: InputStream): Doc = {
     val repo = EmsApp.getBlobRepository()

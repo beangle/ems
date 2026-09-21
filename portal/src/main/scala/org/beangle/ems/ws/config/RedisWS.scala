@@ -30,12 +30,13 @@ import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import scala.compiletime.uninitialized
 
 /** 应用查询redis服务的配置信息
  */
 class RedisWS extends ActionSupport, ServletSupport, Initializing {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   private var host: String = "127.0.0.1"
   private var port: Int = 6379

@@ -26,11 +26,12 @@ import org.beangle.security.authc.Account
 import org.beangle.security.session.{EventType, LoginEvent}
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class LoginEventTracker extends CdiEventListener[LoginEvent] {
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def onEvent(event: LoginEvent): Unit = {
     val login = new SessionEvent
@@ -49,11 +50,11 @@ class LoginEventTracker extends CdiEventListener[LoginEvent] {
     entityDao.saveOrUpdate(login)
   }
 
-  override def supportsEventType(eventType: Class[_ <: Event]): Boolean = {
+  override def supportsEventType(eventType: Class[? <: Event]): Boolean = {
     classOf[LoginEvent].isAssignableFrom(eventType)
   }
 
-  override def supportsSourceType(sourceType: Class[_]): Boolean = {
+  override def supportsSourceType(sourceType: Class[?]): Boolean = {
     true
   }
 }

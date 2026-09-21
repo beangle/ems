@@ -27,11 +27,12 @@ import org.beangle.security.session.{EventType, LogoutEvent}
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId}
+import scala.compiletime.uninitialized
 
 class LogoutEventTracker extends CdiEventListener[LogoutEvent] {
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
   private val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
   override def onEvent(event: LogoutEvent): Unit = {
@@ -61,11 +62,11 @@ class LogoutEventTracker extends CdiEventListener[LogoutEvent] {
     entityDao.saveOrUpdate(logout)
   }
 
-  override def supportsEventType(eventType: Class[_ <: Event]): Boolean = {
+  override def supportsEventType(eventType: Class[? <: Event]): Boolean = {
     classOf[LogoutEvent].isAssignableFrom(eventType)
   }
 
-  override def supportsSourceType(sourceType: Class[_]): Boolean = {
+  override def supportsSourceType(sourceType: Class[?]): Boolean = {
     true
   }
 }

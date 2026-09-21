@@ -19,10 +19,11 @@ package org.beangle.ems.app.log
 
 import org.beangle.commons.bean.{Disposable, Initializing}
 import org.beangle.commons.concurrent.Sidecar
+import scala.compiletime.uninitialized
 
 class AsyncAppLogger extends BusinessLogger, ErrorLogger, Initializing, Disposable {
-  var appenders: List[Appender] = _
-  private var sidecar: Sidecar[LogEvent] = _
+  var appenders: List[Appender] = uninitialized
+  private var sidecar: Sidecar[LogEvent] = uninitialized
 
   override def publish(event: BusinessLogEvent): Unit = {
     sidecar.offer(event)

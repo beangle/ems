@@ -31,14 +31,15 @@ import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.authz.Scope
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class MenuServiceImpl(val entityDao: EntityDao) extends MenuService {
 
-  var domainService: DomainService = _
-  var userService: UserService = _
+  var domainService: DomainService = uninitialized
+  var userService: UserService = uninitialized
 
   override def getTopMenus(app: App, user: User, channelType: ChannelType): collection.Seq[Menu] = {
     getTopMenus(Some(app), channelType, userService.getRoles(user, domainService.getDomain, None), None)

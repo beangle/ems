@@ -25,36 +25,37 @@ import org.beangle.ems.core.user.model.{Category, User}
 
 import java.time.Instant
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** 公告
  * */
 class Notice extends LongId, DateRange {
 
-  var app: App = _
+  var app: App = uninitialized
 
-  var issuer: String = _
+  var issuer: String = uninitialized
 
-  var title: String = _
+  var title: String = uninitialized
 
-  var contents: String = _
+  var contents: String = uninitialized
 
   var categories: mutable.Set[Category] = Collections.newSet
 
-  var sticky: Boolean = _
+  var sticky: Boolean = uninitialized
 
-  var createdAt: Instant = _
+  var createdAt: Instant = uninitialized
 
-  var updatedAt: Instant = _
+  var updatedAt: Instant = uninitialized
 
   var publishedAt: Option[Instant] = None
 
-  var operator: User = _
+  var operator: User = uninitialized
 
   var auditor: Option[User] = None
 
-  var archived: Boolean = _
+  var archived: Boolean = uninitialized
 
-  var popup: Boolean = _
+  var popup: Boolean = uninitialized
 
   var attachments: mutable.Buffer[NoticeAttachment] = Collections.newBuffer[NoticeAttachment]
 

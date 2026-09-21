@@ -20,10 +20,11 @@ package org.beangle.ems.core.config.service.impl
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.Db
 import org.beangle.ems.core.config.service.{DbService, DomainService}
+import scala.compiletime.uninitialized
 
 class DbServiceImpl(entityDao: EntityDao) extends DbService {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def getAll(): Seq[Db] = {
     val query = OqlBuilder.from(classOf[Db], "o")

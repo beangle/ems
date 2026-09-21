@@ -24,9 +24,10 @@ import org.beangle.she.webmvc.RestfulAction
 import org.beangle.she.webmvc.QueryHelper
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 class EventAction extends RestfulAction[SessionEvent] {
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("beginOn", LocalDate.of(LocalDate.now().getYear, 1, 1))

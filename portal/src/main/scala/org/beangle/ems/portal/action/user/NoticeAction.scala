@@ -26,10 +26,11 @@ import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.QueryHelper
 import org.beangle.ems.core.oa.model.{Notice, NoticeStatus}
 import org.beangle.ems.core.user.model.User
+import scala.compiletime.uninitialized
 
 class NoticeAction extends ActionSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   def index(): View = {
     val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head

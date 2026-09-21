@@ -39,16 +39,17 @@ import org.beangle.webmvc.view.{Status, Stream, View}
 
 import java.io.*
 import scala.jdk.javaapi.CollectionConverters.asScala
+import scala.compiletime.uninitialized
 
 class AvatarAction extends ActionSupport, ServletSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var avatarService: AvatarService = _
+  var avatarService: AvatarService = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   def index(): View = {
     val query = OqlBuilder.from(classOf[User], "user")

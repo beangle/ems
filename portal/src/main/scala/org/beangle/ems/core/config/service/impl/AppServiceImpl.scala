@@ -22,14 +22,15 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.*
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.security.model.Channel
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class AppServiceImpl(entityDao: EntityDao) extends AppService, Initializing {
 
-  private var channelTypes: Map[String, ChannelType] = _
-  var domainService: DomainService = _
+  private var channelTypes: Map[String, ChannelType] = uninitialized
+  var domainService: DomainService = uninitialized
 
   override def init(): Unit = {
     val rs = entityDao.getAll(classOf[ChannelType])

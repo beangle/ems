@@ -23,6 +23,7 @@ import org.beangle.ems.core.security.model.DataResource
 import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 /**
   * 系统模块管理响应类
@@ -31,7 +32,7 @@ import org.beangle.she.webmvc.RestfulAction
   */
 class DataResourceAction extends RestfulAction[DataResource], DomainSupport {
 
-  var dataSourceManager: DataSourceManager = _
+  var dataSourceManager: DataSourceManager = uninitialized
 
   /**
     * 禁用或激活一个或多个模块

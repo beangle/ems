@@ -33,13 +33,13 @@
       <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-prepend"><div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div></div>
+            <div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div>
             <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="${b.text('ui.login.username.tip')}" type="text" value="${Parameters['username']!}">
           </div>
         </div>
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-prepend"><div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div></div>
+            <div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div>
             <input name="smsCode" tabindex="2" class="form-control" placeholder="短信验证码" value="" maxlength="6">
             <input type="button"  tabindex="3" class="btn btn-outline-primary btn-sm"  onclick="send(this.form);return false;" value="发送" style="margin-left: 2px;"/>
           </div>
@@ -47,11 +47,11 @@
         [#if setting.enableCaptcha]
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div></div>
+            <div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div>
             <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码" onblur="validate_captcha(this.value)">
-            <div class="input-group-append"><div class="input-group-text" style="padding: 0px;background-color: white;">
+            <div class="input-group-text" style="padding: 0px;background-color: white;">
               <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
-            </div></div>
+            </div>
           </div>
         </div>
         [/#if]

@@ -20,20 +20,21 @@ package org.beangle.ems.core.oa.model
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Business
+import scala.compiletime.uninitialized
 
 /** 消息模板
  */
 class MessageTemplate extends LongId, Updatable, Named {
   /** 业务类型 */
-  var business: Business = _
+  var business: Business = uninitialized
   /** 标题模板 */
-  var title: String = _
+  var title: String = uninitialized
   /** 内容模板 */
-  var contents: String = _
+  var contents: String = uninitialized
   /** 变量 */
   var variables: Option[String] = None
   /** 是否是代办消息 */
-  var todo: Boolean = _
+  var todo: Boolean = uninitialized
   /** 延迟发送时间 */
-  var delayMinutes: Int = _
+  var delayMinutes: Int = uninitialized
 }

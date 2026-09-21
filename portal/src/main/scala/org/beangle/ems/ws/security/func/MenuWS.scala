@@ -26,17 +26,18 @@ import org.beangle.ems.core.security.service.{AppMenus, DomainMenus, GroupMenus,
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 @action("/security/func/{app}/menus")
 class MenuWS extends ActionSupport {
 
-  var menuService: MenuService = _
+  var menuService: MenuService = uninitialized
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   @response
   def index(@param("app") appName: String): collection.Seq[Any] = {

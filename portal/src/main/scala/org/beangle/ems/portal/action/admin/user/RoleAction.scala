@@ -37,6 +37,7 @@ import org.beangle.webmvc.view.View
 
 import java.time.Instant
 import java.util as ju
+import scala.compiletime.uninitialized
 
 /**
  * 角色信息维护响应类
@@ -46,9 +47,9 @@ import java.util as ju
 class RoleAction(val roleService: RoleService, val userService: UserService) extends RestfulAction[Role], ExportSupport[Role] {
 
   private val dataResolver = CsvDataResolver
-  var domainService: DomainService = _
-  var dimensionService: DimensionService = _
-  var profileService: ProfileService = _
+  var domainService: DomainService = uninitialized
+  var dimensionService: DimensionService = uninitialized
+  var profileService: ProfileService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("isRoot", SecurityContext.get.isRoot)

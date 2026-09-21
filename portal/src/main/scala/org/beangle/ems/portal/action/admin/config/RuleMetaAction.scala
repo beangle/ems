@@ -25,11 +25,12 @@ import org.beangle.event.bus.{DataEvent, DataEventBus}
 import org.beangle.webmvc.context.Params
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class RuleMetaAction extends RestfulAction[RuleMeta] {
 
-  var databus: DataEventBus = _
-  var domainService: DomainService = _
+  var databus: DataEventBus = uninitialized
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

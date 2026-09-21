@@ -19,14 +19,15 @@ package org.beangle.ems.core.oa.model
 
 import org.beangle.data.model.LongId
 import org.beangle.ems.app.oa.Flows
+import scala.compiletime.uninitialized
 
 /** 流程实例-附件
  */
 class FlowAttachment extends LongId {
-  var task: FlowTask = _
-  var name: String = _
-  var fileSize: Long = _
-  var filePath: String = _
+  var task: FlowTask = uninitialized
+  var name: String = uninitialized
+  var fileSize: Long = uninitialized
+  var filePath: String = uninitialized
 
   def this(task: FlowTask, attachment: Flows.Attachment) = {
     this()

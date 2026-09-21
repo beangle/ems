@@ -22,12 +22,13 @@ import org.beangle.data.dao.EntityDao
 import org.beangle.ems.app.Ems
 import org.beangle.ems.core.config.model.{Domain, Org}
 import org.beangle.ems.core.config.service.DomainService
+import scala.compiletime.uninitialized
 
 class DomainServiceImpl extends DomainService, Initializing {
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  private var domain: Domain = _
-  private var org: Org = _
+  private var domain: Domain = uninitialized
+  private var org: Org = uninitialized
 
   override def getDomain: Domain = {
     domain

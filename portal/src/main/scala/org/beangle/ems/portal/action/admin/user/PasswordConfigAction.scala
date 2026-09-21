@@ -21,10 +21,11 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.PasswordConfig
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 class PasswordConfigAction extends RestfulAction[PasswordConfig] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def index(): View = {
     val builder = getQueryBuilder

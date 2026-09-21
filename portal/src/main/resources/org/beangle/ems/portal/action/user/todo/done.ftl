@@ -12,7 +12,7 @@
       <div class="card-tools">
         <div class="input-group input-group-sm">
           <input type="text" id="todoSearchBox" name="todo.contents" value="${Parameters['todo.contents']!}" class="form-control input-sm" placeholder="查询代办" >
-          <div class="input-group-append"><div class="btn btn-primary"><i class="fas fa-search" onclick="bg.form.submit(document.todoListForm);"></i></div></div>
+          <div class="btn btn-primary"><i class="fas fa-search" onclick="bg.form.submit(document.todoListForm);"></i></div>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="btn-group">
           <button type="button" class="btn btn-default btn-sm"  onclick="gotoPage(${todoes.pageIndex})"><i class="fas fa-sync-alt"></i></button>
         </div>
-        <div class="float-right">
+        <div class="float-end">
           [#if todoes.totalItems==0]
           0-0/0
           [#else]

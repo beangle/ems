@@ -25,11 +25,12 @@ import org.beangle.ems.core.user.model.*
 import org.beangle.ems.core.user.service.RoleService
 
 import java.time.ZonedDateTime
+import scala.compiletime.uninitialized
 
 class RoleServiceImpl extends RoleService {
 
-  var entityDao: EntityDao = _
-  var domainService: DomainService = _
+  var entityDao: EntityDao = uninitialized
+  var domainService: DomainService = uninitialized
 
   override def isManagedBy(manager: User, role: Role): Boolean = {
     if (manager.roles.exists(rm => rm.manager && rm.role == role)) {

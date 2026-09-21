@@ -38,11 +38,12 @@ import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.{ByteArrayInputStream, File, FileOutputStream, InputStream}
 import java.time.{Instant, LocalDate}
+import scala.compiletime.uninitialized
 
 class SignatureAction extends RestfulAction[Signature] {
 
-  var domainService: DomainService = _
-  var userService: UserService = _
+  var domainService: DomainService = uninitialized
+  var userService: UserService = uninitialized
 
   override protected def indexSetting(): Unit = {
     super.indexSetting()

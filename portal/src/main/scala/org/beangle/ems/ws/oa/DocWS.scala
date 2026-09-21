@@ -30,6 +30,7 @@ import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File
+import scala.compiletime.uninitialized
 
 /** 读取app或者所在domain的文档列表
  *
@@ -37,9 +38,9 @@ import java.io.File
  */
 class DocWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   @mapping(value = "{app}/{category}")
   @response

@@ -20,12 +20,13 @@ package org.beangle.ems.core.config.model
 import org.beangle.commons.lang.Strings
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Named, Updatable}
+import scala.compiletime.uninitialized
 
 class File extends LongId, Named, Updatable {
-  var app: App = _
-  var mediaType: String = _
-  var fileSize: Int = _
-  var filePath: String = _
+  var app: App = uninitialized
+  var mediaType: String = uninitialized
+  var fileSize: Int = uninitialized
+  var filePath: String = uninitialized
 
   def path: String = {
     Strings.substringAfterLast(name, "/")

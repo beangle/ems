@@ -22,14 +22,15 @@ import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.PasswordConfig
 import org.beangle.ems.core.user.service.PasswordConfigService
+import scala.compiletime.uninitialized
 
 class PasswordConfigServiceImpl extends PasswordConfigService, Initializing {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  private var defaultConfig: PasswordConfig = _
+  private var defaultConfig: PasswordConfig = uninitialized
 
   override def init(): Unit = {
     defaultConfig = new PasswordConfig

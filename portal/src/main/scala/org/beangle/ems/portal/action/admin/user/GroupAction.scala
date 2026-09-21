@@ -21,10 +21,11 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.{Group, Role}
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 class GroupAction extends RestfulAction[Group] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override protected def editSetting(group: Group): Unit = {
     val parents = entityDao.findBy(classOf[Group], "org.id", domainService.getOrg.id).toBuffer

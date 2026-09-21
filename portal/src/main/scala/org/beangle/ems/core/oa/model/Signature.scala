@@ -20,14 +20,15 @@ package org.beangle.ems.core.oa.model
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.user.model.User
+import scala.compiletime.uninitialized
 
 /** 签名
  */
 class Signature extends LongId, Updatable {
-  var user: User = _
-  var filePath: String = _
-  var mediaType: String = _
-  var fileSize: Int = _
+  var user: User = uninitialized
+  var filePath: String = uninitialized
+  var mediaType: String = uninitialized
+  var fileSize: Int = uninitialized
 
   def this(user: User) = {
     this()

@@ -23,12 +23,13 @@ import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.annotation.{param, response}
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.PasswordConfig
+import scala.compiletime.uninitialized
 
 class CredentialWS extends ActionSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   private def getConfig: PasswordConfig = {
     val configs = entityDao.findBy(classOf[PasswordConfig], "domain", List(domainService.getDomain))

@@ -23,13 +23,14 @@ import org.beangle.data.model.pojo.{TemporalOn, Updatable}
 import org.beangle.ems.core.config.model.{App, Domain}
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class Root extends IntId, Updatable, TemporalOn {
-  var domain: Domain = _
-  var user: User = _
+  var domain: Domain = uninitialized
+  var user: User = uninitialized
 }
 
 object Root {

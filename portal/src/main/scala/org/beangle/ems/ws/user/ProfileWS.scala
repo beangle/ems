@@ -25,17 +25,18 @@ import org.beangle.ems.core.user.model.{Dimension, EnvProfile}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class ProfileWS(entityDao: EntityDao) extends ActionSupport {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
-  var profileService: ProfileService = _
+  var profileService: ProfileService = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   @response(cacheable = true)
   @mapping("{userCode}")

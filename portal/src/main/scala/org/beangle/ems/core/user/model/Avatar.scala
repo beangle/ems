@@ -21,6 +21,7 @@ import org.beangle.data.model.StringId
 import org.beangle.data.model.pojo.Updatable
 
 import java.time.{LocalDate, LocalDateTime}
+import scala.compiletime.uninitialized
 
 object Avatar {
   var MaxSize = 500 * 1024 //500k
@@ -28,11 +29,11 @@ object Avatar {
 
 class Avatar extends StringId, Updatable {
 
-  var user: User = _
+  var user: User = uninitialized
 
-  var filePath: String = _
+  var filePath: String = uninitialized
 
-  var fileName: String = _
+  var fileName: String = uninitialized
 
   def this(user: User) = {
     this()

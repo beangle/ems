@@ -29,6 +29,7 @@ import org.beangle.security.web.{CookieKeys, ProfileCookie}
 import org.beangle.web.servlet.url.UrlBuilder
 import org.beangle.web.servlet.util.{CookieUtils, RequestUtils}
 import org.beangle.webmvc.context.ActionContext
+import scala.compiletime.uninitialized
 
 object NavContext {
   def get(request: HttpServletRequest): NavContext = {
@@ -89,16 +90,16 @@ object NavContext {
 
 class NavContext {
   val params = Collections.newMap[String, String]
-  var menusJson: String = _
-  var org: Ems.Org = _
-  var domain: Ems.Domain = _
-  var app: App = _
+  var menusJson: String = uninitialized
+  var org: Ems.Org = uninitialized
+  var domain: Ems.Domain = uninitialized
+  var app: App = uninitialized
   var principal = Securities.session.get.principal
   var username = Securities.user
   var profiles: Option[String] = None
   /** 当前选中的 profile id；无可用 profile 时为 null */
-  var profileId: String = _
-  var theme: Ems.Theme = _
+  var profileId: String = uninitialized
+  var theme: Ems.Theme = uninitialized
 
   def ems = Ems
 

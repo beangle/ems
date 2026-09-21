@@ -24,12 +24,13 @@ import org.beangle.ems.core.oa.model.{FlowActiveProcess, FlowActivity, FlowProce
 import org.beangle.ems.core.oa.service.FlowService
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class FlowActiveProcessAction extends RestfulAction[FlowActiveProcess] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var flowService: FlowService = _
+  var flowService: FlowService = uninitialized
 
   override protected def getQueryBuilder: OqlBuilder[FlowActiveProcess] = {
     val query = super.getQueryBuilder

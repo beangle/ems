@@ -26,6 +26,7 @@ import org.beangle.commons.net.http.HttpUtils
 import org.beangle.ems.app.{Ems, EmsApp}
 
 import java.io.*
+import scala.compiletime.uninitialized
 
 trait Appender {
 
@@ -40,7 +41,7 @@ class ConsoleAppender(layout: Layout) extends Appender {
 
 class FileAppender(val fileName: String, layout: Layout) extends Appender, Initializing, Disposable {
 
-  private var fos: FileOutputStream = _
+  private var fos: FileOutputStream = uninitialized
 
   override def init(): Unit = {
     val file = new File(fileName)

@@ -31,6 +31,6 @@ trait RuleCheckerBuilder {
 
 class ProxyRuleChecker(checker: AnyRef, method: Method) extends RuleChecker {
   def check(context: Seq[Any]): (Boolean, String) = {
-    method.invoke(checker, context: _*).asInstanceOf[(Boolean, String)]
+    method.invoke(checker, context*).asInstanceOf[(Boolean, String)]
   }
 }

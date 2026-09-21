@@ -23,10 +23,11 @@ import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.dispatch.DefaultExceptionHandler
 
 import java.time.{LocalDateTime, ZoneId}
+import scala.compiletime.uninitialized
 
 class LogExceptionHandler extends DefaultExceptionHandler {
 
-  var errorLogger: ErrorLogger = _
+  var errorLogger: ErrorLogger = uninitialized
 
   override protected def report(attrs: collection.Map[String, Any], ex: Exception): Unit = {
     val message = attrs.getOrElse("message", null).asInstanceOf[String] // 异常消息

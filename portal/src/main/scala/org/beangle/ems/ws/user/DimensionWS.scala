@@ -21,13 +21,14 @@ import org.beangle.commons.collection.Properties
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.ems.core.user.service.DimensionService
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class DimensionWS extends ActionSupport {
 
-  var dimensionService: DimensionService = _
+  var dimensionService: DimensionService = uninitialized
 
   @response
   @mapping("{name}")

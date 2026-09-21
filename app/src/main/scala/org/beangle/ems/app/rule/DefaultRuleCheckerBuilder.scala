@@ -30,7 +30,7 @@ class DefaultRuleCheckerBuilder(container: Container) extends RuleCheckerBuilder
       case None => populate(Reflections.newInstance[Object](rule.name), rule)
     }
 
-    val methods = checker.getClass.getMethods.toIndexedSeq.filter(x => x.getName == "check" && x.getReturnType == classOf[(_, _)])
+    val methods = checker.getClass.getMethods.toIndexedSeq.filter(x => x.getName == "check" && x.getReturnType == classOf[(?, ?)])
     if (methods.isEmpty) {
       throw new IllegalArgumentException("rule " + rule.name + " has no check method")
     } else {

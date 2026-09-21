@@ -44,27 +44,28 @@ trait BusinessLogger {
 }
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class BusinessLogEvent extends LogEvent {
-  var appName: String = _
+  var appName: String = uninitialized
   /** 操作人 */
-  var operator: String = _
+  var operator: String = uninitialized
   /** 操作时间 */
-  var operateAt: Instant = _
+  var operateAt: Instant = uninitialized
   /** 操作内容摘要 */
-  var summary: String = _
+  var summary: String = uninitialized
   /** 操作内容 */
-  var details: String = _
+  var details: String = uninitialized
   /** 对应的资源 */
-  var resources: String = _
+  var resources: String = uninitialized
   /** IP */
-  var ip: String = _
+  var ip: String = uninitialized
   /** 操作客户端代理 */
-  var agent: String = _
+  var agent: String = uninitialized
   /** 访问入口 */
-  var entry: String = _
+  var entry: String = uninitialized
   /** 日志级别 */
-  var level: Level = _
+  var level: Level = uninitialized
 
   def from(ip: String): BusinessLogEvent = {
     this.ip = ip

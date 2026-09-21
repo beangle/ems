@@ -23,15 +23,16 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.DataResource
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /** 查询某个数据资源的明细信息
  */
 @action("/security/data/resources")
 class ResourceWS extends ActionSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   @response
   def info(@param("name") name: String): Properties = {

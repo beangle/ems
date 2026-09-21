@@ -30,6 +30,7 @@ import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 /** 读取app或者所在domain的通知公告
  *
@@ -37,9 +38,9 @@ import java.time.LocalDate
  */
 class NoticeWS(entityDao: EntityDao) extends ActionSupport, JsonAPISupport {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   @mapping(value = "{app}/{category}")
   @response

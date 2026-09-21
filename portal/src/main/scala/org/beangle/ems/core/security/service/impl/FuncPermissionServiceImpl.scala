@@ -24,10 +24,11 @@ import org.beangle.ems.core.security.model.{FuncPermission, FuncResource, Menu, 
 import org.beangle.ems.core.security.service.FuncPermissionService
 import org.beangle.ems.core.user.model.{Role, User}
 import org.beangle.ems.core.user.service.UserService
+import scala.compiletime.uninitialized
 
 class FuncPermissionServiceImpl(val entityDao: EntityDao) extends FuncPermissionService {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   def getResource(app: App, name: String): Option[FuncResource] = {
     val query = OqlBuilder.from(classOf[FuncResource], "r")

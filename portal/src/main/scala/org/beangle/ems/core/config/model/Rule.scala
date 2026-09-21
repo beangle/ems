@@ -22,14 +22,15 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Enabled, Named, Updatable}
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 class Rule extends LongId, Enabled, Named, Updatable {
 
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
-  var profileId: String = _
+  var profileId: String = uninitialized
 
-  var meta: RuleMeta = _
+  var meta: RuleMeta = uninitialized
 
   var params: mutable.Set[RuleParam] = Collections.newSet[RuleParam]
 }

@@ -29,12 +29,13 @@ import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
 
 import java.sql.DriverManager
+import scala.compiletime.uninitialized
 
 class DbAction extends RestfulAction[Db], DomainSupport {
 
   override def simpleEntityName = "db"
 
-  var credentialService: CredentialService = _
+  var credentialService: CredentialService = uninitialized
 
   override protected def getQueryBuilder: OqlBuilder[Db] = {
     val builder = super.getQueryBuilder

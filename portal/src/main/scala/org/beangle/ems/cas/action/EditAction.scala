@@ -34,15 +34,16 @@ import org.beangle.security.web.session.CookieSessionIdPolicy
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class EditAction(secuirtyManager: WebSecurityManager, ticketRegistry: TicketRegistry)
   extends ActionSupport with ServletSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var businessLogger: WebBusinessLogger = _
+  var businessLogger: WebBusinessLogger = uninitialized
 
-  var credentialStore: DBCredentialStore = _
+  var credentialStore: DBCredentialStore = uninitialized
 
   @mapping(value = "")
   def index(): View = {

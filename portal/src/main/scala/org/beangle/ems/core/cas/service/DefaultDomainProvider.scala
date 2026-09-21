@@ -19,10 +19,11 @@ package org.beangle.ems.core.cas.service
 
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.security.session.jdbc.DomainProvider
+import scala.compiletime.uninitialized
 
 class DefaultDomainProvider extends DomainProvider {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def getDomainId: Int = {
     domainService.getDomain.id

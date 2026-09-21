@@ -26,10 +26,11 @@ import org.beangle.notify.sms.{Mobile, SmsCodeService}
 import org.beangle.webmvc.annotation.{action, mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 @action("sms")
 class SmsWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
-  var appService: AppService = _
+  var appService: AppService = uninitialized
   var smsCodeService: Option[SmsCodeService] = None
 
   @mapping("send/{mobile}")

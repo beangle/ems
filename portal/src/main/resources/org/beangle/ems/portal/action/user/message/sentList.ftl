@@ -11,10 +11,10 @@
    [/#list]
     <div class="card-header">
       <h3 class="card-title">已发送消息</h3>
-      <div class="card-tools float-right">
+      <div class="card-tools float-end">
         <div class="input-group input-group-sm">
           <input type="text" id="messageSearchBox" name="message.title" value="${Parameters['message.title']!}" class="form-control input-sm" placeholder="查询消息" >
-          <div class="input-group-append"><div class="btn btn-primary"><i class="fas fa-search"></i></div></div>
+          <div class="btn btn-primary"><i class="fas fa-search"></i></div>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
     <div class="card-body p-0">
       <div class="mailbox-controls">
         <button type="button" class="btn btn-default btn-sm"  onclick="gotoPage(${messages.pageIndex})"><i class="fas fa-sync-alt"></i></button>
-        <div class="float-right">
+        <div class="float-end">
           [#if messages.totalItems==0]
           0-0/0
           [#else]

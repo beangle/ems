@@ -23,11 +23,12 @@ import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.ems.core.log.model.ErrorLog
 import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
 import org.beangle.she.webmvc.QueryHelper
+import scala.compiletime.uninitialized
 
 class ErrorAction extends RestfulAction[ErrorLog], ExportSupport[ErrorLog] {
 
-  var appService: AppService = _
-  var domainService: DomainService = _
+  var appService: AppService = uninitialized
+  var domainService: DomainService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("apps", appService.getApps)

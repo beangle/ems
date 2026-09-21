@@ -27,6 +27,7 @@ import org.beangle.she.webmvc.{QueryHelper, RestfulAction}
 import org.beangle.webmvc.view.View
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 /**
  * 超级用户管理
@@ -35,7 +36,7 @@ import java.time.LocalDate
  */
 class RootAction extends RestfulAction[Root], DomainSupport {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("isRoot", SecurityContext.get.isRoot)

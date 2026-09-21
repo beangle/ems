@@ -19,6 +19,7 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Enabled, Named}
+import scala.compiletime.uninitialized
 
 object Theme {
   val Default = new Theme()
@@ -33,23 +34,23 @@ object Theme {
 /** 主题 */
 class Theme extends LongId, Named, Enabled {
   /** 域 */
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
-  var primaryColor: String = _
+  var primaryColor: String = uninitialized
 
   /** 导航栏背景颜色 */
-  var navbarBgColor: String = _
+  var navbarBgColor: String = uninitialized
 
   /** 查询框背景颜色 */
-  var searchBgColor: String = _
+  var searchBgColor: String = uninitialized
 
   /** 表格工具栏背景颜色 */
-  var gridbarBgColor: String = _
+  var gridbarBgColor: String = uninitialized
 
   /** 表格表头背景颜色 */
-  var gridHeaderBgColor: String = _
+  var gridHeaderBgColor: String = uninitialized
 
   /** 表格边框颜色 */
-  var gridBorderColor: String = _
+  var gridBorderColor: String = uninitialized
 
 }

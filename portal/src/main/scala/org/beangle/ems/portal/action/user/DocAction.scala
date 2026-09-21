@@ -30,10 +30,11 @@ import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File
+import scala.compiletime.uninitialized
 
 class DocAction extends ActionSupport, ServletSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   def index(): View = {
     val me: User = entityDao.findBy(classOf[User], "code", List(Securities.user)).head

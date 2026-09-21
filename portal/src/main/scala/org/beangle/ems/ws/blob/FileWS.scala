@@ -26,11 +26,12 @@ import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.webmvc.annotation.{body, response}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import scala.compiletime.uninitialized
 
 class FileWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
-  var domainService: DomainService = _
-  var appService: AppService = _
+  var domainService: DomainService = uninitialized
+  var appService: AppService = uninitialized
 
   private def getProfile(domain: Domain, profileDir: String): Profile = {
     val q = OqlBuilder.from(classOf[Profile], "p")

@@ -26,12 +26,13 @@ import org.beangle.she.webmvc.{QueryHelper, RestfulAction}
 import org.beangle.webmvc.view.View
 
 import java.time.Duration
+import scala.compiletime.uninitialized
 
 /** 计划任务执行日志维护
  */
 class LogAction extends RestfulAction[CronTaskLog] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

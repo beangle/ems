@@ -19,13 +19,14 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.{Coded, Named}
+import scala.compiletime.uninitialized
 
 /**
  * 该域下的业务场景
  */
 class Env extends LongId, Coded, Named {
 
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
   override def toString: String = {
     if (null == code) name else s"$code $name"

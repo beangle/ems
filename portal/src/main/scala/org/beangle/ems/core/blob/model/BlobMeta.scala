@@ -20,14 +20,15 @@ package org.beangle.ems.core.blob.model
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.config.model.Domain
+import scala.compiletime.uninitialized
 
 class BlobMeta extends LongId, Updatable {
-  var domain: Domain = _
-  var owner: String = _
-  var name: String = _
-  var fileSize: Long = _
-  var sha: String = _
-  var mediaType: String = _
-  var profile: Profile = _
-  var filePath: String = _
+  var domain: Domain = uninitialized
+  var owner: String = uninitialized
+  var name: String = uninitialized
+  var fileSize: Long = uninitialized
+  var sha: String = uninitialized
+  var mediaType: String = uninitialized
+  var profile: Profile = uninitialized
+  var filePath: String = uninitialized
 }

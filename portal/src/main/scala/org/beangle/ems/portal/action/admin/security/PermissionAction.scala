@@ -37,6 +37,7 @@ import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 /**
  * 权限分配与管理响应类
@@ -45,11 +46,11 @@ import org.beangle.webmvc.view.View
  */
 class PermissionAction extends RestfulAction[FuncPermission], DomainSupport {
 
-  var menuService: MenuService = _
-  var funcPermissionService: FuncPermissionService = _
-  var userService: UserService = _
-  var publicChannel: ChannelQueue[DataEvent] = _
-  var authorizer: Authorizer = _
+  var menuService: MenuService = uninitialized
+  var funcPermissionService: FuncPermissionService = uninitialized
+  var userService: UserService = uninitialized
+  var publicChannel: ChannelQueue[DataEvent] = uninitialized
+  var authorizer: Authorizer = uninitialized
 
   /**
    * 根据菜单配置来分配权限

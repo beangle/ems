@@ -23,17 +23,18 @@ import org.beangle.data.model.pojo.{Enabled, Named, Remark}
 
 import java.security.Principal
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** EMS 应用信息
  */
 class App extends IntId, Named, Enabled, Ordered[App], Principal, Remark, LocaleTitle, HasEnvIds {
-  var title: String = _
-  var enTitle: String = _
+  var title: String = uninitialized
+  var enTitle: String = uninitialized
   var datasources: mutable.Buffer[DataSource] = Collections.newBuffer[DataSource]
   var logoUrl: Option[String] = None
-  var indexno: String = _
-  var group: AppGroup = _
-  var domain: Domain = _
+  var indexno: String = uninitialized
+  var group: AppGroup = uninitialized
+  var domain: Domain = uninitialized
 
   def getName: String = name
 

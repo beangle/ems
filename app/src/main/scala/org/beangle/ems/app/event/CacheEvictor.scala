@@ -37,7 +37,7 @@ class CacheEvictor(entityDao: EntityDao, queue: ChannelQueue[DataEvent]) extends
       if et.cacheable then
         val s = entityDao.openSession()
         try {
-          entityDao.evict(et.clazz.asInstanceOf[Class[_ <: Entity[_]]])
+          entityDao.evict(et.clazz.asInstanceOf[Class[? <: Entity[?]]])
         } finally {
           SessionHelper.closeSession(s)
         }

@@ -22,12 +22,13 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.job.model.CronTask
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 /** 计划任务维护
  */
 class TaskAction extends RestfulAction[CronTask] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def getQueryBuilder: OqlBuilder[CronTask] = {
     val query = super.getQueryBuilder

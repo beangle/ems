@@ -57,7 +57,7 @@ export const workspaceProto = {
       rootEl.style.width = "100%";
       var cardCls = "card card-outline card-secondary ems-nav-card mb-0 border-top-0 rounded-0 shadow-none";
       var bodyCls = "card-body p-0 ems-nav-body";
-      rootEl.innerHTML = '<div class="' + cardCls + '"><div class="card-header ems-nav-toolbar p-0 d-flex align-items-stretch ems-nav-toolbar-strip"><div class="ems-nav-tabs-scroll overflow-auto" id="' + this.workspace.scrollId + '"><ul class="nav ems-nav-tabs ems-nav-tabs--workspace flex-nowrap" id="' + this.workspace.listId + '" role="tablist" aria-orientation="horizontal"></ul></div><div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-right" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div></div><div class="' + bodyCls + '" id="' + this.workspace.bodyId + '"></div></div>';
+      rootEl.innerHTML = '<div class="' + cardCls + '"><div class="card-header ems-nav-toolbar p-0 d-flex align-items-stretch ems-nav-toolbar-strip"><div class="ems-nav-tabs-scroll overflow-auto" id="' + this.workspace.scrollId + '"><ul class="nav ems-nav-tabs ems-nav-tabs--workspace flex-nowrap" id="' + this.workspace.listId + '" role="tablist" aria-orientation="horizontal"></ul></div><div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-end" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div></div><div class="' + bodyCls + '" id="' + this.workspace.bodyId + '"></div></div>';
       mainWrapper.appendChild(rootEl);
       if (targetEle) targetEle.style.display = "";
       var that = this;
@@ -81,7 +81,7 @@ export const workspaceProto = {
       if (!rootEl) return;
       var strip = rootEl.querySelector(".ems-nav-toolbar-strip");
       if (!strip || strip.querySelector(".ems-nav-tab-actions")) return;
-      var actionsHtml = '<div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-right" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div>';
+      var actionsHtml = '<div class="ems-nav-tab-actions"><div class="dropdown ems-nav-tab-actions-menu"><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-more-btn" title="\u6807\u7B7E\u64CD\u4F5C" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="dropdown-menu dropdown-menu-end" id="ems_nav_tab_actions_menu" role="menu"></div></div><button type="button" class="ems-nav-tab-action-btn ems-nav-tab-fullscreen-btn" title="\u5168\u5C4F\u663E\u793A"><i class="fas fa-expand" aria-hidden="true"></i></button></div>';
       strip.insertAdjacentHTML("beforeend", actionsHtml);
       this.bindWorkspaceTabToolbar(rootEl);
     },
@@ -147,7 +147,7 @@ export const workspaceProto = {
       if (!shellOpts.omitClose) {
         trailBtn = document.createElement("button");
         trailBtn.type = "button";
-        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-close ml-1 flex-shrink-0";
+        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-close ms-1 flex-shrink-0";
         trailBtn.title = "\u5173\u95ED";
         trailBtn.setAttribute("aria-label", "\u5173\u95ED\u6807\u7B7E");
         trailBtn.innerHTML = "&times;";

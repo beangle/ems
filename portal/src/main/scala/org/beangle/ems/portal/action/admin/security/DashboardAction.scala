@@ -23,18 +23,19 @@ import org.beangle.webmvc.view.View
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{DataPermission, FuncResource, Menu}
 import org.beangle.ems.core.user.model.{Dimension, RoleMember}
+import scala.compiletime.uninitialized
 
 class DashboardAction extends ActionSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   def stat(): View = {
     populateUserStat()
     // state menus
     val apps = appService.getWebapps
-    val menuStats = new collection.mutable.HashMap[Integer, Seq[_]]
+    val menuStats = new collection.mutable.HashMap[Integer, Seq[?]]
     for (app <- apps) {
       val menuQuery = OqlBuilder.from(classOf[Menu], "menu")
       menuQuery.where("menu.channel.app=:app", app).select("menu.enabled,count(*)").groupBy("enabled")

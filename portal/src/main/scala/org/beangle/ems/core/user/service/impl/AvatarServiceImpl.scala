@@ -25,11 +25,12 @@ import org.beangle.ems.core.user.service.AvatarService
 import org.beangle.event.bus.{DataEvent, DataEventBus}
 
 import java.io.InputStream
+import scala.compiletime.uninitialized
 
 class AvatarServiceImpl extends AvatarService {
 
-  var entityDao: EntityDao = _
-  var databus: DataEventBus = _
+  var entityDao: EntityDao = uninitialized
+  var databus: DataEventBus = uninitialized
 
   def save(user: User, filename: String, is: InputStream): Unit = {
     val repo = EmsApp.getBlobRepository()

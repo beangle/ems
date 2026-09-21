@@ -33,9 +33,10 @@ import org.beangle.event.bus.DataEvent
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.{ignore, param}
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class MenuAction extends RestfulAction[Menu], DomainSupport {
-  var menuService: MenuService = _
+  var menuService: MenuService = uninitialized
 
   private val appParam = "menu.channel.app.id"
   private val channelTypeParam = "menu.channel.channelType.id"

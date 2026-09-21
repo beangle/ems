@@ -12,7 +12,7 @@
           <h5 class="m-0 text-dark">我的代办 <small>${total}新代办</small></h5>
         </div>
         <div class="col-sm-6">
-          <ol class="breadcrumb  float-sm-right">
+          <ol class="breadcrumb  float-sm-end">
             <li class="breadcrumb-item"><i class="fas fa-tachometer-alt" style="margin-top: 6px;"></i> 个人中心</li>
             <li class="breadcrumb-item active">代办</li>
           </ol>
@@ -31,21 +31,21 @@
                 <li class="nav-item">
                   [@b.a class="nav-link active" href="!search" target="todolist"]
                     <i class="fas fa-inbox" aria-hidden="true"></i>全部
-                    <span class="badge bg-primary float-right">${total}</span>
+                    <span class="badge bg-primary float-end">${total}</span>
                   [/@]
                 </li>
                 [#list businesses as business]
                 <li class="nav-item">
                   [@b.a class="nav-link" href="!search?todo.business.id="+business.id target="todolist"]
                     <i class="fas fa-inbox" aria-hidden="true"></i>${business.name}
-                    <span class="badge bg-primary float-right">${stat.get(business)}</span>
+                    <span class="badge bg-primary float-end">${stat.get(business)}</span>
                   [/@]
                 </li>
                 [/#list]
                 <li class="nav-item acitve">
                   [@b.a class="nav-link" href="!done" target="todolist"]
                     <i class="fas fa-inbox" aria-hidden="true"></i>已办结
-                    <span class="badge bg-primary float-right">${doneCount}</span>
+                    <span class="badge bg-primary float-end">${doneCount}</span>
                   [/@]
                 </li>
               </ul>

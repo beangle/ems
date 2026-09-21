@@ -1,5 +1,5 @@
 [#ftl/]
-  <div class="box-body no-padding">
+  <div class="box-body m-4">
     <div class="mailbox-read-info">
       <h3>${notice.title}</h3>
       <h6>发自: ${notice.issuer}

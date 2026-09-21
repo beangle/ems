@@ -20,10 +20,11 @@ package org.beangle.ems.app.log
 import org.beangle.ems.app.log.{BusinessLogger, Level, LogEvent}
 import org.beangle.web.servlet.util.RequestUtils
 import org.beangle.webmvc.context.ActionContext
+import scala.compiletime.uninitialized
 
 class WebBusinessLogger {
 
-  var businessLogger: BusinessLogger = _
+  var businessLogger: BusinessLogger = uninitialized
 
   def info(summary: String, resources: Any, details: Any): Unit = {
     log(Level.Info, summary, resources, details)

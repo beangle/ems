@@ -26,14 +26,15 @@ import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 /** 查询应用的国际化资源
  */
 class TextBundleWS extends ActionSupport {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   @mapping(value = "{app}/ls")
   def list(@param("app") appName: String): View = {

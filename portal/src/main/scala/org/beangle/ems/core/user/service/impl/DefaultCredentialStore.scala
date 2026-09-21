@@ -21,12 +21,13 @@ import org.beangle.data.dao.EntityDao
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.authc.{CredentialAge, DBCredentialStore, Principals}
+import scala.compiletime.uninitialized
 
 class DefaultCredentialStore extends DBCredentialStore {
 
-  var entityDao: EntityDao = _
-  var domainService: DomainService = _
-  var userService: UserService = _
+  var entityDao: EntityDao = uninitialized
+  var domainService: DomainService = uninitialized
+  var userService: UserService = uninitialized
 
   override def getPassword(principal: Any): Option[String] = {
     userService.getActivePassword(Principals.getName(principal))

@@ -22,6 +22,7 @@ import org.beangle.commons.config.Config
 import org.beangle.commons.lang.Strings
 
 import java.io.File
+import scala.compiletime.uninitialized
 
 object Ems {
 
@@ -103,20 +104,20 @@ object Ems {
   }
 
   class Org {
-    var id: Int = _
-    var code: String = _
-    var name: String = _
-    var shortName: String = _
-    var logoUrl: String = _
-    var wwwUrl: String = _
+    var id: Int = uninitialized
+    var code: String = uninitialized
+    var name: String = uninitialized
+    var shortName: String = uninitialized
+    var logoUrl: String = uninitialized
+    var wwwUrl: String = uninitialized
   }
 
   class Domain {
-    var id: Int = _
-    var name: String = _
-    var title: String = _
-    var logoUrl: String = _
-    var org: Org = _
+    var id: Int = uninitialized
+    var name: String = uninitialized
+    var title: String = uninitialized
+    var logoUrl: String = uninitialized
+    var org: Org = uninitialized
   }
 
   case class Theme(primaryColor: String, navbarBgColor: String, searchBgColor: String, gridbarBgColor: String, gridHeaderBgColor: String, gridBorderColor: String)

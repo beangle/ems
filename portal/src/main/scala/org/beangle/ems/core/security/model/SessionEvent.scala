@@ -22,19 +22,20 @@ import org.beangle.data.model.annotation.log
 import org.beangle.data.model.pojo.{Named, Updatable}
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.security.session.EventType
+import scala.compiletime.uninitialized
 
 @log
 class SessionEvent extends LongId, Updatable, Named {
 
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
-  var eventType: EventType = _
+  var eventType: EventType = uninitialized
 
-  var principal: String = _
+  var principal: String = uninitialized
 
-  var username: String = _
+  var username: String = uninitialized
 
-  var detail: String = _
+  var detail: String = uninitialized
 
-  var ip: String = _
+  var ip: String = uninitialized
 }

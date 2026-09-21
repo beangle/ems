@@ -26,6 +26,7 @@ import org.beangle.security.authz.Scope
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 /**
  * 系统模块管理响应类
@@ -34,7 +35,7 @@ import org.beangle.webmvc.view.View
  */
 class FuncResourceAction extends RestfulAction[FuncResource], ExportSupport[FuncResource], DomainSupport {
 
-  var funcPermissionService: FuncPermissionService = _
+  var funcPermissionService: FuncPermissionService = uninitialized
 
   /**
    * 禁用或激活一个或多个模块

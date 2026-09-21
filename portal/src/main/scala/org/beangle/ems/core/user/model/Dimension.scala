@@ -20,17 +20,18 @@ package org.beangle.ems.core.user.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 import org.beangle.ems.core.config.model.Domain
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class Dimension extends IntId, Named {
-  var domain: Domain = _
-  var title: String = _
-  var source: String = _
-  var multiple: Boolean = _
-  var required: Boolean = _
-  var valueType: Boolean = _
+  var domain: Domain = uninitialized
+  var title: String = uninitialized
+  var source: String = uninitialized
+  var multiple: Boolean = uninitialized
+  var required: Boolean = uninitialized
+  var valueType: Boolean = uninitialized
   var keyName: Option[String] = None
   var properties: Option[String] = None
 }

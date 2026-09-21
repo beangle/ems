@@ -40,11 +40,12 @@ import org.beangle.webmvc.view.{Status, View}
 
 import java.time.LocalDate
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 class IndexAction extends ActionSupport, ServletSupport {
-  var entityDao: EntityDao = _
-  var userService: UserService = _
-  var domainService: DomainService = _
+  var entityDao: EntityDao = uninitialized
+  var userService: UserService = uninitialized
+  var domainService: DomainService = uninitialized
 
   @mapping("")
   def index(): View = {
@@ -172,7 +173,7 @@ class IndexAction extends ActionSupport, ServletSupport {
           val json = new JsonObject()
           json.add("name", account.name)
           val profiles = account.profiles
-          json.add("profiles", JsonArray(account.profiles.map(x => JsonObject("id" -> x.id, "name" -> x.name, "properties" -> x.properties)): _*))
+          json.add("profiles", JsonArray(account.profiles.map(x => JsonObject("id" -> x.id, "name" -> x.name, "properties" -> x.properties))*))
           if (profiles.nonEmpty) {
             CookieUtils.addCookie(ctx.request, ctx.response, CookieKeys.ProfileIdKey, profiles.head.id.toString, path = "/", age = 3600 * 24)
           }

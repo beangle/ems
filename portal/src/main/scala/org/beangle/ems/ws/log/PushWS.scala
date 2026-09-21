@@ -30,17 +30,18 @@ import org.beangle.webmvc.annotation.{action, mapping}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
 import org.hibernate.SessionFactory
+import scala.compiletime.uninitialized
 
 /** 应用系统调用，存储日志的服务
  */
 @action("push")
 class PushWS extends ActionSupport, ServletSupport {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
-  var logDao: EntityDao = _
+  var logDao: EntityDao = uninitialized
 
-  var buffer: LogPersistBuffer = _
+  var buffer: LogPersistBuffer = uninitialized
 
   @mapping("")
   def index(): View = {

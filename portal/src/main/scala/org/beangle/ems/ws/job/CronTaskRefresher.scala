@@ -33,10 +33,11 @@ import org.beangle.ems.ws.job.CronTaskRefresher.CronTaskRunner
 
 import java.io.{ByteArrayInputStream, PrintWriter}
 import java.time.{Duration, Instant}
+import scala.compiletime.uninitialized
 
 class CronTaskRefresher(val expression: String) extends AbstractDaoTask, Scheduled {
-  var scheduler: Scheduler = _
-  var domainService: DomainService = _
+  var scheduler: Scheduler = uninitialized
+  var domainService: DomainService = uninitialized
 
   //task footprint -> taskId
   private val runningTasks = Collections.newMap[String, String]

@@ -29,15 +29,16 @@ import org.beangle.security.Securities
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class ProfileAction(profileService: ProfileService) extends RestfulAction[EnvProfile] {
 
-  var userService: UserService = _
-  var dimensionService: DimensionService = _
-  var domainService: DomainService = _
+  var userService: UserService = uninitialized
+  var dimensionService: DimensionService = uninitialized
+  var domainService: DomainService = uninitialized
   private val dataResolver = CsvDataResolver
 
   protected override def indexSetting(): Unit = {

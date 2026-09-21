@@ -12,11 +12,7 @@
   </tr>
   <tr>
     <td class="title">分组</td>
-    <td colspan="3">${app.group.title}(${app.group.name})</td>
-  </tr>
-  <tr>
-    <td class="title">上下文地址</td>
-    <td>${app.base}</td>
+    <td >${app.group.title}(${app.group.name})</td>
     <td class="title">logoUrl</td>
     <td>${app.logoUrl!}</td>
   </tr>
@@ -36,7 +32,6 @@
   <tr>
     <td class="title" width="20%">引用资源</td>
     <td colspan="3">
-    <style>.itable th, .itable td{padding:3px 5px;}</style>
     <table class="table table-sm table-mini" style="width:800px;">
       <thead>
         <th width="15%">数据源</th>

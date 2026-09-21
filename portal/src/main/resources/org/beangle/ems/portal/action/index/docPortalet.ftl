@@ -1,7 +1,7 @@
       [@b.card class="card-primary card-outline"]
         [#assign title]<i class="fas fa-file-pdf"></i> 文档下载[/#assign]
         [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
-        <a href="${b.base}/portal/user/doc" target="_blank" class="float-right">更多...</a>
+        <a href="${b.base}/portal/user/doc" target="_blank" class="float-end">更多...</a>
         [/@]
         [@b.card_body class="p-0"]
           <div class="table-responsive">

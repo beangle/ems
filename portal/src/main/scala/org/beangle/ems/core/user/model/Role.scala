@@ -23,14 +23,15 @@ import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.{Domain, HasEnvIds}
 
 import java.security.Principal
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class Role extends IntId, Named, Updatable, Enabled, Hierarchical[Role], Principal, Remark, HasEnvIds {
-  var creator: User = _
+  var creator: User = uninitialized
   var members: collection.mutable.Seq[RoleMember] = new collection.mutable.ListBuffer[RoleMember]
-  var domain: Domain = _
+  var domain: Domain = uninitialized
 
   override def getName: String = {
     name

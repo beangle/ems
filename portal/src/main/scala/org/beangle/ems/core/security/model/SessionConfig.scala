@@ -20,13 +20,14 @@ package org.beangle.ems.core.security.model
 import org.beangle.data.model.LongId
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.user.model.Category
+import scala.compiletime.uninitialized
 
 class SessionConfig extends LongId {
-  var category: Category = _
-  var domain:Domain=_
-  var ttiMinutes: Int = _
-  var concurrent: Int = _
-  var capacity:Int=_
-  var checkConcurrent: Boolean = _
-  var checkCapacity: Boolean = _
+  var category: Category = uninitialized
+  var domain:Domain=uninitialized
+  var ttiMinutes: Int = uninitialized
+  var concurrent: Int = uninitialized
+  var capacity:Int=uninitialized
+  var checkConcurrent: Boolean = uninitialized
+  var checkCapacity: Boolean = uninitialized
 }

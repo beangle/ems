@@ -30,13 +30,14 @@ import org.beangle.ems.core.user.model.User
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
+import scala.compiletime.uninitialized
 
 /** 读取工作流状态
  * @param entityDao
  */
 class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
-  var domainService: DomainService = _
-  var flowService: FlowService = _
+  var domainService: DomainService = uninitialized
+  var flowService: FlowService = uninitialized
 
   @mapping("{businessCode}/{profileId}")
   @response
@@ -53,7 +54,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
 
   /** 开始一个流程
    */
-  @mapping("{flowCode}/start/{businessKey}", methods = "post")
+  @mapping(value = "{flowCode}/start/{businessKey}", methods = "post")
   @response
   def start(flowCode: String, businessKey: String): AnyRef = {
     val flow = flowService.getFlow(flowCode)
@@ -70,7 +71,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     }
   }
 
-  @mapping("processes/{processId}/tasks/{taskId}/complete", methods = "post")
+  @mapping(value = "processes/{processId}/tasks/{taskId}/complete", methods = "post")
   @response
   def complete(processId: String, taskId: String): JsonObject = {
     val payload = Json.parseObject(new String(request.getInputStream.readAllBytes(), Charsets.UTF_8))
@@ -79,7 +80,7 @@ class FlowWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
     convertProcess(p)
   }
 
-  @mapping("processes/{processId}/cancel", methods = "post")
+  @mapping(value = "processes/{processId}/cancel", methods = "post")
   @response
   def cancel(processId: String): String = {
     val process = entityDao.get(classOf[FlowActiveProcess], processId.toLong)

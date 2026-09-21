@@ -24,10 +24,11 @@ import org.beangle.ems.core.config.model.App
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 class ProfileAction extends RestfulAction[Profile] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override protected def getQueryBuilder: OqlBuilder[Profile] = {
     val builder = super.getQueryBuilder

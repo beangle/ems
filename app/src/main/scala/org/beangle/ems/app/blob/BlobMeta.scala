@@ -19,6 +19,7 @@ package org.beangle.ems.app.blob
 
 import org.beangle.commons.json.Json
 import org.beangle.data.model.pojo.Updatable
+import scala.compiletime.uninitialized
 
 object BlobMeta {
   def fromJson(json: String): BlobMeta = {
@@ -35,14 +36,14 @@ object BlobMeta {
 }
 
 class BlobMeta extends Updatable {
-  var name: String = _
+  var name: String = uninitialized
 
-  var fileSize: Int = _
+  var fileSize: Int = uninitialized
 
-  var sha: String = _
+  var sha: String = uninitialized
 
-  var mediaType: String = _
+  var mediaType: String = uninitialized
 
-  var filePath: String = _
+  var filePath: String = uninitialized
 
 }

@@ -42,15 +42,16 @@ object FlowServiceImpl {
 }
 
 import org.beangle.ems.core.oa.service.impl.FlowServiceImpl.*
+import scala.compiletime.uninitialized
 
 /** 流程服务的实现
  */
 class FlowServiceImpl extends FlowService {
-  var domainService: DomainService = _
-  var entityDao: EntityDao = _
-  var todoService: TodoService = _
-  var messageService: MessageService = _
-  var exprEvaluator: ExprEvaluator = _
+  var domainService: DomainService = uninitialized
+  var entityDao: EntityDao = uninitialized
+  var todoService: TodoService = uninitialized
+  var messageService: MessageService = uninitialized
+  var exprEvaluator: ExprEvaluator = uninitialized
 
   override def getFlows(businessCode: String, profileId: String): Seq[Flow] = {
     val query = OqlBuilder.from(classOf[Flow], "flow")

@@ -25,6 +25,7 @@ import org.beangle.ems.core.config.model.Org
 
 import java.security.Principal
 import java.time.{Instant, LocalDate}
+import scala.compiletime.uninitialized
 
 /** 用户信息
  *
@@ -33,7 +34,7 @@ import java.time.{Instant, LocalDate}
 
 class User extends LongId, Coded, Named, Updatable, TemporalOn, Principal, Remark, Enabled {
   /** 组织 */
-  var org: Org = _
+  var org: Org = uninitialized
   /** 所属部门 */
   var depart: Option[Depart] = None
   /** 主用户组 */
@@ -43,15 +44,15 @@ class User extends LongId, Coded, Named, Updatable, TemporalOn, Principal, Remar
   /** 其他用户组 */
   var groups = Collections.newBuffer[GroupMember]
   /** 身份 */
-  var category: Category = _
+  var category: Category = uninitialized
   /** 照片ID */
   var avatarId: Option[String] = None
   /** 是否锁定 */
-  var locked: Boolean = _
+  var locked: Boolean = uninitialized
   /** 密码 */
-  var password: String = _
+  var password: String = uninitialized
   /** 密码过期日期 */
-  var passwdExpiredOn: LocalDate = _
+  var passwdExpiredOn: LocalDate = uninitialized
   /** 移动电话 */
   var mobile: Option[String] = None
   /** 电子邮件 */

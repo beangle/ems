@@ -23,27 +23,28 @@ import org.beangle.ems.app.log.Level
 import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 业务日志
  */
 @log
 class BusinessLog extends AppLogEntry {
   /** 操作人 */
-  var operator: String = _
+  var operator: String = uninitialized
   /** 操作时间 */
-  var operateAt: Instant = _
+  var operateAt: Instant = uninitialized
   /** 操作内容摘要 */
-  var summary: String = _
+  var summary: String = uninitialized
   /** 操作内容 */
-  var details: String = _
+  var details: String = uninitialized
   /** 对应的资源 */
-  var resources: String = _
+  var resources: String = uninitialized
   /** IP */
-  var ip: String = _
+  var ip: String = uninitialized
   /** 操作客户端代理 */
-  var agent: String = _
+  var agent: String = uninitialized
   /** 访问入口 */
-  var entry: String = _
+  var entry: String = uninitialized
   /** 级别 */
   var logLevel: Level = Level.Info
 

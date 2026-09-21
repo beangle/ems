@@ -322,7 +322,7 @@ export const menuProto = {
         var group = this.groups[i];
         topItemCount += 1;
         if (topItemCount == this.maxTopItem && this.groups.length > this.maxTopItem) {
-          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link">\u66F4\u591A...</a><div id="topMore" aria-labelledby="navbarDropdown" class="dropdown-menu"></div><li>');
+          jqueryElem.append('<li class="nav-item dropdown"><a href="#" data-bs-toggle="dropdown" class="dropdown-toggle nav-link">\u66F4\u591A...</a><div id="topMore" aria-labelledby="navbarDropdown" class="dropdown-menu"></div><li>');
           topMoreHappened = true;
         }
         if (topMoreHappened) {
@@ -458,13 +458,13 @@ export const menuProto = {
     openSearchResults: function() {
       var searchDom = jQuery("#" + this.searchInputId).parent().parent();
       searchDom.addClass("sidebar-search-open");
-      searchDom.find(".input-group-append .btn i").removeClass("fa-search").addClass("fa-times");
+      searchDom.find(".input-group .btn i").removeClass("fa-search").addClass("fa-times");
     },
 
     closeSearchResults: function() {
       var searchDom = jQuery("#" + this.searchInputId).parent().parent();
       searchDom.removeClass("sidebar-search-open");
-      searchDom.find(".input-group-append .btn i").removeClass("fa-times").addClass("fa-search");
+      searchDom.find(".input-group .btn i").removeClass("fa-times").addClass("fa-search");
     },
 
     toggleSearchResults: function() {

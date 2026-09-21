@@ -22,10 +22,11 @@ import org.beangle.commons.xml.{Document, Node}
 import org.beangle.ems.app.{Ems, EmsApp}
 
 import java.io.FileInputStream
+import scala.compiletime.uninitialized
 
 object Redis {
 
-  private var properties: Map[String, String] = _
+  private var properties: Map[String, String] = uninitialized
 
   def available(): Boolean = {
     conf.nonEmpty

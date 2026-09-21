@@ -23,11 +23,12 @@ import org.beangle.ems.core.config.model.Theme
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.annotation.response
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 class ThemeWS extends ActionSupport {
 
-  var domainService: DomainService = _
-  var entityDao: EntityDao = _
+  var domainService: DomainService = uninitialized
+  var entityDao: EntityDao = uninitialized
 
   @response(cacheable = true)
   def index(): Properties = {

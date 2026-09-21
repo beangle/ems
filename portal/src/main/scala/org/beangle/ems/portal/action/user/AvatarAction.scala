@@ -26,12 +26,13 @@ import org.beangle.ems.core.user.service.AvatarService
 import org.beangle.security.Securities
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 class AvatarAction extends ActionSupport {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var avatarService: AvatarService = _
+  var avatarService: AvatarService = uninitialized
 
   def index(): View = {
     put("avatar_url", Ems.avatarUrl(Securities.user) + "?t=" + System.currentTimeMillis())

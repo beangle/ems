@@ -29,13 +29,14 @@ import org.beangle.ems.core.user.service.{PasswordConfigService, UserService}
 import org.beangle.security.authc.{CredentialAge, DefaultAccount, Profile as ProfileData}
 
 import java.time.{Instant, LocalDate, ZoneId}
+import scala.compiletime.uninitialized
 
 class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializing {
 
-  var domainService: DomainService = _
-  var passwordConfigService: PasswordConfigService = _
+  var domainService: DomainService = uninitialized
+  var passwordConfigService: PasswordConfigService = uninitialized
 
-  private var config: PasswordConfig = _
+  private var config: PasswordConfig = uninitialized
 
   override def init(): Unit = {
     config = passwordConfigService.get()
@@ -91,7 +92,7 @@ class UserServiceImpl(val entityDao: EntityDao) extends UserService, Initializin
 
   def remove(manager: User, user: User): Unit = {
     if (isRoot(manager)) {
-      val removed = Collections.newBuffer[Entity[_]]
+      val removed = Collections.newBuffer[Entity[?]]
       removed ++= entityDao.findBy(classOf[EnvProfile], "user", List(user))
       entityDao.remove(removed, user)
     }

@@ -27,25 +27,26 @@ import org.beangle.ems.core.security.service.{FuncPermissionService, MenuService
 import org.beangle.ems.core.user.model.{EnvProfile, User}
 import org.beangle.ems.core.user.service.DimensionService
 import org.beangle.webmvc.context.ActionContext
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class UserDashboardHelper {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var permissionService: FuncPermissionService = _
+  var permissionService: FuncPermissionService = uninitialized
 
-  var menuService: MenuService = _
+  var menuService: MenuService = uninitialized
 
-  var profileService: ProfileService = _
+  var profileService: ProfileService = uninitialized
 
-  var dimensionService: DimensionService = _
+  var dimensionService: DimensionService = uninitialized
 
-  var sessionInfoService: SessionInfoService = _
+  var sessionInfoService: SessionInfoService = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   def buildDashboard(user: User): Unit = {
     ActionContext.current.attribute("user", user)

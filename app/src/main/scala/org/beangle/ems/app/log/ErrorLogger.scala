@@ -22,20 +22,21 @@ trait ErrorLogger {
 }
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class ErrorLogEvent extends LogEvent {
   /** 应用 */
-  var appName: String = _
+  var appName: String = uninitialized
   /** 访问路径 */
-  var requestUrl: String = _
+  var requestUrl: String = uninitialized
   /** 发生时间 */
-  var occurredAt: Instant = _
+  var occurredAt: Instant = uninitialized
   /** 异常名称 */
-  var exceptionName: String = _
+  var exceptionName: String = uninitialized
   /** 操作内容摘要 */
-  var message: String = _
+  var message: String = uninitialized
   /** 操作内容 */
-  var stackTrace: String = _
+  var stackTrace: String = uninitialized
   /** 调用上下文 */
   var params: Option[String] = None
   /** 业务操作人 */

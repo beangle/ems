@@ -22,10 +22,11 @@ import org.beangle.ems.core.config.model.Business
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class BusinessAction extends RestfulAction[Business] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def getQueryBuilder: OqlBuilder[Business] = {
     val query = super.getQueryBuilder

@@ -8,18 +8,18 @@
               <h3 class="card-title">编写新消息</h3>
             </div>
             <div class="card-body">
-              <div class="form-group">
+              <div class="mb-3">
                 <input  name="recipient.code" class="form-control" placeholder="发送给: 填写接受者的账号" value="${Parameters['recipient.code']!}">
               </div>
-              <div class="form-group">
+              <div class="mb-3">
                 <input name="message.title" class="form-control" placeholder="标题(30字以内):">
               </div>
-              <div class="form-group">
+              <div class="mb-3">
                 <textarea name="message.contents" rows="8" id="message_content" class="form-control" placeholder="内容(300字以内)">${(message.content?html)!}</textarea>
               </div>
             </div>
             <div class="box-footer">
-              <div class="float-right">
+              <div class="float-end">
                 <button type="submit"  class="btn btn-primary" onclick="bg.form.submit('newMessageForm',null,null,null);return false;"><i class="fa fa-envelope-o"></i> 发送</button>
               </div>
               <button type="reset" class="btn btn-default"  onclick="history.back(-1)"><i class="fa fa-times"></i>不写了</button>

@@ -25,10 +25,11 @@ import org.beangle.she.webmvc.{ExportSupport, RestfulAction}
 import org.beangle.webmvc.annotation.mapping
 import org.beangle.webmvc.support.ServletSupport
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class MetaAction extends RestfulAction[BlobMeta], ExportSupport[BlobMeta], ServletSupport {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     val query = OqlBuilder.from(classOf[Profile], "p")

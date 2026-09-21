@@ -25,6 +25,7 @@ import org.beangle.data.model.pojo.Named
 import org.beangle.ems.core.config.model.{Domain, Env}
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 object Property {
   val All = "*"
@@ -34,9 +35,9 @@ object Property {
  * 用户在某个App上的配置
  */
 class EnvProfile extends LongId {
-  var user: User = _
-  var domain: Domain = _
-  var env: Env = _
+  var user: User = uninitialized
+  var domain: Domain = uninitialized
+  var env: Env = uninitialized
   var properties: JsonObject = Json.emptyObject
 
   def setProperty(field: Dimension, value: String): Unit = {

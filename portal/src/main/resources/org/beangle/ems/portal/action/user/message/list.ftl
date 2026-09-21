@@ -13,7 +13,7 @@
        [/#list]
         <div class="input-group input-group-sm">
           <input type="text" id="messageSearchBox" name="message.title" value="${Parameters['message.title']!}" class="form-control input-sm" placeholder="查询消息" >
-          <div class="input-group-append"><div class="btn btn-primary"><i class="fas fa-search" onclick="bg.form.submit(document.messageListForm);"></i></div></div>
+          <div class="btn btn-primary"><i class="fas fa-search" onclick="bg.form.submit(document.messageListForm);"></i></div>
         </div>
       </div>
        [/@]
@@ -31,7 +31,7 @@
           [/#if]
           <button type="button" class="btn btn-default btn-sm"  onclick="gotoPage(${messages.pageIndex})"><i class="fas fa-sync-alt"></i></button>
         </div>
-        <div class="float-right">
+        <div class="float-end">
           [#if messages.totalItems==0]
           0-0/0
           [#else]

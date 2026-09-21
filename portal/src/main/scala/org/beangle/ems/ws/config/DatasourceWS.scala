@@ -27,6 +27,7 @@ import org.beangle.ems.core.config.service.AppService
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /** 获取应用数据源信息
  *
@@ -34,7 +35,7 @@ import org.beangle.webmvc.support.ActionSupport
  */
 class DatasourceWS(entityDao: EntityDao) extends ActionSupport {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   @mapping(value = "{app}/{name}")
   @response

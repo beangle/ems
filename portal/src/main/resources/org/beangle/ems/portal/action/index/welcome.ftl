@@ -5,7 +5,7 @@
         <h1 class="m-0 text-dark">欢迎 <small>${user.name}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
-        <ol class="breadcrumb  float-sm-right">
+        <ol class="breadcrumb  float-sm-end">
           <li class="breadcrumb-item"><i class="fas fa-tachometer-alt" style="margin-top: 6px;"></i> 首页</li>
           <li class="breadcrumb-item active">欢迎</li>
         </ol>

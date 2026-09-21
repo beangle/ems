@@ -23,10 +23,11 @@ import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.ems.core.config.model.Credential
 import org.beangle.ems.core.config.service.DomainService
+import scala.compiletime.uninitialized
 
 class CredentialAction extends RestfulAction[Credential] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   @ignore
   override protected def saveAndRedirect(credential: Credential): View = {

@@ -19,13 +19,14 @@ package org.beangle.ems.portal.action.admin
 
 import org.beangle.ems.core.config.service.{AppService, DomainService}
 import org.beangle.event.bus.{DataEvent, DataEventBus}
+import scala.compiletime.uninitialized
 
 trait DomainSupport {
-  var domainService: DomainService = _
-  var appService: AppService = _
-  var databus: DataEventBus = _
+  var domainService: DomainService = uninitialized
+  var appService: AppService = uninitialized
+  var databus: DataEventBus = uninitialized
 
-  def publishUpdate(clazz: Class[_], filters: Map[String, String], comment: Option[String] = None): Unit = {
+  def publishUpdate(clazz: Class[?], filters: Map[String, String], comment: Option[String] = None): Unit = {
     databus.publishUpdate(clazz, filters, comment)
   }
 

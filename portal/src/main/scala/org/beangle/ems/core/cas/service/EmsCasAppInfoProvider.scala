@@ -19,6 +19,7 @@ package org.beangle.ems.core.cas.service
 
 import org.beangle.ems.core.config.service.AppService
 import org.beangle.ids.cas.service.{CasAppInfo, CasAppInfoProvider}
+import scala.compiletime.uninitialized
 
 /** 扫码登录应用信息提供者。
  *
@@ -27,7 +28,7 @@ import org.beangle.ids.cas.service.{CasAppInfo, CasAppInfoProvider}
  */
 class EmsCasAppInfoProvider extends CasAppInfoProvider {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   override def get(name: String): Option[CasAppInfo] = {
     if name == null || name.isEmpty then None

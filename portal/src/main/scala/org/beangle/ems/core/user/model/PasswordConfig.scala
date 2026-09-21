@@ -20,6 +20,7 @@ package org.beangle.ems.core.user.model
 import org.beangle.data.model.IntId
 import org.beangle.ems.core.config.model.Domain
 import org.beangle.security.authc.PasswordPolicy
+import scala.compiletime.uninitialized
 
 object PasswordConfig {
   def apply(policy: PasswordPolicy): PasswordConfig = {
@@ -41,7 +42,7 @@ object PasswordConfig {
  */
 class PasswordConfig extends IntId, PasswordPolicy {
 
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   /** 密码的最小长度 */
   var minlen: Int = 6
   /** 密码的最大长度 */
@@ -68,6 +69,6 @@ class PasswordConfig extends IntId, PasswordPolicy {
   var minclass: Int = 2
 
   /** 是否检查密码中含有用户名 */
-  var usercheck: Boolean = _
+  var usercheck: Boolean = uninitialized
 
 }

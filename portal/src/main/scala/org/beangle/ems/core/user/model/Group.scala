@@ -24,12 +24,13 @@ import org.beangle.data.model.pojo.*
 import org.beangle.ems.core.config.model.Org
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class Group extends IntId, Named, Coded, Updatable, Enabled, Hierarchical[Group], Remark {
-  var org: Org = _
+  var org: Org = uninitialized
   var manager: Option[User] = None
   var roles: mutable.Set[Role] = Collections.newSet[Role]
 

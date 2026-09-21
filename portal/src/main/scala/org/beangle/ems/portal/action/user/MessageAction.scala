@@ -32,7 +32,7 @@ class MessageAction extends RestfulAction[Message] {
 
   override protected def indexSetting(): Unit = {
     val me = Securities.user
-    val query = OqlBuilder.from[Array[_]](classOf[Message].getName, "msg")
+    val query = OqlBuilder.from[Array[?]](classOf[Message].getName, "msg")
     query.where("msg.recipient.code=:me", me)
     query.select("msg.status,count(*)").groupBy("msg.status")
     val rs = entityDao.search(query).map(x => x(0).toString -> x(1)).toMap

@@ -20,9 +20,10 @@ package org.beangle.ems.core.user.service.impl
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.ids.cas.service.UserMobileProvider
 import org.beangle.ids.cas.service.UserMobileProvider.MobileInfo
+import scala.compiletime.uninitialized
 
 class DefaultUserMobileProvider extends UserMobileProvider {
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   override def get(principal: String): Option[MobileInfo] = {
     userService.get(principal) match {

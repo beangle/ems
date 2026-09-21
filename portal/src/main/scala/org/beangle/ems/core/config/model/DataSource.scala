@@ -19,16 +19,17 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Named, Remark}
+import scala.compiletime.uninitialized
 
 /** 应用数据源
  * */
 class DataSource extends IntId, Named, Remark {
   /** 应用 */
-  var app: App = _
+  var app: App = uninitialized
   /** 数据库 */
-  var db: Db = _
+  var db: Db = uninitialized
   /** 凭证 */
-  var credential: Credential = _
+  var credential: Credential = uninitialized
   /** 最大活动连接数 */
-  var maximumPoolSize: Int = _
+  var maximumPoolSize: Int = uninitialized
 }

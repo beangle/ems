@@ -25,11 +25,12 @@ import org.beangle.security.authz.{Permission, Resource, Scope}
 
 import java.security.Principal
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class FuncResource extends IntId, Named, Enabled, Resource, Remark {
-  var app: App = _
+  var app: App = uninitialized
   var scope = Scope.Public
-  var title: String = _
+  var title: String = uninitialized
   var actions: Option[String] = None
 
   def description: String = {
@@ -39,8 +40,8 @@ class FuncResource extends IntId, Named, Enabled, Resource, Remark {
 
 /** 角色在某应用上的功能资源授权（与场景无关） */
 class FuncPermission extends LongId, Permission, TemporalAt, Remark {
-  var role: Role = _
-  var resource: FuncResource = _
+  var role: Role = uninitialized
+  var resource: FuncResource = uninitialized
   var actions: Option[String] = None
   var restrictions: Option[String] = None
 
@@ -59,9 +60,9 @@ class FuncPermission extends LongId, Permission, TemporalAt, Remark {
  * 无记录表示不限制（全部场景）；有多条则表示仅这些场景生效。
  */
 class RoleAppEnv extends LongId {
-  var role: Role = _
-  var app: App = _
-  var env: Env = _
+  var role: Role = uninitialized
+  var app: App = uninitialized
+  var env: Env = uninitialized
 
   def this(role: Role, app: App, env: Env) = {
     this()

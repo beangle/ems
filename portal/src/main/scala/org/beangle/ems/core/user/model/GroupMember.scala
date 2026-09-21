@@ -19,13 +19,14 @@ package org.beangle.ems.core.user.model
 
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updatable
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class GroupMember extends LongId, Updatable {
-  var user: User = _
-  var group: Group = _
+  var user: User = uninitialized
+  var group: Group = uninitialized
 
   def this(user: User, group: Group) = {
     this()

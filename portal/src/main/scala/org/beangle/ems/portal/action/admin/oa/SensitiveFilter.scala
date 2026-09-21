@@ -80,7 +80,7 @@ class SensitiveFilter(val dfa: mutable.Map[Any, Any], val minMatch: Boolean = tr
    * @param beginIndex 起始位置
    * @return length if exists
    */
-  private[this] def find(txt: Array[Char], beginIndex: Int): Int = {
+  private def find(txt: Array[Char], beginIndex: Int): Int = {
     var matched = false
     var len = 0
     var nowMap = dfa

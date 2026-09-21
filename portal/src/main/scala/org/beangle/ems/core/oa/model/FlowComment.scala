@@ -22,13 +22,14 @@ import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 流程实例-审批意见
  */
 class FlowComment extends LongId, Updatable {
-  var task: FlowTask = _
-  var user: User = _
-  var messages: String = _
+  var task: FlowTask = uninitialized
+  var user: User = uninitialized
+  var messages: String = uninitialized
 
   def this(task: FlowTask, user: User, messages: String) = {
     this()

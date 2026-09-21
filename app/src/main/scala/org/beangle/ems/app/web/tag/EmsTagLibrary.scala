@@ -19,10 +19,11 @@ package org.beangle.ems.app.web.tag
 
 import org.beangle.security.authz.Authorizer
 import org.beangle.webmvc.view.tag.AbstractTagLibrary
+import scala.compiletime.uninitialized
 
 class EmsTagLibrary extends AbstractTagLibrary {
 
-  var authorizer: Authorizer = _
+  var authorizer: Authorizer = uninitialized
 
   override def models: AnyRef = {
     new EmsModels(componentContext, authorizer)

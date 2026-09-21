@@ -24,18 +24,19 @@ import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** 业务流程-所有实例
  */
 class FlowProcess extends LongId {
   /** 流程定于 */
-  var flow: Flow = _
+  var flow: Flow = uninitialized
   /** 业务主键 */
-  var businessKey: String = _
+  var businessKey: String = uninitialized
   /** 所有执行环节 */
   var tasks: mutable.Buffer[FlowTask] = Collections.newBuffer[FlowTask]
   /** 开始时间 */
-  var startAt: Instant = _
+  var startAt: Instant = uninitialized
   /** 结束时间 */
   var endAt: Option[Instant] = None
   /** 全局环境变量 */

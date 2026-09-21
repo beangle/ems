@@ -24,6 +24,7 @@ import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
 import org.beangle.security.authz.Scope
 import org.beangle.webmvc.annotation.{action, mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /**
  * 系统功能资源web服务
@@ -31,7 +32,7 @@ import org.beangle.webmvc.support.ActionSupport
 @action("/security/func/{app}/resources")
 class ResourceWS(entityDao: EntityDao) extends ActionSupport {
 
-  var appService: AppService = _
+  var appService: AppService = uninitialized
 
   @response
   def index(@param("app") appName: String): Seq[Any] = {

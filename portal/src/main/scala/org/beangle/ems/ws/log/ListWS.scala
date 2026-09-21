@@ -24,11 +24,12 @@ import org.beangle.ems.core.log.model.BusinessLog
 import org.beangle.webmvc.annotation.{action, mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 @action("list/{appName}")
 class ListWS extends ActionSupport {
-  var entityDao: EntityDao = _
-  var appService: AppService = _
+  var entityDao: EntityDao = uninitialized
+  var appService: AppService = uninitialized
 
   @mapping("{resourceId}")
   def resource(@param("appName") appName: String, @param("resourceId") resourceId: String): Iterable[Properties] = {

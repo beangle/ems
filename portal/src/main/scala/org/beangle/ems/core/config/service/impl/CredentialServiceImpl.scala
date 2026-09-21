@@ -20,10 +20,11 @@ package org.beangle.ems.core.config.service.impl
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.ems.core.config.model.Credential
 import org.beangle.ems.core.config.service.{CredentialService, DomainService}
+import scala.compiletime.uninitialized
 
 class CredentialServiceImpl(entityDao: EntityDao) extends CredentialService {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def getAll(): Seq[Credential] = {
     val query = OqlBuilder.from(classOf[Credential], "o")

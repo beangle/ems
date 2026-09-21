@@ -22,10 +22,11 @@ import org.beangle.ems.core.security.service.SessionInfoService
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.QueryHelper
+import scala.compiletime.uninitialized
 
 class IndexAction extends ActionSupport {
 
-  var sessionInfoService: SessionInfoService = _
+  var sessionInfoService: SessionInfoService = uninitialized
 
   def index(): View = {
     val infoes = sessionInfoService.find(None, QueryHelper.pageLimit, get(Order.OrderStr))

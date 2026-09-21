@@ -19,13 +19,14 @@ package org.beangle.ems.core.config.model
 
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
+import scala.compiletime.uninitialized
 
 class AppGroup extends IntId, Named, Ordered[AppGroup], LocaleTitle {
-  var indexno: String = _
-  var title: String = _
-  var shortTitle: String = _
-  var enTitle: String = _
-  var domain: Domain = _
+  var indexno: String = uninitialized
+  var title: String = uninitialized
+  var shortTitle: String = uninitialized
+  var enTitle: String = uninitialized
+  var domain: Domain = uninitialized
 
   override def compare(that: AppGroup): Int = {
     this.indexno.compareTo(that.indexno)

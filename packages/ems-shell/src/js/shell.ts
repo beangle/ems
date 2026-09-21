@@ -85,10 +85,20 @@ export function initShellLayout() {
       document.exitFullscreen();
     }
   });
+  jQuery(document).off('fullscreenchange.emsShell').on('fullscreenchange.emsShell', syncFullscreenToggle);
+  syncFullscreenToggle();
   jQuery(document).on('click.emsShell', '.control-sidebar-bg', function (e) {
     e.preventDefault();
     shell().removeClass('control-sidebar-slide-open');
   });
+}
+
+/** 顶栏全屏按钮：全屏时切换为退出全屏的图标与提示 */
+export function syncFullscreenToggle(): void {
+  const active = !!document.fullscreenElement;
+  const icon = active ? 'fas fa-compress-arrows-alt' : 'fas fa-expand-arrows-alt';
+  const title = active ? '退出全屏' : '全屏显示';
+  jQuery('[data-ems-fullscreen]').attr('title', title).find('i').attr('class', icon);
 }
 
 /** 顶栏月亮/太阳图标：浅白显示月亮（切暗黑），暗黑显示太阳（切浅白） */
@@ -153,7 +163,7 @@ export function createProfileNav(): void {
   if (profiles.length === 0 || !config.profile) return;
 
   const profile = config.profile;
-  const host = jQuery('.main-header > .ml-auto');
+  const host = jQuery('.main-header > .ms-auto, .main-header > .ml-auto');
   if (profiles.length === 1) {
     // 仅一个 profile：显示名称，不可切换
     host.prepend(
@@ -168,7 +178,7 @@ export function createProfileNav(): void {
 
   const profileSelectTemplate =
     '<li class="nav-item dropdown">' +
-    '<a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" id="profile_switcher" aria-expanded="false">{first}</a> ' +
+    '<a class="dropdown-toggle nav-link" data-bs-toggle="dropdown" href="#" id="profile_switcher" aria-expanded="false">{first}</a> ' +
     '<div class="dropdown-menu">{list}</div>' +
     '</li>';
   const profileTemplate = '<a href="{profile.url}" class="dropdown-item">{profile.name}</a>';
@@ -317,7 +327,7 @@ export function enableSearch(searchInputId: string): void {
   const searchDom = jQuery('#' + searchInputId).parent().parent();
   searchDom.show();
   searchDom.removeClass('sidebar-search-open');
-  searchDom.find('.input-group-append .btn').click(function (event) {
+  searchDom.find('.input-group .btn').click(function (event) {
     event.preventDefault();
     nav.toggleSearchResults();
   });

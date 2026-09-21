@@ -11,21 +11,21 @@
       </ul>
       <ul class="nav navbar-nav" id="top_nav_bar"></ul>
 
-      <ul class="navbar-nav ml-auto" id="navbar-setting">
+      <ul class="navbar-nav ms-auto" id="navbar-setting">
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link" data-toggle="dropdown">
+          <a href="#" class="nav-link" data-bs-toggle="dropdown">
             <i class="far fa-comments"></i>
-            <span class="badge badge-danger navbar-badge" id="newly-message-count">0</span>
+            <span class="text-bg-danger navbar-badge" id="newly-message-count">0</span>
           </a>
-          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
+          <div id="newly-message" class="dropdown-menu dropdown-menu-lg dropdown-menu-end" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
 
         <li class="nav-item dropdown tasks-menu">
-          <a href="#" class="nav-link" data-toggle="dropdown">
+          <a href="#" class="nav-link" data-bs-toggle="dropdown">
             <i class="far fa-flag"></i>
-            <span class="badge badge-warning navbar-badge" id="newly-task-count">0</span>
+            <span class="text-bg-warning navbar-badge" id="newly-task-count">0</span>
           </a>
-          <div id="newly-task" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;min-width:280px"></div>
+          <div id="newly-task" class="dropdown-menu dropdown-menu-lg dropdown-menu-end" style="left: inherit; right: 0px;min-width:280px"></div>
         </li>
 
         <li class="nav-item">
@@ -35,15 +35,15 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-ems-fullscreen href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
+          <a class="nav-link" data-ems-fullscreen href="#" role="button" title="全屏显示">
+            <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
         <li class="nav-item dropdown user user-menu">
-          <a href="#" class="nav-link" data-toggle="dropdown" title="${nav.principal.description}">
+          <a href="#" class="nav-link" data-bs-toggle="dropdown" title="${nav.principal.description}">
             <img src="${nav.avatarUrl}" class="user-image">
           </a>
-          <ul class="dropdown-menu dropdown-menu-right">
+          <ul class="dropdown-menu dropdown-menu-end">
             <li class="user-header">
               <img src="${nav.avatarUrl}" class="rounded-circle" alt="User Image">
               <p>
@@ -54,11 +54,11 @@
             </li>
             <li class="user-footer">
               [#if !nav.principal.credentialReadOnly]
-              <div class="float-sm-left">
+              <div class="float-sm-start">
                 <a href="/cas/edit" class="btn btn-default btn-flat"><i class="nav-icon far fa-user"></i>修改密码</a>
               </div>
               [/#if]
-              <div class="float-sm-right">
+              <div class="float-sm-end">
                 <a href="${b.url('!logout')}" onclick="emsShell.clearNavStateOnLogout();return true;" class="btn btn-default btn-flat" target="_top">
                   <i class="nav-icon fa fa-door-open"></i>退出&nbsp;&nbsp;
                 </a>
@@ -75,21 +75,19 @@
   <aside id="main_siderbar" class="main-sidebar sidebar-light-lightblue elevation-4" style="font-size:0.875rem;overflow: hidden;">
     <a href="/portal" class="brand-link" title="${nav.org.name} ${nav.domain.title}" style="border:0px;background-color:var(--bui-navbar-bg)" onclick="emsShell.clearNavState();return true;">
       <img src="${nav.domain.logoUrl!}" class="brand-image" style="margin-left: 0rem;"/>
-      <span class="brand-text font-weight-light" id="appName" style="color: rgba(255,255,255,.8);"></span>
+      <span class="brand-text fw-light" id="appName" style="color: rgba(255,255,255,.8);"></span>
     </a>
-    <div class="form-inline" style="display:none">
+    <div class="ems-sidebar-search" style="display:none">
       <div class="input-group">
         <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" id="menu_searcher">
-        <div class="input-group-append">
           <button type="button" class="btn btn-sidebar">
             <i class="fas fa-search fa-fw"></i>
           </button>
-        </div>
       </div>
       <div class="sidebar-search-results"><div class="list-group"></div></div>
     </div>
     <div class="sidebar" style="padding-right:0px">
-      <nav class="mt-2">
+      <nav class="mt-1">
         <ul id="menu_ul" class="nav nav-pills nav-sidebar flex-column nav-child-indent ems-sidebar-menu" role="menu"></ul>
       </nav>
     </div>
@@ -100,13 +98,13 @@
 
   <aside id="control_sidebar" class="control-sidebar control-sidebar-light">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li class="nav-item"><a class="nav-link active" style="padding: .4rem .8rem;" href="#control-sidebar-theme-options-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
-      <li class="nav-item"><a class="nav-link" style="padding: .4rem .8rem;" href="#control-sidebar-home-tab" data-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
+      <li class="nav-item"><a class="nav-link active" style="padding: .4rem .8rem;" href="#control-sidebar-theme-options-tab" data-bs-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i></a></li>
+      <li class="nav-item"><a class="nav-link" style="padding: .4rem .8rem;" href="#control-sidebar-home-tab" data-bs-toggle="tab" aria-expanded="false"><i class="fa fa-home"></i></a></li>
     </ul>
     <div class="tab-content">
       <div id="control-sidebar-theme-options-tab" class="tab-pane active" style="padding: 10px 15px;">
         <h6 class="control-sidebar-heading">布局选项</h6>
-        <div class="form-group">
+        <div class="mb-3">
           <div class="mb-2"><input type="checkbox" id="sticky_header"><label for="sticky_header">固定头部导航</label></div>
           <div class="mb-2"><input type="checkbox" id="nav_multi_tab"><label for="nav_multi_tab">工作台多标签</label></div>
           <p class="small text-muted mb-2" style="margin-top:-0.25rem;">关闭后为单槽模式；变更后请刷新页面生效。</p>

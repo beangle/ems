@@ -23,9 +23,10 @@ import org.beangle.security.authc.Account
 import org.beangle.security.session.{SessionProfile, SessionProfileProvider}
 
 import java.time.Duration
+import scala.compiletime.uninitialized
 
 class CategorySessionProfileImpl extends SessionProfileProvider {
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
   //default 1 hours
   private val defaultProfile = SessionProfile.tti(Duration.ofHours(1))
 

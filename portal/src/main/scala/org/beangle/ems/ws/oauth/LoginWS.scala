@@ -28,16 +28,17 @@ import org.beangle.webmvc.annotation.{action, body, mapping, response}
 import org.beangle.webmvc.support.ActionSupport
 
 import java.time.{Duration, Instant}
+import scala.compiletime.uninitialized
 
 @action("/oauth/login")
 class LoginWS extends ActionSupport, Initializing {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   /** 有效时长(默认5分钟) */
   var expiresIn: Duration = Duration.ofMillis(5)
 
-  private var digest: JwtDigest = _
+  private var digest: JwtDigest = uninitialized
 
   override def init(): Unit = {
     val s = EmsApp.properties.getOrElse("openapi.secret", "org.beangle.ems:ems-ws.openapi.secret").toString

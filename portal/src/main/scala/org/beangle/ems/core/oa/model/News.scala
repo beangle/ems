@@ -21,14 +21,15 @@ import org.beangle.data.model.LongId
 import org.beangle.ems.core.config.model.Domain
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 /** 新闻
  * */
 class News extends LongId {
-  var domain: Domain = _
-  var title: String = _
-  var publishedOn: LocalDate = _
-  var url: String = _
+  var domain: Domain = uninitialized
+  var title: String = uninitialized
+  var publishedOn: LocalDate = uninitialized
+  var url: String = uninitialized
   var contents: Option[String] = None
-  var archived: Boolean = _
+  var archived: Boolean = uninitialized
 }

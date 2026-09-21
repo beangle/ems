@@ -3,7 +3,7 @@
 [@b.toolbar title="文档信息"]
   bar.addClose("${b.text("action.close")}");
 [/@]
-  <div class="box-body no-padding">
+  <div class="box-body m-4">
     <div class="mailbox-read-info">
       <h3>${doc.name}</h3>
       <h5>发自: ${doc.uploadBy.name}(${doc.uploadBy.code})

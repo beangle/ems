@@ -4,9 +4,9 @@
   <div class="card-body">
 
     [#list menus.groups as groupMenu]
-      <p style="border-bottom: 1px solid rgba(0,0,0,.125);"><strong><i class="fa-solid fa-list mr-1"></i>${groupMenu.group['title']}</strong></p>
+      <p style="border-bottom: 1px solid rgba(0,0,0,.125);"><strong><i class="fa-solid fa-list me-1"></i>${groupMenu.group['title']}</strong></p>
       [#list groupMenu.appMenus as appMenu]
-      <strong><i class="fa-regular fa-flag mr-1"></i>${appMenu.app['title']}</strong>
+      <strong><i class="fa-regular fa-flag me-1"></i>${appMenu.app['title']}</strong>
       <p class="text-muted">[#list appMenu.menus as menu][@displayMenu menu/][/#list]</p>
       [/#list]
 [/#list]

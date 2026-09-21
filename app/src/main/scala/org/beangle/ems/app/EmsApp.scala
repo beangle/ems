@@ -27,6 +27,7 @@ import org.beangle.ems.app.blob.{LocalRepository, RemoteRepository, Repository}
 
 import java.io.{File, FileInputStream}
 import java.net.URL
+import scala.compiletime.uninitialized
 
 object EmsApp {
 
@@ -34,7 +35,7 @@ object EmsApp {
   val name: String = properties("name")
   val path: String = properties("path")
 
-  private var redisConfig: Map[String, String] = _
+  private var redisConfig: Map[String, String] = uninitialized
 
   def getBlobRepository(remote: Boolean = true): Repository = {
     val dir = "/" + Strings.substringBefore(name, "-")

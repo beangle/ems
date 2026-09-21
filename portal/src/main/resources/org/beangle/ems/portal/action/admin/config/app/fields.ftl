@@ -14,21 +14,20 @@
 
 [@b.field label="引用资源"]
   <div style="margin-left:100px;">
-    <style>.itable th, .itable td{padding:3px 5px;}</style>
-    <table border="1" class="formTable itable dstable">
+    <table class="table table-sm table-mini dstable" style="width:600px;">
       <thead>
-        <th>数据源</th>
-        <th style="width:60px">名称</th>
+        <th style="width:120px">数据源</th>
+        <th style="width:100px">名称</th>
         <th style="width:100px">凭证</th>
-        <th>最大连接数</th>
-        <th>备注</th>
-        <th>操作</th>
+        <th style="width:80px">最大连接数</th>
+        <th style="width:80px">备注</th>
+        <th style="width:120px">操作</th>
       </thead>
       <tbody>
         [#list app.datasources as v]
           <tr>
             <td>${v.db.name}</td>
-            <td><input name="ds${v.db.id}.name" value="${v.name!}" style="width:60px" maxlength="40"/></td>
+            <td><input name="ds${v.db.id}.name" value="${v.name!}" style="width:80px" maxlength="40"/></td>
             <td>
               <select name="ds${v.db.id}.credential.id" style="width:100px">
                  [#list credentials as credential]
@@ -41,8 +40,8 @@
                <input name="ds${v.db.id}.db.id" type="hidden" value="${v.db.id}"/>
                <input class="maximumPoolSize" name="ds${v.db.id}.maximumPoolSize" value="${v.maximumPoolSize}" style="width:60px"/>
             </td>
-            <td><input name="ds${v.db.id}.remark" value="${v.remark!}" style="width:100px"/></td>
-            <td><button class="delDataSourceBtn btn btn-sm btn-danger"><i class="fas fa-minus"></i>删除</button></td>
+            <td><input name="ds${v.db.id}.remark" value="${v.remark!}" style="width:80px"/></td>
+            <td class="text-end"><button class="delDataSourceBtn btn btn-sm btn-outline-danger"><i class="fas fa-minus"></i>删除</button></td>
            </tr>
         [/#list]
       </tbody>
@@ -65,15 +64,21 @@
     return false;
   });
   function addDataSource(datas){
+    var tbody = $(".dstable tbody");
     $.each(datas, function (index, value){
       var id = value[0], name = value[1];
-        var tr = $('<tr><td>'+name+'</td>'+
+        if($(".dstable input[name='ds'][value='"+id+"']").length > 0){
+          return true;
+        }
+        var tr = $('<tr><td></td>'+
             '<td><input name="ds" type="hidden" value="'+id+'"/><input name="ds'+id+'.db.id" type="hidden" value="' + id + '"/><input name="ds'+id+'.name" style="width:60px" maxlength="40"/></td>'+
             '<td><select name="ds'+id+'.credential.id" style="width:100px">[#list credentials as c]<option value="${c.id}">${c.name}</option>[/#list]</select></td>'+
             '<td><input class="maximumPoolSize" name="ds'+id+'.maximumPoolSize" style="width:60px"/></td>'+
             '<td><input name="ds'+id+'.remark" style="width:100px"/></td>'+
             '<td><button class="delDataSourceBtn btn btn-sm btn-danger"><i class="fas fa-minus"></i>删除</button></td></tr>');
-        $(".dstable").append(tr);
+        tr.find("td:first").text(name);
+        tr.find("input[name='ds"+id+".name']").val(name);
+        tbody.append(tr);
         tr.hide().fadeIn();
     });
   }

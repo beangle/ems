@@ -25,11 +25,12 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.security.model.FuncResource
 import org.beangle.ems.core.security.service.ProfileService
 import org.beangle.ems.core.user.model.{Dimension, EnvProfile, User}
+import scala.compiletime.uninitialized
 
 class ProfileServiceImpl extends ProfileService {
 
-  var domainService: DomainService = _
-  var entityDao: EntityDao = _
+  var domainService: DomainService = uninitialized
+  var entityDao: EntityDao = uninitialized
 
   override def getProfiles(user: User, resource: FuncResource): collection.Seq[EnvProfile] = {
     Seq.empty

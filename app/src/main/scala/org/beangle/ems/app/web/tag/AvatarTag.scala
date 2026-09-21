@@ -20,11 +20,12 @@ package org.beangle.ems.app.web.tag
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.ems.app.Ems
 import org.beangle.template.api.{ComponentContext, UIBean}
+import scala.compiletime.uninitialized
 
 class AvatarTag(context: ComponentContext) extends UIBean(context) {
 
-  var href: String = _
-  var username: String = _
+  var href: String = uninitialized
+  var username: String = uninitialized
 
   override def evaluateParams(): Unit = {
     if (null == this.href) {

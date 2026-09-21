@@ -22,10 +22,11 @@ import org.beangle.data.model.pojo.{Enabled, Hierarchical, Named, Remark}
 import org.beangle.ems.core.config.model.App
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 class Menu extends IntId, Named, Enabled, Hierarchical[Menu], Remark {
-  var channel: Channel = _
-  var enName: String = _
+  var channel: Channel = uninitialized
+  var enName: String = uninitialized
   var route: Option[String] = None
   var icon: Option[String] = None
   var resources: mutable.Set[FuncResource] = new mutable.HashSet[FuncResource]

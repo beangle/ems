@@ -25,14 +25,15 @@ import org.beangle.ems.core.security.model.{Channel, FuncPermission}
 import org.beangle.ems.core.user.service.UserService
 import org.beangle.webmvc.annotation.{mapping, param, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class AppWS(userService: UserService, entityDao: EntityDao) extends ActionSupport {
 
-  var appService: AppService = _
-  var domainService: DomainService = _
+  var appService: AppService = uninitialized
+  var domainService: DomainService = uninitialized
 
   @response(cacheable = true)
   @mapping("{userCode}")

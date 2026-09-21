@@ -26,16 +26,17 @@ import org.beangle.security.Securities
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 class TodoAction extends RestfulAction[Todo] {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
-  var todoService: TodoService = _
+  var todoService: TodoService = uninitialized
 
   override def indexSetting(): Unit = {
     val user = userService.get(Securities.user)
-    val query = OqlBuilder.from[Array[_]](classOf[Todo].getName, "todo")
+    val query = OqlBuilder.from[Array[?]](classOf[Todo].getName, "todo")
     query.where("todo.user = :me", user)
     query.select("todo.business.id,count(*)").groupBy("todo.business.id")
     val stat = entityDao.search(query).map(x => entityDao.get(classOf[Business], x(0).asInstanceOf[Long]) -> x(1)).toMap

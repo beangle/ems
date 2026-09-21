@@ -22,17 +22,18 @@ import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.core.config.model.HasEnvIds
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /**
  * @author chaostone
  */
 class RoleMember extends LongId, Updatable, HasEnvIds {
-  var user: User = _
-  var role: Role = _
+  var user: User = uninitialized
+  var role: Role = uninitialized
 
-  var member: Boolean = _
-  var granter: Boolean = _
-  var manager: Boolean = _
+  var member: Boolean = uninitialized
+  var granter: Boolean = uninitialized
+  var manager: Boolean = uninitialized
 
   def this(user: User, role: Role) = {
     this()

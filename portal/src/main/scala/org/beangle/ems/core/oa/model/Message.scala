@@ -21,6 +21,7 @@ import org.beangle.data.model.LongId
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 object Message {
   val Newly = 1
@@ -32,19 +33,19 @@ object Message {
  * */
 class Message extends LongId {
   /** 标题 */
-  var title: String = _
+  var title: String = uninitialized
   /** 内容 */
-  var contents: String = _
+  var contents: String = uninitialized
   /** 发送用户 */
   var sender: Option[User] = None
   /** 发送人 */
-  var sendFrom: String = _
+  var sendFrom: String = uninitialized
   /** 接受人 */
-  var recipient: User = _
+  var recipient: User = uninitialized
   /** 消息状态 */
-  var status: Int = _
+  var status: Int = uninitialized
   /** 发送时间 */
-  var sentAt: Instant = _
+  var sentAt: Instant = uninitialized
 
   def this(recipient: User, title: String, contents: String) = {
     this()

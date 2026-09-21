@@ -21,20 +21,21 @@ import org.beangle.ems.core.config.model.Domain
 import org.beangle.ems.core.user.model.Category
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 会话信息
   * 先不要持久化，该模型处于历史原因使用jdbc进行存储
   */
 class SessionInfo extends Serializable {
-  var domain: Domain = _
-  var id: String = _
-  var principal: String = _
-  var description: Option[String] = _
-  var category: Category = _
-  var ip: Option[String] = _
-  var agent: Option[String] = _
-  var os: Option[String] = _
-  var loginAt: Instant = _
-  var lastAccessAt: Instant = _
+  var domain: Domain = uninitialized
+  var id: String = uninitialized
+  var principal: String = uninitialized
+  var description: Option[String] = uninitialized
+  var category: Category = uninitialized
+  var ip: Option[String] = uninitialized
+  var agent: Option[String] = uninitialized
+  var os: Option[String] = uninitialized
+  var loginAt: Instant = uninitialized
+  var lastAccessAt: Instant = uninitialized
 
 }

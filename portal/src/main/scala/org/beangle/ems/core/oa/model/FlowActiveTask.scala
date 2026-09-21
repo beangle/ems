@@ -24,18 +24,19 @@ import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** 流程实例中的任务
  */
 class FlowActiveTask extends LongId, Named {
   /** 流程 */
-  var process: FlowActiveProcess = _
+  var process: FlowActiveProcess = uninitialized
   /** 顺序号 */
-  var idx: Int = _
+  var idx: Int = uninitialized
   /** 受理人 */
   var assignees: mutable.Set[User] = Collections.newSet[User]
   /** 开始时间 */
-  var startAt: Instant = _
+  var startAt: Instant = uninitialized
   /** 预计完成时间 */
   var dueTime: Option[Instant] = None
 

@@ -21,13 +21,14 @@ import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Named, Updatable}
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 凭证
  * 用于数据源认证
  */
 class Credential extends IntId, Named, Updatable {
-  var domain: Domain = _
-  var username: String = _
-  var password: String = _
-  var expiredAt: Instant = _
+  var domain: Domain = uninitialized
+  var username: String = uninitialized
+  var password: String = uninitialized
+  var expiredAt: Instant = uninitialized
 }

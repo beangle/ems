@@ -7,9 +7,7 @@
   [@b.select name="doc.app.id" label="应用" value="${(doc.app.id)!}" option="id,title" required="true" items=apps/]
   [@b.checkboxes name="category.id" label="面向用户" values=doc.categories required="true" items=categories/]
   [@b.radios name="doc.archived" label="是否归档" value=doc.archived required="true" /]
-  [@b.field label="文件"]
-    <input name="docfile" type="file"/>
-  [/@]
+  [@b.file label="文件" name="docfile"  maxSize="20MB" /]
   [@b.formfoot]
    [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
   [/@]

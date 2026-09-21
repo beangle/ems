@@ -28,12 +28,13 @@ import org.beangle.ems.core.config.service.DomainService
 
 import java.io.{ByteArrayInputStream, InputStream}
 import java.util.Locale
+import scala.compiletime.uninitialized
 
 class DbTextBundleLoader extends DefaultTextBundleLoader, Initializing {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   private val bundles = Collections.newMap[String, Long]
 

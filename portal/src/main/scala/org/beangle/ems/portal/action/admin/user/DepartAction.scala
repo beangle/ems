@@ -28,11 +28,12 @@ import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.view.View
 
 import java.time.LocalDate
+import scala.compiletime.uninitialized
 
 class DepartAction extends RestfulAction[Depart] {
-  var databus: DataEventBus = _
+  var databus: DataEventBus = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override protected def getQueryBuilder: OqlBuilder[Depart] = {
     val builder = OqlBuilder.from(classOf[Depart], "depart")

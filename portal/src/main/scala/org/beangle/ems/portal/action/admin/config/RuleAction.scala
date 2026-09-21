@@ -25,11 +25,12 @@ import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class RuleAction extends RestfulAction[Rule] {
-  var databus: DataEventBus = _
+  var databus: DataEventBus = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

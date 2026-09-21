@@ -22,18 +22,19 @@ import org.beangle.data.model.LongId
 import java.time.Instant
 import java.time.Duration
 import org.beangle.ems.core.job.model.CronTask
+import scala.compiletime.uninitialized
 
 /** 计划任务执行日志
  */
 class CronTaskLog extends LongId {
   /** 关联任务 */
-  var task: CronTask = _
+  var task: CronTask = uninitialized
   /** 执行时间 */
-  var executeAt: Instant = _
+  var executeAt: Instant = uninitialized
   /** 执行耗时 */
-  var duration: Duration = _
+  var duration: Duration = uninitialized
   /** 状态码（0-成功 1-失败 2-运行中） */
-  var statusCode: Int = _
+  var statusCode: Int = uninitialized
   /** 结果文件路径 */
-  var resultFilePath: String  = _
+  var resultFilePath: String  = uninitialized
 }

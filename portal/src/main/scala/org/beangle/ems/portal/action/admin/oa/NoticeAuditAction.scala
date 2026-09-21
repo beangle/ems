@@ -30,10 +30,11 @@ import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.EntityAction
 
 import java.time.{Instant, LocalDate}
+import scala.compiletime.uninitialized
 
 class NoticeAuditAction extends ActionSupport, EntityAction[Notice], DomainSupport {
-  var userService: UserService = _
-  var entityDao: EntityDao = _
+  var userService: UserService = uninitialized
+  var entityDao: EntityDao = uninitialized
 
   def index(): View = {
     put("categories", userService.getCategories())

@@ -277,12 +277,12 @@ export const tabsProto = {
       var trailBtn = tab.navLink.querySelector(".ems-nav-tab-trail");
       if (!trailBtn) return;
       if (pinned) {
-        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-pin ml-1 flex-shrink-0";
+        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-pin ms-1 flex-shrink-0";
         trailBtn.title = "\u53D6\u6D88\u56FA\u5B9A";
         trailBtn.setAttribute("aria-label", "\u53D6\u6D88\u56FA\u5B9A");
         trailBtn.innerHTML = '<i class="fas fa-thumbtack" aria-hidden="true"></i>';
       } else {
-        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-close ml-1 flex-shrink-0";
+        trailBtn.className = "btn btn-tool btn-sm ems-nav-tab-trail ems-nav-tab-close ms-1 flex-shrink-0";
         trailBtn.title = "\u5173\u95ED";
         trailBtn.setAttribute("aria-label", "\u5173\u95ED\u6807\u7B7E");
         trailBtn.innerHTML = "&times;";

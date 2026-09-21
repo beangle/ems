@@ -34,8 +34,11 @@ function closeGroupToggleDropdown(): void {
   const $drop = jQuery('.ems-group-toggle-nav .nav-item.dropdown');
   const $toggle = $drop.find('.dropdown-toggle');
   const $menu = $drop.find('.dropdown-menu');
-  if ($toggle.length && typeof ($toggle as JQuery & { dropdown?: (action: string) => void }).dropdown === 'function') {
-    ($toggle as JQuery & { dropdown: (action: string) => void }).dropdown('hide');
+  // BS5 起 Bootstrap 组件不再注册 jQuery 插件方法，改走原生 API
+  const toggleEl = $toggle[0];
+  const bsDropdown = (window as unknown as { bootstrap?: { Dropdown?: { getOrCreateInstance(el: Element): { hide(): void } } } }).bootstrap?.Dropdown;
+  if (toggleEl && bsDropdown) {
+    bsDropdown.getOrCreateInstance(toggleEl).hide();
   }
   $drop.removeClass('show');
   $menu.removeClass('show');
@@ -46,7 +49,7 @@ function closeGroupToggleDropdown(): void {
 export function prependGroupToggle(jqueryElem: JQuery, navRef: NavInstance): void {
   const groupDropNav =
     '<ul class="nav navbar-nav ems-group-toggle-nav"><li class="nav-item dropdown">' +
-    '<a href="#" data-toggle="dropdown" data-display="static" class="nav-link dropdown-toggle group-toggle" role="button" title="分组" aria-haspopup="true" aria-expanded="false"><i class="fas fa-layer-group"></i></a>' +
+    '<a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="nav-link dropdown-toggle group-toggle" role="button" title="分组" aria-haspopup="true" aria-expanded="false"><i class="fas fa-layer-group"></i></a>' +
     '<div id="group_drop_bar" class="dropdown-menu ems-group-toggle-menu"></div>' +
     '</li></ul>';
   jqueryElem.before(groupDropNav);

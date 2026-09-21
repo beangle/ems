@@ -25,30 +25,31 @@ import org.beangle.security.authz.{Permission, Resource, Scope}
 
 import java.security.Principal
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class DataPermission extends LongId, Permission, Remark {
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   var app: Option[App] = None
-  var resource: DataResource = _
-  var description: String = _
-  var filters: String = _
+  var resource: DataResource = uninitialized
+  var description: String = uninitialized
+  var filters: String = uninitialized
   var funcResource: Option[FuncResource] = None
   var attrs: Option[String] = None
   var actions: Option[String] = None
   var restrictions: Option[String] = None
   var role: Option[Role] = None
 
-  var beginAt: Instant = _
+  var beginAt: Instant = uninitialized
   var endAt: Option[Instant] = None
 
   def principal: Principal = role.orNull
 }
 
 class DataResource extends IntId, Named, Resource, Remark {
-  var domain: Domain = _
+  var domain: Domain = uninitialized
   var scope = Scope.Public
-  var typeName: String = _
-  var title: String = _
+  var typeName: String = uninitialized
+  var title: String = uninitialized
   var actions: Option[String] = None
 
   def enabled = true

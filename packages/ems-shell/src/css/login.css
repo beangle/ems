@@ -95,3 +95,13 @@ body {
       margin: auto;
     }
 }
+
+/* BS5 起 a 默认带下划线（$link-decoration: underline），登录页沿用 BS4 观感 */
+a {
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}

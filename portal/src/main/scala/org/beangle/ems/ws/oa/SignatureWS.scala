@@ -24,13 +24,14 @@ import org.beangle.ems.core.oa.model.Signature
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.support.{ActionSupport, ServletSupport}
 import org.beangle.webmvc.view.{Status, View}
+import scala.compiletime.uninitialized
 
 /** 查询用户的签名文件
  *
  * @param entityDao
  */
 class SignatureWS(entityDao: EntityDao) extends ActionSupport, ServletSupport {
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   @mapping("{userCode}")
   def info(@param("userCode") userCode: String): View = {

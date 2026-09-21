@@ -24,10 +24,11 @@ import org.beangle.ems.portal.action.admin.DomainSupport
 import org.beangle.webmvc.annotation.ignore
 import org.beangle.webmvc.view.View
 import org.beangle.she.webmvc.RestfulAction
+import scala.compiletime.uninitialized
 
 class ConfigAction extends RestfulAction[SessionConfig], DomainSupport {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   protected override def editSetting(resource: SessionConfig): Unit = {
     put("categories", userService.getCategories())

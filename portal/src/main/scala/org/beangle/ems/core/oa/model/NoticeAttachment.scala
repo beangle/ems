@@ -24,21 +24,22 @@ import org.beangle.data.model.pojo.Updatable
 import org.beangle.ems.app.EmsApp
 
 import java.net.URI
+import scala.compiletime.uninitialized
 
 /**
  * 系统公告的福建
  */
 class NoticeAttachment extends LongId {
 
-  var name: String = _
+  var name: String = uninitialized
 
-  var fileSize: Int = _
+  var fileSize: Int = uninitialized
 
-  var filePath: String = _
+  var filePath: String = uninitialized
 
-  var notice: Notice = _
+  var notice: Notice = uninitialized
 
-  var embedded: Boolean = _
+  var embedded: Boolean = uninitialized
 
   def image: Boolean = {
     MediaTypes.Defaults.get(Strings.substringAfterLast(filePath, ".")) match

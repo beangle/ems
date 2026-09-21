@@ -6,7 +6,7 @@
         <h1 class="m-0 text-dark">欢迎 <small>${user.name}</small></h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
-        <ol class="breadcrumb  float-sm-right">
+        <ol class="breadcrumb  float-sm-end">
           <li class="breadcrumb-item"><i class="fas fa-tachometer-alt" style="margin-top: 6px;"></i> 首页</li>
           <li class="breadcrumb-item active">欢迎</li>
         </ol>
@@ -20,7 +20,7 @@
   [@b.card class="card-primary card-outline"]
     [#assign title]<i class="far fa-bell"></i> 通知公告[/#assign]
     [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
-    <a href="${b.base}/portal/user/notice?notice.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
+    <a href="${b.base}/portal/user/notice?notice.app.name=${Parameters['app']}" target="_blank" class="float-end">更多...</a>
     [/@]
     [@b.card_body class="p-0"]
       <div class="table-responsive">
@@ -43,7 +43,7 @@
       [@b.card class="card-primary card-outline"]
         [#assign title]<i class="fas fa-file-pdf"></i> 文档下载[/#assign]
         [@b.card_header class="border-transparent" title=title  minimal="true" closeable="true"]
-        <a href="${b.base}/portal/user/doc?doc.app.name=${Parameters['app']}" target="_blank" class="float-right">更多...</a>
+        <a href="${b.base}/portal/user/doc?doc.app.name=${Parameters['app']}" target="_blank" class="float-end">更多...</a>
         [/@]
         [@b.card_body class="p-0"]
           <div class="table-responsive">

@@ -34,11 +34,12 @@ import org.beangle.webmvc.view.{Stream, View}
 
 import java.io.File
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class DocAction extends RestfulAction[Doc], ServletSupport, DomainSupport {
 
-  var docService: DocService = _
-  var userService: UserService = _
+  var docService: DocService = uninitialized
+  var userService: UserService = uninitialized
 
   override protected def indexSetting(): Unit = {
     put("categories", userService.getCategories())

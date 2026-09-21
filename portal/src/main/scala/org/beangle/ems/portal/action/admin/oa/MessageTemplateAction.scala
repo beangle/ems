@@ -24,12 +24,13 @@ import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.oa.model.MessageTemplate
 import org.beangle.she.webmvc.RestfulAction
 import org.beangle.webmvc.view.View
+import scala.compiletime.uninitialized
 
 /** 消息模板维护
  */
 class MessageTemplateAction extends RestfulAction[MessageTemplate] {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

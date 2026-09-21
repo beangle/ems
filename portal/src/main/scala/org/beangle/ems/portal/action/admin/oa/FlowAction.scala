@@ -29,11 +29,12 @@ import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.view.View
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class FlowAction extends RestfulAction[Flow] {
-  var databus: DataEventBus = _
+  var databus: DataEventBus = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def indexSetting(): Unit = {
     super.indexSetting()

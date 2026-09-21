@@ -26,10 +26,11 @@ import org.beangle.ems.core.oa.service.TodoService
 import org.beangle.ems.core.user.model.User
 import org.beangle.template.api.TemplateInterpreter
 import org.beangle.template.freemarker.{DefaultTemplateEngine, DefaultTemplateInterpreter}
+import scala.compiletime.uninitialized
 
 class TodoServiceImpl extends TodoService {
 
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
   override def complete(todo: Todo): DoneTodo = {
     val done = new DoneTodo(todo)

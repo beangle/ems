@@ -35,10 +35,11 @@ import org.beangle.webmvc.view.View
 
 import java.io.InputStream
 import java.time.{Instant, LocalDate, ZoneId}
+import scala.compiletime.uninitialized
 
 class NoticeAction extends RestfulAction[Notice], DomainSupport {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
   private val allowExts = Set("doc", "docx", "xls", "xlsx", "pdf", "zip", "rar", "jpg", "png")
 

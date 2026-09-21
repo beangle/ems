@@ -22,11 +22,12 @@ import org.beangle.ems.core.config.model.Env
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.ems.core.user.model.Dimension
 import org.beangle.ems.core.user.service.DimensionService
+import scala.compiletime.uninitialized
 
 class DimensionServiceImpl extends DimensionService {
 
-  var domainService: DomainService = _
-  var entityDao: EntityDao = _
+  var domainService: DomainService = uninitialized
+  var entityDao: EntityDao = uninitialized
 
   override def getAll(): Seq[Dimension] = {
     val query = OqlBuilder.from(classOf[Dimension], "d")

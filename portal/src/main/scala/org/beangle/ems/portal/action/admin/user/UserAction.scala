@@ -38,6 +38,7 @@ import org.beangle.webmvc.context.ActionContext
 import org.beangle.webmvc.view.View
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /**
  * 用户管理响应处理类
@@ -46,17 +47,17 @@ import java.time.Instant
  */
 class UserAction extends RestfulAction[User], ExportSupport[User] {
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
-  var credentialStore: DBCredentialStore = _
+  var credentialStore: DBCredentialStore = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
-  var dimensionService: DimensionService = _
+  var dimensionService: DimensionService = uninitialized
 
-  var businessLogger: WebBusinessLogger = _
+  var businessLogger: WebBusinessLogger = uninitialized
 
-  var userDashboardHelper: UserDashboardHelper = _
+  var userDashboardHelper: UserDashboardHelper = uninitialized
 
   override def indexSetting(): Unit = {
     put("categories", userService.getCategories())

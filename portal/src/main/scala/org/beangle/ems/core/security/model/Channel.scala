@@ -20,11 +20,12 @@ package org.beangle.ems.core.security.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.{Enabled, Named}
 import org.beangle.ems.core.config.model.{App, ChannelType, EmbedMode}
+import scala.compiletime.uninitialized
 
 /** 应用下的菜单端（同一 App 可有 PC/移动/小程序等多套菜单） */
 class Channel extends IntId, Enabled {
-  var app: App = _
-  var base: String = _
-  var channelType: ChannelType = _
+  var app: App = uninitialized
+  var base: String = uninitialized
+  var channelType: ChannelType = uninitialized
   var embedMode: EmbedMode = EmbedMode.Iframe
 }

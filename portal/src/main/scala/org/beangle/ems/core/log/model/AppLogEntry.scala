@@ -21,12 +21,13 @@ import org.beangle.data.model.LongId
 import org.beangle.ems.core.config.model.App
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** 应用日志实体
  */
 abstract class AppLogEntry extends LongId {
 
-  var app: App = _
+  var app: App = uninitialized
 
   def message: String
 

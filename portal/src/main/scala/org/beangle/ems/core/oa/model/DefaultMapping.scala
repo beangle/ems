@@ -23,7 +23,7 @@ object DefaultMapping extends MappingModule {
 
   override def binding(): Unit = {
     defaultIdGenerator(classOf[Long], IdGenerator.DateTime)
-    defaultCache("ems-security", "read-write")
+    defaultCache("ems", "read-write")
 
     bind[Doc].cacheable()
 

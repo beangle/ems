@@ -9,11 +9,11 @@
     <nav role="navigation" class="navbar navbar-expand-lg navbar-light">
       <a class="navbar-brand" href="#">照片管理</a>
       <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
           <li class="nav-item active"><a class="nav-link" href="#">照片浏览</a></li>
         </ul>
-        [@b.form action="!index" name="photoSearchForm" id="photoSearchForm" class="form-inline"]
-          <div class="form-group">
+        [@b.form action="!index" name="photoSearchForm" id="photoSearchForm" class="d-flex flex-wrap align-items-center gap-2"]
+          <div class="mb-3">
             <input type="text" name="user" value="${Parameters['user']!}" placeholder="用户号/姓名" class="form-control form-control-sm">
           </div>
           <input type="hidden" id="pageIndex" name="pageIndex" value="1">
@@ -34,7 +34,7 @@
          [/#list]
         <div style="clear:both"></div>
       </div>
-       <ul class="pagination float-right">
+       <ul class="pagination float-end">
          [#if users.pageIndex>1]
              <li class="page-item"><a href="#" onclick="gotoPage(${users.pageIndex-1})" class="page-link">&laquo;</a></li>
              [#if users.pageIndex > 1]

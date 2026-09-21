@@ -22,14 +22,15 @@ import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Named
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /**
  * 规则元数据
  */
 class RuleMeta extends LongId, Named {
-  var domain: Domain = _
-  var business: Business = _
-  var title: String = _
-  var description: String = _
+  var domain: Domain = uninitialized
+  var business: Business = uninitialized
+  var title: String = uninitialized
+  var description: String = uninitialized
   var params: mutable.Set[RuleParamMeta] = Collections.newSet[RuleParamMeta]
 }

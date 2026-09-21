@@ -20,8 +20,9 @@ package org.beangle.ems.core.blob.model
 import org.beangle.data.model.IntId
 import org.beangle.data.model.pojo.Named
 import org.beangle.ems.core.config.model.Domain
+import scala.compiletime.uninitialized
 
 class Profile extends IntId, Named {
-  var domain: Domain = _
-  var base: String = _
+  var domain: Domain = uninitialized
+  var base: String = uninitialized
 }

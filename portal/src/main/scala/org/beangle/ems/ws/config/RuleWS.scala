@@ -24,13 +24,14 @@ import org.beangle.ems.core.config.model.Rule
 import org.beangle.ems.core.config.service.DomainService
 import org.beangle.webmvc.annotation.{mapping, response}
 import org.beangle.webmvc.support.ActionSupport
+import scala.compiletime.uninitialized
 
 /** 规则查询服务
  */
 class RuleWS extends ActionSupport {
 
-  var entityDao: EntityDao = _
-  var domainService: DomainService = _
+  var entityDao: EntityDao = uninitialized
+  var domainService: DomainService = uninitialized
 
   @response
   @mapping("{ids}")

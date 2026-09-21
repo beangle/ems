@@ -33,6 +33,7 @@ import org.beangle.web.servlet.util.CookieUtils
 import redis.clients.jedis.RedisClient
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 /** ems 的 OAuth2 授权服务实现。
  *
@@ -41,10 +42,10 @@ import java.time.Instant
  */
 class OAuthServiceImpl extends AbstractOAuthService {
 
-  var domainService: DomainService = _
-  var entityDao: EntityDao = _
-  var securityManager: WebSecurityManager = _
-  var userService: UserService = _
+  var domainService: DomainService = uninitialized
+  var entityDao: EntityDao = uninitialized
+  var securityManager: WebSecurityManager = uninitialized
+  var userService: UserService = uninitialized
 
   def this(client: RedisClient) = {
     this()

@@ -21,10 +21,11 @@ import org.beangle.commons.collection.Properties
 import org.beangle.webmvc.support.ActionSupport
 import org.beangle.webmvc.annotation.response
 import org.beangle.ems.core.config.service.DomainService
+import scala.compiletime.uninitialized
 
 class OrgWS extends ActionSupport {
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   @response(cacheable = true)
   def index(): Properties = {

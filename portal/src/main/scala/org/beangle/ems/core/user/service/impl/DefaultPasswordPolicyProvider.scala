@@ -20,10 +20,11 @@ package org.beangle.ems.core.user.service.impl
 import org.beangle.commons.bean.Initializing
 import org.beangle.ems.core.user.service.PasswordConfigService
 import org.beangle.security.authc.{PasswordPolicy, PasswordPolicyProvider}
+import scala.compiletime.uninitialized
 
 class DefaultPasswordPolicyProvider extends PasswordPolicyProvider, Initializing {
-  var passwordConfigService: PasswordConfigService = _
-  private var policy: PasswordPolicy = _
+  var passwordConfigService: PasswordConfigService = uninitialized
+  private var policy: PasswordPolicy = uninitialized
 
   override def init(): Unit = {
     policy = passwordConfigService.get()

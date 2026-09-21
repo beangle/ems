@@ -23,14 +23,15 @@ import org.beangle.data.model.pojo.{Named, Remark}
 import org.beangle.ems.core.user.model.Group
 
 import scala.collection.mutable
+import scala.compiletime.uninitialized
 
 /** 工作流定义中的活动
  */
 class FlowActivity extends LongId, Named, Remark {
   /** 流程定义 */
-  var flow: Flow = _
+  var flow: Flow = uninitialized
   /** 顺序号 */
-  var idx: Int = _
+  var idx: Int = uninitialized
   /** 先决条件 */
   var guard: Option[String] = None
   /** 受理人 工号 或  求值为代码的表达式 */

@@ -22,24 +22,25 @@ import org.beangle.ems.core.config.model.ThirdPartyApp
 import org.beangle.ems.core.user.model.User
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class OAuthToken extends LongId {
 
   /** oauth */
-  var token: String = _
+  var token: String = uninitialized
 
   /** 客户端ID (ThirdPartyApp) */
-  var client: ThirdPartyApp = _
+  var client: ThirdPartyApp = uninitialized
 
   /** 授权用户ID (User.code) */
-  var user: User = _
+  var user: User = uninitialized
 
   /** 授权范围，如 "read write profile"，多个用空格分隔 */
-  var scope: String = _
+  var scope: String = uninitialized
 
   /** 颁发时间 */
-  var issuedAt: Instant = _
+  var issuedAt: Instant = uninitialized
 
   /** 过期时间 */
-  var expiredAt: Instant = _
+  var expiredAt: Instant = uninitialized
 }

@@ -25,13 +25,14 @@ import org.beangle.ems.core.user.service.UserService
 import org.beangle.security.session.{EventType, OverTryLoginEvent}
 
 import java.time.Instant
+import scala.compiletime.uninitialized
 
 class OverTypeLoginEventTracker extends EventListener[OverTryLoginEvent] {
-  var entityDao: EntityDao = _
+  var entityDao: EntityDao = uninitialized
 
-  var userService: UserService = _
+  var userService: UserService = uninitialized
 
-  var domainService: DomainService = _
+  var domainService: DomainService = uninitialized
 
   override def onEvent(event: OverTryLoginEvent): Unit = {
 
@@ -52,11 +53,11 @@ class OverTypeLoginEventTracker extends EventListener[OverTryLoginEvent] {
     }
   }
 
-  override def supportsEventType(eventType: Class[_ <: Event]): Boolean = {
+  override def supportsEventType(eventType: Class[? <: Event]): Boolean = {
     classOf[OverTryLoginEvent].isAssignableFrom(eventType)
   }
 
-  override def supportsSourceType(sourceType: Class[_]): Boolean = {
+  override def supportsSourceType(sourceType: Class[?]): Boolean = {
     true
   }
 }

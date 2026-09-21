@@ -25,14 +25,15 @@ import org.beangle.ems.core.config.service.AppService
 import org.beangle.ems.core.security.model.{FuncPermission, FuncResource}
 import org.beangle.ems.core.user.model.Root
 import org.beangle.security.authz.{AbstractRoleBasedAuthorizer, Authority, AuthorityDomain}
+import scala.compiletime.uninitialized
 
 /**
  * 从数据库中获取角色和权限
  */
 class DefaultEmsAuthorizer extends AbstractRoleBasedAuthorizer {
 
-  var appService: AppService = _
-  var entityDao: EntityDao = _
+  var appService: AppService = uninitialized
+  var entityDao: EntityDao = uninitialized
 
   override def fetchDomain(): AuthorityDomain = {
     val app = appService.getApp(EmsApp.name).get
