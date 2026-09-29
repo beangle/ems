@@ -18,6 +18,7 @@
 package org.beangle.ems.portal.action.user
 
 import org.beangle.data.dao.{EntityDao, OqlBuilder}
+import org.beangle.ems.app.EmsApp
 import org.beangle.ems.core.oa.model.{Notice, NoticeAttachment, NoticeStatus}
 import org.beangle.ems.core.user.model.User
 import org.beangle.security.Securities
@@ -25,8 +26,9 @@ import org.beangle.she.webmvc.QueryHelper
 import org.beangle.webmvc.annotation.{mapping, param}
 import org.beangle.webmvc.context.Params
 import org.beangle.webmvc.support.{ActionSupport, ParamSupport}
-import org.beangle.webmvc.view.View
+import org.beangle.webmvc.view.{Stream, View}
 
+import java.io.File
 import scala.compiletime.uninitialized
 
 class NoticeAction extends ActionSupport {
@@ -68,10 +70,10 @@ class NoticeAction extends ActionSupport {
   }
 
   @mapping("attachment/{id}")
-  def attachment(@param("id") attachId: String): View = {
+  def attachment(@param("id") id: String): View = {
     val attachment = entityDao.get(classOf[NoticeAttachment], id.toLong)
     val p = EmsApp.getBlobRepository().uri(attachment.filePath).toString
     if p.startsWith("http") then redirect(to(p), "")
-    else Stream(new File(p), doc.name)
+    else Stream(new File(p), attachment.name)
   }
 }

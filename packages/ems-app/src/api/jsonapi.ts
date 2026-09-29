@@ -156,8 +156,14 @@ export class EmsJsonApiClient {
     await this.request<void>(this.url(path), { method: 'DELETE' })
   }
 
-  private async request<T>(url: string, init: RequestInit): Promise<JsonApiDocument<T>> {
-    const response = await this.send(url, init, jsonApiHeaders(this.session, url, init))
+  /** 以 `multipart/form-data` 上传文件；Content-Type（含 boundary）交由 fetch 生成。 */
+  upload<T>(path: string, formData: FormData): Promise<JsonApiDocument<T>> {
+    const url = this.url(path)
+    return this.request<T>(url, { method: 'POST', body: formData }, formHeaders(this.session, url))
+  }
+
+  private async request<T>(url: string, init: RequestInit, headers?: HeadersInit): Promise<JsonApiDocument<T>> {
+    const response = await this.send(url, init, headers ?? jsonApiHeaders(this.session, url, init))
     if (response.status === 204) return {} as JsonApiDocument<T>
     if (isUnauthorized(response)) {
       await this.handleUnauthorized(response)
@@ -264,6 +270,14 @@ function blobHeaders(session: EmsJsonApiSession | undefined, url: string, init: 
     headers.set('Accept', '*/*')
   }
   mergeInto(headers, init.headers)
+  return headers
+}
+
+/** 上传用请求头：只协商 JSON:API 响应，不设置 Content-Type。 */
+function formHeaders(session: EmsJsonApiSession | undefined, url: string): Headers {
+  const headers = new Headers()
+  headers.set('Accept', jsonApiContentType)
+  if (!isCrossOriginUrl(url)) mergeInto(headers, session?.getAuthHeaders(''))
   return headers
 }
 
