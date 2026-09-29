@@ -40,7 +40,9 @@ project/metals.sbt
 test-output
 stale_outputs_checked
 
-# npm / frontend (packages/ems-shell 等)
+# npm / frontend（根 pnpm workspace + packages/* 子包）
+node_modules/
+.pnpm-store/
 packages/**/node_modules/
 packages/**/dist/
 packages/**/release/

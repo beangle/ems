@@ -250,7 +250,8 @@ flowchart LR
 | 管理界面 | `AppAction`、`ChannelAction`、`FuncResourceAction`、`MenuAction`、`PermissionAction`、`RoleAction` |
 | 应用 SDK | `app/.../security/RemoteAuthorizer.scala`、`RemoteService.scala` |
 | 权限 WS | `portal/.../ws/security/func/ResourceWS.scala`、`MenuWS.scala` |
-| 门户 Shell | `packages/ems-shell/`（wujie / iframe 打开子应用） |
+| 门户 Shell | `packages/ems-shell/`（宿主：wujie / iframe 打开子应用、菜单与多 Tab） |
+| 应用接入层 | `packages/ems-app/`（子应用侧：登录态与 token、权限拉取、运行时配置、微前端生命周期） |
 
 ---
 

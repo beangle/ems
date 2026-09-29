@@ -158,12 +158,26 @@ export function fetchMessages(params: Record<string, string>): void {
 
 // --- 个人资料 ---
 
+/**
+ * 顶栏右侧容器。优先用稳定的 id `#navbar-setting`，再退化到各版本 Bootstrap 的右对齐类，
+ * 避免模板类名调整（如 BS4 ml-auto → BS5 ms-auto）后静默匹配不到而丢失 profile 选择框。
+ */
+function profileNavHost() {
+  return jQuery('#navbar-setting, .main-header > .ms-auto, .main-header > .ml-auto').first();
+}
+
 export function createProfileNav(): void {
   const profiles = config.profiles;
   if (profiles.length === 0 || !config.profile) return;
 
   const profile = config.profile;
-  const host = jQuery('.main-header > .ms-auto, .main-header > .ml-auto');
+  const host = profileNavHost();
+  if (host.length === 0) {
+    console.warn(
+      '[ems-shell] 未找到顶栏右侧容器(#navbar-setting / .main-header > .ms-auto|.ml-auto)，profile 选择框未渲染'
+    );
+    return;
+  }
   if (profiles.length === 1) {
     // 仅一个 profile：显示名称，不可切换
     host.prepend(

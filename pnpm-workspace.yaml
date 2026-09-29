@@ -1,0 +1,6 @@
+packages:
+  - packages/*
+
+# esbuild 需要执行安装脚本（ems-shell 打包用）
+allowBuilds:
+  esbuild: true

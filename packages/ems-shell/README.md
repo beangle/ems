@@ -7,7 +7,7 @@ Beangle EMS 门户壳层：侧栏导航、工作台多标签、主题与布局�
 ## 安装
 
 ```bash
-npm install @beangle/ems-shell
+pnpm add @beangle/ems-shell
 ```
 
 npm 包同时包含 **TypeScript 源码** 与 **预编译静态资源**，安装后目录结构：
@@ -45,7 +45,7 @@ npm 包同时包含 **TypeScript 源码** 与 **预编译静态资源**，安装
 `app/src/main/resources/beangle.xml` 中声明 bundle（版本与 `package.json` 一致）：
 
 ```xml
-<bundle name="ems-shell" version="0.0.13">
+<bundle name="ems-shell" version="0.0.14">
   <module name="ems-shell"
           js="js/ems-shell-min.js"
           css="css/ems-shell-min.css"
@@ -62,7 +62,7 @@ npm 包同时包含 **TypeScript 源码** 与 **预编译静态资源**，安装
   images/
 ```
 
-`{static_base}` 由运行环境配置（如 `Ems.static`，默认 `{base}/static`）。执行 `npm run package` 会生成 `release/ems-shell-{version}.zip`，解压到静态站点根目录即可得到 `ems-shell/{version}/` 目录结构。
+`{static_base}` 由运行环境配置（如 `Ems.static`，默认 `{base}/static`）。执行 `pnpm package` 会生成 `release/ems-shell-{version}.zip`，解压到静态站点根目录即可得到 `ems-shell/{version}/` 目录结构。
 
 页面侧：
 
@@ -76,15 +76,20 @@ beangle.require(["wujie", "ems-shell"], function (wujie, emsShell) {
 
 ## 从源码构建
 
-在已安装的包目录或 monorepo 中：
+本包是 `beangle/ems` 仓库 pnpm workspace 的成员（根 `pnpm-workspace.yaml` 管理依赖与锁文件）。
 
 ```bash
-npm install
-npm run build      # → dist/
-npm run typecheck
-npm test
-npm run package    # → release/ems-shell-{version}.zip
+# 仓库根目录装依赖（一次装好 workspace 内所有包）
+pnpm install
+
+# 只构建本包
+pnpm --filter @beangle/ems-shell build      # → dist/
+pnpm --filter @beangle/ems-shell typecheck
+pnpm --filter @beangle/ems-shell test
+pnpm --filter @beangle/ems-shell package    # → release/ems-shell-{version}.zip
 ```
+
+也可以在本包目录内执行 `pnpm build` / `pnpm test` / `pnpm package`（会用到根 workspace 的依赖）。
 
 ## 文档
 
@@ -106,6 +111,12 @@ npm run package    # → release/ems-shell-{version}.zip
 
 用户操作说明见 [docs/tabs-user-guide.md](./docs/tabs-user-guide.md)。
 
+## 相关包
+
+子应用侧的接入层（登录态与 token、权限、运行时配置、Wujie 集成、门户 UI 同步）是
+[`@beangle/ems-app`](../ems-app/)。两者零代码依赖，只通过字符串契约协作，
+详见 [ems-app 契约文档](../ems-app/docs/ems-shell-contract.md)。
+
 ## 许可证
 
-Apache License 2.0 — 见 [LICENSE](./LICENSE)。
+GPL-3.0-or-later — 见 [LICENSE](./LICENSE)。

@@ -1,0 +1,405 @@
+/**
+ * Thin SPA chrome approximating EMS portal index (AdminLTE-like):
+ * full-height left sidebar (brand on top) + right column (dark navbar + content).
+ */
+.bui-app-shell {
+  --appshell-sidebar-width: 156px;
+  --appshell-header-height: calc(0.5rem * 2 + 1.93725rem);
+  --appshell-navbar-bg: var(--navbar-bg-color, #3c8dbc);
+  --appshell-bg: #f4f6f9;
+  --appshell-sidebar-bg: #f4f6f9;
+  --appshell-sidebar-text: #343a40;
+  --appshell-sidebar-muted: #6c757d;
+  --appshell-sidebar-hover: rgba(0, 0, 0, 0.06);
+  --appshell-sidebar-active-bg: #fff;
+  --appshell-sidebar-active-color: #0076ff;
+  --appshell-sidebar-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+  --appshell-content-bg: #f4f6f9;
+  --appshell-surface: #fff;
+  --appshell-border: #dee2e6;
+  min-height: 100vh;
+  display: flex;
+  background: var(--appshell-bg);
+  color: var(--appshell-sidebar-text);
+  font-size: 0.875rem;
+}
+
+[theme-mode='dark'] .bui-app-shell {
+  --appshell-navbar-bg: var(--td-brand-color, #0052d9);
+  --appshell-bg: var(--td-bg-color-page, #1a1a1a);
+  --appshell-sidebar-bg: var(--td-bg-color-container, #242424);
+  --appshell-sidebar-text: var(--td-text-color-primary, #e5e5e5);
+  --appshell-sidebar-muted: var(--td-text-color-placeholder, #8b8b8b);
+  --appshell-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --appshell-sidebar-active-bg: rgba(71, 135, 240, 0.16);
+  --appshell-sidebar-active-color: var(--td-brand-color, #4787f0);
+  --appshell-sidebar-shadow: 0 0 8px rgba(0, 0, 0, 0.45);
+  --appshell-content-bg: var(--td-bg-color-page, #1a1a1a);
+  --appshell-surface: var(--td-bg-color-container, #242424);
+  --appshell-border: var(--td-border-level-1-color, #383838);
+}
+
+.bui-app-shell__aside {
+  width: var(--appshell-sidebar-width);
+  flex: 0 0 var(--appshell-sidebar-width);
+  display: flex;
+  flex-direction: column;
+  background: var(--appshell-sidebar-bg);
+  box-shadow: var(--appshell-sidebar-shadow);
+  z-index: 30;
+  min-height: 100vh;
+}
+
+.bui-app-shell__brand {
+  height: var(--appshell-header-height);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  background: var(--appshell-navbar-bg);
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  border: 0;
+}
+
+.bui-app-shell__brand:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.bui-app-shell__brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--appshell-navbar-bg);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex: 0 0 auto;
+}
+
+.bui-app-shell__brand-logo {
+  height: 28px;
+  max-width: 36px;
+  width: auto;
+  object-fit: contain;
+  flex: 0 0 auto;
+  display: block;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.bui-app-shell__brand-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.bui-app-shell__brand-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bui-app-shell__brand-sub {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bui-app-shell__sidebar {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 0 12px;
+}
+
+.bui-app-shell__nav-section {
+  padding: 6px 14px 8px;
+  font-size: 0.7rem;
+  color: var(--appshell-sidebar-muted);
+}
+
+.bui-app-shell__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 8px;
+}
+
+.bui-app-shell__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.25rem;
+  color: var(--appshell-sidebar-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.bui-app-shell__nav-item:hover {
+  background: var(--appshell-sidebar-hover);
+  color: var(--appshell-sidebar-text);
+  text-decoration: none;
+}
+
+.bui-app-shell__nav-item.is-active {
+  background: var(--appshell-sidebar-active-bg);
+  color: var(--appshell-sidebar-active-color);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+.bui-app-shell__nav-icon {
+  width: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  opacity: 0.85;
+  font-size: 1rem;
+}
+
+.bui-app-shell__nav-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bui-app-shell__right {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.bui-app-shell__header {
+  height: var(--appshell-header-height);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 0 8px;
+  background: var(--appshell-navbar-bg);
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 20;
+}
+
+.bui-app-shell__module-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+}
+
+.bui-app-shell__module-nav a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.bui-app-shell__module-nav a:hover,
+.bui-app-shell__module-nav a.is-active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bui-app-shell__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.bui-app-shell__locale-toggle,
+.bui-app-shell__theme-toggle,
+.bui-app-shell__fullscreen-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.92;
+}
+
+.bui-app-shell__locale-toggle:hover,
+.bui-app-shell__theme-toggle:hover,
+.bui-app-shell__fullscreen-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.bui-app-shell__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--appshell-navbar-bg, #3c8dbc);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bui-app-shell__login:hover {
+  background: #fff;
+}
+
+.bui-app-shell__locale-toggle__glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 3px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+.bui-app-shell__profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 9rem;
+  padding: 0.25rem 0.45rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bui-app-shell__profile--switch {
+  cursor: pointer;
+}
+
+.bui-app-shell__profile--switch:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.bui-app-shell__profile-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bui-app-shell__profile-caret {
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4px solid rgba(255, 255, 255, 0.75);
+  flex: 0 0 auto;
+}
+
+.bui-app-shell__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  padding: 0.2rem 0.35rem;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.bui-app-shell__user:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bui-app-shell__user-avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--appshell-navbar-bg);
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bui-app-shell__user-name {
+  font-size: 0.8125rem;
+  max-width: 7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bui-app-shell__main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--appshell-content-bg);
+}
+
+.bui-app-shell__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 12px 14px 20px;
+  overflow: auto;
+}
+
+@media (max-width: 900px) {
+  .bui-app-shell__brand-text,
+  .bui-app-shell__nav-label,
+  .bui-app-shell__nav-section,
+  .bui-app-shell__user-name,
+  .bui-app-shell__module-nav {
+    display: none;
+  }
+
+  .bui-app-shell__aside {
+    width: 3rem;
+    flex-basis: 3rem;
+  }
+
+  .bui-app-shell__nav-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

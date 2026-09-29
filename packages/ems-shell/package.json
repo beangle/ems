@@ -1,8 +1,8 @@
 {
   "name": "@beangle/ems-shell",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Beangle EMS portal shell — navigation, workspace tabs, layout, and static assets (JS/CSS/images)",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "package": "node package.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/**/*.test.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.32",
