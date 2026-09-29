@@ -17,7 +17,7 @@
     <div class="mailbox-read-message">
       <ul>附件列表
       [#list notice.docs as doc]
-      <li>[@b.a href="doc!info?id="+doc.id target="_new"]${doc.name}[/@]</li>
+      <li>[@b.a href="doc!attachment?id="+doc.id target="_new"]${doc.name}[/@]</li>
       [/#list]
       </ul>
     </div>
