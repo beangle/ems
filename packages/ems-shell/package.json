@@ -1,6 +1,6 @@
 {
   "name": "@beangle/ems-shell",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Beangle EMS portal shell — navigation, workspace tabs, layout, and static assets (JS/CSS/images)",
   "license": "GPL-3.0-or-later",
   "type": "module",
