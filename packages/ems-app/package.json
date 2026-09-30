@@ -1,6 +1,6 @@
 {
   "name": "@beangle/ems-app",
-  "version": "0.0.1",
+  "version": "0.0.2-SNAPSHOT",
   "description": "EMS 应用侧接入层：登录会话与 token、权限对接、运行时配置、微前端（Wujie）集成、门户 UI（语言/主题/字号）同步",
   "license": "GPL-3.0-or-later",
   "type": "module",
