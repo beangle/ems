@@ -29,6 +29,11 @@ export interface EmsAuthOptions {
   tokenKey?: string
   userInfoKey?: string
   clearLocalStorageOnLogout?: boolean
+  /**
+   * 初始化登录态时未登录是否跳转 CAS 登录页，默认 true。
+   * 置 false 时只清空本地会话，供允许匿名访问、由页面自行引导登录的应用（如移动端自助服务）。
+   */
+  requireLoginOnInit?: boolean
   sidName?: string
   logoutUrl?: string | (() => string)
   fetcher?: typeof fetch
@@ -45,7 +50,12 @@ export interface EmsSessionService<TUser extends EmsCurrentUser = EmsCurrentUser
   requireLogin(redirectUrl?: string): void
   logout(service?: string): Promise<void>
   getUserInfoBySid(sid: string): Promise<TUser | null>
-  fetchCasUser(params?: Record<string, string>): Promise<TUser | null>
+  fetchCasUser(params?: Record<string, string>, options?: EmsFetchCasUserOptions): Promise<TUser | null>
+}
+
+export interface EmsFetchCasUserOptions {
+  /** 未登录时是否跳转 CAS 登录页，默认 true。 */
+  requireLogin?: boolean
 }
 
 export interface EmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser> {
@@ -68,6 +78,7 @@ const defaultSidName = EMS_URL_PARAMS.sid
 export function createEmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser>(options: EmsAuthOptions): EmsAuth<TUser> {
   const fetcher = options.fetcher ?? ((input, init) => globalThis.fetch(input, init))
   const sidName = options.sidName || defaultSidName
+  const requireLoginOnInit = options.requireLoginOnInit !== false
 
   const normalizePath = (path: string): string => {
     if (!path) return '/'
@@ -172,10 +183,19 @@ export function createEmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser>(opt
     },
 
     async getUserInfoBySid(sid: string): Promise<TUser | null> {
-      return this.fetchCasUser({ [sidName]: sid })
+      return this.fetchCasUser({ [sidName]: sid }, { requireLogin: requireLoginOnInit })
     },
 
-    async fetchCasUser(params: Record<string, string> = {}): Promise<TUser | null> {
+    async fetchCasUser(
+      params: Record<string, string> = {},
+      fetchOptions: EmsFetchCasUserOptions = {},
+    ): Promise<TUser | null> {
+      const needLogin = fetchOptions.requireLogin ?? true
+      const refuseLogin = (): null => {
+        if (needLogin) this.requireLogin()
+        else this.clearAuth()
+        return null
+      }
       try {
         const query = new URLSearchParams(params)
         const token = this.getToken()
@@ -192,8 +212,7 @@ export function createEmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser>(opt
         })
 
         if (response.status === 0 || response.status === 302 || response.status === 401) {
-          this.requireLogin()
-          return null
+          return refuseLogin()
         }
 
         if (!response.ok) return this.getUserInfo()
@@ -205,8 +224,7 @@ export function createEmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser>(opt
           return data.user
         }
 
-        this.requireLogin()
-        return null
+        return refuseLogin()
       } catch {
         return this.getUserInfo()
       }
@@ -243,7 +261,7 @@ export function createEmsAuth<TUser extends EmsCurrentUser = EmsCurrentUser>(opt
       return currentUser.value
     }
 
-    currentUser.value = await sessionService.fetchCasUser()
+    currentUser.value = await sessionService.fetchCasUser({}, { requireLogin: requireLoginOnInit })
     return currentUser.value
   }
 

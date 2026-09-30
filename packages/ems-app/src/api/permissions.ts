@@ -3,7 +3,11 @@ import { computed, ref, type Ref } from 'vue'
 /**
  * 前端权限集成（通用）。
  *
- * 后端权限接口（路径由应用配置，如 learning 的 `GET /api/edu/learning/permissions.json`）支持两种返回结构：
+ * 权限数据由 EMS 平台提供，应用按自身约定配置接口路径。OpenURP 应用无需自己实现该接口：
+ * `openurp-starter-web` 的 `PermissionWS` 已经把平台数据转发到 `GET /api/{app}/permissions.json`
+ * （`?channel=pc|mobile` 区分端），下同。
+ *
+ * 接口支持两种返回结构：
  *
  * 扁平资源数组（推荐，每项是相对 `api_base` 的路径，拼接 `api_base` 即后端调用地址；
  * 本应用形如 `/{studentId}/{ws}`）：

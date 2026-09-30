@@ -68,10 +68,10 @@ import '@beangle/ems-app/dist/index.css'
 | 模块 | 说明 |
 |---|---|
 | `api/auth` | CAS 登录 / 登出、`URP_SID`、token 与用户信息存取、登录态初始化 |
-| `api/permissions` | 权限接口（扁平资源数组或路由结构）→ `canRoute` / `can`，缺省 fail-open |
+| `api/permissions` | 消费平台下发的用户功能权限（管理员在门户维护，应用不自建权限表）：扁平资源数组或路由结构 → `canRoute` / `can`，缺省 fail-open |
 | `api/runtimeConfig` | `configs.json` / `themes.json` → `ems_base`、`cas_*`、主题、logo |
 | `api/request` | 统一请求客户端：base URL、Bearer / `URP_SID`、跨域判断 |
-| `api/jsonapi` | JSON:API 客户端 `EmsJsonApiClient`：文档 / 错误类型、`page[...]` / `filter[...]` 查询、401/302 跳登录、blob 下载 |
+| `api/jsonapi` | JSON:API 客户端 `EmsJsonApiClient`：文档 / 错误类型、`page[...]` / `filter[...]` 查询、401/302 跳登录、blob 下载；并把资源文档摊平成业务行（`unwrapResource` / `unwrapOne` / `unwrapMany`） |
 | `api/qrLogin` + `useQrLogin` | CAS 扫码登录（kiosk）：二维码、SSE 订阅、轮询降级 |
 | `utils/microApp` | `isWujieMicroApp` / `registerWujieApp`（挂载时机） |
 | `utils/portalUi` | 门户语言 / 主题 / 字号同步（Wujie 总线 + storage + 自定义事件） |

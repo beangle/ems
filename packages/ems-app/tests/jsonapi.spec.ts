@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { EmsJsonApiClient, JsonApiRequestError } from '../src/api/jsonapi'
+import { EmsJsonApiClient, JsonApiRequestError, unwrapMany, unwrapOne, unwrapResource } from '../src/api/jsonapi'
 import type { EmsJsonApiSession } from '../src/api/jsonapi'
 
 const session = (): EmsJsonApiSession & { login: ReturnType<typeof vi.fn> } => ({
@@ -114,5 +114,30 @@ describe('EmsJsonApiClient', () => {
 
     await expect(client.getPlain('/x')).resolves.toEqual({ plain: true })
     expect(headersOf(lastInit(fetcher)).accept).toBe('application/json')
+  })
+})
+
+describe('JSON:API unwrap helpers', () => {
+  it('unwrapResource 合并 attributes 并保留 id', () => {
+    expect(unwrapResource({ type: 'gpas', id: 'g1', attributes: { gpa: 3.6 } })).toEqual({ id: 'g1', gpa: 3.6 })
+  })
+
+  it('unwrapOne 在 data 缺失时抛错', () => {
+    expect(() => unwrapOne({})).toThrow('JSON:API document does not contain data')
+  })
+
+  it('unwrapMany 处理空集合与多资源', () => {
+    expect(unwrapMany({})).toEqual([])
+    expect(
+      unwrapMany({
+        data: [
+          { type: 'x', id: '1', attributes: { a: 1 } },
+          { type: 'x', id: '2', attributes: { a: 2 } },
+        ],
+      }),
+    ).toEqual([
+      { id: '1', a: 1 },
+      { id: '2', a: 2 },
+    ])
   })
 })

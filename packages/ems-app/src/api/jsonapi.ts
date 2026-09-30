@@ -60,6 +60,29 @@ export interface JsonApiDocument<T> {
   included?: JsonApiResource[]
 }
 
+/** 取出资源对象的 `attributes` 并补回 `id`（JSON:API 资源 → 扁平行）。 */
+export function unwrapResource<TAttributes>(resource: JsonApiResource<TAttributes>): TAttributes & { id: string } {
+  return {
+    id: resource.id,
+    ...(resource.attributes || ({} as TAttributes)),
+  }
+}
+
+/** 从单资源文档中取出 `attributes`；`data` 缺失时抛错。 */
+export function unwrapOne<TAttributes>(
+  document: JsonApiDocument<JsonApiResource<TAttributes>>,
+): TAttributes & { id: string } {
+  if (!document.data) throw new Error('JSON:API document does not contain data')
+  return unwrapResource(document.data)
+}
+
+/** 从资源集合文档中批量取出 `attributes`。 */
+export function unwrapMany<TAttributes>(
+  document: JsonApiDocument<JsonApiResource<TAttributes>[]>,
+): Array<TAttributes & { id: string }> {
+  return (document.data || []).map(unwrapResource)
+}
+
 export class JsonApiRequestError extends Error {
   readonly status: number
   readonly errors: JsonApiError[]
