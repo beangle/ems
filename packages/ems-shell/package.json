@@ -42,7 +42,7 @@
     "package": "node package.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/**/*.test.ts",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build && node build.mjs --clean"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.32",

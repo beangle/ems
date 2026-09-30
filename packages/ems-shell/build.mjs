@@ -67,6 +67,19 @@ export async function buildAll() {
   console.log('built → dist/');
 }
 
+// Remove dist/{version}/ snapshot dirs created by package.mjs
+export function cleanSnapshots() {
+  if (!fs.existsSync(dist)) return;
+  let removed = 0;
+  for (const name of fs.readdirSync(dist)) {
+    if (/^\d+\.\d+\.\d+$/.test(name)) {
+      fs.rmSync(path.join(dist, name), { recursive: true, force: true });
+      removed++;
+    }
+  }
+  console.log(`cleaned ${removed} version snapshot dir(s) from dist/`);
+}
+
 function isMain() {
   const entry = process.argv[1];
   return entry && import.meta.url === pathToFileURL(path.resolve(entry)).href;
@@ -85,5 +98,9 @@ if (watch) {
   await ctx.watch();
   console.log('watching ems-shell sources…');
 } else if (isMain()) {
-  await buildAll();
+  if (process.argv.includes('--clean')) {
+    cleanSnapshots();
+  } else {
+    await buildAll();
+  }
 }
