@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #
 # 发布准备（SNAPSHOT 模式）：
-#   develop 上构建/测试/发布 dry-run 通过 → 去掉 -SNAPSHOT → 提交并打 tag
-#   → 切 main 合并 develop → push main + tag
+#   develop 上构建/测试/发布 dry-run 通过 → 去掉 -SNAPSHOT → 提交
+#   → 切 main 合并 develop → push main
 # 用法：./scripts/release-prepare.sh [patch|minor|major]   （默认 patch）
 # 可用环境变量覆盖：BUILD_CMD / TEST_CMD / DRY_RUN_CMD
 #
 # 注意：本包是 beangle/ems 仓库的 workspace 成员，脚本里的 git 操作作用于
-# 整个 ems 仓库（只改 packages/ems-app/package.json），tag 加包名前缀
-# 以免与 ems 自身的 tag（v4.x）混淆。
+# 整个 ems 仓库（只改 packages/ems-app/package.json）。该仓库同时承载多个
+# 独立发布的包（ems-app / ems-shell），仓库级 tag 无法归属到某一个包，
+# 因此这里不打 tag、也不推 tag：发布版本以 package.json 与 npm 上的版本为准。
 #
 set -euo pipefail
 
@@ -24,7 +25,6 @@ esac
 BUILD_CMD="${BUILD_CMD:-pnpm build}"
 TEST_CMD="${TEST_CMD:-pnpm test}"
 DRY_RUN_CMD="${DRY_RUN_CMD:-pnpm publish --dry-run --no-git-checks}"
-TAG_PREFIX="${TAG_PREFIX:-ems-app-v}"
 
 log() { printf '\033[1;36m[release]\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31m[release] 错误:\033[0m %s\n' "$*" >&2; exit 1; }
@@ -61,7 +61,6 @@ log "去掉 SNAPSHOT: $VERSION -> $REL"
 node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version='$REL';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
 git add package.json
 git commit -m "release: v$REL"
-git tag "${TAG_PREFIX}$REL"
 
 log "切换到 main 并合并 develop"
 git checkout main
@@ -71,9 +70,8 @@ if ! git merge develop -m "release: v$REL"; then
   die "合并冲突，请手动处理（git merge --abort 后处理冲突）"
 fi
 
-log "推送 main 与 tag ${TAG_PREFIX}$REL"
+log "推送 main"
 git push origin main
-git push origin "${TAG_PREFIX}$REL"
 
 log "发布准备完成，当前在 main 分支。后续："
 log "  1. pnpm publish（发布正式版本 v$REL）"
