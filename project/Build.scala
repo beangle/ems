@@ -13,7 +13,7 @@ object EmsDepends {
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.16"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.28"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.21"
-  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.19"
+  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.20"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.5"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.30"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.14"
@@ -22,7 +22,7 @@ object EmsDepends {
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.8"
   val sshd_core = "org.apache.sshd" % "sshd-core" % "2.20.0"
 
-  val slf4j_jcl = "org.slf4j" % "jcl-over-slf4j" % "2.0.19"
+  val slf4j_jcl = "org.slf4j" % "jcl-over-slf4j" % "2.0.20"
   val appDepends = Seq(beangle_commons, beangle_config, typesafe_config, slf4j, logback_classic) ++
     Seq(beangle_cdi, spring_beans) ++
     Seq(beangle_jdbc, HikariCP, postgresql) ++
