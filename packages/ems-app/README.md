@@ -26,11 +26,18 @@ localStorage key、自定义事件名、Wujie 总线事件名、URL 参数名。
 pnpm add @beangle/ems-app
 ```
 
-本地联调（消费端处于同一父目录时）用 `link:`，不要用 `file:`：
+消费端只写**版本号**，不要写 `link:` / `file:`（发布脚本会直接拦截）：
 
 ```json
-"@beangle/ems-app": "link:../../../../../beangle/ems/packages/ems-app"
+"@beangle/ems-app": "^0.0.2"        // 正式发布版
+"@beangle/ems-app": "^0.0.2-dev.0"  // 联调期跟随 dev 预览（同时接受正式版 0.0.2）
+"@beangle/ems-app": "dev"           // 永远跟随最新预览（dist-tag）
 ```
+
+联调上游改动时**不要在消费端链接本地目录**：先在本仓库发布开发预览版
+（`pnpm release:dev`，版本形如 `0.0.2-dev.<UTC 时间戳>`、dist-tag `dev`），
+消费端 `pnpm install` 即可取到；内网环境可把 `npm pack` 的 tgz 交给 micdn
+（`micdn install <pkg>.tgz --tag dev`）由本地 registry 提供。
 
 ## 消费端注意：产物是 bundler 目标
 
@@ -123,9 +130,28 @@ pnpm install
 pnpm --filter @beangle/ems-app typecheck
 pnpm --filter @beangle/ems-app test
 pnpm --filter @beangle/ems-app build
-pnpm --filter @beangle/ems-app release:prepare minor   # 发布准备（见 scripts/release-prepare.sh）
 ```
 
 在本包目录内直接 `pnpm test` / `pnpm build` 等价（依赖来自根 workspace）。
+
+## 发布
+
+`ems-app` 位于 `beangle/ems` 的 `packages/` 下——该仓库同时承载 Scala 侧代码（tag 序列 `v4.x`）
+与其他前端包，仓库级分支与标签由仓库流程负责，因此**包级发布脚本不执行任何 git 操作**
+（不 checkout、不 merge develop、不打 tag、不 push）。版本以 `package.json` 与 registry 为准。
+
+版本号遵循 npm/semver 约定：
+
+| 用途 | 版本号 | dist-tag |
+|---|---|---|
+| 正式版 | `X.Y.Z` | `latest` |
+| 开发预览 | `X.Y.Z-dev.<UTC yyyyMMddHHmmss>` | `dev` |
+
+- `package.json` 里始终写「下一个正式版号」的纯 `X.Y.Z`：不要写 `-SNAPSHOT`（Maven/Java 概念），
+  也**不重发同一个版本号**（npm 的 lockfile/store 按 integrity 寻址，重发只会让消费方卡在旧字节）；
+- 正式发布：`pnpm release:prepare` 通过后执行 `pnpm publish --tag latest --no-git-checks`，
+  再用 `pnpm release:finish` 算出下一个版本号，手工改 `package.json` 并提交；
+- 开发预览：`pnpm release:dev`（自动加 UTC 时间戳并以 `--tag dev` 发布），
+  消费方用 `@beangle/ems-app@dev` 跟随最新预览，或写 `^X.Y.Z-dev.0`。
 
 许可：GPL-3.0-or-later。详见 `docs/architecture.md`、`docs/ems-shell-contract.md`。

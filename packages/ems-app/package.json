@@ -43,8 +43,10 @@
     "prepublishOnly": "pnpm run build",
     "release:prepare": "bash scripts/release-prepare.sh",
     "release:finish": "bash scripts/release-finish.sh",
+    "release:dev": "bash scripts/release-dev.sh",
     "typecheck": "vue-tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "publishLocal": "bash scripts/publish-local.sh"
   },
   "peerDependencies": {
     "vue": "^3.5.0",
