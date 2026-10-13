@@ -4,3 +4,6 @@ packages:
 # esbuild 需要执行安装脚本（ems-shell 打包用）
 allowBuilds:
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@beangle/bui-vue@0.0.4-dev.20261004093027'

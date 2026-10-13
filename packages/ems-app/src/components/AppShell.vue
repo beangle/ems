@@ -15,22 +15,13 @@
         </span>
       </a>
       <div class="bui-app-shell__sidebar">
-        <div v-if="navSection" class="bui-app-shell__nav-section">{{ navSection }}</div>
-        <nav class="bui-app-shell__nav">
-          <a
-            v-for="item in menus"
-            :key="item.path"
-            class="bui-app-shell__nav-item"
-            :class="{ 'is-active': item.path === resolvedActivePath }"
-            :href="item.path"
-            @click.prevent="onNavigate(item.path)"
-          >
-            <span v-if="item.icon" class="bui-app-shell__nav-icon">
-              <component :is="item.icon" />
-            </span>
-            <span class="bui-app-shell__nav-label">{{ item.title }}</span>
-          </a>
-        </nav>
+        <SideNav
+          :items="menus"
+          :active-path="resolvedActivePath"
+          :section="navSection"
+          :collapsed="collapsedNav"
+          @navigate="onNavigate"
+        />
       </div>
     </aside>
 
@@ -111,9 +102,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TDropdown from 'tdesign-vue-next/es/dropdown'
+import { SideNav } from '@beangle/bui-vue'
 import type { AppShellMenuItem, AppShellProfile } from './app-shell'
 import AppShellFullscreenToggle from './AppShellFullscreenToggle.vue'
 import AppShellLocaleToggle from './AppShellLocaleToggle.vue'
@@ -180,6 +172,19 @@ const resolvedActivePath = computed(() => {
 })
 
 const homeHref = computed(() => props.homePath || props.menus[0]?.path || '/')
+
+/**
+ * 窄屏（<900px）侧栏收成 3rem 只留图标；侧栏菜单的收起点样式由 @beangle/bui-vue 的
+ * SideNav 收起态提供，这里只负责把媒体查询结果传给它。
+ */
+const collapsedQuery = typeof window === 'undefined' ? undefined : window.matchMedia('(max-width: 900px)')
+const collapsedNav = ref(collapsedQuery?.matches ?? false)
+const onCollapsedChange = (event: MediaQueryListEvent) => {
+  collapsedNav.value = event.matches
+}
+
+onMounted(() => collapsedQuery?.addEventListener('change', onCollapsedChange))
+onBeforeUnmount(() => collapsedQuery?.removeEventListener('change', onCollapsedChange))
 
 const displayLocale = computed(() =>
   props.locale === 'zh-CN' || props.locale === 'en-US' ? props.locale : undefined,

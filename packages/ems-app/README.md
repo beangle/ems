@@ -32,6 +32,28 @@ pnpm add @beangle/ems-app
 "@beangle/ems-app": "link:../../../../../beangle/ems/packages/ems-app"
 ```
 
+## 消费端注意：产物是 bundler 目标
+
+`dist/*.js` 按 bundler 解析发布，**不是** Node 原生 ESM 可直接 import 的产物：
+`dist/pc.js` 里有 `tdesign-vue-next/es/dropdown` 这类目录导入，而 tdesign 的 `es/*.mjs`
+自身还 `import './style/css.mjs'`（CSS）。Node 原生 ESM 会分别报
+`Directory import ... is not supported` 与 `Unknown file extension ".css"`。
+
+- 浏览器 `vite build` / dev server：正常，无需额外配置；
+- vitest / SSR / node 脚本等 Node 环境：把本包（以及再导出它的 `@openurp/sdk-vue`）
+  放进测试运行器的 inline 名单，交给 vite 处理，例如 vitest：
+
+```ts
+// vitest.config.ts
+test: {
+  server: {
+    deps: {
+      inline: ['@beangle/ems-app', '@openurp/sdk-vue', 'tdesign-vue-next'],
+    },
+  },
+}
+```
+
 ## 入口
 
 | 入口 | 内容 | 依赖 |
@@ -41,6 +63,15 @@ pnpm add @beangle/ems-app
 | `@beangle/ems-app/styles/app-shell.css` | `AppShell` 样式源码入口 | — |
 
 `dist/index.css` 已包含 `AppShell` 样式，按需二选一引入。
+
+侧栏菜单的渲染与样式（规格取自 EMS 门户侧栏）在 `@beangle/bui-vue` 的 `SideNav`
+组件里，`AppShell` 只负责传入菜单树与当前路径。该组件的样式按 bui-vue 的约定单独引出，
+**独立部署用 `AppShell` 时必须额外引入一次**（`dist/index.css` 里没有）：
+
+```ts
+import '@beangle/ems-app/dist/index.css'
+import '@beangle/bui-vue/styles/side-nav.css'
+```
 
 ## 快速接入
 

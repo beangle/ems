@@ -25,6 +25,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        '@beangle/bui-vue',
         'vue',
         'vue-router',
         'tdesign-vue-next',
