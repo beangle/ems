@@ -13,10 +13,10 @@
 #   LOCAL_REGISTRY  本地 registry，默认 http://localhost/npm/
 #   BUILD_CMD       默认 pnpm build
 #   TEST_CMD        默认 pnpm test；SKIP_TESTS=1 或 TEST_CMD= 可跳过
-#   PUBLISH_CMD     默认 pnpm publish（已带 registry/tag/no-git-checks/ignore-scripts）
+#   PUBLISH_CMD     默认 npm publish（已带 registry/tag/ignore-scripts）
 #   DRY_RUN=1       只打包 + 打印目标 registry，不真正发布（换 registry 前先跑它确认）
 #
-# 注意：pnpm 里 publishConfig.registry 会盖过 --registry，本脚本发布前会临时把 publishConfig.registry
+# 注意：npm / pnpm 里 publishConfig.registry 都会盖过 --registry，本脚本发布前会临时把 publishConfig.registry
 #   指到 LOCAL_REGISTRY（结束复原），所以在 ems-app 这类 publishConfig 指向 npmjs 的包里也不会误发公网。
 #
 # 注：registry 鉴权按 host+path 匹配，~/.npmrc 里的 token 条目必须与 LOCAL_REGISTRY 一致
@@ -42,7 +42,7 @@ else
   TEST_CMD="${TEST_CMD:-pnpm test}"
 fi
 # 已显式 build，用 --ignore-scripts 跳过 prepublishOnly 的重复构建。
-PUBLISH_CMD="${PUBLISH_CMD:-pnpm publish --registry $LOCAL_REGISTRY --tag dev --no-git-checks --ignore-scripts}"
+PUBLISH_CMD="${PUBLISH_CMD:-npm publish --registry $LOCAL_REGISTRY --tag dev --ignore-scripts}"
 if [ "${DRY_RUN:-0}" = "1" ]; then
   PUBLISH_CMD="$PUBLISH_CMD --dry-run"
 fi
@@ -81,7 +81,7 @@ restore() { cp "$BACKUP" package.json; rm -f "$BACKUP"; }
 trap restore EXIT
 
 log "临时写入 package.json: $PKG_NAME@$DEV_VERSION"
-# 同时把 publishConfig.registry 指到 LOCAL_REGISTRY：实测 pnpm 里 publishConfig.registry 会盖过 --registry，
+# 同时把 publishConfig.registry 指到 LOCAL_REGISTRY：npm / pnpm 里 publishConfig.registry 都会盖过 --registry，
 # 不中和它的话「本地发布」会打到 npmjs（@beangle/ems-app 这类包在 npmjs 上是真实存在的）。
 # 原本没有 publishConfig 就不新增该字段。改动随 package.json 一起在结束时复原。
 node -e "

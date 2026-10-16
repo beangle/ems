@@ -42,8 +42,6 @@
     "package": "node package.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/**/*.test.ts",
-    "release:prepare": "bash scripts/release-prepare.sh",
-    "release:finish": "bash scripts/release-finish.sh",
     "release:dev": "bash scripts/release-dev.sh",
     "prepublishOnly": "pnpm build && node build.mjs --clean"
   },

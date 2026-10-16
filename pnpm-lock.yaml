@@ -11,8 +11,8 @@ importers:
   packages/ems-app:
     dependencies:
       '@beangle/bui-vue':
-        specifier: 0.0.4-dev.20261004093027
-        version: 0.0.4-dev.20261004093027(tdesign-icons-vue-next@0.4.11(vue@3.5.43(typescript@5.9.3)))(tdesign-vue-next@1.20.8(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+        specifier: ^0.0.5
+        version: 0.0.5(tdesign-icons-vue-next@0.4.11(vue@3.5.43(typescript@5.9.3)))(tdesign-vue-next@1.20.8(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
@@ -97,8 +97,8 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@beangle/bui-vue@0.0.4-dev.20261004093027':
-    resolution: {integrity: sha512-K3y/YkkFPR7f+3aqOAf05DjBc21vQqIbVVIlJr+nVIEZC0XuY7MP4gzN8Qo5YDByDQmF5JKO5RZo2WjATXjB5A==}
+  '@beangle/bui-vue@0.0.5':
+    resolution: {integrity: sha512-KKfgETsFhcP9RGQ65J4/IxyllSVhM1I8itjbrTLtRlMBmabbAhkHemncGCqQ2XDKQPJI5sEDv226Y+q97UBLSA==}
     peerDependencies:
       tdesign-icons-vue-next: ^0.4.4
       tdesign-vue-next: ^1.20.1
@@ -1347,7 +1347,7 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@beangle/bui-vue@0.0.4-dev.20261004093027(tdesign-icons-vue-next@0.4.11(vue@3.5.43(typescript@5.9.3)))(tdesign-vue-next@1.20.8(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+  '@beangle/bui-vue@0.0.5(tdesign-icons-vue-next@0.4.11(vue@3.5.43(typescript@5.9.3)))(tdesign-vue-next@1.20.8(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
     dependencies:
       tdesign-icons-vue-next: 0.4.11(vue@3.5.43(typescript@5.9.3))
       tdesign-vue-next: 1.20.8(vue@3.5.43(typescript@5.9.3))

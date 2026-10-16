@@ -91,6 +91,21 @@ pnpm --filter @beangle/ems-shell package    # → release/ems-shell-{version}.zi
 
 也可以在本包目录内执行 `pnpm build` / `pnpm test` / `pnpm package`（会用到根 workspace 的依赖）。
 
+## 发布
+
+本包是 `beangle/ems` 混合仓库的 `packages/ems-shell`（仓库还承载 Scala 侧与其它前端包），分支与标签由仓库流程负责，因此包级发布脚本**不做任何 git 操作**：`package.json` 与 registry 是唯一依据。
+
+| 用途 | 版本号 | dist-tag |
+|---|---|---|
+| 正式版 | `X.Y.Z` | `latest` |
+| 开发预览 | `X.Y.Z-dev.<UTC 时间戳>` | `dev` |
+
+- `package.json` 里放**下一个正式版号**（`X.Y.Z` 或 `X.Y.Z-dev` 都行）；发新版本前先把它改成 registry 上还不存在的版本；
+- 正式发布：在本包目录执行 `~/bin/npm-publish.sh` —— 去掉 `-dev` 后缀、拒绝已存在于 registry 的版本号、跑构建 + 测试 + `npm publish --dry-run`，再用 `npm publish` 发布，最后把 `package.json` 写成下一个 `X.Y.(Z+1)-dev`（不做 git，提交自理）；
+- 开发预览：`pnpm release:dev`（追加 UTC 时间戳，以 `--tag dev` 发布），消费方用 `@beangle/ems-shell@dev` 跟随；
+- 同一个版本号绝不重发：npm 的 lockfile 记 integrity、store 内容寻址，重发只会让消费方卡在旧字节；
+- 发布走 `npm` 而不是 `pnpm publish`：pnpm 11 对这类 scoped 包会拿到 registry 的 `PUT` 404。`prepublishOnly`（`pnpm build && node build.mjs --clean`）在发布前构建并清掉 `dist/` 下的历史版本快照，包里只带当前版本。
+
 ## 文档
 
 | 文档 | 说明 |

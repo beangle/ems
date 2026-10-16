@@ -6,4 +6,4 @@ allowBuilds:
   esbuild: true
 
 minimumReleaseAgeExclude:
-  - '@beangle/bui-vue@0.0.4-dev.20261004093027'
+  - '@beangle/bui-vue@0.0.5'
