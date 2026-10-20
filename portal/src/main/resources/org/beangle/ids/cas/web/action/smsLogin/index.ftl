@@ -10,13 +10,10 @@
     <meta http-equiv="expires" content="0"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Login</title>
-    ${b.css("bootstrap","css/bootstrap.min.css")}
-    ${b.css("font-awesome","css/all.min.css")}
     ${b.css("ems-shell","css/login.css")}
     <base href="${b.base}/"/>
-    ${b.static.load(["jquery"])}
   </head>
-<body>
+<body class="login-page">
 
 <div class="logindiv">
   <div class="bulletin">
@@ -33,13 +30,22 @@
       <div style="border: 0px;border-bottom:1px #7DC4DB solid;margin:auto;width:220px">
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-text" style=""><i class="fas fa-user" style="width: 16px;"></i></div>
+            <div class="input-group-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+              </svg>
+            </div>
             <input name="username" id="username" tabindex="1" autofocus="autofocus" class="form-control" placeholder="${b.text('ui.login.username.tip')}" type="text" value="${Parameters['username']!}">
           </div>
         </div>
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-text" ><i class="fas fa-key" style="width: 16px;"></i></div>
+            <div class="input-group-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"/>
+                <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+              </svg>
+            </div>
             <input name="smsCode" tabindex="2" class="form-control" placeholder="短信验证码" value="" maxlength="6">
             <input type="button"  tabindex="3" class="btn btn-outline-primary btn-sm"  onclick="send(this.form);return false;" value="发送" style="margin-left: 2px;"/>
           </div>
@@ -47,7 +53,11 @@
         [#if setting.enableCaptcha]
         <div class="col-auto">
           <div class="input-group mb-1">
-            <div class="input-group-text"><i class="fas fa-font" style="width: 16px;"></i></div>
+            <div class="input-group-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fonts" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M12.258 3h-8.51l-.083 2.46h.479c.26-1.544.758-1.783 2.693-1.845l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602l.431.013c1.934.062 2.434.301 2.693 1.846h.479z"/>
+              </svg>
+            </div>
             <input name="captcha_response" id="captcha_response" tabindex="3" class="form-control" type="text" value="" placeholder="图片验证码" onblur="validate_captcha(this.value)">
             <div class="input-group-text" style="padding: 0px;background-color: white;">
               <img src="${captcha_url}?t=${current_timestamp}" id="captcha_image" title="点击更换" onclick="change_captcha()" style="vertical-align:top;margin:0px;border:0px" height="23px">
@@ -80,9 +90,11 @@
       if(!(/^\w+$/.test(form['username'].value))){
           displayError("用户名中只能包含数字,字母");return false;
       }
-      $.get("${b.url('!send')}?username="+form['username'].value,function(data,status){
+      fetch("${b.url('!send')}?username="+encodeURIComponent(form['username'].value))
+        .then(function(response){ return response.text(); })
+        .then(function(data){
           displayError(data);
-      });
+        });
     }
     function checkLogin(form){
       if(!form['username'].value){
@@ -104,13 +116,15 @@
     }
     function validate_captcha(response){
       if(response){
-        $.get("${captcha_check_url}".replace("{response}",response),function(data,status){
-          if(data.code==200){
-            displayInfo("验证码正确");
-          }else{
-            displayError("验证码不正确");
-          }
-        });
+        fetch("${captcha_check_url}".replace("{response}",response))
+          .then(function(response){ return response.json(); })
+          .then(function(data){
+            if(data.code==200){
+              displayInfo("验证码正确");
+            }else{
+              displayError("验证码不正确");
+            }
+          });
       }
     }
 [/#if]

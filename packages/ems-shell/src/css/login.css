@@ -105,3 +105,219 @@ a:hover,
 a:focus {
   text-decoration: underline;
 }
+
+/*
+ * Login page subset of Bootstrap 5.3.8.
+ * Scoped to .login-page so the SMS login page can keep using Bootstrap.
+ */
+.login-page {
+  margin: 0;
+  color: #212529;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.login-page,
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+  box-sizing: border-box;
+}
+
+.login-page button,
+.login-page input,
+.login-page optgroup,
+.login-page select,
+.login-page textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.login-page img,
+.login-page svg {
+  vertical-align: middle;
+}
+
+.login-page table {
+  border-collapse: collapse;
+}
+
+.login-page label {
+  display: inline-block;
+}
+
+.login-page .col-auto {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.login-page .mb-1 {
+  margin-bottom: 0.25rem !important;
+}
+
+.login-page .form-control {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  appearance: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.login-page .form-control::placeholder {
+  color: rgba(33, 37, 41, 0.75);
+  opacity: 1;
+}
+
+.login-page .form-control:focus {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.login-page .input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.login-page .input-group > .form-control {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+}
+
+.login-page .input-group > .form-control:focus {
+  z-index: 5;
+}
+
+.login-page .input-group > .btn {
+  position: relative;
+  z-index: 2;
+}
+
+.login-page .input-group > .btn:focus {
+  z-index: 5;
+}
+
+.login-page .input-group > :not(:first-child) {
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.login-page .input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+}
+
+.login-page .btn {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.login-page .btn-primary {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.login-page .btn-primary:hover {
+  color: #fff;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.login-page .btn-primary:focus-visible {
+  color: #fff;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.5);
+}
+
+.login-page .btn-primary:active {
+  color: #fff;
+  background-color: #0a58ca;
+  border-color: #0a53be;
+}
+
+.login-page .btn-outline-primary {
+  color: #0d6efd;
+  background-color: transparent;
+  border-color: #0d6efd;
+}
+
+.login-page .btn-outline-primary:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.login-page .btn-outline-primary:focus-visible {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+}
+
+.login-page .btn-outline-primary:active {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.login-page .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page .form-control,
+  .login-page .btn {
+    transition: none;
+  }
+}
