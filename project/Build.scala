@@ -4,8 +4,8 @@ import sbt.*
 object EmsDepends {
   val beangle_commons = "org.beangle.commons" % "beangle-commons" % "6.3.7"
   val beangle_cdi = "org.beangle.cdi" % "beangle-cdi" % "0.10.8"
-  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.9.6"
-  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.9.6"
+  val beangle_bui_tag = "org.beangle.bui" % "beangle-bui-tag" % "0.9.7"
+  val beangle_bui_bootstrap = "org.beangle.bui" % "beangle-bui-bootstrap" % "0.9.7"
   val beangle_cache = "org.beangle.cache" % "beangle-cache" % "0.1.24"
   val beangle_config = "org.beangle.config" % "beangle-config" % "1.1.12"
   val beangle_event = "org.beangle.event" % "beangle-event" % "0.1.12"
@@ -13,16 +13,16 @@ object EmsDepends {
   val beangle_data_hibernate = "org.beangle.data" % "beangle-data-hibernate" % "5.12.16"
   val beangle_notify = "org.beangle.notify" % "beangle-notify" % "0.1.28"
   val beangle_jdbc = "org.beangle.jdbc" % "beangle-jdbc" % "1.1.21"
-  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.19"
+  val beangle_she = "org.beangle.she" % "beangle-she" % "0.0.21"
   val beangle_security = "org.beangle.security" % "beangle-security" % "4.5.5"
   val beangle_serializer = "org.beangle.serializer" % "beangle-serializer" % "0.1.30"
   val beangle_template = "org.beangle.template" % "beangle-template" % "0.2.14"
-  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.10"
+  val beangle_transfer = "org.beangle.transfer" % "beangle-transfer" % "0.0.11"
   val beangle_webmvc = "org.beangle.webmvc" % "beangle-webmvc" % "0.15.6"
   val beangle_cron = "org.beangle.cron" % "beangle-cron" % "0.0.8"
-  val sshd_core = "org.apache.sshd" % "sshd-core" % "2.19.0"
+  val sshd_core = "org.apache.sshd" % "sshd-core" % "2.20.0"
 
-  val slf4j_jcl = "org.slf4j" % "jcl-over-slf4j" % "2.0.19"
+  val slf4j_jcl = "org.slf4j" % "jcl-over-slf4j" % "2.0.20"
   val appDepends = Seq(beangle_commons, beangle_config, typesafe_config, slf4j, logback_classic) ++
     Seq(beangle_cdi, spring_beans) ++
     Seq(beangle_jdbc, HikariCP, postgresql) ++

@@ -1,3 +1,5 @@
+import './styles/base.css'
+
 /**
  * PC 入口：独立部署（非 Wujie 微前端）时的应用壳层。
  *

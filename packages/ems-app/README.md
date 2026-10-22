@@ -38,9 +38,11 @@ pnpm add @beangle/ems-app
 |---|---|---|
 | `@beangle/ems-app` | 登录会话、权限、运行时配置、请求客户端、微前端、门户 UI 同步、扫码登录、契约常量、`MicroShell` | `vue`、`vue-router` |
 | `@beangle/ems-app/pc` | `AppShell` 及语言/主题/全屏开关（独立部署时的应用壳） | 追加 `tdesign-vue-next`、`tdesign-icons-vue-next`（optional peer） |
+| `@beangle/ems-app/styles/base.css` | 子应用文档基线（`html` / `body` 间距归零） | — |
 | `@beangle/ems-app/styles/app-shell.css` | `AppShell` 样式源码入口 | — |
 
-`dist/index.css` 已包含 `AppShell` 样式，按需二选一引入。
+`dist/index.css` 已包含文档基线和 `AppShell` 样式；使用源码样式入口时需另行引入
+`styles/base.css`。
 
 ## 快速接入
 

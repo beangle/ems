@@ -1,3 +1,5 @@
+import './styles/base.css'
+
 /**
  * 主入口：端无关的 EMS 应用接入层（PC 与移动端都可引用）。
  *
