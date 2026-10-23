@@ -1,0 +1,11 @@
+/**
+ * 子应用文档基线。
+ *
+ * Wujie 会把子应用的 <html>/<body> 原样放入 shadow root；浏览器默认的 body
+ * margin 会与 MicroShell 的 padding 叠加，因此在这里统一清零。
+ */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}

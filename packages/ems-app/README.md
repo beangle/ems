@@ -65,9 +65,11 @@ test: {
 |---|---|---|
 | `@beangle/ems-app` | session, permissions, runtime config, request client, micro-app, portal UI sync, QR login, contract constants, `MicroShell` | `vue`, `vue-router` |
 | `@beangle/ems-app/pc` | `AppShell` plus locale / theme / fullscreen switches | `tdesign-vue-next`, `tdesign-icons-vue-next` (optional peers) |
+| `@beangle/ems-app/styles/base.css` | Guest-app document baseline (zeroes `html` / `body` margin and padding) | — |
 | `@beangle/ems-app/styles/app-shell.css` | `AppShell` style source | — |
 
-`dist/index.css` already includes the `AppShell` styles — import one or the other.
+`dist/index.css` already includes the document baseline and `AppShell` styles — import one or the
+other. When using the style source entries, import `styles/base.css` separately.
 The sidebar is `SideNav` from `@beangle/bui-vue`, whose styles are a separate entry by that
 package's convention, so a standalone `AppShell` also needs:
 

@@ -311,6 +311,7 @@ class UserAction extends RestfulAction[User], ExportSupport[User] {
 
   /** 用户在当前域下 EnvProfile 中的场景；无配置则视为不限制（与账号 profile 回退一致）。 */
   private def loadUserProfileEnvIds(user: User): Option[Set[Long]] = {
+    if (!user.persisted) return None
     val ids = entityDao.search(
       OqlBuilder.from(classOf[EnvProfile], "up")
         .where("up.user=:user and up.domain=:domain", user, domainService.getDomain)

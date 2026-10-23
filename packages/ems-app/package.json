@@ -30,6 +30,7 @@
       "default": "./dist/pc.js"
     },
     "./dist/index.css": "./dist/index.css",
+    "./styles/base.css": "./src/styles/base.css",
     "./styles/app-shell.css": "./src/styles/app-shell.css"
   },
   "files": [
