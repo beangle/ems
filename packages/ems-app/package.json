@@ -1,6 +1,6 @@
 {
   "name": "@beangle/ems-app",
-  "version": "0.0.3",
+  "version": "0.0.4-dev",
   "description": "EMS guest-app integration layer: session and token, permissions, runtime config, Wujie micro-frontend integration, portal UI (locale / theme / font size) sync",
   "license": "GPL-3.0-or-later",
   "type": "module",
