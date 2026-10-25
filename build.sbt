@@ -47,8 +47,8 @@ lazy val portal = (project in file("portal"))
     libraryDependencies ++= Seq(beangle_ids, beangle_notify, apache_commons_compress),
     libraryDependencies ++= Seq(beangle_transfer, beangle_bui_bootstrap),
     libraryDependencies ++= Seq(sshd_core, slf4j_jcl),
-    snapshotRepoUrl := "https://sas.openurp.net/maven",
-    nativePublishUrl := "https://sas.openurp.net/native",
+    snapshotRepoUrl := "https://bas.openurp.net/maven",
+    nativePublishUrl := "https://bas.openurp.net/native",
     libraryDependencies ++= webAppDepends,
     // native-image 配置
     Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
