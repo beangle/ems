@@ -51,7 +51,7 @@ lazy val portal = (project in file("portal"))
     nativePublishUrl := "https://bas.openurp.net/native",
     libraryDependencies ++= webAppDepends,
     // native-image 配置
-    Compile / mainClass := Some("org.beangle.sas.engine.tomcat.Bootstrap"),
+    Compile / mainClass := Some("org.beangle.bas.engine.tomcat.Bootstrap"),
     nativeImageOutput := xsbti.VirtualFileRef.of((NativeImage / target).value.getAbsolutePath + "/ems-portal"),
     nativeImageOptions ++= Seq(
       "--sun-misc-unsafe-memory-access=allow",
@@ -66,8 +66,8 @@ lazy val portal = (project in file("portal"))
     // scalameta sbt-native-image 的任务类路径取自 (Compile / fullClasspath)，
     // 因此用 provided 让其进入 native-image 类路径，同时不打进 WAR、不随 POM 传递。
     libraryDependencies ++= Seq(
-      "org.beangle.sas" % "beangle-sas-engine" % "0.13.14" % "provided",
-      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.26" % "provided" exclude("org.apache.tomcat", "tomcat-annotations-api")
+      "org.beangle.bas" % "beangle-bas-engine" % "0.14.0" % "provided",
+      "org.apache.tomcat.embed" % "tomcat-embed-core" % "11.0.27" % "provided" exclude("org.apache.tomcat", "tomcat-annotations-api")
     )
   )
   .dependsOn(app)

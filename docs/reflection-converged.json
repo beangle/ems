@@ -6376,12 +6376,12 @@
   "org.beangle.notify.sms.SmsCodeService": {
     "name": "org.beangle.notify.sms.SmsCodeService"
   },
-  "org.beangle.sas.engine.tomcat.EmbeddedClassLoader": {
-    "name": "org.beangle.sas.engine.tomcat.EmbeddedClassLoader",
+  "org.beangle.bas.engine.tomcat.EmbeddedClassLoader": {
+    "name": "org.beangle.bas.engine.tomcat.EmbeddedClassLoader",
     "queryAllPublicMethods": true
   },
-  "org.beangle.sas.engine.tomcat.SwallowErrorValve": {
-    "name": "org.beangle.sas.engine.tomcat.SwallowErrorValve",
+  "org.beangle.bas.engine.tomcat.SwallowErrorValve": {
+    "name": "org.beangle.bas.engine.tomcat.SwallowErrorValve",
     "queryAllPublicMethods": true,
     "methods": [
       {
