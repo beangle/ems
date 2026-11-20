@@ -106,7 +106,7 @@ class DefaultModule extends BindModule, Config.Provider {
       .property("checkPasswordStrength", $("login.checkPasswordStrength"))
       .property("passwordReadOnly", $("login.passwordReadOnly"))
       .property("enableSmsLogin", $("login.enableSmsLogin"))
-      .property("clients", List("http://localhost", Ems.base) ++ clients)
+      .property("clients", List("http://localhost","http://127.0.0.1", Ems.base) ++ clients)
 
     remoteCasServer foreach { casServer =>
       val remoteCasServer = new CasConfig(casServer)
