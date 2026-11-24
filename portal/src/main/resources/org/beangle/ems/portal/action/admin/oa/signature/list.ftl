@@ -4,6 +4,7 @@
     m.addItem("从其他数据源中同步",action.method('uploadDbSetting'));
     bar.addItem("更新",action.edit());
     bar.addItem("批量下载",action.multi("download",null,null,"_blank"));
+    bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
   [/@]
   [@b.row]
     [@b.boxcol/]

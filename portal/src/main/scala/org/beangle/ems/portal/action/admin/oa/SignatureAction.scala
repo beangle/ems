@@ -74,6 +74,16 @@ class SignatureAction extends RestfulAction[Signature] {
     super.saveAndRedirect(s)
   }
 
+  override protected def removeAndRedirect(entities: Seq[Signature]): View = {
+    val blob = EmsApp.getBlobRepository()
+    entities.foreach { sig =>
+      if (Strings.isNotBlank(sig.filePath)) {
+        blob.remove(sig.filePath)
+      }
+    }
+    super.removeAndRedirect(entities)
+  }
+
   private def upload(sig: Signature, is: InputStream, ext: String): Unit = {
     val user = sig.user
     val blob = EmsApp.getBlobRepository(true)

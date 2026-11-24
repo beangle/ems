@@ -42,7 +42,7 @@ class DefaultModule extends BindModule {
     bind(classOf[EditAction])
     bind(classOf[OAuthAction])
     bind(classOf[QrcodeAction])
-    bind(classOf[CaptchaHelper]).constructor(Ems.innerApi + "/tools")
+    bind(classOf[CaptchaHelper]).constructor(Ems.api + "/tools")
     bind(classOf[LoginRetryServiceImpl]).constructor(ref("redis.Factory"))
   }
 }
